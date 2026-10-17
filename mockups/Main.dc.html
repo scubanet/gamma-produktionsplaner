@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Anlass erfassen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F4F1}
+a{color:#2F6B4F}a:hover{color:#1F4A36}
+.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
+.nav a:hover{background:#E6EAE5;color:#1B2421}
+.lbl{display:block;font-size:12px;font-weight:500;color:#5B6661;margin-bottom:6px}
+.inp{box-sizing:border-box;width:100%;height:44px;padding:0 12px;border:1px solid #CBD2CC;border-radius:8px;font:inherit;font-size:14px;color:#1B2421;background:#FFFFFF}
+.chk{display:flex;align-items:center;gap:10px;font-size:14px;min-height:44px}
+.chk input{width:18px;height:18px;accent-color:#2F6B4F}
+</style>
+</helmet>
+<div style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+
+  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
+    </div>
+    <a href="Leitstand.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>Leitstand</a>
+    <a href="Main.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Anlässe</a>
+    <a href="Ressourcen.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Ressourcen</a>
+    <a href="Rezept.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 4h10l2 2v14H6z"></path><path d="M9 9h6M9 13h6M9 17h4"></path></svg>Speisen &amp; Rezepte</a>
+    <a href="Produktion.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h9M4 12h14M4 18h7"></path></svg>Produktionsplan</a>
+    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 7h14l-1.5 10h-11z"></path><path d="M9 7V5h6v2"></path></svg>Einkauf</span>
+    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg>Stammdaten</span>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div>
+        <div style="font-size: 13px; color: #5B6661;">Anlässe / A-2026-0418</div>
+        <h1 style="margin: 4px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">Neuer Anlass</h1>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button type="button" style="height: 44px; padding: 0 18px; border-radius: 8px; border: 1px solid #CBD2CC; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; color: #1B2421;">Entwurf speichern</button>
+        <a href="Ressourcen.dc.html" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 8px; background: #2F6B4F; color: #FFFFFF; font-size: 14px; font-weight: 600; text-decoration: none;">Ressourcen berechnen<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      </div>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+          <h2 style="margin: 0 0 20px; font-size: 16px; font-weight: 600;">Rahmendaten</h2>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+            <div style="grid-column: span 2;"><label class="lbl" for="kunde">Kunde</label><input class="inp" id="kunde" value="[Kundenname]"></div>
+            <div><label class="lbl" for="datum">Datum</label><input class="inp" id="datum" value="14.11.2026"></div>
+            <div><label class="lbl" for="gaeste">Gäste</label><input class="inp" id="gaeste" value="120" style="font-family: 'IBM Plex Mono', monospace;"></div>
+            <div><label class="lbl" for="apero">Apéro</label><input class="inp" id="apero" value="18:30"></div>
+            <div><label class="lbl" for="essen">Essen</label><input class="inp" id="essen" value="19:30"></div>
+          </div>
+          <div style="margin-top: 20px;">
+            <div class="lbl">Serviceart</div>
+            <div role="radiogroup" aria-label="Serviceart" style="display: inline-flex; flex-wrap: wrap; padding: 4px; gap: 4px; background: #EEF0EC; border-radius: 10px;">
+              <button type="button" role="radio" aria-checked="true" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(27,36,33,0.12); font: inherit; font-size: 14px; font-weight: 600; color: #1B2421;">Teller-Service</button>
+              <button type="button" role="radio" aria-checked="false" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: transparent; font: inherit; font-size: 14px; color: #3C4743;">Buffet</button>
+              <button type="button" role="radio" aria-checked="false" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: transparent; font: inherit; font-size: 14px; color: #3C4743;">Flying Dinner</button>
+            </div>
+          </div>
+        </section>
+
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+          <h2 style="margin: 0 0 12px; font-size: 16px; font-weight: 600;">Location &amp; Infrastruktur</h2>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px;">
+            <label class="chk"><input type="checkbox">Küche vor Ort</label>
+            <label class="chk"><input type="checkbox" checked>Strom 400 V</label>
+            <label class="chk"><input type="checkbox" checked>Wasseranschluss</label>
+            <label class="chk"><input type="checkbox">Abwasch vor Ort</label>
+          </div>
+        </section>
+
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Menü · Herbst 2026</h2>
+            <a href="Rezept.dc.html" style="font-size: 14px; font-weight: 500;">Speisen verwalten</a>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{courses}}" as="c" hint-placeholder-count="3">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 14px 0; border-top: 1px solid #EEF0EC;">
+                <div style="width: 96px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #2F6B4F;">{{c.gang}}</div>
+                <div style="flex: 1 1 260px; min-width: 0;">
+                  <div style="font-size: 15px; font-weight: 500;">{{c.name}}</div>
+                  <div style="font-size: 13px; color: #5B6661;">{{c.detail}}</div>
+                </div>
+                <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #3C4743;">{{c.portion}}</div>
+              </div>
+            </sc-for>
+          </div>
+          <button type="button" style="margin-top: 12px; height: 44px; padding: 0 16px; border: 1px dashed #A9B3AD; border-radius: 8px; background: transparent; font: inherit; font-size: 14px; color: #3C4743;">+ Gang hinzufügen</button>
+        </section>
+      </div>
+
+      <aside aria-label="Live-Vorschau" style="flex: 1 1 300px; min-width: 0; background: #1B2421; color: #F3F4F1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Live-Vorschau</h2>
+          <span style="font-size: 12px; color: #A9B8B0;">Beispieldaten</span>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: #A9B8B0;">Personal am Anlass</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 500; line-height: 1.1;">17</div>
+          <div style="font-size: 13px; color: #D5DDD8;">3 Küche · 11 Service · 2 Abwasch · 1 Fahrer</div>
+        </div>
+        <div style="height: 1px; background: #33403B;"></div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+          <div><div style="font-size: 12px; color: #A9B8B0;">Combi-Steamer mobil</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">2</div></div>
+          <div><div style="font-size: 12px; color: #A9B8B0;">Wärmeschränke</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">4</div></div>
+          <div><div style="font-size: 12px; color: #A9B8B0;">Teller inkl. Reserve</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">400</div></div>
+          <div><div style="font-size: 12px; color: #A9B8B0;">Fahrzeuge</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">1</div></div>
+        </div>
+        <div style="background: #3A2F1C; border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.45; color: #F4DDB8;">Keine Küche vor Ort: mobile Geräte und Abwasch-Team wurden automatisch eingeplant.</div>
+        <div style="height: 1px; background: #33403B;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <span style="font-size: 13px; color: #A9B8B0;">Preis pro Gast</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">CHF [Preis]</span>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      courses: [
+        { gang: 'Vorspeise', name: 'Randen-Carpaccio', detail: 'Meerrettich, Nüsslisalat, Baumnüsse', portion: '120 g' },
+        { gang: 'Hauptgang', name: 'Kalbsbraten mit Jus', detail: 'Kartoffelgratin, Marktgemüse', portion: '180 g' },
+        { gang: 'Dessert', name: 'Zwetschgen-Crumble', detail: 'Vanilleglace', portion: '110 g' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

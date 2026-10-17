@@ -1,0 +1,4 @@
+<!-- @dsCard group="Eingabe" height=120 -->
+<div class="pl-root" style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;padding:20px" id="r"></div>
+<script>const {TextField}=window.Planer;const h=React.createElement;ReactDOM.createRoot(document.getElementById('r')).render(h(React.Fragment,null,
+h(TextField,{label:'Kunde',defaultValue:'[Kundenname]'}),h(TextField,{label:'Datum',defaultValue:'14.11.2026'}),h(TextField,{label:'Gäste',defaultValue:'120',numeric:true})));</script>

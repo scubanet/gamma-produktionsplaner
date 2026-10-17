@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Leitstand – parallele Anlässe</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F4F1}
+a{color:#2F6B4F}a:hover{color:#1F4A36}
+.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
+.nav a:hover{background:#E6EAE5;color:#1B2421}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;font-weight:500;color:#5B6661;padding:0 12px 10px 0;border-bottom:1px solid #E1E5E0;white-space:nowrap}
+.tbl td{padding:11px 12px 11px 0;border-bottom:1px solid #EEF0EC;vertical-align:middle}
+.num{font-family:'IBM Plex Mono',monospace;text-align:right;white-space:nowrap}
+.bar{position:absolute;top:6px;height:28px;box-sizing:border-box;padding:0 8px;border-radius:6px;font-size:12px;font-weight:500;line-height:28px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+</helmet>
+<div style="min-height: 1180px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+
+  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
+    </div>
+    <a href="Leitstand.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>Leitstand</a>
+    <a href="Main.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Anlässe</a>
+    <a href="Ressourcen.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Ressourcen</a>
+    <a href="Rezept.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 4h10l2 2v14H6z"></path><path d="M9 9h6M9 13h6M9 17h4"></path></svg>Speisen &amp; Rezepte</a>
+    <a href="Produktion.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h9M4 12h14M4 18h7"></path></svg>Produktionsplan</a>
+    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 7h14l-1.5 10h-11z"></path><path d="M9 7V5h6v2"></path></svg>Einkauf</span>
+    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg>Stammdaten</span>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div>
+        <div style="font-size: 13px; color: #5B6661;">Leitstand · Beispieldaten</div>
+        <h1 style="margin: 4px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">Samstag, 14.11.2026 · 3 Anlässe parallel</h1>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button type="button" style="height: 44px; padding: 0 18px; border-radius: 8px; border: 1px solid #CBD2CC; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; color: #1B2421;">Sammel-Einkaufsliste</button>
+        <button type="button" style="height: 44px; padding: 0 20px; border-radius: 8px; border: 0; background: #2F6B4F; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600;">Anfragen &amp; Mieten auslösen</button>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+      <sc-for list="{{events}}" as="e" hint-placeholder-count="3">
+        <a href="{{e.href}}" style="display: block; text-decoration: none; color: #1B2421; background: #FFFFFF; border: 1px solid #E1E5E0; border-top: 4px solid {{e.color}}; border-radius: 12px; padding: 18px 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; background: {{e.color}}; color: #FFFFFF; font-weight: 600; font-size: 13px;">{{e.key}}</span>
+            <span style="font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 999px; background: {{e.statusBg}}; color: {{e.statusFg}};">{{e.status}}</span>
+          </div>
+          <div style="font-size: 16px; font-weight: 600; margin-top: 10px;">{{e.name}}</div>
+          <div style="font-size: 13px; color: #5B6661; margin-top: 2px;">{{e.place}}</div>
+          <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 13px;">
+            <span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 18px;">{{e.pax}}</span> Gäste</span>
+            <span style="color: #3C4743; align-self: flex-end;">{{e.service}}</span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+
+    <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Tagesablauf</h2>
+        <span style="font-size: 12px; color: #5B6661;">Schraffur = Spitzenbedarf Combi-Steamer, Zusatzgerät gemietet</span>
+      </div>
+      <div style="overflow-x: auto;">
+        <div style="min-width: 760px;">
+          <div style="display: flex; padding-bottom: 8px; border-bottom: 1px solid #E1E5E0;">
+            <div style="width: 150px; flex: none;"></div>
+            <div style="flex: 1; position: relative; height: 18px;">
+              <sc-for list="{{ticks}}" as="t" hint-placeholder-count="8">
+                <span style="position: absolute; top: 0; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5B6661; {{t.pos}}">{{t.label}}</span>
+              </sc-for>
+            </div>
+          </div>
+          <div style="position: relative;">
+            <div aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: calc(150px + (100% - 150px) * {{peakL}}); width: calc((100% - 150px) * {{peakW}}); background: repeating-linear-gradient(135deg, rgba(154,84,16,0.10) 0, rgba(154,84,16,0.10) 6px, transparent 6px, transparent 12px); border-left: 1px dashed #9A5410; border-right: 1px dashed #9A5410;"></div>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+              <div style="display: flex; border-bottom: 1px solid #EEF0EC; position: relative;">
+                <div style="width: 150px; flex: none; padding: 12px 12px 0 0; box-sizing: border-box; font-size: 13px; font-weight: 500;">{{r.label}}</div>
+                <div style="flex: 1; position: relative; height: 40px;">
+                  <sc-for list="{{r.bars}}" as="b" hint-placeholder-count="4">
+                    <div class="bar" title="{{b.label}}" style="{{b.style}}">{{b.label}}</div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+        <h2 style="margin: 0 0 16px; font-size: 16px; font-weight: 600;">Ressourcen · Eigen und Zusatz</h2>
+        <div style="overflow-x: auto;">
+        <table class="tbl">
+          <thead><tr><th>Ressource</th><th class="num">A</th><th class="num">B</th><th class="num">C</th><th class="num">Total</th><th class="num">Eigen</th><th>Zusatz</th></tr></thead>
+          <tbody>
+            <sc-for list="{{pool}}" as="p" hint-placeholder-count="6">
+              <tr>
+                <td style="font-weight: 500;">{{p.name}}</td>
+                <td class="num">{{p.a}}</td><td class="num">{{p.b}}</td><td class="num">{{p.c}}</td>
+                <td class="num" style="font-weight: 600;">{{p.total}}</td>
+                <td class="num">{{p.have}}</td>
+                <td><span style="display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; background: {{p.bg}}; color: {{p.fg}};">{{p.status}}</span></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        </div>
+      </section>
+
+      <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+        <section style="background: #1B2421; color: #F3F4F1; border-radius: 12px; padding: 22px 24px;">
+          <h2 style="margin: 0 0 4px; font-size: 16px; font-weight: 600;">Automatisch disponiert</h2>
+          <div style="font-size: 12px; color: #A9B8B0; margin-bottom: 14px;">Zusatzbedarf wird aus Pool und Miete gedeckt</div>
+          <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.45;">
+            <li><strong style="font-weight: 600;">Freelancer-Pool:</strong> Anfrage an 1 Koch und 12 Service, nach Qualifikation und Verfügbarkeit gefiltert</li>
+            <li><strong style="font-weight: 600;">Mietgeräte:</strong> 1 Combi-Steamer mobil für Anlass C, Lieferung 16:00</li>
+            <li><strong style="font-weight: 600;">Fahrzeuge:</strong> 1 Lieferwagen mieten, Abholung 12:30 für Anlass B</li>
+            <li><strong style="font-weight: 600;">Kosten:</strong> Zusatzkosten fliessen automatisch in die Kalkulation der Anlässe</li>
+          </ol>
+        </section>
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 20px 24px;">
+          <h2 style="margin: 0 0 14px; font-size: 15px; font-weight: 600;">Zentralküche Tag −1 · Auslastung</h2>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{load}}" as="l" hint-placeholder-count="3">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span>{{l.name}}</span><span style="font-family: 'IBM Plex Mono', monospace;">{{l.pct}} %</span></div>
+                <div style="height: 8px; border-radius: 4px; background: #EEF0EC; overflow: hidden;"><div style="height: 8px; border-radius: 4px; {{l.style}}"></div></div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var S = 12, SPAN = 14;
+    var col = { A: '#2F5E9E', B: '#9A5410', C: '#2F6B4F' };
+    var fill = { A: '#DCE5F2', B: '#F8E3CB', C: '#DCEBE2' };
+    var ink = { A: '#1E3F6E', B: '#5C3A12', C: '#1F4A36' };
+    var bar = function (k, label, s, e) {
+      var l = (s - S) / SPAN * 100, w = (e - s) / SPAN * 100;
+      return { label: label, style: 'left:' + l + '%;width:calc(' + w + '% - 3px);background:' + fill[k] + ';border:1px solid ' + col[k] + ';color:' + ink[k] + ';' };
+    };
+    var ticks = [];
+    for (var h = 12; h <= 26; h += 2) ticks.push({ label: ((h % 24) < 10 ? '0' : '') + (h % 24) + ':00', pos: 'left:' + ((h - S) / SPAN * 100) + '%;' });
+    var ok = { bg: '#DCEBE2', fg: '#1F4A36' }, warn = { bg: '#F8E3CB', fg: '#5C3A12' }, add = { bg: '#DCE5F2', fg: '#1E3F6E' };
+    var row = function (o, s) { return Object.assign(o, s); };
+    return {
+      events: [
+        { key: 'A', color: col.A, name: 'Firmenjubiläum', place: 'Zürich-West · keine Küche', pax: '120', service: 'Teller-Service', status: 'Bestätigt', statusBg: ok.bg, statusFg: ok.fg, href: 'Ressourcen.dc.html' },
+        { key: 'B', color: col.B, name: 'Hochzeit', place: 'Meilen · Küche vorhanden', pax: '150', service: 'Buffet', status: 'Bestätigt', statusBg: ok.bg, statusFg: ok.fg, href: 'Ressourcen.dc.html' },
+        { key: 'C', color: col.C, name: 'Generalversammlung', place: 'Zug · keine Küche', pax: '200', service: 'Flying Dinner', status: 'Option', statusBg: warn.bg, statusFg: warn.fg, href: 'Ressourcen.dc.html' }
+      ],
+      ticks: ticks,
+      peakL: (17.5 - S) / SPAN, peakW: (21.5 - 17.5) / SPAN,
+      rows: [
+        { label: 'A · Firmenjubiläum', bars: [bar('A', 'Transport', 15.5, 16.5), bar('A', 'Aufbau', 16.5, 18), bar('A', 'Apéro', 18.5, 19.5), bar('A', 'Dinner 3 Gänge', 19.5, 22.5), bar('A', 'Abbau', 22.5, 24)] },
+        { label: 'B · Hochzeit', bars: [bar('B', 'Transport', 13, 14), bar('B', 'Aufbau', 14, 16), bar('B', 'Apéro', 16.5, 18), bar('B', 'Buffet', 18.5, 21.5), bar('B', 'Dessert, Bar', 21.5, 24.5), bar('B', 'Abbau', 24.5, 26)] },
+        { label: 'C · GV', bars: [bar('C', 'Transport', 16.5, 17.5), bar('C', 'Aufbau', 17.5, 18.5), bar('C', 'Flying Dinner', 19, 21.5), bar('C', 'Abbau', 21.5, 22.5)] }
+      ],
+      pool: [
+        row({ name: 'Köche', a: '3', b: '4', c: '2', total: '9', have: '8', status: '+1 Freelancer' }, add),
+        row({ name: 'Service', a: '11', b: '9', c: '14', total: '34', have: '22', status: '+12 Freelancer' }, add),
+        row({ name: 'Abwasch', a: '2', b: '0', c: '2', total: '4', have: '5', status: 'Eigen gedeckt' }, ok),
+        row({ name: 'Combi-Steamer mobil', a: '2', b: '0', c: '3', total: '5', have: '4', status: '+1 Miete' }, add),
+        row({ name: 'Wärmeschränke', a: '4', b: '3', c: '2', total: '9', have: '10', status: 'Eigen gedeckt' }, ok),
+        row({ name: 'Lieferwagen', a: '1', b: '2', c: '1', total: '4', have: '3', status: '+1 Miete' }, add),
+        row({ name: 'Teller', a: '400', b: '500', c: '0', total: '900', have: '0', status: '+900 Miete' }, add)
+      ],
+      load: [
+        { name: 'Combi-Steamer (3)', pct: '94', style: 'width:94%;background:#9A5410;' },
+        { name: 'Schockkühler (2)', pct: '78', style: 'width:78%;background:#2F6B4F;' },
+        { name: 'Köche Frühschicht (6)', pct: '100', style: 'width:100%;background:#9A5410;' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

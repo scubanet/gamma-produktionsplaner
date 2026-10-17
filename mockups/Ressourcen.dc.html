@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Ressourcen-Übersicht</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F4F1}
+a{color:#2F6B4F}a:hover{color:#1F4A36}
+.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
+.nav a:hover{background:#E6EAE5;color:#1B2421}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;font-weight:500;color:#5B6661;padding:0 12px 10px 0;border-bottom:1px solid #E1E5E0}
+.tbl td{padding:12px 12px 12px 0;border-bottom:1px solid #EEF0EC;vertical-align:top}
+.num{font-family:'IBM Plex Mono',monospace;text-align:right}
+</style>
+</helmet>
+<div style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+
+  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
+    </div>
+    <a href="Leitstand.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>Leitstand</a>
+    <a href="Main.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Anlässe</a>
+    <a href="Ressourcen.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Ressourcen</a>
+    <a href="Rezept.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 4h10l2 2v14H6z"></path><path d="M9 9h6M9 13h6M9 17h4"></path></svg>Speisen &amp; Rezepte</a>
+    <a href="Produktion.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h9M4 12h14M4 18h7"></path></svg>Produktionsplan</a>
+    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 7h14l-1.5 10h-11z"></path><path d="M9 7V5h6v2"></path></svg>Einkauf</span>
+    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg>Stammdaten</span>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div>
+        <div style="font-size: 13px; color: #5B6661;"><a href="Main.dc.html" style="color: #5B6661;">A-2026-0418</a> · 14.11.2026 · 120 Gäste · Teller-Service</div>
+        <h1 style="margin: 4px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">Ressourcen-Übersicht</h1>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button type="button" style="height: 44px; padding: 0 18px; border-radius: 8px; border: 1px solid #CBD2CC; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; color: #1B2421;">Packliste exportieren</button>
+        <button type="button" style="height: 44px; padding: 0 20px; border-radius: 8px; border: 0; background: #2F6B4F; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600;">Offerte erstellen</button>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 18px 20px;"><div style="font-size: 12px; color: #5B6661;">Personal am Anlass</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 30px; margin-top: 6px;">17</div><div style="font-size: 12px; color: #5B6661;">davon 6 Zusatzpersonal</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 18px 20px;"><div style="font-size: 12px; color: #5B6661;">Geräte</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 30px; margin-top: 6px;">6</div><div style="font-size: 12px; color: #5B6661;">2 Steamer · 4 Wärmeschränke</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 18px 20px;"><div style="font-size: 12px; color: #5B6661;">Logistik</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 30px; margin-top: 6px;">1</div><div style="font-size: 12px; color: #5B6661;">Lieferwagen, Abfahrt 15:30</div></div>
+      <div style="background: #1B2421; color: #F3F4F1; border-radius: 12px; padding: 18px 20px;"><div style="font-size: 12px; color: #A9B8B0;">Preis pro Gast</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 30px; margin-top: 6px;">CHF [Preis]</div><div style="font-size: 12px; color: #A9B8B0;">Marge [x] %</div></div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+          <h2 style="margin: 0 0 16px; font-size: 16px; font-weight: 600;">Personal</h2>
+          <div style="overflow-x: auto;">
+          <table class="tbl">
+            <thead><tr><th>Rolle</th><th class="num">Anzahl</th><th>Einsatz</th><th>Herleitung</th></tr></thead>
+            <tbody>
+              <sc-for list="{{staff}}" as="s" hint-placeholder-count="5">
+                <tr><td style="font-weight: 500;">{{s.role}}</td><td class="num">{{s.n}}</td><td style="font-family: 'IBM Plex Mono', monospace; font-size: 13px;">{{s.time}}</td><td style="color: #5B6661;">{{s.rule}}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+          </div>
+        </section>
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+          <h2 style="margin: 0 0 16px; font-size: 16px; font-weight: 600;">Geräte &amp; Material</h2>
+          <div style="overflow-x: auto;">
+          <table class="tbl">
+            <thead><tr><th>Position</th><th class="num">Menge</th><th>Quelle</th><th>Herleitung</th></tr></thead>
+            <tbody>
+              <sc-for list="{{items}}" as="i" hint-placeholder-count="6">
+                <tr><td style="font-weight: 500;">{{i.name}}</td><td class="num">{{i.n}}</td><td><span style="display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; background: {{i.bg}}; color: {{i.fg}};">{{i.src}}</span></td><td style="color: #5B6661;">{{i.rule}}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+          </div>
+        </section>
+      </div>
+
+      <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+          <h2 style="margin: 0 0 16px; font-size: 16px; font-weight: 600;">Kalkulation</h2>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+            <div style="display: flex; justify-content: space-between;"><span>Warenkosten</span><span style="font-family: 'IBM Plex Mono', monospace;">CHF [ ]</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>Personal</span><span style="font-family: 'IBM Plex Mono', monospace;">CHF [ ]</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>Geräte &amp; Miete</span><span style="font-family: 'IBM Plex Mono', monospace;">CHF [ ]</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>Transport</span><span style="font-family: 'IBM Plex Mono', monospace;">CHF [ ]</span></div>
+            <div style="height: 1px; background: #E1E5E0;"></div>
+            <div style="display: flex; justify-content: space-between; font-weight: 600;"><span>Selbstkosten</span><span style="font-family: 'IBM Plex Mono', monospace;">CHF [ ]</span></div>
+            <div style="display: flex; justify-content: space-between; font-weight: 600;"><span>Angebotspreis</span><span style="font-family: 'IBM Plex Mono', monospace;">CHF [ ]</span></div>
+          </div>
+        </section>
+        <section style="background: #FBF3E6; border: 1px solid #EBD3AE; border-radius: 12px; padding: 20px 24px;">
+          <h2 style="margin: 0 0 10px; font-size: 15px; font-weight: 600; color: #7A4510;">2 Hinweise</h2>
+          <ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.5; color: #5C3A12;">
+            <li>Mietgeschirr bis 31.10. reservieren</li>
+            <li>6 Service-Aushilfen über Personalpool anfragen</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var own = { src: 'Eigen', bg: '#E3EEE7', fg: '#1F4A36' };
+    var rent = { src: 'Miete', bg: '#E6ECF5', fg: '#24406B' };
+    return {
+      staff: [
+        { role: 'Koch vor Ort', n: '3', time: '16:30–23:00', rule: 'Anrichten 3 Gänge im Takt' },
+        { role: 'Service', n: '11', time: '17:30–00:30', rule: '1 pro 10–12 Gäste, Teller-Service' },
+        { role: 'Abwasch', n: '2', time: '19:00–00:30', rule: 'Kein Abwasch vor Ort' },
+        { role: 'Fahrer / Logistik', n: '1', time: '15:30–01:00', rule: '1 Lieferwagen' }
+      ],
+      items: [
+        Object.assign({ name: 'Combi-Steamer mobil', n: '2', rule: 'Regenerieren Hauptgang, Kapazität 10× GN 1/1' }, own),
+        Object.assign({ name: 'Wärmeschrank', n: '4', rule: 'Zwischenlagerung warmer Komponenten' }, own),
+        Object.assign({ name: 'Teller (3 Gänge)', n: '400', rule: '3 × 120 + 10 % Reserve' }, rent),
+        Object.assign({ name: 'Besteck-Sets', n: '400', rule: '3 × 120 + 10 % Reserve' }, rent),
+        Object.assign({ name: 'GN-Behälter 1/1', n: '36', rule: 'Aus Produktionsmengen' }, own),
+        Object.assign({ name: 'Thermoboxen', n: '12', rule: 'Transportvolumen kalt / warm' }, own)
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Rezept und Arbeitsplan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F4F1}
+a{color:#2F6B4F}a:hover{color:#1F4A36}
+.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
+.nav a:hover{background:#E6EAE5;color:#1B2421}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;font-weight:500;color:#5B6661;padding:0 12px 10px 0;border-bottom:1px solid #E1E5E0;white-space:nowrap}
+.tbl td{padding:11px 12px 11px 0;border-bottom:1px solid #EEF0EC;vertical-align:top}
+.num{font-family:'IBM Plex Mono',monospace;text-align:right;white-space:nowrap}
+</style>
+</helmet>
+<div style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+
+  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
+    </div>
+    <a href="Leitstand.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>Leitstand</a>
+    <a href="Main.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Anlässe</a>
+    <a href="Ressourcen.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Ressourcen</a>
+    <a href="Rezept.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 4h10l2 2v14H6z"></path><path d="M9 9h6M9 13h6M9 17h4"></path></svg>Speisen &amp; Rezepte</a>
+    <a href="Produktion.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h9M4 12h14M4 18h7"></path></svg>Produktionsplan</a>
+    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 7h14l-1.5 10h-11z"></path><path d="M9 7V5h6v2"></path></svg>Einkauf</span>
+    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg>Stammdaten</span>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div>
+        <div style="font-size: 13px; color: #5B6661;">Speisen &amp; Rezepte / Hauptgang</div>
+        <h1 style="margin: 4px 0 8px; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">Kalbsbraten mit Jus</h1>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px;">
+          <span style="padding: 4px 10px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E1E5E0;">Portion 180 g</span>
+          <span style="padding: 4px 10px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E1E5E0;">Basis 10 Portionen</span>
+          <span style="padding: 4px 10px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E1E5E0;">Allergene: Sellerie, Milch</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button type="button" style="height: 44px; padding: 0 18px; border-radius: 8px; border: 1px solid #CBD2CC; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; color: #1B2421;">Duplizieren</button>
+        <button type="button" style="height: 44px; padding: 0 20px; border-radius: 8px; border: 0; background: #2F6B4F; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600;">Speichern</button>
+      </div>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Stückliste</h2>
+          <span style="font-size: 12px; color: #5B6661;">pro 10 Portionen</span>
+        </div>
+        <div style="overflow-x: auto;">
+        <table class="tbl">
+          <thead><tr><th>Artikel</th><th class="num">Menge</th><th class="num">Verlust</th></tr></thead>
+          <tbody>
+            <sc-for list="{{ingredients}}" as="g" hint-placeholder-count="6">
+              <tr>
+                <td><div style="font-weight: 500;">{{g.name}}</div><div style="font-size: 12px; color: #5B6661;">{{g.note}}</div></td>
+                <td class="num">{{g.qty}}</td>
+                <td class="num" style="color: #5B6661;">{{g.loss}}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        </div>
+        <div style="margin-top: 16px; padding: 14px 16px; border-radius: 8px; background: #EEF0EC; font-size: 13px; line-height: 1.5;">
+          <strong style="font-weight: 600;">Hochrechnung A-2026-0418 (120 Gäste):</strong> Kalbsnuss 28.8 kg brutto, Kartoffeln 24.0 kg, Kalbsjus 7.2 l
+        </div>
+      </section>
+
+      <section style="flex: 999 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Arbeitsplan</h2>
+          <div style="display: flex; gap: 12px; font-size: 12px; color: #3C4743;">
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #2F5E9E;"></span>Zentralküche</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #9A5410;"></span>Vor Ort</span>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+        <table class="tbl">
+          <thead><tr><th>#</th><th>Schritt</th><th>Gerät</th><th>Rolle</th><th class="num">Rüsten</th><th class="num">Zeit / Charge</th></tr></thead>
+          <tbody>
+            <sc-for list="{{steps}}" as="s" hint-placeholder-count="7">
+              <tr>
+                <td><span style="display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #FFFFFF; background: {{s.color}};">{{s.nr}}</span></td>
+                <td><div style="font-weight: 500;">{{s.name}}</div><div style="font-size: 12px; color: #5B6661;">{{s.ort}}</div></td>
+                <td style="color: #3C4743;">{{s.geraet}}</td>
+                <td style="color: #3C4743;">{{s.rolle}}</td>
+                <td class="num">{{s.ruest}}</td>
+                <td class="num">{{s.zeit}}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        </div>
+        <button type="button" style="margin-top: 12px; height: 44px; padding: 0 16px; border: 1px dashed #A9B3AD; border-radius: 8px; background: transparent; font: inherit; font-size: 14px; color: #3C4743;">+ Prozessschritt</button>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var zk = '#2F5E9E', vo = '#9A5410';
+    return {
+      ingredients: [
+        { name: 'Kalbsnuss', note: 'Metzgerei · brutto', qty: '2.40 kg', loss: '25 %' },
+        { name: 'Kalbsjus', note: 'Unterrezept', qty: '0.60 l', loss: '–' },
+        { name: 'Kartoffeln festkochend', note: 'Gemüsehandel', qty: '2.00 kg', loss: '15 %' },
+        { name: 'Rahm 35 %', note: 'Molkerei', qty: '0.50 l', loss: '–' },
+        { name: 'Marktgemüse', note: 'Gemüsehandel', qty: '1.20 kg', loss: '20 %' },
+        { name: 'Butter', note: 'Molkerei', qty: '0.10 kg', loss: '–' }
+      ],
+      steps: [
+        { nr: '1', color: zk, name: 'Parieren und würzen', ort: 'Zentralküche · Tag −1', geraet: 'Arbeitstisch', rolle: 'Koch', ruest: '10 min', zeit: '15 min / 10 P' },
+        { nr: '2', color: zk, name: 'Anbraten', ort: 'Zentralküche · Tag −1', geraet: 'Kippbratpfanne', rolle: 'Koch', ruest: '10 min', zeit: '12 min / 20 P' },
+        { nr: '3', color: zk, name: 'Niedertemperatur garen', ort: 'Zentralküche · Tag −1', geraet: 'Combi-Steamer 10× GN 1/1', rolle: 'Koch', ruest: '5 min', zeit: '180 min / 60 P' },
+        { nr: '4', color: zk, name: 'Schockkühlen', ort: 'Zentralküche · Tag −1', geraet: 'Schockkühler', rolle: 'Hilfskoch', ruest: '5 min', zeit: '90 min / 60 P' },
+        { nr: '5', color: zk, name: 'Tranchieren und portionieren', ort: 'Zentralküche · Tag 0', geraet: 'Aufschnittmaschine', rolle: 'Hilfskoch', ruest: '10 min', zeit: '8 min / 10 P' },
+        { nr: '6', color: vo, name: 'Regenerieren', ort: 'Vor Ort · Tag 0', geraet: 'Combi-Steamer mobil', rolle: 'Koch', ruest: '5 min', zeit: '25 min / 60 P' },
+        { nr: '7', color: vo, name: 'Anrichten', ort: 'Vor Ort · Tag 0', geraet: 'Pass', rolle: 'Koch', ruest: '–', zeit: '4 min / 10 P' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

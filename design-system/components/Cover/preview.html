@@ -1,0 +1,39 @@
+<!-- @dsCard height=288 -->
+<style>
+  html, body { margin: 0; background: var(--ground); }
+  .cv { position: relative; width: 960px; height: 288px; overflow: hidden; background: var(--ground); font-family: var(--font-sans); }
+  .cv svg { position: absolute; left: 0; top: 0; }
+  .b-panel { fill: var(--ink); } .b-accent { fill: var(--accent); } .b-zentral { fill: var(--loc-zentral); }
+  .b-vorort { fill: var(--loc-vorort); } .b-tint { fill: var(--accent-strong); }
+  .t-z { fill: var(--loc-zentral-tint); } .t-v { fill: var(--loc-vorort-tint); } .t-a { fill: var(--accent-tint); }
+  .bar { rx: var(--radius-sm); }
+  .marker { stroke: var(--accent-tint); stroke-width: 2; stroke-dasharray: 4 4; }
+  .name { position: absolute; left: 48px; top: 140px; max-width: 864px; margin: 0; font-size: 64px; line-height: .95; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); }
+  .tag { position: absolute; left: 48px; top: 222px; max-width: 440px; margin: 0; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+<div class="cv">
+  <!--
+    blocks: ink 384×112, accent 240×112, loc-zentral 144×112, loc-vorort 96×112, accent-strong 96×112 (Breiten = Vielfache von space-6 / space-8)
+    arrangement: Streifen ungleicher Bänder oben, volle Breite (Name zu breit für die rechte Zone → top-band skeleton)
+    pattern: literal motif – Zeitplan-Balken (Gantt) auf dem ink-Block, weil die App vom Produktionsplan lebt; Tints der Ortsfarben, Marker gestrichelt wie im Zeitplan
+    scales: Balkenhöhe space-4, Zeilenabstand space-6 + space-1, Radius radius-sm, Band-Unterkante space-6 über dem Namen
+  -->
+  <svg width="960" height="112" viewBox="0 0 960 112" aria-hidden="true">
+    <rect class="b-panel" x="0" y="0" width="384" height="112"></rect>
+    <rect class="b-accent" x="384" y="0" width="240" height="112"></rect>
+    <rect class="b-zentral" x="624" y="0" width="144" height="112"></rect>
+    <rect class="b-vorort" x="768" y="0" width="96" height="112"></rect>
+    <rect class="b-tint" x="864" y="0" width="96" height="112"></rect>
+    <rect class="bar t-z" x="40" y="24" width="96" height="16"></rect>
+    <rect class="bar t-z" x="144" y="24" width="64" height="16"></rect>
+    <rect class="bar t-a" x="216" y="24" width="48" height="16"></rect>
+    <rect class="bar t-z" x="72" y="52" width="120" height="16"></rect>
+    <rect class="bar t-v" x="232" y="52" width="112" height="16"></rect>
+    <rect class="bar t-a" x="168" y="80" width="56" height="16"></rect>
+    <rect class="bar t-v" x="232" y="80" width="40" height="16"></rect>
+    <rect class="bar t-v" x="280" y="80" width="80" height="16"></rect>
+    <line class="marker" x1="252" y1="12" x2="252" y2="104"></line>
+  </svg>
+  <h1 class="name">Produktionsplaner</h1>
+  <p class="tag">Vom Menü zur Produktion: Mengen, Geräte, Personal und Preis aus einem Anlass.</p>
+</div>

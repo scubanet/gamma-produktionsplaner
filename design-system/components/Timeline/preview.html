@@ -1,0 +1,7 @@
+<!-- @dsCard group="Daten" height=230 -->
+<div class="pl-root" style="padding:20px" id="r"></div>
+<script>const {Timeline}=window.Planer;const h=React.createElement;ReactDOM.createRoot(document.getElementById('r')).render(
+h(Timeline,{start:8,end:24,marker:19.5,lanes:[
+{name:'Zentralküche warm',bars:[{label:'Tranchieren',from:9,to:11.5},{label:'Gratin backen',from:11.5,to:13}]},
+{name:'Logistik',bars:[{label:'Packen, Kühlkette',from:13.5,to:15.5,location:'logistik'},{label:'Transport',from:15.5,to:16.5,location:'logistik'}]},
+{name:'Küche vor Ort',bars:[{label:'Aufbau',from:16.5,to:18,location:'vorort'},{label:'Anrichten 3 Gänge',from:19.5,to:22.5,location:'vorort'}]}]}));</script>

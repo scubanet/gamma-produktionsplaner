@@ -1,0 +1,5 @@
+<!-- @dsCard group="Daten" height=230 -->
+<div class="pl-root" style="padding:20px" id="r"></div>
+<script>const {DataTable,StatusPill}=window.Planer;const h=React.createElement;ReactDOM.createRoot(document.getElementById('r')).render(
+h(DataTable,{columns:[{key:'name',label:'Ressource',subKey:'rule'},{key:'total',label:'Total',numeric:true},{key:'have',label:'Eigen',numeric:true},{key:'z',label:'Zusatz',render:r=>h(StatusPill,{status:r.s},r.z)}],
+rows:[{name:'Köche',rule:'Anrichten 3 Gänge im Takt',total:'9',have:'8',z:'+1 Freelancer',s:'info'},{name:'Wärmeschränke',rule:'Zwischenlagerung',total:'9',have:'10',z:'Eigen gedeckt',s:'ok'},{name:'Combi-Steamer mobil',rule:'Regenerieren Hauptgang',total:'5',have:'4',z:'+1 Miete',s:'info'}]}));</script>
