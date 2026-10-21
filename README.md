@@ -8,7 +8,9 @@ Planungs-App für Event-Catering: Ein Anlass (Gäste, Menü, Serviceart, Locatio
 | --- | --- |
 | `docs/` | Lösungsvorschlag (PDF): Grundprinzip, Datenmodell, Berechnungslogik, Umsetzung in drei Stufen |
 | `design-system/` | Design System «Produktionsplaner»: Tokens, Brand Book, 12 Komponenten (`window.Planer`), Änderungsprotokoll |
-| `mockups/` | Klickbare Screens (Design Components, `.dc.html`): Anlass erfassen, Ressourcen, Rezept & Arbeitsplan, Produktionsplan, Leitstand |
+| `mockups/` | Klickbare Screens (Design Components, `.dc.html`): Anlass erfassen, Ressourcen, Rezept & Arbeitsplan, Produktionsplan, Leitstand, Rezeptkarte, Rezeptbibliothek |
+| `rezepte/` | `rezepte.json`: die ersten 6 echten Rezepte im Rezeptkarten-Format (Annahmen markiert) |
+| `db/` | `schema.sql` (PostgreSQL/Supabase) und `seed.sql` mit den Rezepten |
 
 ## Kernprinzip
 
@@ -28,4 +30,6 @@ Die Links sind privat, bis sie im Share-Menü freigegeben werden.
 
 ## Stand
 
-Konzept- und Designphase (Stufe 0). Nächster Schritt: Proof of Concept mit 15–20 Speisen und Abgleich mit vergangenen Anlässen.
+Proof of Concept gestartet: Datenbankschema v0.1 und 6 Rezepte erfasst (3 Gerichte, 3 Komponenten, 1 Platzhalter). Offene Punkte pro Rezept stehen in `rezepte.json` und in der Rezeptbibliothek.
+
+Schema lokal testen: `psql -f db/schema.sql && psql -f db/seed.sql`

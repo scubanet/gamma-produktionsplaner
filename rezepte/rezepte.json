@@ -1,0 +1,1262 @@
+[
+  {
+    "id": "hacktaetschli",
+    "typ": "gericht",
+    "kategorie": "Hauptgang",
+    "name": "Kalbshacktätschli",
+    "untertitel": "Kalbsfleisch, Mascarpone, Peterli",
+    "quelle": "Eigenes Rezept",
+    "basis": {
+      "portionen": 10,
+      "portion_g": 180
+    },
+    "allergene": [
+      "Gluten",
+      "Ei",
+      "Milch",
+      "Sellerie (Annahme)"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Zubereitung fehlt im Original: Schritte sind ein Vorschlag nach Standard-Hacktätschli.",
+      "Welches Gemüse? Angenommen: Zwiebel, Karotte, Sellerie je ein Drittel, fein gewürfelt.",
+      "Aufteilung der Butter (Gemüse dünsten / Braten) angenommen 50 / 50.",
+      "Salz, Pfeffer und Paniermehl hatten keine Menge.",
+      "Portion 2 × 90 g roh, ergibt aus dem Original 8 Portionen; hier auf 10 hochgerechnet."
+    ],
+    "gruppen": [
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Weissbrot, entrindet",
+            "menge_g": 315,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ Original 250 g × 1.25"
+          },
+          {
+            "name": "Vollmilch",
+            "menge_g": 250,
+            "basis": false,
+            "annahme": false,
+            "notiz": "2.5 dl"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Brot in Würfel schneiden und in der Milch einweichen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 15,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Gemüse (Zwiebel, Karotte, Sellerie)",
+            "menge_g": 250,
+            "basis": false,
+            "annahme": true,
+            "notiz": "fein gewürfelt"
+          },
+          {
+            "name": "Knoblauch",
+            "menge_g": 12,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 2.5 Zehen"
+          },
+          {
+            "name": "Butter",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": true,
+            "notiz": "Hälfte der Gesamtmenge"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Gemüse und Knoblauch fein würfeln.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 15,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": true
+          },
+          {
+            "text": "In Butter weich dünsten und auskühlen lassen.",
+            "geraet": "Kippbratpfanne",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 20,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Kalbshackfleisch",
+            "menge_g": 625,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Kalbsbrät",
+            "menge_g": 250,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Eier",
+            "menge_g": 125,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 2.5 Stück"
+          },
+          {
+            "name": "Mascarpone",
+            "menge_g": 100,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Peterli, gehackt",
+            "menge_g": 30,
+            "basis": false,
+            "annahme": true,
+            "notiz": "≈ 1 Bund"
+          },
+          {
+            "name": "Chiliflocken",
+            "menge_g": 2.5,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 1 TL"
+          },
+          {
+            "name": "Salz",
+            "menge_g": 22,
+            "basis": false,
+            "annahme": true,
+            "notiz": "≈ 1.2 % der Masse"
+          },
+          {
+            "name": "Pfeffer, gemahlen",
+            "menge_g": 3,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Mit Brot und Gemüse zu einer gleichmässigen Masse mischen.",
+            "geraet": "Rührwerk, Flachrührer",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": true
+          },
+          {
+            "text": "Tätschli à 90 g formen und flach drücken.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 20,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Paniermehl",
+            "menge_g": 100,
+            "basis": false,
+            "annahme": true,
+            "notiz": "zum Wenden"
+          },
+          {
+            "name": "Butter",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": true,
+            "notiz": "zum Braten"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "In Paniermehl wenden und beidseitig goldbraun anbraten.",
+            "geraet": "Kippbratpfanne",
+            "temperatur": "180 °C",
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": true
+          },
+          {
+            "text": "Fertig garen bis Kerntemperatur 72 °C.",
+            "geraet": "Combi-Steamer, Heissluft",
+            "temperatur": "160 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 12,
+            "haccp": "Kern 72 °C",
+            "annahme": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "curry",
+    "typ": "gericht",
+    "kategorie": "Hauptgang",
+    "name": "Kozhi Mappas",
+    "untertitel": "Mildes Hühner-Kokos-Curry",
+    "quelle": "Eigenes Rezept",
+    "basis": {
+      "portionen": 10,
+      "portion_g": 300
+    },
+    "allergene": [
+      "Senf",
+      "Milch (Ghee)"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Original für 4 Portionen (600 g Poulet), hier auf 10 Portionen à 150 g Fleisch hochgerechnet.",
+      "Löffel- und Stückangaben in Gramm umgerechnet, bitte prüfen.",
+      "Salz und Pfeffer ohne Menge im Original.",
+      "Beilage (z.B. Basmatireis) fehlt; als eigene Komponente anlegen?"
+    ],
+    "gruppen": [
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Öl",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 5 EL"
+          },
+          {
+            "name": "Zwiebeln, in feinen Streifen",
+            "menge_g": 750,
+            "basis": false,
+            "annahme": true,
+            "notiz": "≈ 5 Stück à 150 g"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zwiebeln unter Rühren anbraten.",
+            "geraet": "Kippbratpfanne",
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Chilipulver",
+            "menge_g": 2.5,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 1¼ TL"
+          },
+          {
+            "name": "Kurkuma",
+            "menge_g": 4,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 1¼ TL"
+          },
+          {
+            "name": "Koriandersamen, gemahlen",
+            "menge_g": 10,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 5 TL"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Gewürze darüberstreuen und kurz mitbraten.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 2,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Pouletbrust, in 4 cm Würfeln",
+            "menge_g": 1500,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Fleisch zugeben und 3–4 Minuten anbraten, bis es Farbe hat.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Kokosmilch",
+            "menge_g": 250,
+            "basis": false,
+            "annahme": false,
+            "notiz": "erster Teil, 2.5 dl"
+          },
+          {
+            "name": "Wasser",
+            "menge_g": 125,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 22,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          },
+          {
+            "name": "Pfeffer schwarz",
+            "menge_g": 2,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Angiessen und mit Salz und Pfeffer abschmecken.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Zugedeckt bei schwacher Hitze köcheln lassen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 20,
+            "haccp": "Kern 72 °C",
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Kokosmilch",
+            "menge_g": 750,
+            "basis": false,
+            "annahme": false,
+            "notiz": "Rest, 7.5 dl"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zugeben und offen bei mittlerer Hitze weiterköcheln.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 10,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Ghee",
+            "menge_g": 120,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 10 EL"
+          },
+          {
+            "name": "Zimtstangen",
+            "menge_g": 12,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 5 Stück"
+          },
+          {
+            "name": "Gewürznelken",
+            "menge_g": 1,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 8 Stück"
+          },
+          {
+            "name": "Senfkörner, braun",
+            "menge_g": 10,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 2½ TL"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Ghee erhitzen, Zimt, Nelken und Senfkörner 2 Minuten rösten und zum Curry geben.",
+            "geraet": "Induktion, Sauteuse",
+            "temperatur": null,
+            "aktiv_min": 4,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "quiche",
+    "typ": "gericht",
+    "kategorie": "Vorspeise / Apéro",
+    "name": "Quiche aux Oignons",
+    "untertitel": "Zwiebel-Speck-Quiche",
+    "quelle": "Eigenes Rezept",
+    "basis": {
+      "portionen": 10,
+      "portion_g": 140
+    },
+    "allergene": [
+      "Gluten",
+      "Ei",
+      "Milch"
+    ],
+    "komponenten": [
+      "kuchenteig"
+    ],
+    "offene_punkte": [
+      "Kuchenteig: eigenes Grundrezept oder Zukauf? Rezept fehlt noch.",
+      "Zwiebelmenge (1 kleine Zwiebel) im Original eher knapp für eine Zwiebelquiche, bitte prüfen.",
+      "Gewürze ohne Menge im Original.",
+      "Für die Produktion: Blech/GN-Format und Portionierung (Stücke pro Blech) festlegen."
+    ],
+    "gruppen": [
+      {
+        "titel": "Teig",
+        "zutaten": [
+          {
+            "name": "Kuchenteig",
+            "menge_g": 500,
+            "basis": false,
+            "annahme": false,
+            "notiz": "Komponente, siehe unten"
+          },
+          {
+            "name": "Butter, weich",
+            "menge_g": 25,
+            "basis": false,
+            "annahme": true,
+            "notiz": "zum Ausstreichen"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Teig dünn ausrollen, Form ausbuttern und auslegen, Rand gut andrücken.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Boden dicht einstechen und kühl stellen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 30,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      },
+      {
+        "titel": "Füllung",
+        "zutaten": [
+          {
+            "name": "Zwiebeln",
+            "menge_g": 175,
+            "basis": false,
+            "annahme": false,
+            "notiz": "≈ 2.5 kleine"
+          },
+          {
+            "name": "Frühstücksspeck",
+            "menge_g": 100,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zwiebel und Speck in feine Streifen schneiden.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 8,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Speck ohne Fett knusprig braten, abtropfen lassen.",
+            "geraet": "Bratpfanne",
+            "temperatur": null,
+            "aktiv_min": 6,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Zwiebeln im Speckfett goldgelb dünsten, abtropfen und auskühlen lassen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 8,
+            "unbeaufsichtigt_min": 15,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Guss",
+        "zutaten": [
+          {
+            "name": "Eier",
+            "menge_g": 250,
+            "basis": true,
+            "annahme": false,
+            "notiz": "≈ 5 Stück"
+          },
+          {
+            "name": "Magerquark",
+            "menge_g": 125,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Rahm 35 %",
+            "menge_g": 250,
+            "basis": false,
+            "annahme": false,
+            "notiz": "2.5 dl"
+          },
+          {
+            "name": "Vollmilch",
+            "menge_g": 250,
+            "basis": false,
+            "annahme": false,
+            "notiz": "2.5 dl"
+          },
+          {
+            "name": "Salz",
+            "menge_g": 8,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          },
+          {
+            "name": "Pfeffer",
+            "menge_g": 1,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          },
+          {
+            "name": "Cayennepfeffer",
+            "menge_g": 0.5,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          },
+          {
+            "name": "Muskatnuss, gerieben",
+            "menge_g": 0.5,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zu einer glatten Masse verrühren und würzen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Fertigstellen",
+        "zutaten": [],
+        "schritte": [
+          {
+            "text": "Speck und Zwiebeln auf dem Boden verteilen, Guss darübergiessen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 4,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Backen, bis der Guss gestockt ist.",
+            "geraet": "Combi-Steamer, Heissluft",
+            "temperatur": "200 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 33,
+            "haccp": "Kern 72 °C",
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dough",
+    "typ": "komponente",
+    "kategorie": "Teig",
+    "name": "Allzweck-Hefeteig",
+    "untertitel": "Tangzhong-Teig für Burger Buns (Multi Purpose Dough)",
+    "quelle": "Eigenes Rezept (Hauptversion; Haushaltsversion in den Notizen nicht übernommen)",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 4000
+    },
+    "allergene": [
+      "Gluten",
+      "Ei",
+      "Milch"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Eier und Eigelb in Gramm umgerechnet (Ei 50 g, Eigelb 18 g).",
+      "Eggwash ohne Menge im Original.",
+      "Kneten in der Knetmaschine als unbeaufsichtigt gezählt, bitte bestätigen.",
+      "Notizen enthalten eine zweite, kleinere Version mit Malz und Amylase: soll sie eine eigene Variante werden?"
+    ],
+    "gruppen": [
+      {
+        "titel": "Tangzhong",
+        "zutaten": [
+          {
+            "name": "Weissmehl",
+            "menge_g": 72,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Wasser",
+            "menge_g": 120,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Vollmilch",
+            "menge_g": 240,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "In einer kleinen Pfanne mischen und unter Rühren kochen, bis es bindet.",
+            "geraet": "Induktion",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Abkühlen lassen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 15,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Hauptteig",
+        "zutaten": [
+          {
+            "name": "Vollmilch",
+            "menge_g": 500,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Wasser",
+            "menge_g": 500,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Trockenhefe",
+            "menge_g": 35,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Milch und Wasser leicht erwärmen, Hefe einrühren, 10 Minuten anspringen lassen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 2,
+            "unbeaufsichtigt_min": 10,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Weissmehl",
+            "menge_g": 2100,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Zucker",
+            "menge_g": 52,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 36,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Eier",
+            "menge_g": 200,
+            "basis": false,
+            "annahme": false,
+            "notiz": "4 Stück"
+          },
+          {
+            "name": "Eigelb",
+            "menge_g": 72,
+            "basis": false,
+            "annahme": false,
+            "notiz": "4 Stück"
+          },
+          {
+            "name": "Butter",
+            "menge_g": 140,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Alle Zutaten inklusive Tangzhong 10 Minuten kneten.",
+            "geraet": "Knetmaschine",
+            "temperatur": null,
+            "aktiv_min": 2,
+            "unbeaufsichtigt_min": 10,
+            "haccp": null,
+            "annahme": true
+          },
+          {
+            "text": "Buns à 100 g formen, mit Eggwash bestreichen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 30,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      },
+      {
+        "titel": "Eggwash",
+        "zutaten": [
+          {
+            "name": "Eier",
+            "menge_g": 100,
+            "basis": false,
+            "annahme": true,
+            "notiz": "2 Stück"
+          },
+          {
+            "name": "Wasser",
+            "menge_g": 30,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "30–45 Minuten gären lassen, nochmals mit Eggwash bestreichen.",
+            "geraet": "Gärschrank",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 40,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Backen.",
+            "geraet": "Combi-Steamer, Heissluft",
+            "temperatur": "190 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 14,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sugo",
+    "typ": "komponente",
+    "kategorie": "Sauce",
+    "name": "Sugo",
+    "untertitel": "Tomatensauce, im Glas pasteurisiert",
+    "quelle": "Andreas Caminada",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 1600
+    },
+    "allergene": [
+      "Milch (Butter)"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Ergibt-Menge fehlt; 1.6 kg angenommen.",
+      "Einkochzeit «bis zur gewünschten Konsistenz»: 60 Minuten angenommen.",
+      "Zwiebeln und Kräuter in Gramm geschätzt.",
+      "Haltbarkeit nach Pasteurisation festlegen (HACCP)."
+    ],
+    "gruppen": [
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Gemüsezwiebeln, klein",
+            "menge_g": 320,
+            "basis": false,
+            "annahme": true,
+            "notiz": "4 Stück"
+          },
+          {
+            "name": "Knoblauch",
+            "menge_g": 10,
+            "basis": false,
+            "annahme": false,
+            "notiz": "2 Zehen"
+          },
+          {
+            "name": "Olivenöl",
+            "menge_g": 92,
+            "basis": false,
+            "annahme": false,
+            "notiz": "1 dl"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zwiebeln und Knoblauch würfeln und in reichlich Olivenöl andünsten.",
+            "geraet": "Kippkessel",
+            "temperatur": null,
+            "aktiv_min": 15,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Tomaten, gemischt",
+            "menge_g": 2000,
+            "basis": true,
+            "annahme": false,
+            "notiz": "z.B. San Marzano, Ochsenherz, Datteltomaten"
+          },
+          {
+            "name": "Salz",
+            "menge_g": 15,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Tomaten grob schneiden und mit dem Salz kurz mixen.",
+            "geraet": "Cutter",
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Basilikum, Blätter",
+            "menge_g": 5,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          },
+          {
+            "name": "Oregano",
+            "menge_g": 1,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zu den Zwiebeln geben und bei milder Hitze einkochen, zwischendurch pürieren.",
+            "geraet": "Kippkessel, Stabmixer",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 60,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Butter",
+            "menge_g": 100,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Butter einmixen.",
+            "geraet": "Stabmixer",
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "In sterile Bügelgläser füllen und gut verschliessen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Im Dampf pasteurisieren.",
+            "geraet": "Combi-Steamer, Dampf",
+            "temperatur": "92 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 20,
+            "haccp": "Pasteurisation 20 min",
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sweetchili",
+    "typ": "komponente",
+    "kategorie": "Sauce",
+    "name": "Sweet Chili Sauce",
+    "untertitel": "Karamell, Galgant, Zitronengras",
+    "quelle": "Peter Gordon (via homemade.ch)",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 450
+    },
+    "allergene": [
+      "Fisch",
+      "Soja",
+      "Gluten (Sojasauce)"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Ergibt-Menge fehlt; 450 g angenommen.",
+      "Löffel, Stück und Bund in Gramm umgerechnet (EL Essig 15 g, EL Fisch-/Sojasauce 15 g).",
+      "Haltbarkeit «wochenlang» als HACCP-Wert festlegen."
+    ],
+    "gruppen": [
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Ingwer, geschält",
+            "menge_g": 100,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Galgant, geschält",
+            "menge_g": 30,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Zitronengras, geputzt",
+            "menge_g": 45,
+            "basis": false,
+            "annahme": true,
+            "notiz": "3 Stängel"
+          },
+          {
+            "name": "Koriander, Bund",
+            "menge_g": 30,
+            "basis": false,
+            "annahme": true,
+            "notiz": "1 Bund"
+          },
+          {
+            "name": "Knoblauch",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": false,
+            "notiz": "10 Zehen"
+          },
+          {
+            "name": "Chilis rot, gross",
+            "menge_g": 60,
+            "basis": false,
+            "annahme": true,
+            "notiz": "4 Stück"
+          },
+          {
+            "name": "Kaffir-Limettenblätter",
+            "menge_g": 2,
+            "basis": false,
+            "annahme": false,
+            "notiz": "8 Blätter"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Ingwer, Galgant, Zitronengras und Koriander grob hacken.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Mit Knoblauch, Chilis und Limettenblättern zu einer feinen Paste zerkleinern.",
+            "geraet": "Cutter",
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Zucker",
+            "menge_g": 150,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zucker in einem schweren Topf schmelzen und dunkel karamellisieren, nicht verbrennen lassen.",
+            "geraet": "Induktion, Sauteuse",
+            "temperatur": null,
+            "aktiv_min": 8,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Apfelessig",
+            "menge_g": 105,
+            "basis": false,
+            "annahme": false,
+            "notiz": "7 EL"
+          },
+          {
+            "name": "Fischsauce",
+            "menge_g": 60,
+            "basis": false,
+            "annahme": false,
+            "notiz": "4 EL"
+          },
+          {
+            "name": "Sojasauce",
+            "menge_g": 60,
+            "basis": false,
+            "annahme": false,
+            "notiz": "4 EL"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Paste einrühren, aufkochen, Essig, Fisch- und Sojasauce zugeben, 1 Minute köcheln.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Abkühlen und gekühlt lagern.",
+            "geraet": "Schockkühler",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 30,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "kuchenteig",
+    "typ": "komponente",
+    "kategorie": "Teig",
+    "name": "Kuchenteig",
+    "untertitel": "Rezept fehlt noch",
+    "quelle": "offen",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 500
+    },
+    "allergene": [
+      "Gluten",
+      "Milch"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Eigenes Grundrezept oder Zukauf (Fertigteig)? Bei Zukauf als Artikel im Artikelstamm statt als Rezept führen."
+    ],
+    "gruppen": [
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Kuchenteig",
+            "menge_g": 500,
+            "basis": true,
+            "annahme": true,
+            "notiz": "Rezept oder Artikel offen"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Wird ergänzt.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      }
+    ]
+  }
+]

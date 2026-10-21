@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Rezeptkarte – Gericht mit Komponenten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F4F1}
+a{color:#2F6B4F}a:hover{color:#1F4A36}
+.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
+.nav a:hover{background:#E6EAE5;color:#1B2421}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;font-weight:500;color:#5B6661;padding:0 12px 10px 0;border-bottom:1px solid #E1E5E0;white-space:nowrap}
+.tbl td{padding:11px 12px 11px 0;border-bottom:1px solid #EEF0EC;vertical-align:top}
+.num{font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right;white-space:nowrap}
+.unatt{font-style:italic;color:#5B6661}
+.k{font-size:12px;font-weight:500;color:#5B6661;text-transform:uppercase;letter-spacing:.06em}
+</style>
+</helmet>
+<div style="min-height: 2200px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+
+  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
+    </div>
+    <a href="Leitstand.dc.html">Leitstand</a>
+    <a href="Main.dc.html">Anlässe</a>
+    <a href="Ressourcen.dc.html">Ressourcen</a>
+    <a href="Rezeptkarte.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;">Speisen &amp; Rezepte</a>
+    <a href="Produktion.dc.html">Produktionsplan</a>
+    <span style="color: #8A938F;">Einkauf</span>
+    <span style="color: #8A938F;">Stammdaten</span>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="min-width: 0;">
+        <div style="font-size: 13px; color: #5B6661;">Speisen &amp; Rezepte / Gerichte / Hauptgang · Beispieldaten</div>
+        <h1 style="margin: 4px 0 4px; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">Kalbsrücken rosa mit Jus und Gratin</h1>
+        <div style="font-size: 15px; font-style: italic; color: #3C4743;">Kalbsrücken sous-vide, Kalbsjus, Kartoffelgratin</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+        <span class="k">Skalieren auf</span>
+        <div role="radiogroup" aria-label="Portionen" style="display: inline-flex; padding: 4px; gap: 4px; background: #E6EAE5; border-radius: 10px;">
+          <sc-for list="{{scaleOpts}}" as="o" hint-placeholder-count="4">
+            <button type="button" role="radio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 8px; font: inherit; font-size: 14px; {{o.style}}">{{o.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+    </header>
+
+    <section aria-label="Steckbrief" style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 32px;">
+      <div><div class="k">Ergibt</div><div style="font-size: 15px; margin-top: 4px;"><span style="font-family: 'IBM Plex Mono', monospace;">{{portions}}</span> Portionen à <span style="font-family: 'IBM Plex Mono', monospace;">390 g</span></div></div>
+      <div><div class="k">Benötigte Zeit</div><div style="font-size: 15px; margin-top: 4px;">{{timeTotal}}</div><div style="font-size: 13px; color: #5B6661;">davon aktiv {{timeActive}}, <span class="unatt">unbeaufsichtigt {{timeUnatt}}</span></div></div>
+      <div><div class="k">Zubereitung</div><div style="font-size: 15px; margin-top: 4px;">Tag −1 Zentralküche</div><div style="font-size: 13px; color: #5B6661;">Tag 0 Regenerieren und Anrichten vor Ort</div></div>
+      <div><div class="k">Spezielle Geräte</div><div style="font-size: 15px; margin-top: 4px;">Combi-Steamer, Vakuumiergerät, Schockkühler</div></div>
+      <div><div class="k">Optionale Geräte</div><div style="font-size: 15px; margin-top: 4px;">Kippbratpfanne</div></div>
+      <div><div class="k">Allergene</div><div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;"><span style="padding: 2px 10px; border-radius: 999px; background: #F8E3CB; color: #5C3A12; font-size: 12px; font-weight: 600;">Milch</span><span style="padding: 2px 10px; border-radius: 999px; background: #F8E3CB; color: #5C3A12; font-size: 12px; font-weight: 600;">Sellerie</span><span style="padding: 2px 10px; border-radius: 999px; background: #F8E3CB; color: #5C3A12; font-size: 12px; font-weight: 600;">Sulfite</span></div></div>
+      <div style="grid-column: 1 / -1; padding: 12px 16px; border-radius: 8px; background: #FBF3E6; border: 1px solid #EBD3AE; color: #5C3A12; font-size: 14px;"><strong style="font-weight: 600;">Besonders zu beachten:</strong> Kerntemperatur Kalbsrücken 56 °C, HACCP-Messung dokumentieren. Gratin am Vortag backen, damit es sich sauber portionieren lässt.</div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Reihenfolge der Zubereitung</h2>
+        <span style="font-size: 12px; color: #5B6661;"><span class="unatt">kursiv</span> = unbeaufsichtigte Zeit (Gerät arbeitet, kein Personal gebunden)</span>
+      </div>
+      <div style="overflow-x: auto;">
+      <table class="tbl" style="min-width: 760px;">
+        <thead><tr><th>Komponente</th><th>Ort</th><th>Vorbereiten</th><th>Garen</th><th>Anrichten</th><th class="num">Chargen</th><th class="num">Menge / Portion</th></tr></thead>
+        <tbody>
+          <sc-for list="{{order}}" as="r" hint-placeholder-count="3">
+            <tr>
+              <td style="font-weight: 500;"><a href="#{{r.anchor}}" style="color: #1B2421;">{{r.name}}</a></td>
+              <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #3C4743;"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{r.locColor}};"></span>{{r.loc}}</span></td>
+              <td>{{r.prep}}</td>
+              <td class="unatt">{{r.cook}}</td>
+              <td>{{r.plate}}</td>
+              <td class="num">{{r.batches}}</td>
+              <td class="num">{{r.perPortion}}</td>
+            </tr>
+          </sc-for>
+          <tr><td colspan="7" style="padding-top: 18px; border-bottom: 0;"><span class="k" style="color: #2F6B4F;">Garnitur</span></td></tr>
+          <sc-for list="{{garnish}}" as="g" hint-placeholder-count="2">
+            <tr><td colspan="6">{{g.name}}</td><td class="num">{{g.qty}}</td></tr>
+          </sc-for>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <sc-for list="{{components}}" as="c" hint-placeholder-count="3">
+      <section id="{{c.anchor}}" style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 4px;">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #2F6B4F; text-transform: uppercase; letter-spacing: .04em;">{{c.name}}</h2>
+          <span style="font-size: 13px; color: #5B6661;">Ergibt <span style="font-family: 'IBM Plex Mono', monospace; color: #1B2421;">{{c.yield}}</span> · Basis 100 % = {{c.base}}</span>
+        </div>
+        <div style="overflow-x: auto; margin-top: 12px;">
+          <div style="min-width: 760px;">
+            <div style="display: grid; grid-template-columns: 220px 96px 72px minmax(0, 1fr); gap: 0 16px; padding-bottom: 10px; border-bottom: 1px solid #E1E5E0; font-size: 12px; font-weight: 500; color: #5B6661;">
+              <span>Zutat</span><span style="text-align: right;">Menge</span><span style="text-align: right;">Skal.</span><span>Zubereitung</span>
+            </div>
+            <sc-for list="{{c.groups}}" as="g" hint-placeholder-count="3">
+              <div style="display: grid; grid-template-columns: 220px 96px 72px minmax(0, 1fr); gap: 0 16px; padding: 12px 0; border-bottom: 1px solid #EEF0EC; align-items: start;">
+                <div style="grid-column: 1 / 4; display: flex; flex-direction: column; gap: 6px;">
+                  <sc-for list="{{g.ings}}" as="i" hint-placeholder-count="2">
+                    <div style="display: grid; grid-template-columns: 220px 96px 72px; gap: 0 16px; font-size: 14px;">
+                      <span>{{i.name}}<span style="display: block; font-size: 12px; color: #5B6661;">{{i.note}}</span></span>
+                      <span class="num" style="font-size: 13px;">{{i.qty}}</span>
+                      <span class="num" style="font-size: 13px; color: {{i.pctColor}};">{{i.pct}}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <ol start="{{g.start}}" style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.45;">
+                  <sc-for list="{{g.steps}}" as="s" hint-placeholder-count="2">
+                    <li>{{s.text}}
+                      <sc-if value="{{s.hasMeta}}" hint-placeholder-val="{{true}}">
+                        <span style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+                          <sc-for list="{{s.meta}}" as="m" hint-placeholder-count="2">
+                            <span style="padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; background: {{m.bg}}; color: {{m.fg}};">{{m.label}}</span>
+                          </sc-for>
+                        </span>
+                      </sc-if>
+                    </li>
+                  </sc-for>
+                </ol>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top: 10px; font-size: 12px; color: #5B6661;">{{c.footnote}}</div>
+      </section>
+    </sc-for>
+
+    <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Fertigstellung</h2>
+        <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #3C4743;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #9A5410;"></span>Vor Ort · Pass</span>
+      </div>
+      <ol style="margin: 0; padding-left: 22px; columns: 2 320px; column-gap: 40px; font-size: 14px; line-height: 1.6;">
+        <li>Kalbsrücken aus dem Combi-Steamer nehmen, in Bratbutter rundum kurz anbraten.</li>
+        <li>In 1 cm dicke Tranchen schneiden, 3 Tranchen pro Teller.</li>
+        <li>Gratin-Würfel 8 × 6 cm links anrichten.</li>
+        <li>Fleisch rechts daneben fächern, mit Fleur de Sel würzen.</li>
+        <li>Jus am Pass auf 85 °C halten, 60 g pro Teller angiessen.</li>
+        <li>Mit einem Thymianzweig garnieren.</li>
+      </ol>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2200}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { portions: 10 }; }
+  renderVals() {
+    var self = this, P = this.state.portions, f = P / 10;
+    var fmtG = function (g) {
+      if (g >= 1000) return parseFloat((g / 1000).toFixed(2)) + ' kg';
+      return (g < 10 ? (Math.round(g * 10) / 10) : Math.round(g)) + ' g';
+    };
+    var fmtMin = function (m) { var h = Math.floor(m / 60), r = m % 60; return h ? (h + ' h' + (r ? ' ' + r + ' min' : '')) : r + ' min'; };
+    var zk = '#2F5E9E', vo = '#9A5410';
+    var chip = { dev: { bg: '#EEF0EC', fg: '#3C4743' }, temp: { bg: '#DCE5F2', fg: '#1E3F6E' }, time: { bg: '#E3EEE7', fg: '#1F4A36' }, un: { bg: '#F1F2EF', fg: '#5B6661' }, haccp: { bg: '#F8E3CB', fg: '#5C3A12' } };
+    var m = function (k, label) { return { label: label, bg: chip[k].bg, fg: chip[k].fg }; };
+    var ing = function (name, g, pct, note, base) { return { name: name, note: note || '', qty: g == null ? 'nach Geschmack' : fmtG(g * f), pct: pct, pctColor: base ? '#2F6B4F' : '#3C4743' }; };
+    var step = function (text, meta) { return { text: text, meta: meta || [], hasMeta: !!(meta && meta.length) }; };
+    var numberGroups = function (groups) { var n = 1; groups.forEach(function (g) { g.start = String(n); n += g.steps.length; }); return groups; };
+
+    var components = [
+      { anchor: 'kalbsruecken', name: 'Kalbsrücken sous-vide', yield: fmtG(1500 * f), base: 'Kalbsrücken pariert', footnote: 'Skal. = Anteil am Gewicht der Basiszutat (100 %). Hochrechnung über die Basiszutat, alle anderen Mengen folgen.',
+        groups: numberGroups([
+          { ings: [ing('Salz', 18, '1,0 %'), ing('Pfeffer schwarz, gemahlen', 2, '0,1 %'), ing('Thymian, gezupft', 4, '0,2 %')], steps: [step('Zu einer Würzmischung verreiben.')] },
+          { ings: [ing('Kalbsrücken, pariert', 1800, '100 %', 'ohne Sehnen und Fettdeckel', true)], steps: [
+            step('Fleisch rundum mit der Würzmischung einreiben und einzeln vakuumieren.', [m('dev', 'Vakuumiergerät')]),
+            step('Sous-vide garen bis Kerntemperatur 56 °C.', [m('dev', 'Combi-Steamer, Dampf'), m('temp', '58 °C'), m('un', '3 h unbeaufsichtigt'), m('haccp', 'HACCP Kern 56 °C')]),
+            step('Schockkühlen auf 3 °C, beschriften, kühl lagern.', [m('dev', 'Schockkühler'), m('un', '90 min unbeaufsichtigt')]),
+            step('Vor Ort im Beutel regenerieren.', [m('dev', 'Combi-Steamer mobil'), m('temp', '58 °C'), m('un', '30 min unbeaufsichtigt')]) ] },
+          { ings: [ing('Bratbutter', 60, '3,3 %')], steps: [step('Kurz vor dem Anrichten rundum scharf anbraten.', [m('dev', 'Kippbratpfanne'), m('time', '2 min')])] }
+        ]) },
+      { anchor: 'jus', name: 'Kalbsjus', yield: fmtG(800 * f), base: 'Kalbsknochen',
+        footnote: 'Wird in Chargen à 40 Portionen produziert und gekühlt bis 5 Tage gelagert.',
+        groups: numberGroups([
+          { ings: [ing('Kalbsknochen, gesägt', 3000, '100 %', '', true)], steps: [step('Knochen goldbraun rösten.', [m('dev', 'Combi-Steamer, Heissluft'), m('temp', '200 °C'), m('un', '45 min unbeaufsichtigt')])] },
+          { ings: [ing('Mirepoix (Karotte, Sellerie, Zwiebel)', 600, '20 %'), ing('Tomatenpüree', 60, '2,0 %')], steps: [step('Mirepoix zugeben und mitrösten, Tomatenpüree kurz anschwitzen.', [m('dev', 'Kippkessel'), m('time', '15 min')])] },
+          { ings: [ing('Rotwein', 500, '16,7 %'), ing('Wasser, kalt', 6000, '200 %')], steps: [
+            step('Mit Rotwein ablöschen und einkochen, mit Wasser auffüllen.', [m('time', '10 min')]),
+            step('Leise köcheln, regelmässig abschäumen.', [m('dev', 'Kippkessel'), m('temp', '95 °C'), m('un', '6 h unbeaufsichtigt')]),
+            step('Passieren und auf die Ergibt-Menge reduzieren, abschmecken.', [m('time', '40 min')]) ] }
+        ]) },
+      { anchor: 'gratin', name: 'Kartoffelgratin', yield: fmtG(1800 * f), base: 'Kartoffeln geschält',
+        footnote: 'Ein GN 1/1 × 65 mm fasst 20 Portionen.',
+        groups: numberGroups([
+          { ings: [ing('Rahm 35 %', 500, '25 %'), ing('Vollmilch', 300, '15 %'), ing('Knoblauch, gerieben', 10, '0,5 %'), ing('Salz', 16, '0,8 %'), ing('Muskatnuss, gerieben', 1, '0,05 %')], steps: [step('Zu einer Royale verrühren und aufkochen.', [m('time', '10 min')])] },
+          { ings: [ing('Kartoffeln festkochend, geschält', 2000, '100 %', '', true)], steps: [
+            step('In 2 mm dünne Scheiben hobeln.', [m('dev', 'Gemüsehobel'), m('time', '10 min')]),
+            step('Lagenweise in gebutterte GN-Behälter schichten, Royale angiessen.', [m('time', '10 min')]) ] },
+          { ings: [ing('Gruyère, gerieben', 100, '5,0 %')], steps: [
+            step('Bestreuen und backen, bis die Kartoffeln weich sind.', [m('dev', 'Combi-Steamer, Kombi'), m('temp', '150 °C'), m('un', '60 min unbeaufsichtigt')]),
+            step('Beschweren, über Nacht kühlen, in Würfel 8 × 6 cm schneiden.', [m('un', '12 h unbeaufsichtigt')]) ] }
+        ]) }
+    ];
+
+    var batches = function (size) { return String(Math.ceil(P / size)); };
+    var order = [
+      { anchor: 'jus', name: 'Kalbsjus', loc: 'Zentralküche', locColor: zk, prep: '20 min', cook: '45 min und 6 h, dann 40 min aktiv', plate: '1 min', batches: batches(40), perPortion: '60 g' },
+      { anchor: 'gratin', name: 'Kartoffelgratin', loc: 'Zentralküche', locColor: zk, prep: '30 min', cook: '60 min und 12 h', plate: '1 min', batches: batches(20), perPortion: '180 g' },
+      { anchor: 'kalbsruecken', name: 'Kalbsrücken sous-vide', loc: 'Zentralküche → Vor Ort', locColor: vo, prep: '15 min', cook: '3 h und 90 min, vor Ort 30 min', plate: '2 min', batches: batches(60), perPortion: '150 g' }
+    ];
+    var active = (20 + 30 + 15) + (15 + 10 + 40) + (10 + 10 + 10) + 2 + 4, unatt = 45 + 360 + 60 + 720 + 180 + 90 + 30;
+    var opts = [10, 50, 120, 300];
+    var on = 'background:#FFFFFF;box-shadow:0 1px 2px rgba(27,36,33,0.12);font-weight:600;color:#1B2421;', off = 'background:transparent;color:#3C4743;';
+    return {
+      portions: String(P),
+      timeTotal: 'ca. ' + fmtMin(unatt + active) + ' über 2 Tage',
+      timeActive: fmtMin(active),
+      timeUnatt: fmtMin(unatt),
+      scaleOpts: opts.map(function (o) { return { label: o + ' P', checked: String(o === P), style: o === P ? on : off, pick: function () { self.setState({ portions: o }); } }; }),
+      order: order,
+      garnish: [{ name: 'Thymianzweige, klein', qty: P + ' Stk.' }, { name: 'Fleur de Sel', qty: 'nach Geschmack' }],
+      components: components
+    };
+  }
+}
+</script>
+</body>
+</html>

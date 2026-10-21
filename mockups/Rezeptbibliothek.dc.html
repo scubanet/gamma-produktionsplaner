@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Rezeptbibliothek – Proof of Concept</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F4F1}
+a{color:#2F6B4F}a:hover{color:#1F4A36}
+.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
+.nav a:hover{background:#E6EAE5;color:#1B2421}
+.num{font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right;white-space:nowrap}
+.k{font-size:12px;font-weight:500;color:#5B6661;text-transform:uppercase;letter-spacing:.06em}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:500}
+.rbtn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;min-height:52px;padding:8px 12px;border:1px solid transparent;border-radius:8px;background:transparent;font:inherit;text-align:left;cursor:pointer;color:#1B2421}
+.rbtn:hover{background:#E6EAE5}
+.rbtn:focus-visible{outline:2px solid #2F6B4F;outline-offset:1px}
+</style>
+</helmet>
+<div style="min-height: 2000px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+
+  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
+    </div>
+    <a href="Leitstand.dc.html">Leitstand</a>
+    <a href="Main.dc.html">Anlässe</a>
+    <a href="Ressourcen.dc.html">Ressourcen</a>
+    <a href="Rezeptbibliothek.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;">Speisen &amp; Rezepte</a>
+    <a href="Produktion.dc.html">Produktionsplan</a>
+    <span style="color: #8A938F;">Einkauf</span>
+    <span style="color: #8A938F;">Stammdaten</span>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div>
+        <div style="font-size: 13px; color: #5B6661;">Speisen &amp; Rezepte · Proof of Concept · 6 Rezepte</div>
+        <h1 style="margin: 4px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">Rezeptbibliothek</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #3C4743;">
+        <span style="display: inline-block; width: 28px; border-bottom: 2px dashed #9A5410;"></span>Annahme, bitte prüfen
+      </div>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+
+      <aside aria-label="Rezepte" style="flex: 1 1 240px; min-width: 0; background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 4px;">
+        <div class="k" style="padding: 8px 12px 4px;">Gerichte</div>
+        <sc-for list="{{dishes}}" as="r" hint-placeholder-count="3">
+          <button type="button" class="rbtn" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="{{r.style}}"><span style="font-size: 14px; font-weight: 500;">{{r.name}}</span><span style="font-size: 12px; color: #5B6661;">{{r.sub}}</span></button>
+        </sc-for>
+        <div class="k" style="padding: 12px 12px 4px;">Komponenten</div>
+        <sc-for list="{{comps}}" as="r" hint-placeholder-count="3">
+          <button type="button" class="rbtn" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="{{r.style}}"><span style="font-size: 14px; font-weight: 500;">{{r.name}}</span><span style="font-size: 12px; color: #5B6661;">{{r.sub}}</span></button>
+        </sc-for>
+      </aside>
+
+      <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 16px;">
+            <div style="min-width: 0;">
+              <div class="k" style="color: #2F6B4F;">{{rec.kind}}</div>
+              <h2 style="margin: 4px 0 2px; font-size: 24px; font-weight: 600;">{{rec.name}}</h2>
+              <div style="font-size: 14px; font-style: italic; color: #3C4743;">{{rec.subtitle}}</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span class="k">{{scaleLabel}}</span>
+              <div role="radiogroup" aria-label="{{scaleLabel}}" style="display: inline-flex; padding: 4px; gap: 4px; background: #E6EAE5; border-radius: 10px;">
+                <sc-for list="{{scaleOpts}}" as="o" hint-placeholder-count="4">
+                  <button type="button" role="radio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 8px; font: inherit; font-size: 14px; {{o.style}}">{{o.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 32px;">
+            <div><div class="k">Ergibt</div><div style="font-size: 15px; margin-top: 4px;">{{rec.yieldText}}</div><div style="font-size: 13px; color: #5B6661;">{{rec.portionText}}</div></div>
+            <div><div class="k">Benötigte Zeit</div><div style="font-size: 15px; margin-top: 4px;">aktiv {{rec.active}}</div><div style="font-size: 13px; color: #5B6661; font-style: italic;">unbeaufsichtigt {{rec.unatt}}</div></div>
+            <div><div class="k">Quelle</div><div style="font-size: 15px; margin-top: 4px;">{{rec.source}}</div></div>
+            <div style="grid-column: span 2;"><div class="k">Geräte</div><div style="font-size: 15px; margin-top: 4px;">{{rec.devices}}</div></div>
+            <div><div class="k">Allergene</div><div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;"><sc-for list="{{rec.allergens}}" as="a" hint-placeholder-count="2"><span class="pill" style="background: #F8E3CB; color: #5C3A12; font-weight: 600;">{{a}}</span></sc-for></div></div>
+          </div>
+          <sc-if value="{{rec.hasComponents}}" hint-placeholder-val="{{false}}">
+            <div style="border-top: 1px solid #EEF0EC; padding-top: 16px;">
+              <div class="k" style="margin-bottom: 8px;">Verwendete Komponenten</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <sc-for list="{{rec.components}}" as="c" hint-placeholder-count="1">
+                  <button type="button" onClick="{{c.pick}}" style="min-height: 40px; padding: 0 14px; border: 1px solid #CBD2CC; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 14px; color: #1B2421; cursor: pointer;">{{c.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </section>
+
+        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Zutaten und Zubereitung</h2>
+            <span style="font-size: 13px; color: #5B6661;">Basis 100 % = {{rec.baseName}}</span>
+          </div>
+          <div style="overflow-x: auto; margin-top: 12px;">
+            <div style="min-width: 760px;">
+              <div style="display: grid; grid-template-columns: 230px 92px 72px minmax(0, 1fr); gap: 0 16px; padding-bottom: 10px; border-bottom: 1px solid #E1E5E0; font-size: 12px; font-weight: 500; color: #5B6661;">
+                <span>Zutat</span><span style="text-align: right;">Menge</span><span style="text-align: right;">Skal.</span><span>Zubereitung</span>
+              </div>
+              <sc-for list="{{rec.groups}}" as="g" hint-placeholder-count="3">
+                <div style="display: grid; grid-template-columns: 230px 92px 72px minmax(0, 1fr); gap: 0 16px; padding: 12px 0; border-bottom: 1px solid #EEF0EC; align-items: start;">
+                  <div style="grid-column: 1 / 4; display: flex; flex-direction: column; gap: 6px;">
+                    <sc-if value="{{g.hasTitle}}" hint-placeholder-val="{{false}}"><div class="k" style="color: #2F6B4F;">{{g.title}}</div></sc-if>
+                    <sc-for list="{{g.ings}}" as="i" hint-placeholder-count="2">
+                      <div style="display: grid; grid-template-columns: 230px 92px 72px; gap: 0 16px; font-size: 14px;">
+                        <span style="{{i.nameStyle}}">{{i.name}}<span style="display: block; font-size: 12px; color: #5B6661; font-weight: 400;">{{i.note}}</span></span>
+                        <span class="num" style="{{i.qtyStyle}}">{{i.qty}}</span>
+                        <span class="num" style="color: #3C4743;">{{i.pct}}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <ol start="{{g.start}}" style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.45;">
+                    <sc-for list="{{g.steps}}" as="s" hint-placeholder-count="2">
+                      <li><span style="{{s.textStyle}}">{{s.text}}</span>
+                        <span style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+                          <sc-for list="{{s.meta}}" as="m" hint-placeholder-count="2">
+                            <span class="pill" style="background: {{m.bg}}; color: {{m.fg}};">{{m.label}}</span>
+                          </sc-for>
+                        </span>
+                      </li>
+                    </sc-for>
+                  </ol>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+
+        <section style="background: #FBF3E6; border: 1px solid #EBD3AE; border-radius: 12px; padding: 20px 24px; color: #5C3A12;">
+          <h2 style="margin: 0 0 10px; font-size: 15px; font-weight: 600;">Offene Punkte · {{rec.openCount}}</h2>
+          <ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.55;">
+            <sc-for list="{{rec.open}}" as="o" hint-placeholder-count="3"><li>{{o}}</li></sc-for>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2000}}'>
+// Rezeptdaten. Zutat: [Name, Gramm (Basis-Charge), Flags, Notiz]  Flags: b = Basiszutat (100 %), a = Annahme
+// Schritt: [Text, {d: Gerät, t: Temperatur, a: aktive Minuten, u: unbeaufsichtigte Minuten, h: HACCP, x: Annahme}]
+var RECIPES = [
+  { id: 'hacktaetschli', type: 'gericht', course: 'Hauptgang', name: 'Kalbshacktätschli', subtitle: 'Kalbsfleisch, Mascarpone, Peterli', scaleBase: 10, unit: 'Portionen', portionG: 180, portionText: '2 Tätschli à 90 g roh pro Portion (Annahme)', source: 'Eigenes Rezept', allergens: ['Gluten', 'Ei', 'Milch', 'Sellerie (Annahme)'], components: [],
+    open: ['Zubereitung fehlt im Original: Schritte sind ein Vorschlag nach Standard-Hacktätschli.', 'Welches Gemüse? Angenommen: Zwiebel, Karotte, Sellerie je ein Drittel, fein gewürfelt.', 'Aufteilung der Butter (Gemüse dünsten / Braten) angenommen 50 / 50.', 'Salz, Pfeffer und Paniermehl hatten keine Menge.', 'Portion 2 × 90 g roh, ergibt aus dem Original 8 Portionen; hier auf 10 hochgerechnet.'],
+    groups: [
+      { ings: [['Weissbrot, entrindet', 315, '', '≈ Original 250 g × 1.25'], ['Vollmilch', 250, '', '2.5 dl']], steps: [['Brot in Würfel schneiden und in der Milch einweichen.', { a: 5, u: 15 }]] },
+      { ings: [['Gemüse (Zwiebel, Karotte, Sellerie)', 250, 'a', 'fein gewürfelt'], ['Knoblauch', 12, '', '≈ 2.5 Zehen'], ['Butter', 50, 'a', 'Hälfte der Gesamtmenge']], steps: [['Gemüse und Knoblauch fein würfeln.', { a: 15, x: 1 }], ['In Butter weich dünsten und auskühlen lassen.', { d: 'Kippbratpfanne', a: 5, u: 20, x: 1 }]] },
+      { ings: [['Kalbshackfleisch', 625, 'b'], ['Kalbsbrät', 250], ['Eier', 125, '', '≈ 2.5 Stück'], ['Mascarpone', 100], ['Peterli, gehackt', 30, 'a', '≈ 1 Bund'], ['Chiliflocken', 2.5, '', '≈ 1 TL'], ['Salz', 22, 'a', '≈ 1.2 % der Masse'], ['Pfeffer, gemahlen', 3, 'a']], steps: [['Mit Brot und Gemüse zu einer gleichmässigen Masse mischen.', { d: 'Rührwerk, Flachrührer', a: 5, x: 1 }], ['Tätschli à 90 g formen und flach drücken.', { a: 20, x: 1 }]] },
+      { ings: [['Paniermehl', 100, 'a', 'zum Wenden'], ['Butter', 50, 'a', 'zum Braten']], steps: [['In Paniermehl wenden und beidseitig goldbraun anbraten.', { d: 'Kippbratpfanne', t: '180 °C', a: 10, x: 1 }], ['Fertig garen bis Kerntemperatur 72 °C.', { d: 'Combi-Steamer, Heissluft', t: '160 °C', u: 12, h: 'Kern 72 °C', x: 1 }]] }
+    ] },
+  { id: 'curry', type: 'gericht', course: 'Hauptgang', name: 'Kozhi Mappas', subtitle: 'Mildes Hühner-Kokos-Curry', scaleBase: 10, unit: 'Portionen', portionG: 300, portionText: '150 g Poulet plus Sauce, ca. 300 g pro Portion (ohne Beilage)', source: 'Eigenes Rezept', allergens: ['Senf', 'Milch (Ghee)'], components: [],
+    open: ['Original für 4 Portionen (600 g Poulet), hier auf 10 Portionen à 150 g Fleisch hochgerechnet.', 'Löffel- und Stückangaben in Gramm umgerechnet, bitte prüfen.', 'Salz und Pfeffer ohne Menge im Original.', 'Beilage (z.B. Basmatireis) fehlt; als eigene Komponente anlegen?'],
+    groups: [
+      { ings: [['Öl', 50, '', '≈ 5 EL'], ['Zwiebeln, in feinen Streifen', 750, 'a', '≈ 5 Stück à 150 g']], steps: [['Zwiebeln unter Rühren anbraten.', { d: 'Kippbratpfanne', a: 10 }]] },
+      { ings: [['Chilipulver', 2.5, '', '≈ 1¼ TL'], ['Kurkuma', 4, '', '≈ 1¼ TL'], ['Koriandersamen, gemahlen', 10, '', '≈ 5 TL']], steps: [['Gewürze darüberstreuen und kurz mitbraten.', { a: 2 }]] },
+      { ings: [['Pouletbrust, in 4 cm Würfeln', 1500, 'b']], steps: [['Fleisch zugeben und 3–4 Minuten anbraten, bis es Farbe hat.', { a: 5 }]] },
+      { ings: [['Kokosmilch', 250, '', 'erster Teil, 2.5 dl'], ['Wasser', 125], ['Salz', 22, 'a'], ['Pfeffer schwarz', 2, 'a']], steps: [['Angiessen und mit Salz und Pfeffer abschmecken.', { a: 3 }], ['Zugedeckt bei schwacher Hitze köcheln lassen.', { u: 20, h: 'Kern 72 °C' }]] },
+      { ings: [['Kokosmilch', 750, '', 'Rest, 7.5 dl']], steps: [['Zugeben und offen bei mittlerer Hitze weiterköcheln.', { u: 10 }]] },
+      { ings: [['Ghee', 120, '', '≈ 10 EL'], ['Zimtstangen', 12, '', '≈ 5 Stück'], ['Gewürznelken', 1, '', '≈ 8 Stück'], ['Senfkörner, braun', 10, '', '≈ 2½ TL']], steps: [['Ghee erhitzen, Zimt, Nelken und Senfkörner 2 Minuten rösten und zum Curry geben.', { d: 'Induktion, Sauteuse', a: 4 }]] }
+    ] },
+  { id: 'quiche', type: 'gericht', course: 'Vorspeise / Apéro', name: 'Quiche aux Oignons', subtitle: 'Zwiebel-Speck-Quiche', scaleBase: 10, unit: 'Portionen', portionG: 140, portionText: 'ca. 140 g pro Portion; Original: Form 20 cm für 4 Portionen', source: 'Eigenes Rezept', allergens: ['Gluten', 'Ei', 'Milch'], components: ['kuchenteig'],
+    open: ['Kuchenteig: eigenes Grundrezept oder Zukauf? Rezept fehlt noch.', 'Zwiebelmenge (1 kleine Zwiebel) im Original eher knapp für eine Zwiebelquiche, bitte prüfen.', 'Gewürze ohne Menge im Original.', 'Für die Produktion: Blech/GN-Format und Portionierung (Stücke pro Blech) festlegen.'],
+    groups: [
+      { title: 'Teig', ings: [['Kuchenteig', 500, '', 'Komponente, siehe unten'], ['Butter, weich', 25, 'a', 'zum Ausstreichen']], steps: [['Teig dünn ausrollen, Form ausbuttern und auslegen, Rand gut andrücken.', { a: 10 }], ['Boden dicht einstechen und kühl stellen.', { u: 30, x: 1 }]] },
+      { title: 'Füllung', ings: [['Zwiebeln', 175, '', '≈ 2.5 kleine'], ['Frühstücksspeck', 100]], steps: [['Zwiebel und Speck in feine Streifen schneiden.', { a: 8 }], ['Speck ohne Fett knusprig braten, abtropfen lassen.', { d: 'Bratpfanne', a: 6 }], ['Zwiebeln im Speckfett goldgelb dünsten, abtropfen und auskühlen lassen.', { a: 8, u: 15 }]] },
+      { title: 'Guss', ings: [['Eier', 250, 'b', '≈ 5 Stück'], ['Magerquark', 125], ['Rahm 35 %', 250, '', '2.5 dl'], ['Vollmilch', 250, '', '2.5 dl'], ['Salz', 8, 'a'], ['Pfeffer', 1, 'a'], ['Cayennepfeffer', 0.5, 'a'], ['Muskatnuss, gerieben', 0.5, 'a']], steps: [['Zu einer glatten Masse verrühren und würzen.', { a: 5 }]] },
+      { title: 'Fertigstellen', ings: [], steps: [['Speck und Zwiebeln auf dem Boden verteilen, Guss darübergiessen.', { a: 4 }], ['Backen, bis der Guss gestockt ist.', { d: 'Combi-Steamer, Heissluft', t: '200 °C', u: 33, h: 'Kern 72 °C' }]] }
+    ] },
+  { id: 'dough', type: 'komponente', course: 'Teig', name: 'Allzweck-Hefeteig', subtitle: 'Tangzhong-Teig für Burger Buns (Multi Purpose Dough)', scaleBase: 1, unit: 'Charge', yieldG: 4000, portionText: '1 Charge ≈ 40 Burger Buns à 100 g', source: 'Eigenes Rezept (Hauptversion; Haushaltsversion in den Notizen nicht übernommen)', allergens: ['Gluten', 'Ei', 'Milch'], components: [],
+    open: ['Eier und Eigelb in Gramm umgerechnet (Ei 50 g, Eigelb 18 g).', 'Eggwash ohne Menge im Original.', 'Kneten in der Knetmaschine als unbeaufsichtigt gezählt, bitte bestätigen.', 'Notizen enthalten eine zweite, kleinere Version mit Malz und Amylase: soll sie eine eigene Variante werden?'],
+    groups: [
+      { title: 'Tangzhong', ings: [['Weissmehl', 72], ['Wasser', 120], ['Vollmilch', 240]], steps: [['In einer kleinen Pfanne mischen und unter Rühren kochen, bis es bindet.', { d: 'Induktion', a: 5 }], ['Abkühlen lassen.', { u: 15 }]] },
+      { title: 'Hauptteig', ings: [['Vollmilch', 500], ['Wasser', 500], ['Trockenhefe', 35]], steps: [['Milch und Wasser leicht erwärmen, Hefe einrühren, 10 Minuten anspringen lassen.', { a: 2, u: 10 }]] },
+      { ings: [['Weissmehl', 2100, 'b'], ['Zucker', 52], ['Salz', 36], ['Eier', 200, '', '4 Stück'], ['Eigelb', 72, '', '4 Stück'], ['Butter', 140]], steps: [['Alle Zutaten inklusive Tangzhong 10 Minuten kneten.', { d: 'Knetmaschine', a: 2, u: 10, x: 1 }], ['Buns à 100 g formen, mit Eggwash bestreichen.', { a: 30, x: 1 }]] },
+      { title: 'Eggwash', ings: [['Eier', 100, 'a', '2 Stück'], ['Wasser', 30, 'a']], steps: [['30–45 Minuten gären lassen, nochmals mit Eggwash bestreichen.', { d: 'Gärschrank', u: 40, a: 5 }], ['Backen.', { d: 'Combi-Steamer, Heissluft', t: '190 °C', u: 14 }]] }
+    ] },
+  { id: 'sugo', type: 'komponente', course: 'Sauce', name: 'Sugo', subtitle: 'Tomatensauce, im Glas pasteurisiert', scaleBase: 1, unit: 'Charge', yieldG: 1600, portionText: '1 Charge ≈ 1.6 kg (Annahme, je nach Einkochzeit)', source: 'Andreas Caminada', allergens: ['Milch (Butter)'], components: [],
+    open: ['Ergibt-Menge fehlt; 1.6 kg angenommen.', 'Einkochzeit «bis zur gewünschten Konsistenz»: 60 Minuten angenommen.', 'Zwiebeln und Kräuter in Gramm geschätzt.', 'Haltbarkeit nach Pasteurisation festlegen (HACCP).'],
+    groups: [
+      { ings: [['Gemüsezwiebeln, klein', 320, 'a', '4 Stück'], ['Knoblauch', 10, '', '2 Zehen'], ['Olivenöl', 92, '', '1 dl']], steps: [['Zwiebeln und Knoblauch würfeln und in reichlich Olivenöl andünsten.', { d: 'Kippkessel', a: 15 }]] },
+      { ings: [['Tomaten, gemischt', 2000, 'b', 'z.B. San Marzano, Ochsenherz, Datteltomaten'], ['Salz', 15]], steps: [['Tomaten grob schneiden und mit dem Salz kurz mixen.', { d: 'Cutter', a: 10 }]] },
+      { ings: [['Basilikum, Blätter', 5, 'a'], ['Oregano', 1, 'a']], steps: [['Zu den Zwiebeln geben und bei milder Hitze einkochen, zwischendurch pürieren.', { d: 'Kippkessel, Stabmixer', a: 5, u: 60, x: 1 }]] },
+      { ings: [['Butter', 100]], steps: [['Butter einmixen.', { d: 'Stabmixer', a: 3 }], ['In sterile Bügelgläser füllen und gut verschliessen.', { a: 10 }], ['Im Dampf pasteurisieren.', { d: 'Combi-Steamer, Dampf', t: '92 °C', u: 20, h: 'Pasteurisation 20 min' }]] }
+    ] },
+  { id: 'sweetchili', type: 'komponente', course: 'Sauce', name: 'Sweet Chili Sauce', subtitle: 'Karamell, Galgant, Zitronengras', scaleBase: 1, unit: 'Charge', yieldG: 450, portionText: '1 Charge ≈ 450 g (Annahme)', source: 'Peter Gordon (via homemade.ch)', allergens: ['Fisch', 'Soja', 'Gluten (Sojasauce)'], components: [],
+    open: ['Ergibt-Menge fehlt; 450 g angenommen.', 'Löffel, Stück und Bund in Gramm umgerechnet (EL Essig 15 g, EL Fisch-/Sojasauce 15 g).', 'Haltbarkeit «wochenlang» als HACCP-Wert festlegen.'],
+    groups: [
+      { ings: [['Ingwer, geschält', 100], ['Galgant, geschält', 30], ['Zitronengras, geputzt', 45, 'a', '3 Stängel'], ['Koriander, Bund', 30, 'a', '1 Bund'], ['Knoblauch', 50, '', '10 Zehen'], ['Chilis rot, gross', 60, 'a', '4 Stück'], ['Kaffir-Limettenblätter', 2, '', '8 Blätter']], steps: [['Ingwer, Galgant, Zitronengras und Koriander grob hacken.', { a: 10 }], ['Mit Knoblauch, Chilis und Limettenblättern zu einer feinen Paste zerkleinern.', { d: 'Cutter', a: 3 }]] },
+      { ings: [['Zucker', 150, 'b']], steps: [['Zucker in einem schweren Topf schmelzen und dunkel karamellisieren, nicht verbrennen lassen.', { d: 'Induktion, Sauteuse', a: 8 }]] },
+      { ings: [['Apfelessig', 105, '', '7 EL'], ['Fischsauce', 60, '', '4 EL'], ['Sojasauce', 60, '', '4 EL']], steps: [['Paste einrühren, aufkochen, Essig, Fisch- und Sojasauce zugeben, 1 Minute köcheln.', { a: 3 }], ['Abkühlen und gekühlt lagern.', { d: 'Schockkühler', u: 30, x: 1 }]] }
+    ] },
+  { id: 'kuchenteig', type: 'komponente', course: 'Teig', name: 'Kuchenteig', subtitle: 'Rezept fehlt noch', scaleBase: 1, unit: 'Charge', yieldG: 500, portionText: 'Platzhalter, bis das Rezept vorliegt', source: 'offen', allergens: ['Gluten', 'Milch'], components: [], placeholder: true,
+    open: ['Eigenes Grundrezept oder Zukauf (Fertigteig)? Bei Zukauf als Artikel im Artikelstamm statt als Rezept führen.'],
+    groups: [{ ings: [['Kuchenteig', 500, 'ab', 'Rezept oder Artikel offen']], steps: [['Wird ergänzt.', { x: 1 }]] }] }
+];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { id: 'hacktaetschli', factor: 1 }; }
+  renderVals() {
+    var self = this, st = this.state;
+    var byId = {}; RECIPES.forEach(function (r) { byId[r.id] = r; });
+    var R = byId[st.id] || RECIPES[0], F = st.factor;
+    var dish = R.type === 'gericht';
+    var fmtG = function (g) { if (g >= 1000) return parseFloat((g / 1000).toFixed(2)) + ' kg'; if (g < 10) return (Math.round(g * 10) / 10) + ' g'; return Math.round(g) + ' g'; };
+    var fmtMin = function (m) { var h = Math.floor(m / 60), r = Math.round(m % 60); return h ? (h + ' h' + (r ? ' ' + r + ' min' : '')) : r + ' min'; };
+    var fmtPct = function (p) { var v = p >= 10 ? Math.round(p) : p >= 1 ? Math.round(p * 10) / 10 : Math.round(p * 100) / 100; return String(v) + ' %'; };
+    var baseG = 0; R.groups.forEach(function (g) { g.ings.forEach(function (i) { if ((i[2] || '').indexOf('b') >= 0) baseG = i[1]; }); });
+    var baseName = ''; R.groups.forEach(function (g) { g.ings.forEach(function (i) { if ((i[2] || '').indexOf('b') >= 0) baseName = i[0]; }); });
+    var dash = 'text-decoration: underline dashed #9A5410; text-underline-offset: 3px;';
+    var chip = { d: ['#EEF0EC', '#3C4743'], t: ['#DCE5F2', '#1E3F6E'], a: ['#E3EEE7', '#1F4A36'], u: ['#F1F2EF', '#5B6661'], h: ['#F8E3CB', '#5C3A12'] };
+    var mk = function (k, label) { return { label: label, bg: chip[k][0], fg: chip[k][1] }; };
+    var act = 0, un = 0, devs = [], n = 1;
+    var groups = R.groups.map(function (g) {
+      var start = String(n); n += g.steps.length;
+      return {
+        title: g.title || '', hasTitle: !!g.title, start: start,
+        ings: g.ings.map(function (i) {
+          var fl = i[2] || '', assumed = fl.indexOf('a') >= 0, isBase = fl.indexOf('b') >= 0;
+          return { name: i[0], note: i[3] || '', qty: fmtG(i[1] * F), pct: baseG ? fmtPct(i[1] / baseG * 100) : '', nameStyle: isBase ? 'font-weight: 600;' : '', qtyStyle: assumed ? dash : '' };
+        }),
+        steps: g.steps.map(function (s) {
+          var o = s[1] || {}, meta = [];
+          if (o.d) { meta.push(mk('d', o.d)); o.d.split(', ')[0].split(' / ').forEach(function (d) { if (devs.indexOf(d) < 0) devs.push(d); }); }
+          if (o.t) meta.push(mk('t', o.t));
+          if (o.a) { meta.push(mk('a', o.a + ' min aktiv')); act += o.a; }
+          if (o.u) { meta.push(mk('u', fmtMin(o.u) + ' unbeaufsichtigt')); un += o.u; }
+          if (o.h) meta.push(mk('h', 'HACCP ' + o.h));
+          return { text: s[0], textStyle: o.x ? dash : '', meta: meta };
+        })
+      };
+    });
+    var sumG = 0; R.groups.forEach(function (g) { g.ings.forEach(function (i) { sumG += i[1]; }); });
+    var opts = dish ? [1, 5, 12, 30] : [1, 2, 5, 10];
+    var on = 'background:#FFFFFF;box-shadow:0 1px 2px rgba(27,36,33,0.12);font-weight:600;color:#1B2421;', off = 'background:transparent;color:#3C4743;';
+    var listBtn = function (r) {
+      var sel = r.id === R.id;
+      return { name: r.name, sub: r.course + (r.placeholder ? ' · Rezept fehlt' : ''), pressed: String(sel), style: sel ? 'background:#E3EEE7;border-color:#CFE0D5;' : '', pick: function () { self.setState({ id: r.id, factor: 1 }); } };
+    };
+    return {
+      dishes: RECIPES.filter(function (r) { return r.type === 'gericht'; }).map(listBtn),
+      comps: RECIPES.filter(function (r) { return r.type !== 'gericht'; }).map(listBtn),
+      scaleLabel: dish ? 'Portionen' : 'Chargen',
+      scaleOpts: opts.map(function (o) { return { label: dish ? String(o * R.scaleBase) + ' P' : '× ' + o, checked: String(o === F), style: o === F ? on : off, pick: function () { self.setState({ factor: o }); } }; }),
+      rec: {
+        kind: dish ? 'Gericht · ' + R.course : 'Komponente · ' + R.course,
+        name: R.name, subtitle: R.subtitle, source: R.source,
+        yieldText: dish ? (R.scaleBase * F) + ' Portionen à ' + R.portionG + ' g' : fmtG(R.yieldG * F) + (F > 1 ? ' (' + F + ' Chargen)' : ''),
+        portionText: R.portionText + ' · Zutaten gesamt ' + fmtG(sumG * F),
+        active: fmtMin(act), unatt: fmtMin(un),
+        devices: devs.length ? devs.join(', ') : 'noch offen',
+        allergens: R.allergens,
+        baseName: baseName || 'keine',
+        groups: groups,
+        open: R.open, openCount: String(R.open.length),
+        hasComponents: R.components.length > 0,
+        components: R.components.map(function (id) { var c = byId[id]; return { label: '→ ' + c.name, pick: function () { self.setState({ id: id, factor: 1 }); } }; })
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
