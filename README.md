@@ -8,9 +8,9 @@ Planungs-App für Event-Catering: Ein Anlass (Gäste, Menü, Serviceart, Locatio
 | --- | --- |
 | `docs/` | Lösungsvorschlag (PDF): Grundprinzip, Datenmodell, Berechnungslogik, Umsetzung in drei Stufen |
 | `design-system/` | Design System «Produktionsplaner»: Tokens, Brand Book, 12 Komponenten (`window.Planer`), Änderungsprotokoll |
-| `mockups/` | Klickbare Screens (Design Components, `.dc.html`): Anlass erfassen, Ressourcen, Rezept & Arbeitsplan, Produktionsplan, Leitstand, Rezeptkarte, Rezeptbibliothek |
+| `mockups/` | Klickbare Screens (Design Components, `.dc.html`): Anlass erfassen, Ressourcen, Rezept & Arbeitsplan, Produktionsplan, Leitstand, Rezeptkarte, Rezeptbibliothek, Rentabilität |
 | `rezepte/` | `rezepte.json`: die ersten 6 echten Rezepte im Rezeptkarten-Format (Annahmen markiert) |
-| `db/` | `schema.sql` (PostgreSQL/Supabase) und `seed.sql` mit den Rezepten |
+| `db/` | `schema.sql` (PostgreSQL/Supabase), `seed.sql` mit den Rezepten, `kosten.sql` mit Kostenmodell (Lohnsätze, Energie, Fixkosten, Anlässe) und Auswertungen für Deckungsbeitrag und Monatsergebnis |
 
 ## Kernprinzip
 
@@ -32,4 +32,6 @@ Die Links sind privat, bis sie im Share-Menü freigegeben werden.
 
 Proof of Concept gestartet: Datenbankschema v0.1 und 6 Rezepte erfasst (3 Gerichte, 3 Komponenten, 1 Platzhalter). Offene Punkte pro Rezept stehen in `rezepte.json` und in der Rezeptbibliothek.
 
-Schema lokal testen: `psql -f db/schema.sql && psql -f db/seed.sql`
+Kostenlogik: Umsatz − variable Kosten (Waren, Personal, Energie, Gerätemiete, Transport, Material) = Deckungsbeitrag; Deckungsbeitrag − Fixkosten (Kaderlöhne, Miete, Abschreibungen …) = Betriebsergebnis. Break-even-Umsatz = Fixkosten ÷ DB-Quote.
+
+Schema lokal testen: `psql -f db/schema.sql && psql -f db/seed.sql && psql -f db/kosten.sql`

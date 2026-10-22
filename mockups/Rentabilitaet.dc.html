@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Rentabilität – Dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F4F1}
+a{color:#2F6B4F}a:hover{color:#1F4A36}
+.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
+.nav a:hover{background:#E6EAE5;color:#1B2421}
+.card{background:#FFFFFF;border:1px solid #E1E5E0;border-radius:12px;padding:24px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;font-weight:500;color:#5B6661;padding:0 12px 10px 0;border-bottom:1px solid #E1E5E0;white-space:nowrap}
+.tbl td{padding:11px 12px 11px 0;border-bottom:1px solid #EEF0EC;vertical-align:middle}
+.num{font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.k{font-size:12px;color:#5B6661}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="min-height: 2300px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+
+  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
+    </div>
+    <a href="Rentabilitaet.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;">Rentabilität</a>
+    <a href="Leitstand.dc.html">Leitstand</a>
+    <a href="Main.dc.html">Anlässe</a>
+    <a href="Ressourcen.dc.html">Ressourcen</a>
+    <a href="Rezeptbibliothek.dc.html">Speisen &amp; Rezepte</a>
+    <a href="Produktion.dc.html">Produktionsplan</a>
+    <span style="color: #8A938F;">Einkauf</span>
+    <span style="color: #8A938F;">Stammdaten</span>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div>
+        <div style="font-size: 13px; color: #5B6661;">Rentabilität · Beispieldaten, nicht GAMMA-Zahlen</div>
+        <h1 style="margin: 4px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">{{title}}</h1>
+      </div>
+      <div role="radiogroup" aria-label="Monat" style="display: inline-flex; flex-wrap: wrap; padding: 4px; gap: 4px; background: #E6EAE5; border-radius: 10px;">
+        <sc-for list="{{monthOpts}}" as="o" hint-placeholder-count="6">
+          <button type="button" role="radio" aria-checked="{{o.checked}}" onClick="{{o.pick}}" style="min-height: 40px; padding: 0 14px; border: 0; border-radius: 8px; font: inherit; font-size: 14px; {{o.style}}">{{o.label}}</button>
+        </sc-for>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">
+      <div class="card" style="padding: 18px 20px;"><div class="k">Umsatz</div><div class="mono" style="font-size: 28px; margin-top: 6px;">{{kUmsatz}}</div><div class="k">{{kUmsatzSub}}</div></div>
+      <div class="card" style="padding: 18px 20px;"><div class="k">Deckungsbeitrag</div><div class="mono" style="font-size: 28px; margin-top: 6px;">{{kDB}}</div><div class="k">{{kDBSub}}</div></div>
+      <div class="card" style="padding: 18px 20px; {{kErgStyle}}"><div class="k" style="{{kErgLabel}}">Betriebsergebnis</div><div class="mono" style="font-size: 28px; margin-top: 6px;">{{kErg}}</div><div style="margin-top: 4px;"><span class="pill" style="{{kErgPill}}">{{kErgStatus}}</span></div></div>
+      <div class="card" style="padding: 18px 20px;"><div class="k">Break-even</div><div class="mono" style="font-size: 28px; margin-top: 6px;">{{kBE}}</div><div class="k">{{kBESub}}</div>
+        <div style="height: 8px; border-radius: 4px; background: #EEF0EC; margin-top: 10px; overflow: hidden;"><div style="height: 8px; border-radius: 4px; {{kBEBar}}"></div></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
+      <section class="card" style="flex: 3 1 520px; min-width: 0;">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600;">{{wfTitle}}</h2>
+        <div class="k" style="margin-top: 2px;">Vom Umsatz zum Betriebsergebnis, Werte in CHF 1000</div>
+        <div style="overflow-x: auto;">
+          <div style="min-width: 520px; margin-top: 20px;">
+            <div style="position: relative; height: 260px; display: flex; gap: 12px; border-bottom: 1px solid #E1E5E0;">
+              <div aria-hidden="true" style="position: absolute; left: 0; right: 0; border-top: 1px solid #A9B3AD; {{wfZero}}"></div>
+              <sc-for list="{{wf}}" as="b" hint-placeholder-count="7">
+                <div style="flex: 1; position: relative;">
+                  <div title="{{b.title}}" style="position: absolute; left: 6%; right: 6%; border-radius: 4px; {{b.style}}"></div>
+                  <div class="mono" style="position: absolute; left: 0; right: 0; text-align: center; font-size: 12px; font-weight: 500; {{b.labelStyle}}">{{b.value}}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 8px;">
+              <sc-for list="{{wf}}" as="b" hint-placeholder-count="7">
+                <div style="flex: 1; text-align: center; font-size: 12px; line-height: 1.3; color: #3C4743; {{b.nameStyle}}">{{b.name}}</div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" style="flex: 2 1 340px; min-width: 0;">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Umsatz gegen Break-even</h2>
+        <div class="k" style="margin-top: 2px;">Letzte 6 Monate, Werte in CHF 1000</div>
+        <div style="position: relative; height: 260px; margin-top: 20px; display: flex; gap: 14px; border-bottom: 1px solid #E1E5E0;">
+          <div aria-hidden="true" style="position: absolute; left: 0; right: 0; border-top: 2px dashed #9A5410; {{beLine}}"></div>
+          <div style="position: absolute; right: 0; font-size: 11px; font-weight: 600; color: #7A4510; background: #FFFFFF; padding: 0 4px; {{beLabel}}">Break-even {{beValue}}</div>
+          <sc-for list="{{trend}}" as="t" hint-placeholder-count="6">
+            <div style="flex: 1; position: relative;">
+              <div title="{{t.title}}" style="position: absolute; left: 10%; right: 10%; bottom: 0; border-radius: 4px 4px 0 0; {{t.style}}"></div>
+              <div class="mono" style="position: absolute; left: 0; right: 0; text-align: center; font-size: 12px; {{t.labelStyle}}">{{t.value}}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; gap: 14px; margin-top: 8px;">
+          <sc-for list="{{trend}}" as="t" hint-placeholder-count="6">
+            <div style="flex: 1; text-align: center; font-size: 12px; {{t.nameStyle}}">{{t.m}}</div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; font-size: 12px; color: #3C4743;">
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #2F6B4F;"></span>über Break-even</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #E9C9A3;"></span>darunter</span>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+        <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Anlässe · Auswahl November, nach Deckungsbeitrag</h2>
+        <span class="k">Zielwert DB ≥ 35 % (Annahme, festzulegen)</span>
+      </div>
+      <div style="overflow-x: auto;">
+      <table class="tbl" style="min-width: 760px;">
+        <thead><tr><th>Anlass</th><th class="num">Gäste</th><th class="num">Umsatz</th><th class="num">Waren</th><th class="num">Personal</th><th class="num">Übrige var.</th><th class="num">DB</th><th class="num">DB %</th><th>Status</th></tr></thead>
+        <tbody>
+          <sc-for list="{{events}}" as="e" hint-placeholder-count="6">
+            <tr>
+              <td><span style="font-weight: 500;">{{e.name}}</span><span style="display: block; font-size: 12px; color: #5B6661;">{{e.sub}}</span></td>
+              <td class="num">{{e.pax}}</td><td class="num">{{e.rev}}</td><td class="num">{{e.food}}</td><td class="num">{{e.staff}}</td><td class="num">{{e.other}}</td>
+              <td class="num" style="font-weight: 600;">{{e.db}}</td>
+              <td><div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;"><div style="width: 60px; height: 6px; border-radius: 3px; background: #EEF0EC; overflow: hidden;"><div style="height: 6px; {{e.bar}}"></div></div><span class="num">{{e.dbp}}</span></div></td>
+              <td><span class="pill" style="{{e.pill}}">{{e.status}}</span></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+      </div>
+      <div class="k" style="margin-top: 10px;">Personal = eigene Stunden × Lohnsatz inkl. Sozialleistungen + Freelancer. Übrige var. = Energie, Gerätemiete, Transport, Verbrauchsmaterial.</div>
+    </section>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <section class="card" style="flex: 3 1 520px; min-width: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Gerichte · Vollkosten pro Portion</h2>
+          <span class="k">bei 120 Portionen pro Produktion</span>
+        </div>
+        <div style="overflow-x: auto;">
+        <table class="tbl" style="min-width: 620px;">
+          <thead><tr><th>Gericht</th><th class="num">Waren</th><th class="num">Arbeit</th><th class="num">Energie</th><th class="num">Fixkosten</th><th class="num">Vollkosten</th><th class="num">VK</th><th class="num">Küchenmarge</th></tr></thead>
+          <tbody>
+            <sc-for list="{{dishes}}" as="d" hint-placeholder-count="3">
+              <tr><td style="font-weight: 500;">{{d.name}}</td><td class="num">{{d.food}}</td><td class="num">{{d.labor}}</td><td class="num">{{d.energy}}</td><td class="num">{{d.fix}}</td><td class="num" style="font-weight: 600;">{{d.full}}</td><td class="num">{{d.vk}}</td><td class="num"><span class="pill" style="{{d.pill}}">{{d.margin}}</span></td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+        </div>
+        <div class="k" style="margin-top: 10px;">Arbeit = aktive Minuten aus dem Arbeitsplan × Lohnsatz; Energie = Geräteleistung × Laufzeit × Strompreis; Fixkosten = Zuschlag auf die Herstellkosten ({{fixZ}} im {{monthName}}: Fixkosten ÷ variable Kosten). Marge vor Service- und Transportkosten des Anlasses.</div>
+      </section>
+
+      <aside style="flex: 2 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+        <section class="card">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 12px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Fixkosten pro Monat</h2>
+            <span class="mono" style="font-size: 14px; font-weight: 600;">{{fixTotal}}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{fixed}}" as="f" hint-placeholder-count="8">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span>{{f.name}}</span><span class="mono">{{f.value}}</span></div>
+                <div style="height: 6px; border-radius: 3px; background: #EEF0EC; overflow: hidden;"><div style="height: 6px; background: #3C4743; {{f.bar}}"></div></div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+        <section class="card">
+          <h2 style="margin: 0 0 12px; font-size: 16px; font-weight: 600;">Kostensätze</h2>
+          <table class="tbl">
+            <tbody>
+              <sc-for list="{{rates}}" as="r" hint-placeholder-count="6">
+                <tr><td>{{r.name}}<span style="display: block; font-size: 12px; color: #5B6661;">{{r.note}}</span></td><td class="num">{{r.value}}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: #FBF3E6; border: 1px solid #EBD3AE; font-size: 13px; color: #5C3A12;">Alle Sätze sind Annahmen. Echte Werte kommen aus Lohnbuchhaltung, Mietvertrag und Stromrechnung.</div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2300}}'>
+var MONTHS = [
+  { m: 'Jun', name: 'Juni', u: 298000, g: 3480, a: 27 },
+  { m: 'Jul', name: 'Juli', u: 255000, g: 2990, a: 22 },
+  { m: 'Aug', name: 'August', u: 270000, g: 3150, a: 24 },
+  { m: 'Sep', name: 'September', u: 335000, g: 3940, a: 31 },
+  { m: 'Okt', name: 'Oktober', u: 368000, g: 4330, a: 34 },
+  { m: 'Nov', name: 'November', u: 412000, g: 4850, a: 38 }
+];
+var SHARE = { waren: 0.300, personal: 0.240, energie: 0.015, miete: 0.0238, transport: 0.018, material: 0.0124 };
+var FIXED = [
+  ['Löhne Kader und Administration', 62000], ['Miete Zentralküche', 18500], ['Abschreibungen Geräte', 9500], ['Marketing und Verkauf', 6500],
+  ['IT und Verwaltung', 4900], ['Leasing Fahrzeuge', 4600], ['Energie Grundlast (Kühlung, Licht)', 3200], ['Versicherungen und Gebühren', 2800]
+];
+var EVENTS = [
+  ['Weihnachtsessen Bank', 'Teller-Service, 3 Gänge', 320, 28480, 8540, 6900, 1360],
+  ['Hochzeit', 'Buffet, Meilen', 150, 19200, 5380, 4100, 1120],
+  ['Firmenjubiläum', 'Teller-Service, Zürich-West', 120, 11400, 3420, 2780, 750],
+  ['Generalversammlung', 'Flying Dinner, Zug', 200, 11600, 3250, 4760, 890],
+  ['Apéro riche Vernissage', 'Stehapéro', 90, 4950, 1290, 1640, 310],
+  ['Seminar-Lunch', 'Buffet, 2 Gänge', 60, 2520, 760, 1040, 180]
+];
+var DISHES = [ ['Kalbshacktätschli', 4.80, 3.10, 0.28, 24], ['Kozhi Mappas', 3.90, 1.60, 0.22, 22], ['Quiche aux Oignons', 1.60, 1.40, 0.18, 9] ];
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { i: 5 }; }
+  renderVals() {
+    var self = this, i = this.state.i, M = MONTHS[i];
+    var chf = function (v) { var s = Math.round(Math.abs(v)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'"); return (v < 0 ? '−' : '') + 'CHF ' + s; };
+    var k = function (v) { return (v < 0 ? '−' : '') + (Math.round(Math.abs(v) / 100) / 10).toFixed(1).replace('.0', ''); };
+    var pct = function (v) { return (v < 0 ? '−' : '') + (Math.round(Math.abs(v) * 1000) / 10).toFixed(1) + ' %'; };
+    var n = function (v) { return Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'"); };
+    var fixSum = FIXED.reduce(function (s, f) { return s + f[1]; }, 0);
+    var varQ = SHARE.waren + SHARE.personal + SHARE.energie + SHARE.miete + SHARE.transport + SHARE.material, dbq = 1 - varQ;
+    var calc = function (mm) { var w = mm.u * SHARE.waren, p = mm.u * SHARE.personal, o = mm.u * (varQ - SHARE.waren - SHARE.personal), db = mm.u - w - p - o; return { w: w, p: p, o: o, db: db, erg: db - fixSum }; };
+    var C = calc(M), be = fixSum / dbq, beGuests = Math.round(be / (M.u / M.g));
+    var ok = 'background:#DCEBE2;color:#1F4A36;', warn = 'background:#F8E3CB;color:#5C3A12;';
+    var on = 'background:#FFFFFF;box-shadow:0 1px 2px rgba(27,36,33,0.12);font-weight:600;color:#1B2421;', off = 'background:transparent;color:#3C4743;';
+
+    // Wasserfall
+    var lo = Math.min(0, C.erg), hi = M.u, span = hi - lo, y = function (v) { return (v - lo) / span * 100; };
+    var steps = [
+      { name: 'Umsatz', from: 0, to: M.u, kind: 'total' },
+      { name: 'Waren', from: M.u - C.w, to: M.u, kind: 'minus', v: -C.w },
+      { name: 'Personal variabel', from: M.u - C.w - C.p, to: M.u - C.w, kind: 'minus', v: -C.p },
+      { name: 'Übrige variable', from: C.db, to: C.db + C.o, kind: 'minus', v: -C.o },
+      { name: 'Deckungs­beitrag', from: 0, to: C.db, kind: 'sub' },
+      { name: 'Fixkosten', from: C.db - fixSum, to: C.db, kind: 'minus', v: -fixSum },
+      { name: 'Ergebnis', from: Math.min(0, C.erg), to: Math.max(0, C.erg), kind: C.erg >= 0 ? 'good' : 'bad' }
+    ];
+    var col = { total: '#3C4743', minus: '#C9CFCB', sub: '#2F6B4F', good: '#2F6B4F', bad: '#9A5410' };
+    var wf = steps.map(function (s) {
+      var val = s.v != null ? s.v : (s.kind === 'total' ? M.u : s.kind === 'sub' ? C.db : C.erg);
+      var top = y(Math.max(s.from, s.to));
+      return { name: s.name, value: k(val), title: s.name + ': ' + chf(val),
+        style: 'bottom:' + y(Math.min(s.from, s.to)) + '%;height:' + Math.max(0.8, y(s.to) - y(s.from)) + '%;background:' + col[s.kind] + ';',
+        labelStyle: 'bottom:calc(' + top + '% + 4px);color:' + (s.kind === 'bad' ? '#7A4510' : '#1B2421') + ';',
+        nameStyle: (s.kind === 'sub' || s.kind === 'good' || s.kind === 'bad' || s.kind === 'total') ? 'font-weight:600;color:#1B2421;' : '' };
+    });
+
+    // Trend
+    var maxU = Math.max.apply(null, MONTHS.map(function (x) { return x.u; })) * 1.1;
+    var trend = MONTHS.map(function (x, j) {
+      var above = x.u >= be, sel = j === i;
+      return { m: x.m, value: k(x.u), title: x.name + ': ' + chf(x.u) + ', Ergebnis ' + chf(calc(x).erg),
+        style: 'height:' + (x.u / maxU * 100) + '%;background:' + (above ? '#2F6B4F' : '#E9C9A3') + ';' + (sel ? 'outline:2px solid #1B2421;outline-offset:2px;' : ''),
+        labelStyle: 'bottom:calc(' + (x.u / maxU * 100) + '% + 6px);font-weight:' + (sel ? 600 : 400) + ';',
+        nameStyle: sel ? 'font-weight:600;color:#1B2421;' : 'color:#5B6661;' };
+    });
+
+    var events = EVENTS.map(function (e) {
+      var db = e[3] - e[4] - e[5] - e[6], q = db / e[3];
+      return { name: e[0], sub: e[1], pax: String(e[2]), rev: chf(e[3]), food: chf(e[4]), staff: chf(e[5]), other: chf(e[6]), db: chf(db), dbp: pct(q), q: q,
+        bar: 'width:' + Math.min(100, q / 0.5 * 100) + '%;background:' + (q >= 0.35 ? '#2F6B4F' : '#9A5410') + ';',
+        pill: q >= 0.35 ? ok : warn, status: q >= 0.35 ? 'Im Ziel' : 'Unter Ziel' };
+    }).sort(function (a, b) { return b.q - a.q; });
+
+    var fixZ = fixSum / (M.u * varQ);
+    var dishes = DISHES.map(function (d) {
+      var hk = d[1] + d[2] + d[3], fx = hk * fixZ, full = hk + fx, m = (d[4] - full) / d[4];
+      var f2 = function (v) { return v.toFixed(2); };
+      return { name: d[0], food: f2(d[1]), labor: f2(d[2]), energy: f2(d[3]), fix: f2(fx), full: f2(full), vk: f2(d[4]), margin: pct(m), pill: m >= 0.35 ? ok : warn };
+    });
+
+    var maxF = FIXED[0][1];
+    return {
+      title: 'Ist die Produktion im ' + M.name + ' rentabel?',
+      monthName: M.name,
+      monthOpts: MONTHS.map(function (x, j) { return { label: x.m, checked: String(j === i), style: j === i ? on : off, pick: function () { self.setState({ i: j }); } }; }),
+      kUmsatz: chf(M.u), kUmsatzSub: M.a + ' Anlässe · ' + n(M.g) + ' Gäste',
+      kDB: chf(C.db), kDBSub: pct(dbq) + ' vom Umsatz',
+      kErg: chf(C.erg), kErgStatus: C.erg >= 0 ? 'Rentabel · ' + pct(C.erg / M.u) : 'Verlust · ' + pct(C.erg / M.u),
+      kErgPill: C.erg >= 0 ? ok : warn,
+      kErgStyle: C.erg >= 0 ? '' : 'border-color:#EBD3AE;background:#FBF3E6;', kErgLabel: C.erg >= 0 ? '' : 'color:#5C3A12;',
+      kBE: chf(be), kBESub: 'Umsatz nötig, ≈ ' + n(beGuests) + ' Gäste · erreicht ' + Math.round(M.u / be * 100) + ' %',
+      kBEBar: 'width:' + Math.min(100, M.u / be * 100) + '%;background:' + (M.u >= be ? '#2F6B4F' : '#9A5410') + ';',
+      wfTitle: 'Kostenstruktur ' + M.name, wf: wf, wfZero: 'bottom:' + y(0) + '%;',
+      trend: trend, beLine: 'bottom:' + (be / maxU * 100) + '%;', beLabel: 'bottom:calc(' + (be / maxU * 100) + '% + 4px);', beValue: k(be),
+      events: events, dishes: dishes, fixZ: pct(fixZ),
+      fixTotal: chf(fixSum),
+      fixed: FIXED.map(function (f) { return { name: f[0], value: chf(f[1]), bar: 'width:' + (f[1] / maxF * 100) + '%;' }; }),
+      rates: [
+        { name: 'Koch', note: 'inkl. Sozialleistungen, Ferien, 13. ML', value: 'CHF 48.00 / h' },
+        { name: 'Hilfskoch', note: 'inkl. Sozialleistungen', value: 'CHF 38.00 / h' },
+        { name: 'Service-Freelancer', note: 'Pool-Tarif', value: 'CHF 42.00 / h' },
+        { name: 'Abwasch', note: 'inkl. Sozialleistungen', value: 'CHF 34.00 / h' },
+        { name: 'Strom', note: 'Arbeitspreis', value: 'CHF 0.28 / kWh' },
+        { name: 'Combi-Steamer 10× GN 1/1', note: 'mittlere Leistung im Betrieb', value: '9 kWh / h' },
+        { name: 'Transport', note: 'Lieferwagen inkl. Fahrer', value: 'CHF 1.20 / km' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
