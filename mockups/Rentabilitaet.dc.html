@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>Rentabilität – Dashboard</title>
 <script src="./support.js"></script>
+<link rel="stylesheet" href="planer.css">
 </head>
 <body>
 <x-dc>
@@ -12,9 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#F3F4F1}
-a{color:#2F6B4F}a:hover{color:#1F4A36}
-.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
-.nav a:hover{background:#E6EAE5;color:#1B2421}
 .card{background:#FFFFFF;border:1px solid #E1E5E0;border-radius:12px;padding:24px}
 .tbl{width:100%;border-collapse:collapse;font-size:14px}
 .tbl th{text-align:left;font-size:12px;font-weight:500;color:#5B6661;padding:0 12px 10px 0;border-bottom:1px solid #E1E5E0;white-space:nowrap}
@@ -25,24 +23,12 @@ a{color:#2F6B4F}a:hover{color:#1F4A36}
 .mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
 </style>
 </helmet>
-<div style="min-height: 2300px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+<div class="pl-app" style="min-height: 2200px;">
+  <div style="flex: 1 1 232px; max-width: 100%; display: flex;">
+    <dc-import name="Nav" active="rentabilitaet" hint-size="100%,2200px"></dc-import>
+  </div>
 
-  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
-    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
-      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
-    </div>
-    <a href="Rentabilitaet.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;">Rentabilität</a>
-    <a href="Leitstand.dc.html">Leitstand</a>
-    <a href="Main.dc.html">Anlässe</a>
-    <a href="Ressourcen.dc.html">Ressourcen</a>
-    <a href="Rezeptbibliothek.dc.html">Speisen &amp; Rezepte</a>
-    <a href="Produktion.dc.html">Produktionsplan</a>
-    <span style="color: #8A938F;">Einkauf</span>
-    <span style="color: #8A938F;">Stammdaten</span>
-  </nav>
-
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
+  <main class="pl-main">
 
     <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
       <div>
@@ -188,7 +174,7 @@ a{color:#2F6B4F}a:hover{color:#1F4A36}
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2300}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2200}}'>
 var MONTHS = [
   { m: 'Jun', name: 'Juni', u: 298000, g: 3480, a: 27 },
   { m: 'Jul', name: 'Juli', u: 255000, g: 2990, a: 22 },
@@ -205,12 +191,12 @@ var FIXED = [
 var EVENTS = [
   ['Weihnachtsessen Bank', 'Teller-Service, 3 Gänge', 320, 28480, 8540, 6900, 1360],
   ['Hochzeit', 'Buffet, Meilen', 150, 19200, 5380, 4100, 1120],
-  ['Firmenjubiläum', 'Teller-Service, Zürich-West', 120, 11400, 3420, 2780, 750],
+  ['Firmenjubiläum', 'Teller-Service, Zürich-West', 120, 13800, 3420, 4443, 750],
   ['Generalversammlung', 'Flying Dinner, Zug', 200, 11600, 3250, 4760, 890],
   ['Apéro riche Vernissage', 'Stehapéro', 90, 4950, 1290, 1640, 310],
   ['Seminar-Lunch', 'Buffet, 2 Gänge', 60, 2520, 760, 1040, 180]
 ];
-var DISHES = [ ['Kalbshacktätschli', 4.80, 3.10, 0.28, 24], ['Kozhi Mappas', 3.90, 1.60, 0.22, 22], ['Quiche aux Oignons', 1.60, 1.40, 0.18, 9] ];
+var DISHES = [ ['Kalbshacktätschli mit Sugo',4.80, 3.10, 0.28, 24], ['Kozhi Mappas', 3.90, 1.60, 0.22, 22], ['Quiche aux Oignons', 1.60, 1.40, 0.18, 9] ];
 
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { i: 5 }; }

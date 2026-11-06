@@ -4,143 +4,149 @@
 <meta charset="utf-8">
 <title>Produktionsplan</title>
 <script src="./support.js"></script>
+<link rel="stylesheet" href="planer.css">
 </head>
 <body>
 <x-dc>
 <helmet>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
-<style>
-body{margin:0;background:#F3F4F1}
-a{color:#2F6B4F}a:hover{color:#1F4A36}
-.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
-.nav a:hover{background:#E6EAE5;color:#1B2421}
-.bar{position:absolute;top:7px;height:34px;box-sizing:border-box;padding:0 8px;border-radius:6px;font-size:12px;font-weight:500;line-height:34px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-</style>
+<style>body{margin:0;background:#F3F4F1}</style>
 </helmet>
-<div style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+<div class="pl-app" style="min-height: 1100px;">
+  <div style="flex: 1 1 232px; max-width: 100%; display: flex;">
+    <dc-import name="Nav" active="produktion" hint-size="100%,1100px"></dc-import>
+  </div>
 
-  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
-    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
-      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
-    </div>
-    <a href="Leitstand.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>Leitstand</a>
-    <a href="Main.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Anlässe</a>
-    <a href="Ressourcen.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Ressourcen</a>
-    <a href="Rezept.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 4h10l2 2v14H6z"></path><path d="M9 9h6M9 13h6M9 17h4"></path></svg>Speisen &amp; Rezepte</a>
-    <a href="Produktion.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h9M4 12h14M4 18h7"></path></svg>Produktionsplan</a>
-    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 7h14l-1.5 10h-11z"></path><path d="M9 7V5h6v2"></path></svg>Einkauf</span>
-    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg>Stammdaten</span>
-  </nav>
-
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
-    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+  <main class="pl-main">
+    <header class="pl-head">
       <div>
-        <div style="font-size: 13px; color: #5B6661;"><a href="Main.dc.html" style="color: #5B6661;">A-2026-0418</a> · 120 Gäste · Teller-Service</div>
-        <h1 style="margin: 4px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">Produktionsplan</h1>
+        <div class="pl-crumb"><a href="Anlass.dc.html">A-2026-0418 Firmenjubiläum</a> · 120 Gäste · Teller-Service</div>
+        <h1 class="pl-h1">Produktionsplan</h1>
       </div>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-        <div role="radiogroup" aria-label="Tag" style="display: inline-flex; padding: 4px; gap: 4px; background: #E6EAE5; border-radius: 10px;">
-          <button type="button" role="radio" aria-checked="{{dayM1}}" onClick="{{pickM1}}" style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; font: inherit; font-size: 14px; {{styleM1}}">Tag −1 · 13.11.</button>
-          <button type="button" role="radio" aria-checked="{{day0}}" onClick="{{pick0}}" style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; font: inherit; font-size: 14px; {{style0}}">Tag 0 · 14.11.</button>
+      <div class="pl-actions">
+        <div class="pl-seg" role="radiogroup" aria-label="Tag">
+          <sc-for list="{{days}}" as="d" hint-placeholder-count="2">
+            <button type="button" class="pl-seg__opt" role="radio" aria-checked="{{d.checked}}" onClick="{{d.pick}}">{{d.label}}</button>
+          </sc-for>
         </div>
-        <button type="button" style="height: 44px; padding: 0 18px; border-radius: 8px; border: 1px solid #CBD2CC; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; color: #1B2421;">Drucken</button>
+        <button type="button" class="pl-btn pl-btn--secondary">Produktionsliste drucken</button>
       </div>
     </header>
 
-    <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-        <h2 style="margin: 0; font-size: 16px; font-weight: 600;">{{dayTitle}}</h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: #3C4743;">
-          <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #DCE5F2; border: 1px solid #2F5E9E;"></span>Zentralküche</span>
-          <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #E6E9E6; border: 1px solid #6B7570;"></span>Logistik</span>
-          <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #F8E3CB; border: 1px solid #9A5410;"></span>Vor Ort</span>
+    <section class="pl-card">
+      <div class="pl-card__head">
+        <h2 class="pl-card__title">{{dayTitle}}</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+          <span class="pl-loc pl-loc--zentral"><span class="pl-loc__swatch"></span>Zentralküche</span>
+          <span class="pl-loc pl-loc--logistik"><span class="pl-loc__swatch"></span>Logistik</span>
+          <span class="pl-loc pl-loc--vorort"><span class="pl-loc__swatch"></span>Vor Ort</span>
         </div>
       </div>
-      <div style="overflow-x: auto;">
-        <div style="min-width: 760px;">
-          <div style="display: flex; padding-bottom: 8px; border-bottom: 1px solid #E1E5E0;">
-            <div style="width: 170px; flex: none;"></div>
-            <div style="flex: 1; position: relative; height: 18px;">
-              <sc-for list="{{ticks}}" as="t" hint-placeholder-count="9">
-                <span style="position: absolute; top: 0; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5B6661; {{t.pos}}">{{t.label}}</span>
-              </sc-for>
-            </div>
-          </div>
-          <div style="position: relative;">
-            <sc-for list="{{lanes}}" as="l" hint-placeholder-count="6">
-              <div style="display: flex; border-bottom: 1px solid #EEF0EC;">
-                <div style="width: 170px; flex: none; padding: 14px 12px 0 0; box-sizing: border-box; font-size: 13px; font-weight: 500;">{{l.name}}</div>
-                <div style="flex: 1; position: relative; height: 48px; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(12.5% - 1px), #F1F2EF calc(12.5% - 1px), #F1F2EF 12.5%);">
-                  <sc-for list="{{l.bars}}" as="b" hint-placeholder-count="3">
-                    <div class="bar" title="{{b.title}}" style="{{b.style}}">{{b.label}}</div>
-                  </sc-for>
+      <div class="pl-scroll">
+        <div class="pl-tl" style="padding-top: 8px;">
+          <div class="pl-tl__axis"><div class="pl-tl__label"></div><div class="pl-tl__track" style="height: 18px;">
+            <sc-for list="{{ticks}}" as="t" hint-placeholder-count="9"><span class="pl-tl__tick" style="left: {{t.left}};">{{t.label}}</span></sc-for>
+          </div></div>
+          <div class="pl-tl__body">
+            <sc-for list="{{lanes}}" as="l" hint-placeholder-count="5">
+              <div class="pl-tl__row">
+                <div class="pl-tl__label">{{l.name}}</div>
+                <div class="pl-tl__track">
+                  <sc-for list="{{l.bars}}" as="b" hint-placeholder-count="3"><div class="pl-tl__bar {{b.cls}}" title="{{b.title}}" style="left: {{b.left}}; width: {{b.width}};">{{b.label}}</div></sc-for>
                 </div>
               </div>
             </sc-for>
-            <sc-if value="{{showDinner}}" hint-placeholder-val="{{true}}">
-              <div aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: calc(170px + (100% - 170px) * 0.71875); border-left: 2px dashed #2F6B4F;"></div>
-              <div style="position: absolute; top: -26px; left: calc(170px + (100% - 170px) * 0.71875 + 6px); font-size: 11px; font-weight: 600; color: #1F4A36;">Essen 19:30</div>
+            <sc-if value="{{showMarker}}" hint-placeholder-val="{{true}}">
+              <div class="pl-tl__marker" style="left: calc(170px + (100% - 170px) * 0.71875);"><span>Essen 19:30</span></div>
             </sc-if>
           </div>
         </div>
       </div>
     </section>
 
-    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
-      <div style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 18px 20px;"><div style="font-size: 12px; color: #5B6661;">Längster Schritt</div><div style="font-size: 15px; font-weight: 600; margin-top: 4px;">Kalbsbraten garen, 180 min</div><div style="font-size: 12px; color: #5B6661;">Tag −1, Combi-Steamer Zentralküche</div></div>
-      <div style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 18px 20px;"><div style="font-size: 12px; color: #5B6661;">Abfahrt spätestens</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; margin-top: 4px;">15:30</div><div style="font-size: 12px; color: #5B6661;">Fahrzeit + Aufbau vor Ort</div></div>
-      <div style="background: #FBF3E6; border: 1px solid #EBD3AE; border-radius: 12px; padding: 18px 20px;"><div style="font-size: 12px; color: #7A4510;">Kapazitätshinweis</div><div style="font-size: 15px; font-weight: 600; margin-top: 4px; color: #5C3A12;">Combi-Steamer Tag −1 voll belegt</div><div style="font-size: 12px; color: #7A4510;">Gratin auf Tag 0 verschoben</div></div>
+    <div class="pl-row">
+      <section class="pl-card pl-col-main">
+        <div class="pl-card__head"><h2 class="pl-card__title">Produktionsliste</h2><span class="pl-card__meta">aus den Arbeitsplänen der Rezepte, nach Startzeit</span></div>
+        <div class="pl-scroll">
+          <table class="pl-table" style="min-width: 640px;">
+            <thead><tr><th>Zeit</th><th>Schritt</th><th>Rezept</th><th>Gerät</th><th>Ort</th></tr></thead>
+            <tbody>
+              <sc-for list="{{list}}" as="s" hint-placeholder-count="10">
+                <tr><td class="pl-mono" style="font-size: 13px; white-space: nowrap;">{{s.time}}</td><td style="font-weight: 500;">{{s.label}}</td><td class="pl-muted">{{s.recipe}}</td><td class="pl-muted">{{s.device}}</td><td><span class="pl-loc {{s.locCls}}"><span class="pl-loc__swatch"></span>{{s.loc}}</span></td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <aside class="pl-col-side">
+        <div class="pl-kpi"><div class="pl-kpi__label">Längster Schritt</div><div style="font-size: 15px; font-weight: 600; margin-top: 4px;">{{longest}}</div><div class="pl-kpi__detail">{{longestSub}}</div></div>
+        <div class="pl-kpi"><div class="pl-kpi__label">Abfahrt spätestens</div><div class="pl-kpi__value">15:30</div><div class="pl-kpi__detail">18 km, Aufbau ab 16:30</div></div>
+        <div class="pl-kpi pl-kpi--warn"><div class="pl-kpi__label" style="color: #5C3A12;">Kapazitätshinweis</div><div style="font-size: 15px; font-weight: 600; margin-top: 4px; color: #5C3A12;">Combi-Steamer Tag −1 zu 94 % belegt</div><div class="pl-kpi__detail" style="color: #7A4510;">durch alle 3 Anlässe; Quiche-Böden auf Tag 0 gelegt</div></div>
+      </aside>
     </div>
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1100}}'>
+var PLAN = {
+  m1: [
+    ['Zentralküche warm', 'Zwiebeln andünsten', 8, 8.5, 'zentral', 'Sugo', 'Kippkessel'],
+    ['Zentralküche warm', 'Sugo einkochen', 8.5, 9.75, 'zentral', 'Sugo', 'Kippkessel'],
+    ['Zentralküche warm', 'Pasteurisieren 92 °C', 10, 10.5, 'zentral', 'Sugo', 'Combi-Steamer, Dampf'],
+    ['Zentralküche kalt', 'Gemüse fein würfeln', 9, 10, 'zentral', 'Kalbshacktätschli', 'Arbeitstisch'],
+    ['Zentralküche kalt', 'Gemüse dünsten, kühlen', 10, 11, 'zentral', 'Kalbshacktätschli', 'Kippbratpfanne'],
+    ['Teig und Pâtisserie', 'Kuchenteig herstellen', 10, 11, 'zentral', 'Kuchenteig', 'Rührwerk'],
+    ['Logistik', 'Wareneingang', 8, 9, 'logistik', '–', '–'],
+    ['Logistik', 'Mietgeschirr annehmen', 14, 15, 'logistik', '–', '–']
+  ],
+  d0: [
+    ['Zentralküche warm', 'Masse mischen', 8, 8.5, 'zentral', 'Kalbshacktätschli', 'Rührwerk'],
+    ['Zentralküche warm', 'Tätschli formen', 8.5, 10, 'zentral', 'Kalbshacktätschli', 'Arbeitstisch'],
+    ['Zentralküche warm', 'Anbraten', 10, 11.5, 'zentral', 'Kalbshacktätschli', 'Kippbratpfanne'],
+    ['Zentralküche warm', 'Garen Kern 72 °C', 11.5, 12, 'zentral', 'Kalbshacktätschli', 'Combi-Steamer'],
+    ['Zentralküche warm', 'Schockkühlen', 12, 13.5, 'zentral', 'Kalbshacktätschli', 'Schockkühler'],
+    ['Teig und Pâtisserie', 'Quiche auslegen, füllen', 11, 12.5, 'zentral', 'Quiche aux Oignons', 'Arbeitstisch'],
+    ['Teig und Pâtisserie', 'Backen 200 °C', 12.5, 13.25, 'zentral', 'Quiche aux Oignons', 'Combi-Steamer'],
+    ['Logistik', 'Packen, Kühlkette', 13.5, 15.5, 'logistik', '–', 'Thermoboxen'],
+    ['Logistik', 'Transport', 15.5, 16.5, 'logistik', '–', 'Lieferwagen'],
+    ['Logistik', 'Rückfahrt', 23.25, 24, 'logistik', '–', 'Lieferwagen'],
+    ['Küche vor Ort', 'Aufbau', 16.5, 18, 'vorort', '–', '–'],
+    ['Küche vor Ort', 'Quiche regenerieren', 18, 18.5, 'vorort', 'Quiche aux Oignons', 'Combi-Steamer mobil'],
+    ['Küche vor Ort', 'Tätschli regenerieren, Sugo erwärmen', 18.75, 19.5, 'vorort', 'Kalbshacktätschli, Sugo', 'Combi-Steamer mobil'],
+    ['Küche vor Ort', 'Anrichten Hauptgang', 19.5, 21, 'vorort', 'Kalbshacktätschli', 'Pass'],
+    ['Küche vor Ort', 'Abbau', 22.5, 23.5, 'vorort', '–', '–'],
+    ['Service vor Ort', 'Eindecken', 17.5, 18.5, 'vorort', '–', '–'],
+    ['Service vor Ort', 'Apéro', 18.5, 19.5, 'vorort', 'Quiche aux Oignons', '–'],
+    ['Service vor Ort', 'Dinner-Service', 19.5, 22.5, 'vorort', '–', '–'],
+    ['Service vor Ort', 'Abräumen', 22.5, 23.5, 'vorort', '–', '–']
+  ]
+};
+
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { day: 0 }; }
+  constructor(props) { super(props); this.state = { day: 'd0' }; }
   renderVals() {
-    var day = this.state.day;
-    var S = 8, SPAN = 16;
-    var kinds = {
-      zk: 'background:#DCE5F2;border:1px solid #2F5E9E;color:#1E3F6E;',
-      lg: 'background:#E6E9E6;border:1px solid #6B7570;color:#2E3733;',
-      vo: 'background:#F8E3CB;border:1px solid #9A5410;color:#5C3A12;'
-    };
-    var bar = function (label, s, e, k) {
-      var l = (s - S) / SPAN * 100, w = (e - s) / SPAN * 100;
-      return { label: label, title: label, style: 'left:' + l + '%;width:calc(' + w + '% - 3px);' + kinds[k] };
-    };
-    var lanes0 = [
-      { name: 'Zentralküche warm', bars: [bar('Tranchieren', 9, 11.5, 'zk'), bar('Gratin backen', 11.5, 13, 'zk'), bar('Jus fertigstellen', 13, 14, 'zk')] },
-      { name: 'Zentralküche kalt', bars: [bar('Randen-Carpaccio', 8, 11, 'zk'), bar('Nüsslisalat rüsten', 11, 12.5, 'zk')] },
-      { name: 'Patisserie', bars: [bar('Crumble backen', 8, 10.5, 'zk'), bar('Portionieren', 10.5, 12, 'zk')] },
-      { name: 'Logistik', bars: [bar('Packen, Kühlkette', 13.5, 15.5, 'lg'), bar('Transport', 15.5, 16.5, 'lg'), bar('Rückfahrt', 23.25, 24, 'lg')] },
-      { name: 'Küche vor Ort', bars: [bar('Aufbau', 16.5, 18, 'vo'), bar('Regenerieren', 18.5, 19.5, 'vo'), bar('Anrichten 3 Gänge', 19.5, 22.5, 'vo'), bar('Abbau', 22.5, 23.5, 'vo')] },
-      { name: 'Service vor Ort', bars: [bar('Eindecken', 17.5, 18.5, 'vo'), bar('Apéro', 18.5, 19.5, 'vo'), bar('Dinner-Service', 19.5, 22.5, 'vo'), bar('Abräumen', 22.5, 24, 'vo')] }
-    ];
-    var lanesM1 = [
-      { name: 'Zentralküche warm', bars: [bar('Parieren, würzen', 8, 9.5, 'zk'), bar('Anbraten', 9.5, 10.5, 'zk'), bar('Niedertemperatur garen', 10.5, 13.5, 'zk'), bar('Schockkühlen', 13.5, 15, 'zk')] },
-      { name: 'Zentralküche kalt', bars: [bar('Randen garen', 9, 11, 'zk'), bar('Meerrettich-Creme', 11, 12, 'zk')] },
-      { name: 'Patisserie', bars: [bar('Streusel, Kompott', 9, 11.5, 'zk')] },
-      { name: 'Logistik', bars: [bar('Wareneingang', 8, 9, 'lg'), bar('Mietmaterial prüfen', 14, 16, 'lg')] }
-    ];
-    var ticks = [];
-    for (var h = 8; h <= 24; h += 2) ticks.push({ label: (h < 10 ? '0' : '') + h + ':00', pos: 'left:' + ((h - S) / SPAN * 100) + '%;' });
-    var on = 'background:#FFFFFF;box-shadow:0 1px 2px rgba(27,36,33,0.12);font-weight:600;color:#1B2421;';
-    var off = 'background:transparent;color:#3C4743;';
-    var self = this;
+    var self = this, day = this.state.day, rows = PLAN[day];
+    var S = 8, SPAN = 16, pos = function (h) { return ((h - S) / SPAN * 100) + '%'; };
+    var hm = function (h) { var hh = Math.floor(h) % 24, mm = Math.round((h % 1) * 60); return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm; };
+    var locName = { zentral: 'Zentralküche', vorort: 'Vor Ort', logistik: 'Logistik' };
+    var laneNames = []; rows.forEach(function (r) { if (laneNames.indexOf(r[0]) < 0) laneNames.push(r[0]); });
+    var ticks = []; for (var h = 8; h <= 24; h += 2) ticks.push({ label: hm(h), left: pos(h) });
+    var longest = rows.reduce(function (a, r) { return (r[3] - r[2]) > (a[3] - a[2]) ? r : a; }, rows[0]);
     return {
-      lanes: day === 0 ? lanes0 : lanesM1,
+      days: [{ v: 'm1', l: 'Tag −1 · Fr 13.11.' }, { v: 'd0', l: 'Tag 0 · Sa 14.11.' }].map(function (d) { return { label: d.l, checked: String(d.v === day), pick: function () { self.setState({ day: d.v }); } }; }),
+      dayTitle: day === 'd0' ? 'Samstag, 14.11.2026 · Tag 0' : 'Freitag, 13.11.2026 · Tag −1',
+      showMarker: day === 'd0',
       ticks: ticks,
-      showDinner: day === 0,
-      dayTitle: day === 0 ? 'Samstag, 14.11.2026 · Tag 0' : 'Freitag, 13.11.2026 · Tag −1',
-      day0: day === 0 ? 'true' : 'false',
-      dayM1: day === 1 ? 'true' : 'false',
-      style0: day === 0 ? on : off,
-      styleM1: day === 1 ? on : off,
-      pick0: function () { self.setState({ day: 0 }); },
-      pickM1: function () { self.setState({ day: 1 }); }
+      lanes: laneNames.map(function (n) {
+        return { name: n, bars: rows.filter(function (r) { return r[0] === n; }).map(function (r) {
+          return { label: r[1], cls: 'pl-tl__bar--' + r[4], title: hm(r[2]) + '–' + hm(r[3]) + ' · ' + r[1] + ' · ' + r[5], left: pos(r[2]), width: 'calc(' + ((r[3] - r[2]) / SPAN * 100) + '% - 3px)' };
+        }) };
+      }),
+      list: rows.slice().sort(function (a, b) { return a[2] - b[2]; }).map(function (r) {
+        return { time: hm(r[2]) + '–' + hm(r[3]), label: r[1], recipe: r[5], device: r[6], loc: locName[r[4]], locCls: 'pl-loc--' + r[4] };
+      }),
+      longest: longest[1] + ', ' + Math.round((longest[3] - longest[2]) * 60) + ' min',
+      longestSub: longest[5] + ' · ' + longest[0]
     };
   }
 }

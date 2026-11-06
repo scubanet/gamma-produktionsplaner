@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Anlass erfassen</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="planer.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F3F4F1}</style>
+</helmet>
+<div class="pl-app" style="min-height: 1100px;">
+  <div style="flex: 1 1 232px; max-width: 100%; display: flex;">
+    <dc-import name="Nav" active="anlass" hint-size="100%,1100px"></dc-import>
+  </div>
+
+  <main class="pl-main">
+    <header class="pl-head">
+      <div>
+        <div class="pl-crumb"><a href="Main.dc.html">Leitstand</a> / Anlässe / A-2026-0418</div>
+        <h1 class="pl-h1">Firmenjubiläum · Anlass A</h1>
+      </div>
+      <div class="pl-actions">
+        <button type="button" class="pl-btn pl-btn--secondary">Entwurf speichern</button>
+        <a href="Ressourcen.dc.html" class="pl-btn pl-btn--primary">Ressourcen berechnen</a>
+      </div>
+    </header>
+
+    <div class="pl-row">
+      <div class="pl-col-main">
+        <section class="pl-card">
+          <div class="pl-card__head"><h2 class="pl-card__title">Rahmendaten</h2><span class="pl-pill pl-pill--ok">Bestätigt</span></div>
+          <div class="pl-grid-3">
+            <div style="grid-column: span 2;"><label class="pl-field__label" for="kunde">Kunde</label><input class="pl-field__input" id="kunde" value="[Kundenname]"></div>
+            <div><label class="pl-field__label" for="datum">Datum</label><input class="pl-field__input" id="datum" value="14.11.2026"></div>
+            <div><label class="pl-field__label" for="gaeste">Gäste</label><input class="pl-field__input pl-field__input--mono" id="gaeste" value="120" inputmode="numeric"></div>
+            <div><label class="pl-field__label" for="apero">Apéro</label><input class="pl-field__input" id="apero" value="18:30"></div>
+            <div><label class="pl-field__label" for="essen">Essen</label><input class="pl-field__input" id="essen" value="19:30"></div>
+          </div>
+          <div style="margin-top: 20px;">
+            <div class="pl-field__label">Serviceart</div>
+            <div class="pl-seg" role="radiogroup" aria-label="Serviceart">
+              <sc-for list="{{services}}" as="s" hint-placeholder-count="3">
+                <button type="button" class="pl-seg__opt" role="radio" aria-checked="{{s.checked}}" onClick="{{s.pick}}">{{s.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+
+        <section class="pl-card">
+          <div class="pl-card__head"><h2 class="pl-card__title">Location · Zürich-West</h2><span class="pl-card__meta">18 km ab Zentralküche</span></div>
+          <div class="pl-grid-2" style="gap: 0 24px;">
+            <label class="pl-check"><input type="checkbox">Küche vor Ort</label>
+            <label class="pl-check"><input type="checkbox" checked>Strom 400 V</label>
+            <label class="pl-check"><input type="checkbox" checked>Wasseranschluss</label>
+            <label class="pl-check"><input type="checkbox">Abwasch vor Ort</label>
+          </div>
+        </section>
+
+        <section class="pl-card">
+          <div class="pl-card__head"><h2 class="pl-card__title">Menü</h2><a href="Rezepte.dc.html" style="font-size: 14px; color: #2F6B4F;">Rezepte öffnen</a></div>
+          <div>
+            <sc-for list="{{courses}}" as="c" hint-placeholder-count="3">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 14px 0; border-top: 1px solid #EEF0EC;">
+                <div class="pl-eyebrow" style="width: 96px;">{{c.gang}}</div>
+                <div style="flex: 1 1 260px; min-width: 0;">
+                  <div style="font-size: 15px; font-weight: 500;">{{c.name}}</div>
+                  <div class="pl-small">{{c.detail}}</div>
+                </div>
+                <div class="pl-mono" style="font-size: 13px; color: #3C4743;">{{c.portion}}</div>
+                <span class="pl-pill {{c.pill}}">{{c.status}}</span>
+              </div>
+            </sc-for>
+          </div>
+          <button type="button" class="pl-btn pl-btn--dashed" style="margin-top: 12px;">+ Gang hinzufügen</button>
+        </section>
+      </div>
+
+      <aside class="pl-col-side">
+        <section class="pl-card pl-card--panel" style="display: flex; flex-direction: column; gap: 18px;">
+          <div class="pl-card__head" style="margin: 0;"><h2 class="pl-card__title">Live-Vorschau</h2><span class="pl-card__meta">Beispieldaten</span></div>
+          <div>
+            <div class="pl-label">Personal am Anlass</div>
+            <div class="pl-mono" style="font-size: 40px; line-height: 44px;">17</div>
+            <div style="font-size: 13px; color: #D5DDD8;">3 Küche · 11 Service · 2 Abwasch · 1 Fahrer</div>
+          </div>
+          <div style="height: 1px; background: #33403B;"></div>
+          <div class="pl-grid-2">
+            <div><div class="pl-label">Combi-Steamer mobil</div><div class="pl-mono" style="font-size: 22px;">2</div></div>
+            <div><div class="pl-label">Wärmeschränke</div><div class="pl-mono" style="font-size: 22px;">4</div></div>
+            <div><div class="pl-label">Teller inkl. Reserve</div><div class="pl-mono" style="font-size: 22px;">400</div></div>
+            <div><div class="pl-label">Lieferwagen</div><div class="pl-mono" style="font-size: 22px;">1</div></div>
+          </div>
+          <div style="background: #3A2F1C; border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.45; color: #F4DDB8;">Keine Küche vor Ort: mobile Geräte und Abwasch-Team automatisch eingeplant.</div>
+          <div style="height: 1px; background: #33403B;"></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline;"><span class="pl-label">Preis pro Gast</span><span class="pl-mono" style="font-size: 22px;">CHF 115.00</span></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline;"><span class="pl-label">Deckungsbeitrag</span><span class="pl-mono" style="font-size: 16px;">CHF 5'187 · 37.6 %</span></div>
+        </section>
+        <section class="pl-notice">
+          <h3 class="pl-notice__title">1 offener Punkt</h3>
+          <ul><li>Dessert ist noch nicht gewählt; Rezept fehlt in der Bibliothek.</li></ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { service: 'teller' }; }
+  renderVals() {
+    var self = this;
+    var opts = [{ v: 'teller', l: 'Teller-Service' }, { v: 'buffet', l: 'Buffet' }, { v: 'flying', l: 'Flying Dinner' }, { v: 'apero', l: 'Apéro' }];
+    return {
+      services: opts.map(function (o) { return { label: o.l, checked: String(o.v === self.state.service), pick: function () { self.setState({ service: o.v }); } }; }),
+      courses: [
+        { gang: 'Apéro', name: 'Quiche aux Oignons', detail: 'Zwiebel-Speck-Quiche, 1 Stück pro Gast', portion: '140 g', status: 'Rezept', pill: 'pl-pill--ok' },
+        { gang: 'Hauptgang', name: 'Kalbshacktätschli mit Sugo', detail: '2 Tätschli à 90 g, Sugo als Komponente', portion: '260 g', status: 'Rezept', pill: 'pl-pill--ok' },
+        { gang: 'Dessert', name: '[Dessert offen]', detail: 'noch kein Rezept in der Bibliothek', portion: '–', status: 'Offen', pill: 'pl-pill--warn' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

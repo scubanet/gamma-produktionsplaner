@@ -2,142 +2,159 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>Anlass erfassen</title>
+<title>Leitstand</title>
 <script src="./support.js"></script>
+<link rel="stylesheet" href="planer.css">
 </head>
 <body>
 <x-dc>
 <helmet>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
-<style>
-body{margin:0;background:#F3F4F1}
-a{color:#2F6B4F}a:hover{color:#1F4A36}
-.nav a,.nav span{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#3C4743;font-size:14px}
-.nav a:hover{background:#E6EAE5;color:#1B2421}
-.lbl{display:block;font-size:12px;font-weight:500;color:#5B6661;margin-bottom:6px}
-.inp{box-sizing:border-box;width:100%;height:44px;padding:0 12px;border:1px solid #CBD2CC;border-radius:8px;font:inherit;font-size:14px;color:#1B2421;background:#FFFFFF}
-.chk{display:flex;align-items:center;gap:10px;font-size:14px;min-height:44px}
-.chk input{width:18px;height:18px;accent-color:#2F6B4F}
-</style>
+<style>body{margin:0;background:#F3F4F1}</style>
 </helmet>
-<div style="min-height: 900px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1B2421; background: #F3F4F1;">
+<div class="pl-app" style="min-height: 1200px;">
+  <div style="flex: 1 1 232px; max-width: 100%; display: flex;">
+    <dc-import name="Nav" active="leitstand" hint-size="100%,1200px"></dc-import>
+  </div>
 
-  <nav class="nav" aria-label="Hauptnavigation" style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: 24px 16px; background: #FFFFFF; border-right: 1px solid #E1E5E0; display: flex; flex-direction: column; gap: 4px;">
-    <div style="display: flex; align-items: center; gap: 10px; padding: 0 12px 24px;">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2F6B4F"></rect><path d="M8 18h12M10 18v-4a4 4 0 0 1 8 0v4M14 10V8" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
-      <div style="font-weight: 600; font-size: 15px; line-height: 1.2;">Produktionsplaner<div style="font-weight: 400; font-size: 12px; color: #5B6661;">GAMMA Catering</div></div>
-    </div>
-    <a href="Leitstand.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>Leitstand</a>
-    <a href="Main.dc.html" aria-current="page" style="background: #E3EEE7; color: #1F4A36; font-weight: 600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Anlässe</a>
-    <a href="Ressourcen.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Ressourcen</a>
-    <a href="Rezept.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 4h10l2 2v14H6z"></path><path d="M9 9h6M9 13h6M9 17h4"></path></svg>Speisen &amp; Rezepte</a>
-    <a href="Produktion.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h9M4 12h14M4 18h7"></path></svg>Produktionsplan</a>
-    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 7h14l-1.5 10h-11z"></path><path d="M9 7V5h6v2"></path></svg>Einkauf</span>
-    <span style="color: #8A938F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg>Stammdaten</span>
-  </nav>
-
-  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 48px; display: flex; flex-direction: column; gap: 24px;">
-    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+  <main class="pl-main">
+    <header class="pl-head">
       <div>
-        <div style="font-size: 13px; color: #5B6661;">Anlässe / A-2026-0418</div>
-        <h1 style="margin: 4px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em;">Neuer Anlass</h1>
+        <div class="pl-crumb">Leitstand · Beispieldaten</div>
+        <h1 class="pl-h1">Samstag, 14.11.2026 · 3 Anlässe, 470 Gäste</h1>
       </div>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <button type="button" style="height: 44px; padding: 0 18px; border-radius: 8px; border: 1px solid #CBD2CC; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; color: #1B2421;">Entwurf speichern</button>
-        <a href="Ressourcen.dc.html" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 8px; background: #2F6B4F; color: #FFFFFF; font-size: 14px; font-weight: 600; text-decoration: none;">Ressourcen berechnen<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <div class="pl-actions">
+        <button type="button" class="pl-btn pl-btn--secondary">Sammel-Einkaufsliste</button>
+        <button type="button" class="pl-btn pl-btn--primary">Anfragen &amp; Mieten auslösen</button>
       </div>
     </header>
 
-    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
-      <div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+    <div class="pl-grid-4">
+      <div class="pl-kpi"><div class="pl-kpi__label">Gäste</div><div class="pl-kpi__value">470</div><div class="pl-kpi__detail">3 Anlässe, 1 davon Option</div></div>
+      <div class="pl-kpi"><div class="pl-kpi__label">Personal</div><div class="pl-kpi__value">47</div><div class="pl-kpi__detail">34 eigen · 13 Freelancer</div></div>
+      <div class="pl-kpi"><div class="pl-kpi__label">Zusatz aus Miete</div><div class="pl-kpi__value">3</div><div class="pl-kpi__detail">Combi-Steamer, Lieferwagen, 900 Teller</div></div>
+      <div class="pl-kpi pl-kpi--panel"><div class="pl-kpi__label">Deckungsbeitrag des Tages</div><div class="pl-kpi__value">CHF 16'487</div><div class="pl-kpi__detail">37.0 % von CHF 44'600 Umsatz</div></div>
+    </div>
 
-        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
-          <h2 style="margin: 0 0 20px; font-size: 16px; font-weight: 600;">Rahmendaten</h2>
-          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
-            <div style="grid-column: span 2;"><label class="lbl" for="kunde">Kunde</label><input class="inp" id="kunde" value="[Kundenname]"></div>
-            <div><label class="lbl" for="datum">Datum</label><input class="inp" id="datum" value="14.11.2026"></div>
-            <div><label class="lbl" for="gaeste">Gäste</label><input class="inp" id="gaeste" value="120" style="font-family: 'IBM Plex Mono', monospace;"></div>
-            <div><label class="lbl" for="apero">Apéro</label><input class="inp" id="apero" value="18:30"></div>
-            <div><label class="lbl" for="essen">Essen</label><input class="inp" id="essen" value="19:30"></div>
+    <div class="pl-grid-3">
+      <sc-for list="{{events}}" as="e" hint-placeholder-count="3">
+        <a href="Anlass.dc.html" class="pl-card" style="display: block; text-decoration: none; color: #1B2421; border-top: 4px solid {{e.color}}; padding: 18px 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; background: {{e.color}}; color: #FFFFFF; font-weight: 600; font-size: 13px;">{{e.key}}</span>
+            <span class="pl-pill {{e.pill}}">{{e.status}}</span>
           </div>
-          <div style="margin-top: 20px;">
-            <div class="lbl">Serviceart</div>
-            <div role="radiogroup" aria-label="Serviceart" style="display: inline-flex; flex-wrap: wrap; padding: 4px; gap: 4px; background: #EEF0EC; border-radius: 10px;">
-              <button type="button" role="radio" aria-checked="true" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(27,36,33,0.12); font: inherit; font-size: 14px; font-weight: 600; color: #1B2421;">Teller-Service</button>
-              <button type="button" role="radio" aria-checked="false" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: transparent; font: inherit; font-size: 14px; color: #3C4743;">Buffet</button>
-              <button type="button" role="radio" aria-checked="false" style="height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: transparent; font: inherit; font-size: 14px; color: #3C4743;">Flying Dinner</button>
-            </div>
+          <div style="font-size: 16px; font-weight: 600; margin-top: 10px;">{{e.name}}</div>
+          <div class="pl-small">{{e.place}}</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 12px; font-size: 13px;">
+            <span><span class="pl-mono" style="font-size: 18px;">{{e.pax}}</span> Gäste</span>
+            <span class="pl-muted" style="align-self: flex-end;">{{e.service}}</span>
           </div>
-        </section>
+          <div class="pl-small" style="margin-top: 8px;">{{e.menu}}</div>
+        </a>
+      </sc-for>
+    </div>
 
-        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
-          <h2 style="margin: 0 0 12px; font-size: 16px; font-weight: 600;">Location &amp; Infrastruktur</h2>
-          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px;">
-            <label class="chk"><input type="checkbox">Küche vor Ort</label>
-            <label class="chk"><input type="checkbox" checked>Strom 400 V</label>
-            <label class="chk"><input type="checkbox" checked>Wasseranschluss</label>
-            <label class="chk"><input type="checkbox">Abwasch vor Ort</label>
-          </div>
-        </section>
-
-        <section style="background: #FFFFFF; border: 1px solid #E1E5E0; border-radius: 12px; padding: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
-            <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Menü · Herbst 2026</h2>
-            <a href="Rezept.dc.html" style="font-size: 14px; font-weight: 500;">Speisen verwalten</a>
-          </div>
-          <div style="display: flex; flex-direction: column;">
-            <sc-for list="{{courses}}" as="c" hint-placeholder-count="3">
-              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 14px 0; border-top: 1px solid #EEF0EC;">
-                <div style="width: 96px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #2F6B4F;">{{c.gang}}</div>
-                <div style="flex: 1 1 260px; min-width: 0;">
-                  <div style="font-size: 15px; font-weight: 500;">{{c.name}}</div>
-                  <div style="font-size: 13px; color: #5B6661;">{{c.detail}}</div>
+    <section class="pl-card">
+      <div class="pl-card__head">
+        <h2 class="pl-card__title">Tagesablauf</h2>
+        <span class="pl-card__meta">Schraffur: Spitzenbedarf Combi-Steamer, Zusatzgerät gemietet</span>
+      </div>
+      <div class="pl-scroll">
+        <div class="pl-tl">
+          <div class="pl-tl__axis"><div class="pl-tl__label"></div><div class="pl-tl__track" style="height: 18px;">
+            <sc-for list="{{ticks}}" as="t" hint-placeholder-count="8"><span class="pl-tl__tick" style="left: {{t.left}};">{{t.label}}</span></sc-for>
+          </div></div>
+          <div class="pl-tl__body">
+            <div aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: calc(170px + (100% - 170px) * {{peakL}}); width: calc((100% - 170px) * {{peakW}}); background: repeating-linear-gradient(135deg, rgba(154,84,16,0.10) 0, rgba(154,84,16,0.10) 6px, transparent 6px, transparent 12px); border-left: 1px dashed #9A5410; border-right: 1px dashed #9A5410;"></div>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+              <div class="pl-tl__row">
+                <div class="pl-tl__label">{{r.label}}</div>
+                <div class="pl-tl__track">
+                  <sc-for list="{{r.bars}}" as="b" hint-placeholder-count="4"><div class="pl-tl__bar {{b.cls}}" title="{{b.title}}" style="left: {{b.left}}; width: {{b.width}};">{{b.label}}</div></sc-for>
                 </div>
-                <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #3C4743;">{{c.portion}}</div>
               </div>
             </sc-for>
           </div>
-          <button type="button" style="margin-top: 12px; height: 44px; padding: 0 16px; border: 1px dashed #A9B3AD; border-radius: 8px; background: transparent; font: inherit; font-size: 14px; color: #3C4743;">+ Gang hinzufügen</button>
-        </section>
+        </div>
       </div>
+    </section>
 
-      <aside aria-label="Live-Vorschau" style="flex: 1 1 300px; min-width: 0; background: #1B2421; color: #F3F4F1; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Live-Vorschau</h2>
-          <span style="font-size: 12px; color: #A9B8B0;">Beispieldaten</span>
+    <div class="pl-row">
+      <section class="pl-card pl-col-main">
+        <div class="pl-card__head"><h2 class="pl-card__title">Ressourcen · Eigen und Zusatz</h2><a href="Ressourcen.dc.html" style="font-size: 14px;">Details Anlass A</a></div>
+        <div class="pl-scroll">
+          <table class="pl-table" style="min-width: 640px;">
+            <thead><tr><th>Ressource</th><th class="pl-num">A</th><th class="pl-num">B</th><th class="pl-num">C</th><th class="pl-num">Total</th><th class="pl-num">Eigen</th><th>Zusatz</th></tr></thead>
+            <tbody>
+              <sc-for list="{{pool}}" as="p" hint-placeholder-count="7">
+                <tr><td style="font-weight: 500;">{{p.name}}</td><td class="pl-num">{{p.a}}</td><td class="pl-num">{{p.b}}</td><td class="pl-num">{{p.c}}</td><td class="pl-num" style="font-weight: 600;">{{p.total}}</td><td class="pl-num">{{p.own}}</td><td><span class="pl-pill {{p.pill}}">{{p.status}}</span></td></tr>
+              </sc-for>
+            </tbody>
+          </table>
         </div>
-        <div>
-          <div style="font-size: 12px; color: #A9B8B0;">Personal am Anlass</div>
-          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 40px; font-weight: 500; line-height: 1.1;">17</div>
-          <div style="font-size: 13px; color: #D5DDD8;">3 Küche · 11 Service · 2 Abwasch · 1 Fahrer</div>
-        </div>
-        <div style="height: 1px; background: #33403B;"></div>
-        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
-          <div><div style="font-size: 12px; color: #A9B8B0;">Combi-Steamer mobil</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">2</div></div>
-          <div><div style="font-size: 12px; color: #A9B8B0;">Wärmeschränke</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">4</div></div>
-          <div><div style="font-size: 12px; color: #A9B8B0;">Teller inkl. Reserve</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">400</div></div>
-          <div><div style="font-size: 12px; color: #A9B8B0;">Fahrzeuge</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">1</div></div>
-        </div>
-        <div style="background: #3A2F1C; border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.45; color: #F4DDB8;">Keine Küche vor Ort: mobile Geräte und Abwasch-Team wurden automatisch eingeplant.</div>
-        <div style="height: 1px; background: #33403B;"></div>
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-          <span style="font-size: 13px; color: #A9B8B0;">Preis pro Gast</span>
-          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px;">CHF [Preis]</span>
-        </div>
+      </section>
+
+      <aside class="pl-col-side">
+        <section class="pl-card pl-card--panel">
+          <h2 class="pl-card__title">Automatisch disponiert</h2>
+          <div class="pl-label" style="margin: 2px 0 14px;">Zusatzbedarf aus Freelancer-Pool und Miete</div>
+          <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.45;">
+            <li><strong>Freelancer-Pool:</strong> 1 Koch und 12 Service, nach Qualifikation gefiltert</li>
+            <li><strong>Mietgeräte:</strong> 1 Combi-Steamer mobil für Anlass C, Lieferung 16:00</li>
+            <li><strong>Fahrzeuge:</strong> 1 Lieferwagen, Abholung 12:30 für Anlass B</li>
+            <li><strong>Geschirr:</strong> 900 Teller beim Mietpartner bestellen</li>
+          </ol>
+        </section>
+        <section class="pl-card">
+          <h2 class="pl-card__title" style="margin-bottom: 14px;">Zentralküche Tag −1 · Auslastung</h2>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{load}}" as="l" hint-placeholder-count="3">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;"><span>{{l.name}}</span><span class="pl-mono">{{l.pct}} %</span></div>
+                <div class="pl-meter"><div style="width: {{l.pct}}%; background: {{l.color}};"></div></div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
       </aside>
     </div>
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1200}}'>
 class Component extends DCLogic {
   renderVals() {
+    var S = 12, SPAN = 14, pos = function (h) { return ((h - S) / SPAN * 100) + '%'; };
+    var bar = function (k, label, a, b) { return { cls: 'pl-tl__bar--' + k, label: label, title: label, left: pos(a), width: 'calc(' + ((b - a) / SPAN * 100) + '% - 3px)' }; };
+    var ticks = [];
+    for (var h = 12; h <= 26; h += 2) ticks.push({ label: ((h % 24) < 10 ? '0' : '') + (h % 24) + ':00', left: pos(h) });
+    var ok = 'pl-pill--ok', info = 'pl-pill--info', warn = 'pl-pill--warn';
     return {
-      courses: [
-        { gang: 'Vorspeise', name: 'Randen-Carpaccio', detail: 'Meerrettich, Nüsslisalat, Baumnüsse', portion: '120 g' },
-        { gang: 'Hauptgang', name: 'Kalbsbraten mit Jus', detail: 'Kartoffelgratin, Marktgemüse', portion: '180 g' },
-        { gang: 'Dessert', name: 'Zwetschgen-Crumble', detail: 'Vanilleglace', portion: '110 g' }
+      events: [
+        { key: 'A', color: '#2F5E9E', name: 'Firmenjubiläum', place: 'Zürich-West · keine Küche vor Ort', pax: '120', service: 'Teller-Service', menu: 'Quiche aux Oignons · Kalbshacktätschli mit Sugo · Dessert offen', status: 'Bestätigt', pill: ok },
+        { key: 'B', color: '#9A5410', name: 'Hochzeit', place: 'Meilen · Küche vorhanden', pax: '150', service: 'Buffet', menu: 'Apéro · Kozhi Mappas mit Basmatireis · Dessertbuffet', status: 'Bestätigt', pill: ok },
+        { key: 'C', color: '#2F6B4F', name: 'Generalversammlung', place: 'Zug · keine Küche vor Ort', pax: '200', service: 'Flying Dinner', menu: '6 Flying-Dinner-Gänge, Burger Buns aus dem Allzweck-Teig', status: 'Option', pill: warn }
+      ],
+      ticks: ticks,
+      peakL: (17.5 - S) / SPAN, peakW: 4 / SPAN,
+      rows: [
+        { label: 'A · Firmenjubiläum', bars: [bar('a', 'Transport', 15.5, 16.5), bar('a', 'Aufbau', 16.5, 18), bar('a', 'Apéro', 18.5, 19.5), bar('a', 'Dinner 3 Gänge', 19.5, 22.5), bar('a', 'Abbau', 22.5, 24)] },
+        { label: 'B · Hochzeit', bars: [bar('b', 'Transport', 13, 14), bar('b', 'Aufbau', 14, 16), bar('b', 'Apéro', 16.5, 18), bar('b', 'Buffet', 18.5, 21.5), bar('b', 'Dessert, Bar', 21.5, 24.5), bar('b', 'Abbau', 24.5, 26)] },
+        { label: 'C · Generalversammlung', bars: [bar('c', 'Transport', 16.5, 17.5), bar('c', 'Aufbau', 17.5, 18.5), bar('c', 'Flying Dinner', 19, 21.5), bar('c', 'Abbau', 21.5, 22.5)] }
+      ],
+      pool: [
+        { name: 'Köche', a: '3', b: '4', c: '2', total: '9', own: '8', status: '+1 Freelancer', pill: info },
+        { name: 'Service', a: '11', b: '9', c: '14', total: '34', own: '22', status: '+12 Freelancer', pill: info },
+        { name: 'Abwasch', a: '2', b: '0', c: '2', total: '4', own: '5', status: 'Eigen gedeckt', pill: ok },
+        { name: 'Combi-Steamer mobil', a: '2', b: '0', c: '3', total: '5', own: '4', status: '+1 Miete', pill: info },
+        { name: 'Wärmeschränke', a: '4', b: '3', c: '2', total: '9', own: '10', status: 'Eigen gedeckt', pill: ok },
+        { name: 'Lieferwagen', a: '1', b: '2', c: '1', total: '4', own: '3', status: '+1 Miete', pill: info },
+        { name: 'Teller', a: '400', b: '500', c: '0', total: '900', own: '0', status: '+900 Miete', pill: info }
+      ],
+      load: [
+        { name: 'Combi-Steamer (3 Geräte)', pct: '94', color: '#9A5410' },
+        { name: 'Schockkühler (2 Geräte)', pct: '78', color: '#2F6B4F' },
+        { name: 'Köche Frühschicht (6 Personen)', pct: '100', color: '#9A5410' }
       ]
     };
   }

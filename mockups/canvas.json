@@ -1,1 +1,15 @@
-{"v":3,"createdOnFiles":{"v":1,"at":"2026-10-16T12:00:00Z"},"title":"Catering Produktionsplaner – Mockup","launch":{"view":"canvas"},"pages":[],"boards":{"Main.dc.html":{"x":0,"y":0,"w":1280,"h":900,"title":"1 · Anlass erfassen","expand":"fill","is_interactive":true},"Ressourcen.dc.html":{"x":1360,"y":0,"w":1280,"h":900,"title":"2 · Ressourcen-Übersicht","expand":"fill","is_interactive":true},"Rezept.dc.html":{"x":0,"y":1020,"w":1280,"h":900,"title":"3 · Rezept & Arbeitsplan","expand":"fill","is_interactive":true},"Produktion.dc.html":{"x":1360,"y":1020,"w":1280,"h":900,"title":"4 · Produktionsplan","expand":"fill","is_interactive":true},"Leitstand.dc.html":{"x":0,"y":2040,"w":1280,"h":1180,"title":"5 · Leitstand: 3 Anlässe parallel","expand":"fill","is_interactive":true},"Rezeptkarte.dc.html":{"x":1360,"y":2040,"w":1280,"h":2200,"title":"6 · Rezeptkarte: Gericht mit Komponenten","expand":"fill","is_interactive":true},"Rezeptbibliothek.dc.html":{"x":0,"y":3340,"w":1280,"h":2000,"title":"7 · Rezeptbibliothek: 6 echte Rezepte (PoC)","expand":"fill","is_interactive":true},"Rentabilitaet.dc.html":{"x":1360,"y":4360,"w":1280,"h":2300,"title":"8 · Rentabilität: Kosten und Ergebnis","expand":"fill","is_interactive":true}},"order":["Main.dc.html","Ressourcen.dc.html","Rezept.dc.html","Produktion.dc.html","Leitstand.dc.html","Rezeptkarte.dc.html","Rezeptbibliothek.dc.html","Rentabilitaet.dc.html"],"notes":{"title":{"x":0,"y":-300,"text":"Catering Produktionsplaner – Look & Feel","kind":"title1","maxW":2640}},"designSystems":[]}
+{"v":3,"attachments":{},"createdOnFiles":{"at":"2026-10-16T12:00:00Z","v":1},"title":"Catering Produktionsplaner – Mockup","launch":{"view":"canvas"},"pages":[],"designSystems":[],
+"boards":{
+"Main.dc.html":{"x":0,"y":0,"w":1280,"h":1200,"title":"1 · Leitstand","expand":"fill","is_interactive":true},
+"Anlass.dc.html":{"x":1360,"y":0,"w":1280,"h":1100,"title":"2 · Anlass erfassen","expand":"fill","is_interactive":true},
+"Ressourcen.dc.html":{"x":2720,"y":0,"w":1280,"h":1100,"title":"3 · Ressourcen eines Anlasses","expand":"fill","is_interactive":true},
+"Produktion.dc.html":{"x":0,"y":1620,"w":1280,"h":1100,"title":"4 · Produktionsplan","expand":"fill","is_interactive":true},
+"Rezepte.dc.html":{"x":1360,"y":1620,"w":1280,"h":2100,"title":"5 · Rezepte","expand":"fill","is_interactive":true},
+"Rentabilitaet.dc.html":{"x":2720,"y":1620,"w":1280,"h":2200,"title":"6 · Rentabilität","expand":"fill","is_interactive":true},
+"Nav.dc.html":{"x":4160,"y":0,"w":232,"h":900,"title":"Komponente · Navigation","is_interactive":true}
+},
+"order":["Main.dc.html","Anlass.dc.html","Ressourcen.dc.html","Produktion.dc.html","Rezepte.dc.html","Rentabilitaet.dc.html","Nav.dc.html"],
+"notes":{
+"title":{"x":0,"y":-300,"text":"Planung: Tag und Anlass","kind":"title1","maxW":4000},
+"row2":{"x":0,"y":1320,"text":"Produktion, Rezepte und Auswertung","kind":"title1","maxW":4000}
+}}
