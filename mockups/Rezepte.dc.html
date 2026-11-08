@@ -12,15 +12,15 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap" rel="stylesheet">
 <style>body{margin:0;background:#F3F4F1}</style>
 </helmet>
-<div class="pl-app" style="min-height: 2100px;">
+<div class="pl-app" style="min-height: 2600px;">
   <div style="flex: 1 1 232px; max-width: 100%; display: flex;">
-    <dc-import name="Nav" active="rezepte" hint-size="100%,2100px"></dc-import>
+    <dc-import name="Nav" active="rezepte" hint-size="100%,2600px"></dc-import>
   </div>
 
   <main class="pl-main">
     <header class="pl-head">
       <div>
-        <div class="pl-crumb">Rezepte · Proof of Concept · 3 Gerichte, 4 Komponenten</div>
+        <div class="pl-crumb">Rezepte · Proof of Concept · 6 Gerichte, 8 Komponenten</div>
         <h1 class="pl-h1">Rezeptbibliothek</h1>
       </div>
       <div class="pl-actions">
@@ -134,7 +134,7 @@
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2100}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2600}}'>
 // Zutat: [Name, Gramm (Basis), Flags, Notiz]  Flags: b = Basiszutat 100 %, a = Annahme
 // Schritt: [Text, {d: Gerät, t: Temperatur, a: aktive Min., u: unbeaufsichtigte Min., h: HACCP, x: Annahme}]
 // Gericht: comps = verwendete Komponenten mit Gramm pro Portion; cost = [Waren, Arbeit, Energie, VK] in CHF pro Portion (Annahmen)
@@ -181,7 +181,7 @@ var RECIPES = [
     groups: [
       { title: 'Tangzhong', ings: [['Weissmehl', 72], ['Wasser', 120], ['Vollmilch', 240]], steps: [['In einer kleinen Pfanne mischen und unter Rühren kochen, bis es bindet.', { d: 'Induktion', a: 5 }], ['Abkühlen lassen.', { u: 15 }]] },
       { title: 'Hauptteig', ings: [['Vollmilch', 500], ['Wasser', 500], ['Trockenhefe', 35]], steps: [['Milch und Wasser leicht erwärmen, Hefe einrühren, 10 Minuten anspringen lassen.', { a: 2, u: 10 }]] },
-      { ings: [['Weissmehl', 2100, 'b'], ['Zucker', 52], ['Salz', 36], ['Eier', 200, '', '4 Stück'], ['Eigelb', 72, '', '4 Stück'], ['Butter', 140]], steps: [['Alle Zutaten inklusive Tangzhong 10 Minuten kneten.', { d: 'Knetmaschine', a: 2, u: 10, x: 1 }], ['Buns à 100 g formen, mit Eggwash bestreichen.', { a: 30, x: 1 }]] },
+      { ings: [['Weissmehl', 2600, 'b'], ['Zucker', 52], ['Salz', 36], ['Eier', 200, '', '4 Stück'], ['Eigelb', 72, '', '4 Stück'], ['Butter', 140]], steps: [['Alle Zutaten inklusive Tangzhong 10 Minuten kneten.', { d: 'Knetmaschine', a: 2, u: 10, x: 1 }], ['Buns à 100 g formen, mit Eggwash bestreichen.', { a: 30, x: 1 }]] },
       { title: 'Eggwash', ings: [['Eier', 100, 'a', '2 Stück'], ['Wasser', 30, 'a']], steps: [['30–45 Minuten gären lassen, nochmals mit Eggwash bestreichen.', { d: 'Gärschrank', u: 40, a: 5 }], ['Backen.', { d: 'Combi-Steamer', t: '190 °C', u: 14 }]] }
     ] },
   { id: 'sweetchili', type: 'komponente', course: 'Sauce', name: 'Sweet Chili Sauce', subtitle: 'Karamell, Galgant, Zitronengras', yieldG: 450, portionText: '1 Charge ≈ 450 g (Annahme)', source: 'Peter Gordon (via homemade.ch)', allergens: ['Fisch', 'Soja', 'Gluten (Sojasauce)'],
@@ -190,6 +190,61 @@ var RECIPES = [
       { ings: [['Ingwer, geschält', 100], ['Galgant, geschält', 30], ['Zitronengras, geputzt', 45, 'a', '3 Stängel'], ['Koriander', 30, 'a', '1 Bund'], ['Knoblauch', 50, '', '10 Zehen'], ['Chilis rot, gross', 60, 'a', '4 Stück'], ['Kaffir-Limettenblätter', 2, '', '8 Blätter']], steps: [['Ingwer, Galgant, Zitronengras und Koriander grob hacken.', { a: 10 }], ['Mit Knoblauch, Chilis und Limettenblättern zu einer feinen Paste zerkleinern.', { d: 'Cutter', a: 3 }]] },
       { ings: [['Zucker', 150, 'b']], steps: [['Zucker in einem schweren Topf schmelzen und dunkel karamellisieren, nicht verbrennen lassen.', { d: 'Induktion', a: 8 }]] },
       { ings: [['Apfelessig', 105, '', '7 EL'], ['Fischsauce', 60, '', '4 EL'], ['Sojasauce', 60, '', '4 EL']], steps: [['Paste einrühren, aufkochen, Essig, Fisch- und Sojasauce zugeben, 1 Minute köcheln.', { a: 3 }], ['Abkühlen und gekühlt lagern.', { d: 'Schockkühler', u: 30, x: 1 }]] }
+    ] },
+  { id: 'cheesecake', type: 'gericht', course: 'Dessert', name: 'Basque Cheesecake', subtitle: 'Gebrannter Käsekuchen ohne Boden', scaleBase: 20, portionG: 140, portionText: '1 Kuchen (Springform 23 cm) für 20 Portionen à 140 g (Annahme)', source: 'ChefSteps (Nicholas Gavin)', allergens: ['Milch', 'Ei', 'Gluten'], comps: [], cost: null,
+    open: ['Portionen: 20 à 140 g angenommen; die Quelle rechnet mit 10–12 Portionen.', 'Rezept für Springform 23 cm: Umrechnung auf GN-Format und Backzeiten im Combi-Steamer testen.', 'Drehen der Form alle 10 Minuten ist im Combi-Steamer vermutlich nicht nötig; prüfen.', 'Varianten Schokolade und Kürbis sind in der Quelle beschrieben; bei Bedarf als Varianten anlegen.', 'Möglicher Dessert für Anlass A (Firmenjubiläum), dort ist das Dessert noch offen.'],
+    groups: [
+      { title: 'Masse', ings: [['Doppelrahmfrischkäse', 1360, 'b'], ['Zucker', 450], ['Weissmehl', 65], ['Salz', 8], ['Vollrahm 35 %', 700], ['Eier', 450, '', '9 Stück'], ['Vanilleextrakt', 15, '', 'optional']], steps: [['Frischkäse weich und streichfähig erwärmen.', { d: 'Mikrowelle', a: 5 }], ['Zucker, Mehl und Salz mischen, mit Rahm, Eiern und Vanille glatt mixen, Frischkäse einarbeiten; möglichst wenig Luft einschlagen.', { d: 'Stabmixer', a: 10 }], ['Masse auf 4 °C kühlen; hält so bis 3 Tage.', { d: 'Kühlraum', u: 120, h: '≤ 4 °C' }]] },
+      { title: 'Backen', ings: [], steps: [['Form mit Alufolie und Backpapier auslegen, Masse durch ein Sieb einfüllen, Luftblasen entfernen.', { a: 15 }], ['Erste Backphase: Oberfläche kräftig bräunen.', { d: 'Combi-Steamer', t: '216 °C', a: 5, u: 30, x: 1 }], ['Zweite Backphase, bis der Kern 46–52 °C erreicht und die Mitte noch wackelt.', { d: 'Combi-Steamer', t: '149 °C', u: 40, h: 'Kern 46–52 °C' }], ['Bei Raumtemperatur nachziehen lassen (Kern steigt auf 66 °C), dann mindestens 8 Stunden kühlen.', { d: 'Kühlraum', u: 580, h: 'Kern 66 °C' }], ['Mit warmem Messer portionieren.', { a: 10 }]] }
+    ] },
+  { id: 'pate', type: 'gericht', course: 'Apéro / Vorspeise', name: 'Imfoiessible Pâté', subtitle: 'Vegane Mousse nach Art Foie gras', scaleBase: 12, portionG: 60, portionText: '12 Portionen à 60 g (Annahme), im Glas', source: 'ChefSteps (Matthew Woolen)', allergens: ['Schalenfrüchte (Cashew)', 'Soja (Miso)'], comps: [], cost: null,
+    open: ['Portionen: 12 à 60 g angenommen; die Quelle nennt 8–12 Portionen.', 'Gellan (low-acyl und high-acyl) im Artikelstamm anlegen, Lieferant klären.', 'Kochend heiss mixen: Arbeitssicherheit (Deckel, Tuch) in der Einführung erwähnen.', '«Sweet Spice» ist eine Mischung der Quelle; eigene Gewürzmischung festlegen.', 'Haltbarkeit laut Quelle 1 Woche, mit Fettdeckel 2–3 Wochen: HACCP-Wert festlegen.'],
+    groups: [
+      { ings: [['Cashewkerne, roh', 150, 'b']], steps: [['In kaltem Wasser mindestens 2 Stunden, besser über Nacht einweichen, abgiessen.', { u: 120 }]] },
+      { ings: [['Kokosöl, raffiniert', 15], ['Schalotten, in Scheiben', 90, '', '2 Stück'], ['Champignons, in Scheiben', 50], ['Knoblauch, in Scheiben', 12, '', '2 Zehen'], ['Cognac', 110]], steps: [['Schalotten, Champignons und Knoblauch in Kokosöl zugedeckt weich dünsten.', { d: 'Induktion', a: 12 }], ['Mit Cognac ablöschen und um die Hälfte reduzieren.', { a: 2 }]] },
+      { ings: [['Wasser', 275], ['Kokosöl, raffiniert', 70], ['Miso, hell', 25], ['Tomatenpüree', 15], ['Salz', 8], ['Gewürzmischung süss', 2.5, 'a', '«Sweet Spice» der Quelle'], ['Pfeffer schwarz', 1.5]], steps: [['Cashews und Würzzutaten zugeben, aufkochen und 30 Sekunden kochen.', { a: 3 }]] },
+      { ings: [['Gellan low-acyl', 1.5], ['Gellan high-acyl', 0.4]], steps: [['Heiss glatt mixen, Gellan bei laufendem Mixer zugeben, bis 93–100 °C weitermixen.', { d: 'Hochleistungsmixer', t: '93–100 °C', a: 3 }]] },
+      { ings: [['Pflanzenfett für Fettdeckel', 50, 'a', 'optional']], steps: [['Sofort in Gläser abfüllen, Oberfläche abdecken oder mit Fettdeckel versiegeln.', { a: 5 }], ['Kühlen, bis die Masse gestockt ist.', { d: 'Kühlraum', u: 60, h: '≤ 7 °C' }]] }
+    ] },
+  { id: 'meatloaf', type: 'gericht', course: 'Hauptgang', name: 'Sous-vide-Hackbraten', subtitle: 'Mit Zwiebelkonfit, Pilzen und Glasur (Modernist Meatloaf)', scaleBase: 6, portionG: 200, portionText: '6 Portionen à 200 g (Annahme)', source: 'ChefSteps (Kyl Haselbauer)', allergens: ['Gluten', 'Ei', 'Milch', 'Fisch (Worcestershire)', 'Sulfite (Rotwein)', 'Sellerie (Annahme, Bouillon)'], comps: [], cost: null,
+    open: ['Portionen: 6 à 200 g angenommen; die Quelle nennt 4–6 Portionen.', 'Gellan und Natriumhexametaphosphat: Lieferant klären. Die Quelle beschreibt auch eine einfache Glasur ohne diese Zusätze.', 'Sous-vide im Combi-Steamer statt Wasserbad: Garzeit für eine Rolle von 8 cm Durchmesser prüfen.', 'Für grosse Mengen: Terrinenform oder GN statt Folienrolle?'],
+    groups: [
+      { title: 'Panade', ings: [['Sauerteigbrot, gewürfelt', 50], ['Vollmilch', 50]], steps: [['Brotwürfel mit Milch mischen und mindestens 1 Stunde kühl ziehen lassen.', { a: 3, u: 60 }]] },
+      { title: 'Zwiebelkonfit', ings: [['Rotwein, trocken', 250], ['Zwiebeln, süss, gewürfelt', 190, '', '1 Stück']], steps: [['Zugedeckt 15 Minuten kochen, offen zu Konfit einkochen und kühlen.', { d: 'Induktion', a: 7, u: 45 }]] },
+      { title: 'Pilze', ings: [['Champignons, geviertelt', 400], ['Olivenöl', 28], ['Salz', 3], ['Pfeffer schwarz', 1]], steps: [['Mischen und rösten, bis sie trocken und leicht gebräunt sind; kühlen.', { d: 'Combi-Steamer', t: '218 °C', a: 5, u: 48 }]] },
+      { title: 'Glasur', ings: [['Ketchup', 300], ['Rindsbouillon', 200], ['Rohrzucker, hell', 150], ['Worcestershire-Sauce', 25], ['Salz', 4], ['Paprika edelsüss', 3], ['Pfeffer schwarz', 2], ['Natriumhexametaphosphat', 1], ['Gellan low-acyl', 3], ['Gelatine', 33, '', '10 Blatt']], steps: [['Alles ausser Gellan und Gelatine aufkochen und mixen, Gellan einmixen bis 93 °C, flach ausgiessen und fest werden lassen.', { d: 'Hochleistungsmixer', t: '93 °C', a: 10, u: 60 }], ['Glasur fein pürieren, auf 60 °C erwärmen, eingeweichte Gelatine einrühren, 3 mm dünn ausgiessen und kühlen.', { d: 'Cutter', a: 10, u: 60 }]] },
+      { title: 'Fleischmasse', ings: [['Rindsschulter, pariert, gewürfelt', 600, 'b'], ['Eier', 100, '', '2 Stück'], ['Peterli, gehackt', 28], ['Rosmarin, gehackt', 3], ['Salz', 10], ['Pfeffer schwarz', 4]], steps: [['Mit Panade, Pilzen und Zwiebelkonfit mischen, durch die 4.5-mm-Scheibe wolfen und kurz rühren, bis die Masse cremig ist.', { d: 'Fleischwolf, Rührwerk', a: 15 }], ['In Folie zu einer Rolle von 8 cm Durchmesser formen und vakuumieren.', { d: 'Vakuumiergerät', a: 10 }], ['Sous-vide garen.', { d: 'Combi-Steamer, Dampf', t: '68 °C', u: 90, h: 'Kern 68 °C', x: 1 }], ['In Eiswasser abkühlen, bis sich die Rolle sauber schneiden lässt.', { u: 45 }]] },
+      { title: 'Fertigstellen', ings: [], steps: [['Längs halbieren und auf dem Gitter rösten bis Kern 60 °C, 5 Minuten ruhen lassen.', { d: 'Combi-Steamer', t: '218 °C', a: 3, u: 15 }], ['Mit Glasurplatten belegen, kurz überbacken und in 1.5 cm dicke Tranchen schneiden.', { d: 'Combi-Steamer', t: '177 °C', a: 5, u: 4 }]] }
+    ] },
+  { id: 'shokupan', type: 'komponente', course: 'Brot', name: 'Shokupan', subtitle: 'Japanisches Milchbrot mit Reismehl-Tangzhong', yieldG: 600, portionText: '1 Laib aus der Pullman-Form 23 cm, ca. 600 g (Annahme)', source: 'ChefSteps (Matthew Woolen)', allergens: ['Gluten', 'Milch', 'Ei'],
+    open: ['Ergibt 1 Laib ≈ 600 g angenommen (Teig 660–670 g).', 'US-«Bread flour» etwa Weissmehl Typ 550 oder Zopfmehl: Mehlsorte festlegen.', 'Pullman-Formen mit Deckel vorhanden? Sonst Kastenform mit Blech als Deckel.', 'Gärzeiten im Gärschrank kürzer als bei Raumtemperatur: testen.'],
+    groups: [
+      { title: 'Tangzhong', ings: [['Wasser', 55], ['Vollmilch', 55], ['Klebreismehl (Mochiko)', 20]], steps: [['Unter Rühren zu einer dicken Paste kochen, abgedeckt auf Raumtemperatur abkühlen.', { d: 'Induktion', a: 3, u: 10 }]] },
+      { title: 'Teig', ings: [['Vollmilch', 80], ['Magermilchpulver', 13], ['Instanthefe', 5], ['Ei', 50, '', '1 Stück'], ['Weissmehl Typ 550', 315, 'b'], ['Zucker', 40], ['Salz', 5]], steps: [['Milch, Milchpulver und Hefe verrühren, Ei und Paste zugeben, Trockenes darübergeben und 6 Minuten zu einem glatten Teig kneten.', { d: 'Knetmaschine', a: 3, u: 6 }]] },
+      { ings: [['Butter, weich', 50]], steps: [['Butter einarbeiten, bis sich der Teig vom Kessel löst.', { d: 'Knetmaschine', a: 2, u: 6 }], ['Bei 24 °C gären lassen bis doppeltes Volumen, zusammenschlagen, nochmals verdoppeln.', { d: 'Gärschrank', u: 240 }], ['In 2 × 330 g teilen, ausrollen und zweimal falten, 30 Minuten ruhen lassen, straff aufrollen.', { a: 20, u: 30 }], ['In der gefetteten Form mit Deckel gären, bis der Teig drei Viertel der Höhe erreicht.', { d: 'Gärschrank', u: 150 }], ['Mit Deckel backen bis Kern 90 °C.', { d: 'Combi-Steamer', t: '177 °C', u: 40, h: 'Kern 90 °C', x: 1 }], ['Ausformen und auf dem Gitter auskühlen.', { u: 120 }]] }
+    ] },
+  { id: 'shiopan', type: 'komponente', course: 'Gebäck', name: 'Shio Pan', subtitle: 'Japanisches Salzbrötchen mit Butterkern', yieldG: 760, portionText: '8 Stück à ca. 95 g (Annahme)', source: 'ChefSteps (Tim Chin)', allergens: ['Gluten', 'Milch'],
+    open: ['US-Mehle (Bread flour, Cake flour) durch Schweizer Sorten ersetzen, z.B. Weissmehl 550 und Feinmehl; testen.', 'Brezelsalz: Lieferant klären, sonst Fleur de Sel.', 'Ergibt 8 Stück à ca. 95 g angenommen.', 'Haltbarkeit laut Quelle: 2 Tage bei Raumtemperatur, 1 Woche gekühlt, 3 Monate tiefgekühlt.'],
+    groups: [
+      { title: 'Butterkern', ings: [['Butter, kalt', 120, '', '8 × 15 g']], steps: [['In 8 Stücke à 15 g schneiden und anfrieren.', { d: 'Tiefkühler', a: 5, u: 10 }]] },
+      { title: 'Tangzhong', ings: [['Wasser', 120], ['Weissmehl Typ 550', 32], ['Eis', 125]], steps: [['Wasser und Mehl zu einem Gel kochen, mit dem Eis auf 2–7 °C abkühlen.', { d: 'Induktion', a: 5 }]] },
+      { title: 'Teig', ings: [['Weissmehl Typ 550', 240, 'b'], ['Feinmehl (Cake flour)', 75, 'a'], ['Magermilchpulver', 20], ['Instanthefe', 5]], steps: [['Trockenes mischen, Tangzhong zugeben, 4 Minuten mischen und 15 Minuten ruhen lassen.', { d: 'Knetmaschine', a: 2, u: 19 }]] },
+      { ings: [['Zucker', 20], ['Salz', 6], ['Butter, kalt', 30]], steps: [['Zucker und Salz einarbeiten, dann die Butter; kneten, bis der Fenstertest gelingt.', { d: 'Knetmaschine', a: 3, u: 15 }], ['Gären lassen bis doppeltes Volumen.', { d: 'Gärschrank', u: 75 }], ['In 80-g-Stücke teilen, rund formen, 10 Minuten kühlen.', { a: 10, u: 10 }], ['Zu langen Dreiecken ausrollen, Butterkern einrollen, Halbmond formen.', { a: 25 }], ['Stückgare bis doppeltes Volumen.', { d: 'Gärschrank', u: 50 }]] },
+      { title: 'Glasur und Backen', ings: [['Wasser', 75], ['Reismehl', 5], ['Butter', 50, '', 'auf dem Blech'], ['Brezelsalz', 5, 'a']], steps: [['Reismehl-Glasur kochen und sieben, aufstreichen, salzen, mit Wasser besprühen, Butter aufs Blech legen.', { a: 8 }], ['Backen, nach 12 Minuten mit der geschmolzenen Butter bestreichen, Hitze senken und goldbraun fertig backen.', { d: 'Combi-Steamer', t: '191 °C, dann 177 °C', a: 3, u: 30 }]] }
+    ] },
+  { id: 'pickles', type: 'komponente', course: 'Beilage', name: 'Sous-vide-Pickles', subtitle: 'Knackiges Essiggemüse, pasteurisiert', yieldG: 1700, portionText: '2 Gläser à 1 l (≈ 900 g Gemüse und 800 g Lake)', source: 'ChefSteps', allergens: ['Sulfite (Essig, Annahme)', 'Senf (je nach Gewürz)'],
+    open: ['Pasteurisationszeit gilt für 1-l-Gläser; andere Grössen testen.', 'Süsse Lake für Früchte (Essig 350 g, Wasser 350 g, Zucker 200 g) als Variante anlegen?', 'Haltbarkeit laut Quelle: ungeöffnet 6 Monate kühl und dunkel, geöffnet 2 Monate gekühlt; HACCP prüfen.', 'Gemüsesorte und Gewürze pro Einsatz festlegen.'],
+    groups: [
+      { title: 'Lake, pikant', ings: [['Weissweinessig 5 %', 400], ['Wasser', 400], ['Zucker', 80], ['Salz', 20]], steps: [['Verrühren, bis Zucker und Salz gelöst sind.', { a: 5 }]] },
+      { title: 'Gemüse', ings: [['Gemüse oder Früchte, gerüstet', 900, 'b', 'z.B. Karotten, Bohnen, Gurken, Blumenkohl'], ['Gewürze und Aromaten', 20, 'a', 'z.B. Senfsaat, Dill, Knoblauch']], steps: [['Rüsten und in mundgerechte Stücke schneiden.', { a: 20 }], ['In Gläser füllen (2 cm Rand), Lake bis 1 cm unter den Rand giessen, Deckel nur fingerfest schliessen.', { a: 5 }]] },
+      { title: 'Pasteurisieren', ings: [], steps: [['Bei 60 °C pasteurisieren.', { d: 'Combi-Steamer, Dampf', t: '60 °C', u: 150, h: '60 °C, 2.5 h', x: 1 }], ['Bei Raumtemperatur mindestens 8 Stunden abkühlen, nicht in Eiswasser.', { u: 480 }]] }
+    ] },
+  { id: 'truffaux', type: 'komponente', course: 'Garnitur', name: 'Truffaux', subtitle: 'Trüffel-Imitat aus Champignons', yieldG: 270, portionText: '9 Stück à 25–35 g', source: 'ChefSteps (Grant Crilly)', allergens: ['Milch (Natriumcaseinat)'],
+    open: ['Activa RM, Natriumcaseinat und Aktivkohle: Lieferanten und Deklaration nach Schweizer Lebensmittelrecht klären.', 'Kennzeichnung: Imitat, kein echter Trüffel; auf der Menükarte deklarieren.', '24 Stunden Trocknen belegt ein Gerät: Dörrgerät statt Combi-Steamer?', 'Haltbarkeit festlegen.'],
+    groups: [
+      { title: 'Pilze', ings: [['Champignons, weiss', 1000, 'b']], steps: [['Waschen, trocknen und vierteln.', { a: 15 }], ['Rösten, bis sie geschrumpft und gebräunt sind (noch 400–425 g), abkühlen.', { d: 'Combi-Steamer', t: '121 °C', a: 3, u: 130 }]] },
+      { title: 'Bindung', ings: [['Natriumcaseinat', 40], ['Activa RM (Transglutaminase)', 25], ['Salz', 4], ['Mononatriumglutamat', 1], ['Schwarzer Knoblauch', 3, '', 'optional'], ['Trüffelöl, schwarz', 25]], steps: [['Pulver mischen, mit Pilzen und Knoblauch grob cuttern, 5 Minuten quellen lassen, Trüffelöl zugeben und fein cuttern. Sofort weiterarbeiten.', { d: 'Cutter', a: 8 }]] },
+      { title: 'Formen und Trocknen', ings: [['Aktivkohle, lebensmitteltauglich', 0.5]], steps: [['Zu 9 Kugeln à 50 g formen und mit Aktivkohle bestäuben.', { a: 15 }], ['Trocknen, bis jede Kugel 25–35 g wiegt.', { d: 'Dörrgerät', t: '60 °C', u: 1440 }], ['Abkühlen und abgedeckt 24 Stunden kühlen.', { d: 'Kühlraum', u: 1440 }]] }
     ] }
 ];
 
@@ -242,7 +297,7 @@ class Component extends DCLogic {
       var sel = r.id === R.id;
       return { name: r.name, sub: r.course + (r.placeholder ? ' · Rezept fehlt' : ''), pressed: String(sel), style: sel ? 'background:#E3EEE7;border:1px solid #CFE0D5;' : 'background:transparent;border:1px solid transparent;', pick: function () { self.setState({ id: r.id, factor: 1 }); } };
     };
-    var hk = dish ? R.cost[0] + R.cost[1] + R.cost[2] : 0;
+    var hasCost = dish && !!R.cost, hk = hasCost ? R.cost[0] + R.cost[1] + R.cost[2] : 0;
     return {
       dishes: RECIPES.filter(function (r) { return r.type === 'gericht'; }).map(listBtn),
       comps: RECIPES.filter(function (r) { return r.type !== 'gericht'; }).map(listBtn),
@@ -256,8 +311,8 @@ class Component extends DCLogic {
         portionText: R.portionText,
         active: fmtMin(T.a), unatt: fmtMin(T.u),
         costLabel: dish ? 'Herstellkosten pro Portion' : 'Herstellkosten',
-        cost: dish ? chf(hk) : 'folgt mit Artikelpreisen',
-        costSub: dish ? 'Waren ' + chf(R.cost[0]) + ' · Arbeit ' + chf(R.cost[1]) + ' · VK ' + chf(R.cost[3]) : 'Waren aus dem Artikelstamm',
+        cost: hasCost ? chf(hk) : 'folgt mit Artikelpreisen',
+        costSub: hasCost ? 'Waren ' + chf(R.cost[0]) + ' · Arbeit ' + chf(R.cost[1]) + ' · VK ' + chf(R.cost[3]) : 'Waren aus dem Artikelstamm',
         devices: devs.length ? devs.join(', ') : 'noch offen',
         allergens: R.allergens, baseName: baseName,
         order: order, groups: groups,

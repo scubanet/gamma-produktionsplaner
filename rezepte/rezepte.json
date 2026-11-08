@@ -3,12 +3,18 @@
     "id": "hacktaetschli",
     "typ": "gericht",
     "kategorie": "Hauptgang",
-    "name": "Kalbshacktätschli",
+    "name": "Kalbshacktätschli mit Sugo",
     "untertitel": "Kalbsfleisch, Mascarpone, Peterli",
     "quelle": "Eigenes Rezept",
     "basis": {
       "portionen": 10,
       "portion_g": 180
+    },
+    "kosten_pro_portion": {
+      "waren": 4.8,
+      "arbeit": 3.1,
+      "energie": 0.28,
+      "vk": 24
     },
     "allergene": [
       "Gluten",
@@ -16,7 +22,12 @@
       "Milch",
       "Sellerie (Annahme)"
     ],
-    "komponenten": [],
+    "komponenten": [
+      {
+        "id": "sugo",
+        "g_pro_portion": 80
+      }
+    ],
     "offene_punkte": [
       "Zubereitung fehlt im Original: Schritte sind ein Vorschlag nach Standard-Hacktätschli.",
       "Welches Gemüse? Angenommen: Zwiebel, Karotte, Sellerie je ein Drittel, fein gewürfelt.",
@@ -164,7 +175,7 @@
         "schritte": [
           {
             "text": "Mit Brot und Gemüse zu einer gleichmässigen Masse mischen.",
-            "geraet": "Rührwerk, Flachrührer",
+            "geraet": "Rührwerk",
             "temperatur": null,
             "aktiv_min": 5,
             "unbeaufsichtigt_min": 0,
@@ -212,7 +223,7 @@
           },
           {
             "text": "Fertig garen bis Kerntemperatur 72 °C.",
-            "geraet": "Combi-Steamer, Heissluft",
+            "geraet": "Combi-Steamer",
             "temperatur": "160 °C",
             "aktiv_min": 0,
             "unbeaufsichtigt_min": 12,
@@ -233,6 +244,12 @@
     "basis": {
       "portionen": 10,
       "portion_g": 300
+    },
+    "kosten_pro_portion": {
+      "waren": 3.9,
+      "arbeit": 1.6,
+      "energie": 0.22,
+      "vk": 22
     },
     "allergene": [
       "Senf",
@@ -447,7 +464,7 @@
         "schritte": [
           {
             "text": "Ghee erhitzen, Zimt, Nelken und Senfkörner 2 Minuten rösten und zum Curry geben.",
-            "geraet": "Induktion, Sauteuse",
+            "geraet": "Induktion",
             "temperatur": null,
             "aktiv_min": 4,
             "unbeaufsichtigt_min": 0,
@@ -461,7 +478,7 @@
   {
     "id": "quiche",
     "typ": "gericht",
-    "kategorie": "Vorspeise / Apéro",
+    "kategorie": "Apéro",
     "name": "Quiche aux Oignons",
     "untertitel": "Zwiebel-Speck-Quiche",
     "quelle": "Eigenes Rezept",
@@ -469,19 +486,28 @@
       "portionen": 10,
       "portion_g": 140
     },
+    "kosten_pro_portion": {
+      "waren": 1.6,
+      "arbeit": 1.4,
+      "energie": 0.18,
+      "vk": 9
+    },
     "allergene": [
       "Gluten",
       "Ei",
       "Milch"
     ],
     "komponenten": [
-      "kuchenteig"
+      {
+        "id": "kuchenteig",
+        "g_pro_portion": 50
+      }
     ],
     "offene_punkte": [
       "Kuchenteig: eigenes Grundrezept oder Zukauf? Rezept fehlt noch.",
       "Zwiebelmenge (1 kleine Zwiebel) im Original eher knapp für eine Zwiebelquiche, bitte prüfen.",
       "Gewürze ohne Menge im Original.",
-      "Für die Produktion: Blech/GN-Format und Portionierung (Stücke pro Blech) festlegen."
+      "Für die Produktion: Blech- oder GN-Format und Stücke pro Blech festlegen."
     ],
     "gruppen": [
       {
@@ -492,7 +518,7 @@
             "menge_g": 500,
             "basis": false,
             "annahme": false,
-            "notiz": "Komponente, siehe unten"
+            "notiz": "Komponente"
           },
           {
             "name": "Butter, weich",
@@ -658,226 +684,11 @@
           },
           {
             "text": "Backen, bis der Guss gestockt ist.",
-            "geraet": "Combi-Steamer, Heissluft",
+            "geraet": "Combi-Steamer",
             "temperatur": "200 °C",
             "aktiv_min": 0,
             "unbeaufsichtigt_min": 33,
             "haccp": "Kern 72 °C",
-            "annahme": false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "dough",
-    "typ": "komponente",
-    "kategorie": "Teig",
-    "name": "Allzweck-Hefeteig",
-    "untertitel": "Tangzhong-Teig für Burger Buns (Multi Purpose Dough)",
-    "quelle": "Eigenes Rezept (Hauptversion; Haushaltsversion in den Notizen nicht übernommen)",
-    "basis": {
-      "chargen": 1,
-      "ergibt_g": 4000
-    },
-    "allergene": [
-      "Gluten",
-      "Ei",
-      "Milch"
-    ],
-    "komponenten": [],
-    "offene_punkte": [
-      "Eier und Eigelb in Gramm umgerechnet (Ei 50 g, Eigelb 18 g).",
-      "Eggwash ohne Menge im Original.",
-      "Kneten in der Knetmaschine als unbeaufsichtigt gezählt, bitte bestätigen.",
-      "Notizen enthalten eine zweite, kleinere Version mit Malz und Amylase: soll sie eine eigene Variante werden?"
-    ],
-    "gruppen": [
-      {
-        "titel": "Tangzhong",
-        "zutaten": [
-          {
-            "name": "Weissmehl",
-            "menge_g": 72,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          },
-          {
-            "name": "Wasser",
-            "menge_g": 120,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          },
-          {
-            "name": "Vollmilch",
-            "menge_g": 240,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          }
-        ],
-        "schritte": [
-          {
-            "text": "In einer kleinen Pfanne mischen und unter Rühren kochen, bis es bindet.",
-            "geraet": "Induktion",
-            "temperatur": null,
-            "aktiv_min": 5,
-            "unbeaufsichtigt_min": 0,
-            "haccp": null,
-            "annahme": false
-          },
-          {
-            "text": "Abkühlen lassen.",
-            "geraet": null,
-            "temperatur": null,
-            "aktiv_min": 0,
-            "unbeaufsichtigt_min": 15,
-            "haccp": null,
-            "annahme": false
-          }
-        ]
-      },
-      {
-        "titel": "Hauptteig",
-        "zutaten": [
-          {
-            "name": "Vollmilch",
-            "menge_g": 500,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          },
-          {
-            "name": "Wasser",
-            "menge_g": 500,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          },
-          {
-            "name": "Trockenhefe",
-            "menge_g": 35,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          }
-        ],
-        "schritte": [
-          {
-            "text": "Milch und Wasser leicht erwärmen, Hefe einrühren, 10 Minuten anspringen lassen.",
-            "geraet": null,
-            "temperatur": null,
-            "aktiv_min": 2,
-            "unbeaufsichtigt_min": 10,
-            "haccp": null,
-            "annahme": false
-          }
-        ]
-      },
-      {
-        "titel": null,
-        "zutaten": [
-          {
-            "name": "Weissmehl",
-            "menge_g": 2100,
-            "basis": true,
-            "annahme": false,
-            "notiz": null
-          },
-          {
-            "name": "Zucker",
-            "menge_g": 52,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          },
-          {
-            "name": "Salz",
-            "menge_g": 36,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          },
-          {
-            "name": "Eier",
-            "menge_g": 200,
-            "basis": false,
-            "annahme": false,
-            "notiz": "4 Stück"
-          },
-          {
-            "name": "Eigelb",
-            "menge_g": 72,
-            "basis": false,
-            "annahme": false,
-            "notiz": "4 Stück"
-          },
-          {
-            "name": "Butter",
-            "menge_g": 140,
-            "basis": false,
-            "annahme": false,
-            "notiz": null
-          }
-        ],
-        "schritte": [
-          {
-            "text": "Alle Zutaten inklusive Tangzhong 10 Minuten kneten.",
-            "geraet": "Knetmaschine",
-            "temperatur": null,
-            "aktiv_min": 2,
-            "unbeaufsichtigt_min": 10,
-            "haccp": null,
-            "annahme": true
-          },
-          {
-            "text": "Buns à 100 g formen, mit Eggwash bestreichen.",
-            "geraet": null,
-            "temperatur": null,
-            "aktiv_min": 30,
-            "unbeaufsichtigt_min": 0,
-            "haccp": null,
-            "annahme": true
-          }
-        ]
-      },
-      {
-        "titel": "Eggwash",
-        "zutaten": [
-          {
-            "name": "Eier",
-            "menge_g": 100,
-            "basis": false,
-            "annahme": true,
-            "notiz": "2 Stück"
-          },
-          {
-            "name": "Wasser",
-            "menge_g": 30,
-            "basis": false,
-            "annahme": true,
-            "notiz": null
-          }
-        ],
-        "schritte": [
-          {
-            "text": "30–45 Minuten gären lassen, nochmals mit Eggwash bestreichen.",
-            "geraet": "Gärschrank",
-            "temperatur": null,
-            "aktiv_min": 5,
-            "unbeaufsichtigt_min": 40,
-            "haccp": null,
-            "annahme": false
-          },
-          {
-            "text": "Backen.",
-            "geraet": "Combi-Steamer, Heissluft",
-            "temperatur": "190 °C",
-            "aktiv_min": 0,
-            "unbeaufsichtigt_min": 14,
-            "haccp": null,
             "annahme": false
           }
         ]
@@ -895,6 +706,7 @@
       "chargen": 1,
       "ergibt_g": 1600
     },
+    "kosten_pro_portion": null,
     "allergene": [
       "Milch (Butter)"
     ],
@@ -994,7 +806,7 @@
         "schritte": [
           {
             "text": "Zu den Zwiebeln geben und bei milder Hitze einkochen, zwischendurch pürieren.",
-            "geraet": "Kippkessel, Stabmixer",
+            "geraet": "Kippkessel",
             "temperatur": null,
             "aktiv_min": 5,
             "unbeaufsichtigt_min": 60,
@@ -1035,11 +847,273 @@
           },
           {
             "text": "Im Dampf pasteurisieren.",
-            "geraet": "Combi-Steamer, Dampf",
+            "geraet": "Combi-Steamer",
             "temperatur": "92 °C",
             "aktiv_min": 0,
             "unbeaufsichtigt_min": 20,
             "haccp": "Pasteurisation 20 min",
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "kuchenteig",
+    "typ": "komponente",
+    "kategorie": "Teig",
+    "name": "Kuchenteig",
+    "untertitel": "Rezept fehlt noch",
+    "quelle": "offen",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 500
+    },
+    "kosten_pro_portion": null,
+    "allergene": [
+      "Gluten",
+      "Milch"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Eigenes Grundrezept oder Zukauf (Fertigteig)? Bei Zukauf als Artikel im Artikelstamm statt als Rezept führen."
+    ],
+    "gruppen": [
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Kuchenteig",
+            "menge_g": 500,
+            "basis": true,
+            "annahme": true,
+            "notiz": "Rezept oder Artikel offen"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Wird ergänzt.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dough",
+    "typ": "komponente",
+    "kategorie": "Teig",
+    "name": "Allzweck-Hefeteig",
+    "untertitel": "Tangzhong-Teig für Burger Buns",
+    "quelle": "Eigenes Rezept (Hauptversion)",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 4000
+    },
+    "kosten_pro_portion": null,
+    "allergene": [
+      "Gluten",
+      "Ei",
+      "Milch"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Eier und Eigelb in Gramm umgerechnet (Ei 50 g, Eigelb 18 g).",
+      "Eggwash ohne Menge im Original.",
+      "Kneten in der Knetmaschine als unbeaufsichtigt gezählt, bitte bestätigen.",
+      "Notizen enthalten eine kleinere Version mit Malz und Amylase: eigene Variante?"
+    ],
+    "gruppen": [
+      {
+        "titel": "Tangzhong",
+        "zutaten": [
+          {
+            "name": "Weissmehl",
+            "menge_g": 72,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Wasser",
+            "menge_g": 120,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Vollmilch",
+            "menge_g": 240,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "In einer kleinen Pfanne mischen und unter Rühren kochen, bis es bindet.",
+            "geraet": "Induktion",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Abkühlen lassen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 15,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Hauptteig",
+        "zutaten": [
+          {
+            "name": "Vollmilch",
+            "menge_g": 500,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Wasser",
+            "menge_g": 500,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Trockenhefe",
+            "menge_g": 35,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Milch und Wasser leicht erwärmen, Hefe einrühren, 10 Minuten anspringen lassen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 2,
+            "unbeaufsichtigt_min": 10,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Weissmehl",
+            "menge_g": 2600,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Zucker",
+            "menge_g": 52,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 36,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Eier",
+            "menge_g": 200,
+            "basis": false,
+            "annahme": false,
+            "notiz": "4 Stück"
+          },
+          {
+            "name": "Eigelb",
+            "menge_g": 72,
+            "basis": false,
+            "annahme": false,
+            "notiz": "4 Stück"
+          },
+          {
+            "name": "Butter",
+            "menge_g": 140,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Alle Zutaten inklusive Tangzhong 10 Minuten kneten.",
+            "geraet": "Knetmaschine",
+            "temperatur": null,
+            "aktiv_min": 2,
+            "unbeaufsichtigt_min": 10,
+            "haccp": null,
+            "annahme": true
+          },
+          {
+            "text": "Buns à 100 g formen, mit Eggwash bestreichen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 30,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": true
+          }
+        ]
+      },
+      {
+        "titel": "Eggwash",
+        "zutaten": [
+          {
+            "name": "Eier",
+            "menge_g": 100,
+            "basis": false,
+            "annahme": true,
+            "notiz": "2 Stück"
+          },
+          {
+            "name": "Wasser",
+            "menge_g": 30,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "30–45 Minuten gären lassen, nochmals mit Eggwash bestreichen.",
+            "geraet": "Gärschrank",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 40,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Backen.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "190 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 14,
+            "haccp": null,
             "annahme": false
           }
         ]
@@ -1057,6 +1131,7 @@
       "chargen": 1,
       "ergibt_g": 450
     },
+    "kosten_pro_portion": null,
     "allergene": [
       "Fisch",
       "Soja",
@@ -1065,7 +1140,7 @@
     "komponenten": [],
     "offene_punkte": [
       "Ergibt-Menge fehlt; 450 g angenommen.",
-      "Löffel, Stück und Bund in Gramm umgerechnet (EL Essig 15 g, EL Fisch-/Sojasauce 15 g).",
+      "Löffel, Stück und Bund in Gramm umgerechnet (EL Essig 15 g, EL Fisch- und Sojasauce 15 g).",
       "Haltbarkeit «wochenlang» als HACCP-Wert festlegen."
     ],
     "gruppen": [
@@ -1094,7 +1169,7 @@
             "notiz": "3 Stängel"
           },
           {
-            "name": "Koriander, Bund",
+            "name": "Koriander",
             "menge_g": 30,
             "basis": false,
             "annahme": true,
@@ -1157,7 +1232,7 @@
         "schritte": [
           {
             "text": "Zucker in einem schweren Topf schmelzen und dunkel karamellisieren, nicht verbrennen lassen.",
-            "geraet": "Induktion, Sauteuse",
+            "geraet": "Induktion",
             "temperatur": null,
             "aktiv_min": 8,
             "unbeaufsichtigt_min": 0,
@@ -1215,45 +1290,1479 @@
     ]
   },
   {
-    "id": "kuchenteig",
-    "typ": "komponente",
-    "kategorie": "Teig",
-    "name": "Kuchenteig",
-    "untertitel": "Rezept fehlt noch",
-    "quelle": "offen",
+    "id": "cheesecake",
+    "typ": "gericht",
+    "kategorie": "Dessert",
+    "name": "Basque Cheesecake",
+    "untertitel": "Gebrannter Käsekuchen ohne Boden",
+    "quelle": "ChefSteps (Nicholas Gavin)",
     "basis": {
-      "chargen": 1,
-      "ergibt_g": 500
+      "portionen": 20,
+      "portion_g": 140
     },
+    "kosten_pro_portion": null,
     "allergene": [
-      "Gluten",
-      "Milch"
+      "Milch",
+      "Ei",
+      "Gluten"
     ],
     "komponenten": [],
     "offene_punkte": [
-      "Eigenes Grundrezept oder Zukauf (Fertigteig)? Bei Zukauf als Artikel im Artikelstamm statt als Rezept führen."
+      "Portionen: 20 à 140 g angenommen; die Quelle rechnet mit 10–12 Portionen.",
+      "Rezept für Springform 23 cm: Umrechnung auf GN-Format und Backzeiten im Combi-Steamer testen.",
+      "Drehen der Form alle 10 Minuten ist im Combi-Steamer vermutlich nicht nötig; prüfen.",
+      "Varianten Schokolade und Kürbis sind in der Quelle beschrieben; bei Bedarf als Varianten anlegen.",
+      "Möglicher Dessert für Anlass A (Firmenjubiläum), dort ist das Dessert noch offen."
+    ],
+    "gruppen": [
+      {
+        "titel": "Masse",
+        "zutaten": [
+          {
+            "name": "Doppelrahmfrischkäse",
+            "menge_g": 1360,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Zucker",
+            "menge_g": 450,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Weissmehl",
+            "menge_g": 65,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 8,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Vollrahm 35 %",
+            "menge_g": 700,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Eier",
+            "menge_g": 450,
+            "basis": false,
+            "annahme": false,
+            "notiz": "9 Stück"
+          },
+          {
+            "name": "Vanilleextrakt",
+            "menge_g": 15,
+            "basis": false,
+            "annahme": false,
+            "notiz": "optional"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Frischkäse weich und streichfähig erwärmen.",
+            "geraet": "Mikrowelle",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Zucker, Mehl und Salz mischen, mit Rahm, Eiern und Vanille glatt mixen, Frischkäse einarbeiten; möglichst wenig Luft einschlagen.",
+            "geraet": "Stabmixer",
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Masse auf 4 °C kühlen; hält so bis 3 Tage.",
+            "geraet": "Kühlraum",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 120,
+            "haccp": "≤ 4 °C",
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Backen",
+        "zutaten": [],
+        "schritte": [
+          {
+            "text": "Form mit Alufolie und Backpapier auslegen, Masse durch ein Sieb einfüllen, Luftblasen entfernen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 15,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Erste Backphase: Oberfläche kräftig bräunen.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "216 °C",
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 30,
+            "haccp": null,
+            "annahme": true
+          },
+          {
+            "text": "Zweite Backphase, bis der Kern 46–52 °C erreicht und die Mitte noch wackelt.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "149 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 40,
+            "haccp": "Kern 46–52 °C",
+            "annahme": false
+          },
+          {
+            "text": "Bei Raumtemperatur nachziehen lassen (Kern steigt auf 66 °C), dann mindestens 8 Stunden kühlen.",
+            "geraet": "Kühlraum",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 580,
+            "haccp": "Kern 66 °C",
+            "annahme": false
+          },
+          {
+            "text": "Mit warmem Messer portionieren.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pate",
+    "typ": "gericht",
+    "kategorie": "Apéro / Vorspeise",
+    "name": "Imfoiessible Pâté",
+    "untertitel": "Vegane Mousse nach Art Foie gras",
+    "quelle": "ChefSteps (Matthew Woolen)",
+    "basis": {
+      "portionen": 12,
+      "portion_g": 60
+    },
+    "kosten_pro_portion": null,
+    "allergene": [
+      "Schalenfrüchte (Cashew)",
+      "Soja (Miso)"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Portionen: 12 à 60 g angenommen; die Quelle nennt 8–12 Portionen.",
+      "Gellan (low-acyl und high-acyl) im Artikelstamm anlegen, Lieferant klären.",
+      "Kochend heiss mixen: Arbeitssicherheit (Deckel, Tuch) in der Einführung erwähnen.",
+      "«Sweet Spice» ist eine Mischung der Quelle; eigene Gewürzmischung festlegen.",
+      "Haltbarkeit laut Quelle 1 Woche, mit Fettdeckel 2–3 Wochen: HACCP-Wert festlegen."
     ],
     "gruppen": [
       {
         "titel": null,
         "zutaten": [
           {
-            "name": "Kuchenteig",
-            "menge_g": 500,
+            "name": "Cashewkerne, roh",
+            "menge_g": 150,
             "basis": true,
-            "annahme": true,
-            "notiz": "Rezept oder Artikel offen"
+            "annahme": false,
+            "notiz": null
           }
         ],
         "schritte": [
           {
-            "text": "Wird ergänzt.",
+            "text": "In kaltem Wasser mindestens 2 Stunden, besser über Nacht einweichen, abgiessen.",
             "geraet": null,
             "temperatur": null,
             "aktiv_min": 0,
+            "unbeaufsichtigt_min": 120,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Kokosöl, raffiniert",
+            "menge_g": 15,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Schalotten, in Scheiben",
+            "menge_g": 90,
+            "basis": false,
+            "annahme": false,
+            "notiz": "2 Stück"
+          },
+          {
+            "name": "Champignons, in Scheiben",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Knoblauch, in Scheiben",
+            "menge_g": 12,
+            "basis": false,
+            "annahme": false,
+            "notiz": "2 Zehen"
+          },
+          {
+            "name": "Cognac",
+            "menge_g": 110,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Schalotten, Champignons und Knoblauch in Kokosöl zugedeckt weich dünsten.",
+            "geraet": "Induktion",
+            "temperatur": null,
+            "aktiv_min": 12,
             "unbeaufsichtigt_min": 0,
             "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Mit Cognac ablöschen und um die Hälfte reduzieren.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 2,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Wasser",
+            "menge_g": 275,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Kokosöl, raffiniert",
+            "menge_g": 70,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Miso, hell",
+            "menge_g": 25,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Tomatenpüree",
+            "menge_g": 15,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 8,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Gewürzmischung süss",
+            "menge_g": 2.5,
+            "basis": false,
+            "annahme": true,
+            "notiz": "«Sweet Spice» der Quelle"
+          },
+          {
+            "name": "Pfeffer schwarz",
+            "menge_g": 1.5,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Cashews und Würzzutaten zugeben, aufkochen und 30 Sekunden kochen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Gellan low-acyl",
+            "menge_g": 1.5,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Gellan high-acyl",
+            "menge_g": 0.4,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Heiss glatt mixen, Gellan bei laufendem Mixer zugeben, bis 93–100 °C weitermixen.",
+            "geraet": "Hochleistungsmixer",
+            "temperatur": "93–100 °C",
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Pflanzenfett für Fettdeckel",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": true,
+            "notiz": "optional"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Sofort in Gläser abfüllen, Oberfläche abdecken oder mit Fettdeckel versiegeln.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Kühlen, bis die Masse gestockt ist.",
+            "geraet": "Kühlraum",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 60,
+            "haccp": "≤ 7 °C",
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "meatloaf",
+    "typ": "gericht",
+    "kategorie": "Hauptgang",
+    "name": "Sous-vide-Hackbraten",
+    "untertitel": "Mit Zwiebelkonfit, Pilzen und Glasur (Modernist Meatloaf)",
+    "quelle": "ChefSteps (Kyl Haselbauer)",
+    "basis": {
+      "portionen": 6,
+      "portion_g": 200
+    },
+    "kosten_pro_portion": null,
+    "allergene": [
+      "Gluten",
+      "Ei",
+      "Milch",
+      "Fisch (Worcestershire)",
+      "Sulfite (Rotwein)",
+      "Sellerie (Annahme, Bouillon)"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Portionen: 6 à 200 g angenommen; die Quelle nennt 4–6 Portionen.",
+      "Gellan und Natriumhexametaphosphat: Lieferant klären. Die Quelle beschreibt auch eine einfache Glasur ohne diese Zusätze.",
+      "Sous-vide im Combi-Steamer statt Wasserbad: Garzeit für eine Rolle von 8 cm Durchmesser prüfen.",
+      "Für grosse Mengen: Terrinenform oder GN statt Folienrolle?"
+    ],
+    "gruppen": [
+      {
+        "titel": "Panade",
+        "zutaten": [
+          {
+            "name": "Sauerteigbrot, gewürfelt",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Vollmilch",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Brotwürfel mit Milch mischen und mindestens 1 Stunde kühl ziehen lassen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 60,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Zwiebelkonfit",
+        "zutaten": [
+          {
+            "name": "Rotwein, trocken",
+            "menge_g": 250,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Zwiebeln, süss, gewürfelt",
+            "menge_g": 190,
+            "basis": false,
+            "annahme": false,
+            "notiz": "1 Stück"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zugedeckt 15 Minuten kochen, offen zu Konfit einkochen und kühlen.",
+            "geraet": "Induktion",
+            "temperatur": null,
+            "aktiv_min": 7,
+            "unbeaufsichtigt_min": 45,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Pilze",
+        "zutaten": [
+          {
+            "name": "Champignons, geviertelt",
+            "menge_g": 400,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Olivenöl",
+            "menge_g": 28,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 3,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Pfeffer schwarz",
+            "menge_g": 1,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Mischen und rösten, bis sie trocken und leicht gebräunt sind; kühlen.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "218 °C",
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 48,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Glasur",
+        "zutaten": [
+          {
+            "name": "Ketchup",
+            "menge_g": 300,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Rindsbouillon",
+            "menge_g": 200,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Rohrzucker, hell",
+            "menge_g": 150,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Worcestershire-Sauce",
+            "menge_g": 25,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 4,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Paprika edelsüss",
+            "menge_g": 3,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Pfeffer schwarz",
+            "menge_g": 2,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Natriumhexametaphosphat",
+            "menge_g": 1,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Gellan low-acyl",
+            "menge_g": 3,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Gelatine",
+            "menge_g": 33,
+            "basis": false,
+            "annahme": false,
+            "notiz": "10 Blatt"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Alles ausser Gellan und Gelatine aufkochen und mixen, Gellan einmixen bis 93 °C, flach ausgiessen und fest werden lassen.",
+            "geraet": "Hochleistungsmixer",
+            "temperatur": "93 °C",
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 60,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Glasur fein pürieren, auf 60 °C erwärmen, eingeweichte Gelatine einrühren, 3 mm dünn ausgiessen und kühlen.",
+            "geraet": "Cutter",
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 60,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Fleischmasse",
+        "zutaten": [
+          {
+            "name": "Rindsschulter, pariert, gewürfelt",
+            "menge_g": 600,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Eier",
+            "menge_g": 100,
+            "basis": false,
+            "annahme": false,
+            "notiz": "2 Stück"
+          },
+          {
+            "name": "Peterli, gehackt",
+            "menge_g": 28,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Rosmarin, gehackt",
+            "menge_g": 3,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 10,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Pfeffer schwarz",
+            "menge_g": 4,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Mit Panade, Pilzen und Zwiebelkonfit mischen, durch die 4.5-mm-Scheibe wolfen und kurz rühren, bis die Masse cremig ist.",
+            "geraet": "Fleischwolf, Rührwerk",
+            "temperatur": null,
+            "aktiv_min": 15,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "In Folie zu einer Rolle von 8 cm Durchmesser formen und vakuumieren.",
+            "geraet": "Vakuumiergerät",
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Sous-vide garen.",
+            "geraet": "Combi-Steamer, Dampf",
+            "temperatur": "68 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 90,
+            "haccp": "Kern 68 °C",
             "annahme": true
+          },
+          {
+            "text": "In Eiswasser abkühlen, bis sich die Rolle sauber schneiden lässt.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 45,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Fertigstellen",
+        "zutaten": [],
+        "schritte": [
+          {
+            "text": "Längs halbieren und auf dem Gitter rösten bis Kern 60 °C, 5 Minuten ruhen lassen.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "218 °C",
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 15,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Mit Glasurplatten belegen, kurz überbacken und in 1.5 cm dicke Tranchen schneiden.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "177 °C",
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 4,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "shokupan",
+    "typ": "komponente",
+    "kategorie": "Brot",
+    "name": "Shokupan",
+    "untertitel": "Japanisches Milchbrot mit Reismehl-Tangzhong",
+    "quelle": "ChefSteps (Matthew Woolen)",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 600
+    },
+    "kosten_pro_portion": null,
+    "allergene": [
+      "Gluten",
+      "Milch",
+      "Ei"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Ergibt 1 Laib ≈ 600 g angenommen (Teig 660–670 g).",
+      "US-«Bread flour» etwa Weissmehl Typ 550 oder Zopfmehl: Mehlsorte festlegen.",
+      "Pullman-Formen mit Deckel vorhanden? Sonst Kastenform mit Blech als Deckel.",
+      "Gärzeiten im Gärschrank kürzer als bei Raumtemperatur: testen."
+    ],
+    "gruppen": [
+      {
+        "titel": "Tangzhong",
+        "zutaten": [
+          {
+            "name": "Wasser",
+            "menge_g": 55,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Vollmilch",
+            "menge_g": 55,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Klebreismehl (Mochiko)",
+            "menge_g": 20,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Unter Rühren zu einer dicken Paste kochen, abgedeckt auf Raumtemperatur abkühlen.",
+            "geraet": "Induktion",
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 10,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Teig",
+        "zutaten": [
+          {
+            "name": "Vollmilch",
+            "menge_g": 80,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Magermilchpulver",
+            "menge_g": 13,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Instanthefe",
+            "menge_g": 5,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Ei",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": false,
+            "notiz": "1 Stück"
+          },
+          {
+            "name": "Weissmehl Typ 550",
+            "menge_g": 315,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Zucker",
+            "menge_g": 40,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 5,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Milch, Milchpulver und Hefe verrühren, Ei und Paste zugeben, Trockenes darübergeben und 6 Minuten zu einem glatten Teig kneten.",
+            "geraet": "Knetmaschine",
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 6,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Butter, weich",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Butter einarbeiten, bis sich der Teig vom Kessel löst.",
+            "geraet": "Knetmaschine",
+            "temperatur": null,
+            "aktiv_min": 2,
+            "unbeaufsichtigt_min": 6,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Bei 24 °C gären lassen bis doppeltes Volumen, zusammenschlagen, nochmals verdoppeln.",
+            "geraet": "Gärschrank",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 240,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "In 2 × 330 g teilen, ausrollen und zweimal falten, 30 Minuten ruhen lassen, straff aufrollen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 20,
+            "unbeaufsichtigt_min": 30,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "In der gefetteten Form mit Deckel gären, bis der Teig drei Viertel der Höhe erreicht.",
+            "geraet": "Gärschrank",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 150,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Mit Deckel backen bis Kern 90 °C.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "177 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 40,
+            "haccp": "Kern 90 °C",
+            "annahme": true
+          },
+          {
+            "text": "Ausformen und auf dem Gitter auskühlen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 120,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "shiopan",
+    "typ": "komponente",
+    "kategorie": "Gebäck",
+    "name": "Shio Pan",
+    "untertitel": "Japanisches Salzbrötchen mit Butterkern",
+    "quelle": "ChefSteps (Tim Chin)",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 760
+    },
+    "kosten_pro_portion": null,
+    "allergene": [
+      "Gluten",
+      "Milch"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "US-Mehle (Bread flour, Cake flour) durch Schweizer Sorten ersetzen, z.B. Weissmehl 550 und Feinmehl; testen.",
+      "Brezelsalz: Lieferant klären, sonst Fleur de Sel.",
+      "Ergibt 8 Stück à ca. 95 g angenommen.",
+      "Haltbarkeit laut Quelle: 2 Tage bei Raumtemperatur, 1 Woche gekühlt, 3 Monate tiefgekühlt."
+    ],
+    "gruppen": [
+      {
+        "titel": "Butterkern",
+        "zutaten": [
+          {
+            "name": "Butter, kalt",
+            "menge_g": 120,
+            "basis": false,
+            "annahme": false,
+            "notiz": "8 × 15 g"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "In 8 Stücke à 15 g schneiden und anfrieren.",
+            "geraet": "Tiefkühler",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 10,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Tangzhong",
+        "zutaten": [
+          {
+            "name": "Wasser",
+            "menge_g": 120,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Weissmehl Typ 550",
+            "menge_g": 32,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Eis",
+            "menge_g": 125,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Wasser und Mehl zu einem Gel kochen, mit dem Eis auf 2–7 °C abkühlen.",
+            "geraet": "Induktion",
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Teig",
+        "zutaten": [
+          {
+            "name": "Weissmehl Typ 550",
+            "menge_g": 240,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Feinmehl (Cake flour)",
+            "menge_g": 75,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          },
+          {
+            "name": "Magermilchpulver",
+            "menge_g": 20,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Instanthefe",
+            "menge_g": 5,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Trockenes mischen, Tangzhong zugeben, 4 Minuten mischen und 15 Minuten ruhen lassen.",
+            "geraet": "Knetmaschine",
+            "temperatur": null,
+            "aktiv_min": 2,
+            "unbeaufsichtigt_min": 19,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": null,
+        "zutaten": [
+          {
+            "name": "Zucker",
+            "menge_g": 20,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 6,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Butter, kalt",
+            "menge_g": 30,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zucker und Salz einarbeiten, dann die Butter; kneten, bis der Fenstertest gelingt.",
+            "geraet": "Knetmaschine",
+            "temperatur": null,
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 15,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Gären lassen bis doppeltes Volumen.",
+            "geraet": "Gärschrank",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 75,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "In 80-g-Stücke teilen, rund formen, 10 Minuten kühlen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 10,
+            "unbeaufsichtigt_min": 10,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Zu langen Dreiecken ausrollen, Butterkern einrollen, Halbmond formen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 25,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Stückgare bis doppeltes Volumen.",
+            "geraet": "Gärschrank",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 50,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Glasur und Backen",
+        "zutaten": [
+          {
+            "name": "Wasser",
+            "menge_g": 75,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Reismehl",
+            "menge_g": 5,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Butter",
+            "menge_g": 50,
+            "basis": false,
+            "annahme": false,
+            "notiz": "auf dem Blech"
+          },
+          {
+            "name": "Brezelsalz",
+            "menge_g": 5,
+            "basis": false,
+            "annahme": true,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Reismehl-Glasur kochen und sieben, aufstreichen, salzen, mit Wasser besprühen, Butter aufs Blech legen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 8,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Backen, nach 12 Minuten mit der geschmolzenen Butter bestreichen, Hitze senken und goldbraun fertig backen.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "191 °C, dann 177 °C",
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 30,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pickles",
+    "typ": "komponente",
+    "kategorie": "Beilage",
+    "name": "Sous-vide-Pickles",
+    "untertitel": "Knackiges Essiggemüse, pasteurisiert",
+    "quelle": "ChefSteps",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 1700
+    },
+    "kosten_pro_portion": null,
+    "allergene": [
+      "Sulfite (Essig, Annahme)",
+      "Senf (je nach Gewürz)"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Pasteurisationszeit gilt für 1-l-Gläser; andere Grössen testen.",
+      "Süsse Lake für Früchte (Essig 350 g, Wasser 350 g, Zucker 200 g) als Variante anlegen?",
+      "Haltbarkeit laut Quelle: ungeöffnet 6 Monate kühl und dunkel, geöffnet 2 Monate gekühlt; HACCP prüfen.",
+      "Gemüsesorte und Gewürze pro Einsatz festlegen."
+    ],
+    "gruppen": [
+      {
+        "titel": "Lake, pikant",
+        "zutaten": [
+          {
+            "name": "Weissweinessig 5 %",
+            "menge_g": 400,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Wasser",
+            "menge_g": 400,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Zucker",
+            "menge_g": 80,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 20,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Verrühren, bis Zucker und Salz gelöst sind.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Gemüse",
+        "zutaten": [
+          {
+            "name": "Gemüse oder Früchte, gerüstet",
+            "menge_g": 900,
+            "basis": true,
+            "annahme": false,
+            "notiz": "z.B. Karotten, Bohnen, Gurken, Blumenkohl"
+          },
+          {
+            "name": "Gewürze und Aromaten",
+            "menge_g": 20,
+            "basis": false,
+            "annahme": true,
+            "notiz": "z.B. Senfsaat, Dill, Knoblauch"
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Rüsten und in mundgerechte Stücke schneiden.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 20,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "In Gläser füllen (2 cm Rand), Lake bis 1 cm unter den Rand giessen, Deckel nur fingerfest schliessen.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 5,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Pasteurisieren",
+        "zutaten": [],
+        "schritte": [
+          {
+            "text": "Bei 60 °C pasteurisieren.",
+            "geraet": "Combi-Steamer, Dampf",
+            "temperatur": "60 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 150,
+            "haccp": "60 °C, 2.5 h",
+            "annahme": true
+          },
+          {
+            "text": "Bei Raumtemperatur mindestens 8 Stunden abkühlen, nicht in Eiswasser.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 480,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "truffaux",
+    "typ": "komponente",
+    "kategorie": "Garnitur",
+    "name": "Truffaux",
+    "untertitel": "Trüffel-Imitat aus Champignons",
+    "quelle": "ChefSteps (Grant Crilly)",
+    "basis": {
+      "chargen": 1,
+      "ergibt_g": 270
+    },
+    "kosten_pro_portion": null,
+    "allergene": [
+      "Milch (Natriumcaseinat)"
+    ],
+    "komponenten": [],
+    "offene_punkte": [
+      "Activa RM, Natriumcaseinat und Aktivkohle: Lieferanten und Deklaration nach Schweizer Lebensmittelrecht klären.",
+      "Kennzeichnung: Imitat, kein echter Trüffel; auf der Menükarte deklarieren.",
+      "24 Stunden Trocknen belegt ein Gerät: Dörrgerät statt Combi-Steamer?",
+      "Haltbarkeit festlegen."
+    ],
+    "gruppen": [
+      {
+        "titel": "Pilze",
+        "zutaten": [
+          {
+            "name": "Champignons, weiss",
+            "menge_g": 1000,
+            "basis": true,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Waschen, trocknen und vierteln.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 15,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Rösten, bis sie geschrumpft und gebräunt sind (noch 400–425 g), abkühlen.",
+            "geraet": "Combi-Steamer",
+            "temperatur": "121 °C",
+            "aktiv_min": 3,
+            "unbeaufsichtigt_min": 130,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Bindung",
+        "zutaten": [
+          {
+            "name": "Natriumcaseinat",
+            "menge_g": 40,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Activa RM (Transglutaminase)",
+            "menge_g": 25,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Salz",
+            "menge_g": 4,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Mononatriumglutamat",
+            "menge_g": 1,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          },
+          {
+            "name": "Schwarzer Knoblauch",
+            "menge_g": 3,
+            "basis": false,
+            "annahme": false,
+            "notiz": "optional"
+          },
+          {
+            "name": "Trüffelöl, schwarz",
+            "menge_g": 25,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Pulver mischen, mit Pilzen und Knoblauch grob cuttern, 5 Minuten quellen lassen, Trüffelöl zugeben und fein cuttern. Sofort weiterarbeiten.",
+            "geraet": "Cutter",
+            "temperatur": null,
+            "aktiv_min": 8,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          }
+        ]
+      },
+      {
+        "titel": "Formen und Trocknen",
+        "zutaten": [
+          {
+            "name": "Aktivkohle, lebensmitteltauglich",
+            "menge_g": 0.5,
+            "basis": false,
+            "annahme": false,
+            "notiz": null
+          }
+        ],
+        "schritte": [
+          {
+            "text": "Zu 9 Kugeln à 50 g formen und mit Aktivkohle bestäuben.",
+            "geraet": null,
+            "temperatur": null,
+            "aktiv_min": 15,
+            "unbeaufsichtigt_min": 0,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Trocknen, bis jede Kugel 25–35 g wiegt.",
+            "geraet": "Dörrgerät",
+            "temperatur": "60 °C",
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 1440,
+            "haccp": null,
+            "annahme": false
+          },
+          {
+            "text": "Abkühlen und abgedeckt 24 Stunden kühlen.",
+            "geraet": "Kühlraum",
+            "temperatur": null,
+            "aktiv_min": 0,
+            "unbeaufsichtigt_min": 1440,
+            "haccp": null,
+            "annahme": false
           }
         ]
       }

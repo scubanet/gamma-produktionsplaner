@@ -9,7 +9,7 @@ Planungs-App für Event-Catering: Ein Anlass (Gäste, Menü, Serviceart, Locatio
 | `docs/` | Lösungsvorschlag (PDF): Grundprinzip, Datenmodell, Berechnungslogik, Umsetzung in drei Stufen |
 | `design-system/` | Design System «Produktionsplaner»: Tokens, Brand Book, 12 Komponenten (`window.Planer`), Änderungsprotokoll |
 | `mockups/` | Klickbare Screens (Design Components, `.dc.html`), alle aus `planer.css` (Design-System-Tokens) und mit gemeinsamer Navigation `Nav.dc.html`: Leitstand, Anlass erfassen, Ressourcen, Produktionsplan, Rezepte, Rentabilität |
-| `rezepte/` | `rezepte.json`: die ersten 6 echten Rezepte im Rezeptkarten-Format (Annahmen markiert) |
+| `rezepte/` | `rezepte.json`: 14 Rezepte (6 Gerichte, 8 Komponenten) im Rezeptkarten-Format, Annahmen markiert |
 | `db/` | `schema.sql` (PostgreSQL/Supabase), `seed.sql` mit den Rezepten, `kosten.sql` mit Kostenmodell (Lohnsätze, Energie, Fixkosten, Anlässe) und Auswertungen für Deckungsbeitrag und Monatsergebnis |
 
 ## Kernprinzip
