@@ -4,5 +4,5 @@ import type * as PlanerTypen from "../../design-system/components/index";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const Planer = require("../../design-system/components/bundle.js") as typeof PlanerTypen;
 
-export const { Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice } = Planer;
-export type { SideNavItem } from "../../design-system/components/index";
+export const { Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select } = Planer;
+export type { SideNavItem, DataTableColumn } from "../../design-system/components/index";

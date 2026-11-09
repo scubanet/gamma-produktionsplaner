@@ -7,9 +7,16 @@ describe("Navigation", () => {
     expect(e[0]).toEqual({ label: "Leitstand", href: "/", current: true });
   });
 
+  it("markiert den Produktionsplan als aktiv, mit und ohne Schrägstrich", () => {
+    for (const pfad of ["/produktion", "/produktion/"]) {
+      const e = navEintraege(pfad);
+      expect(e.find((x) => x.current)?.label).toBe("Produktionsplan");
+    }
+  });
+
   it("zeigt nicht gebaute Bereiche deaktiviert", () => {
     const e = navEintraege("/");
-    expect(e.filter((x) => x.disabled).map((x) => x.label)).toContain("Produktionsplan");
+    expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Anlässe", "Ressourcen", "Rezepte", "Rentabilität", "Einkauf", "Stammdaten"]);
   });
 
   it("nur die Anmeldung ist öffentlich", () => {

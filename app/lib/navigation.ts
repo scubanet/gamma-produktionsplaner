@@ -5,7 +5,7 @@ export const BEREICHE: { label: string; href?: string }[] = [
   { label: "Leitstand", href: "/" },
   { label: "Anlässe" },
   { label: "Ressourcen" },
-  { label: "Produktionsplan" },
+  { label: "Produktionsplan", href: "/produktion/" },
   { label: "Rezepte" },
   { label: "Rentabilität" },
   { label: "Einkauf" },
