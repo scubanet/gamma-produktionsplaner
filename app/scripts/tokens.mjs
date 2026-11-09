@@ -20,7 +20,7 @@ export function tokensCss(t) {
   return [
     '/* Generiert aus design-system/tokens.json durch scripts/tokens.mjs. Nicht von Hand ändern. */',
     ':root {', ...hell, ...rest, '  color-scheme: light dark;', '}',
-    '@media (prefers-color-scheme: dark) {', '  :root {', ...dunkel.map((l) => '  ' + l), '  }', '}',
+    '@media screen and (prefers-color-scheme: dark) {', '  :root {', ...dunkel.map((l) => '  ' + l), '  }', '}',
     '',
   ].join('\n');
 }

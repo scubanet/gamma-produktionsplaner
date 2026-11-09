@@ -1,0 +1,5 @@
+<!-- @dsCard group="Eingabe" height=120 -->
+<div class="pl-root" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px" id="r"></div>
+<script>const {Select}=window.Planer;const h=React.createElement;ReactDOM.createRoot(document.getElementById('r')).render(h(React.Fragment,null,
+h(Select,{label:'Kategorie',options:[{value:'',label:'Alle Kategorien'},{value:'Fleisch',label:'Fleisch'},{value:'Salat',label:'Salat'}]}),
+h(Select,{label:'Menülinie',defaultValue:'1',options:[{value:'',label:'Alle Menülinien'},{value:'1',label:'Spiel 1 und 6'},{value:'2',label:'Spiel 2 und 7'}]})));</script>

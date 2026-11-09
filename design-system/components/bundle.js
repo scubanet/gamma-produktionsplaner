@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
@@ -42,12 +42,29 @@
   function SegmentedControl(p) {
     var st = React.useState(p.defaultValue != null ? p.defaultValue : (p.options[0] && p.options[0].value));
     var value = p.value != null ? p.value : st[0];
-    return h('div', { className: 'pl-seg', role: 'radiogroup', 'aria-label': p.label },
-      p.options.map(function (o) {
+    var refs = React.useRef([]);
+    var cur = 0;
+    for (var i = 0; i < p.options.length; i++) if (p.options[i].value === value) cur = i;
+    function pick(i) {
+      var o = p.options[i];
+      st[1](o.value); if (p.onChange) p.onChange(o.value);
+      if (refs.current[i]) refs.current[i].focus();
+    }
+    // Tastatur wie eine Radiogruppe: ein Tab-Stopp, Pfeiltasten wechseln die Auswahl.
+    function onKeyDown(e) {
+      var d = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : (e.key === 'ArrowLeft' || e.key === 'ArrowUp') ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      pick((cur + d + p.options.length) % p.options.length);
+    }
+    return h('div', { className: 'pl-seg', role: 'radiogroup', 'aria-label': p.label, onKeyDown: onKeyDown },
+      p.options.map(function (o, i) {
         return h('button', {
           key: o.value, type: 'button', role: 'radio', className: 'pl-seg__opt',
+          ref: function (el) { refs.current[i] = el; },
+          tabIndex: i === cur ? 0 : -1,
           'aria-checked': String(o.value === value),
-          onClick: function () { st[1](o.value); if (p.onChange) p.onChange(o.value); }
+          onClick: function () { pick(i); }
         }, o.label);
       }));
   }
@@ -58,6 +75,16 @@
     return h('div', { className: 'pl-field' },
       h('label', { className: 'pl-field__label', htmlFor: id }, p.label),
       h('input', { id: id, type: p.type || 'text', name: p.name, autoComplete: p.autoComplete, required: p.required, className: cx('pl-field__input', p.numeric && 'pl-field__input--mono'), defaultValue: p.defaultValue, value: p.value, onChange: p.onChange, placeholder: p.placeholder, inputMode: p.numeric ? 'numeric' : undefined }),
+      p.hint ? h('div', { className: 'pl-field__hint' }, p.hint) : null);
+  }
+
+  function Select(p) {
+    var id = React.useMemo(function () { return p.id || ('pl-f-' + (++fid)); }, [p.id]);
+    return h('div', { className: 'pl-field' },
+      h('label', { className: 'pl-field__label', htmlFor: id }, p.label),
+      h('select', { id: id, name: p.name, className: 'pl-field__input pl-select', value: p.value, defaultValue: p.defaultValue,
+        onChange: function (e) { if (p.onChange) p.onChange(e.target.value); } },
+        p.options.map(function (o) { return h('option', { key: o.value, value: o.value }, o.label); })),
       p.hint ? h('div', { className: 'pl-field__hint' }, p.hint) : null);
   }
 
@@ -120,6 +147,6 @@
       p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

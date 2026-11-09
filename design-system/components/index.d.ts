@@ -7,6 +7,7 @@ export interface StatusPillProps { status?: 'ok' | 'info' | 'warn' | 'critical' 
 export interface LocationTagProps { location?: 'zentral' | 'vorort' | 'logistik'; children?: ReactNode; }
 export interface SegmentedControlProps { label: string; options: { value: string; label: ReactNode }[]; value?: string; defaultValue?: string; onChange?: (value: string) => void; }
 export interface TextFieldProps { label: ReactNode; id?: string; type?: 'text' | 'email' | 'search' | 'tel'; name?: string; autoComplete?: string; required?: boolean; value?: string; defaultValue?: string; placeholder?: string; hint?: ReactNode; numeric?: boolean; onChange?: (e: unknown) => void; }
+export interface SelectProps { label: ReactNode; id?: string; name?: string; options: { value: string; label: string }[]; value?: string; defaultValue?: string; hint?: ReactNode; onChange?: (value: string) => void; }
 export interface CheckboxProps { label: ReactNode; checked?: boolean; defaultChecked?: boolean; onChange?: (e: unknown) => void; }
 export interface DataTableColumn { key: string; label: ReactNode; numeric?: boolean; subKey?: string; render?: (row: Record<string, unknown>) => ReactNode; }
 export interface DataTableProps { columns: DataTableColumn[]; rows: Record<string, unknown>[]; }
@@ -28,3 +29,4 @@ export declare const DataTable: (p: DataTableProps) => JSX.Element;
 export declare const Timeline: (p: TimelineProps) => JSX.Element;
 export declare const SideNav: (p: SideNavProps) => JSX.Element;
 export declare const Notice: (p: NoticeProps) => JSX.Element;
+export declare const Select: (p: SelectProps) => JSX.Element;

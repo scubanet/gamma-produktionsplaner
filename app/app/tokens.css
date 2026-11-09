@@ -6,7 +6,7 @@
   --surface-hover: #E6EAE5;
   --border: #E1E5E0;
   --divider: #EEF0EC;
-  --border-control: #CBD2CC;
+  --border-control: #7E8883;
   --grid-line: #F1F2EF;
   --ink: #1B2421;
   --ink-secondary: #3C4743;
@@ -59,7 +59,7 @@
   --sidenav-width: 232px;
   color-scheme: light dark;
 }
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   :root {
     --ground: #111715;
     --surface: #1A2220;
@@ -67,7 +67,7 @@
     --surface-hover: #253029;
     --border: #2C3632;
     --divider: #232C29;
-    --border-control: #3B4742;
+    --border-control: #6E7A75;
     --grid-line: #1E2724;
     --ink: #E6EBE8;
     --ink-secondary: #C3CCC7;
