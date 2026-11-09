@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
@@ -74,8 +74,9 @@
     var id = React.useMemo(function () { return p.id || ('pl-f-' + (++fid)); }, [p.id]);
     return h('div', { className: 'pl-field' },
       h('label', { className: 'pl-field__label', htmlFor: id }, p.label),
-      h('input', { id: id, type: p.type || 'text', name: p.name, autoComplete: p.autoComplete, required: p.required, className: cx('pl-field__input', p.numeric && 'pl-field__input--mono'), defaultValue: p.defaultValue, value: p.value, onChange: p.onChange, placeholder: p.placeholder, inputMode: p.numeric ? 'numeric' : undefined }),
-      p.hint ? h('div', { className: 'pl-field__hint' }, p.hint) : null);
+      h('input', { id: id, type: p.type || 'text', name: p.name, autoComplete: p.autoComplete, required: p.required, className: cx('pl-field__input', p.numeric && 'pl-field__input--mono'), defaultValue: p.defaultValue, value: p.value, onChange: p.onChange, placeholder: p.placeholder, inputMode: p.numeric ? 'decimal' : undefined,
+        'aria-describedby': p.hint ? id + '-hint' : undefined, 'aria-invalid': p.invalid ? 'true' : undefined }),
+      p.hint ? h('div', { id: id + '-hint', className: cx('pl-field__hint', p.invalid && 'pl-field__hint--invalid'), role: p.invalid ? 'alert' : undefined }, p.hint) : null);
   }
 
   function Select(p) {
@@ -83,9 +84,10 @@
     return h('div', { className: 'pl-field' },
       h('label', { className: 'pl-field__label', htmlFor: id }, p.label),
       h('select', { id: id, name: p.name, className: 'pl-field__input pl-select', value: p.value, defaultValue: p.defaultValue,
+        'aria-describedby': p.hint ? id + '-hint' : undefined,
         onChange: function (e) { if (p.onChange) p.onChange(e.target.value); } },
         p.options.map(function (o) { return h('option', { key: o.value, value: o.value }, o.label); })),
-      p.hint ? h('div', { className: 'pl-field__hint' }, p.hint) : null);
+      p.hint ? h('div', { id: id + '-hint', className: 'pl-field__hint' }, p.hint) : null);
   }
 
   // Modaler Dialog über das native <dialog>: Fokus bleibt im Dialog, Escape schliesst.
@@ -116,6 +118,61 @@
       h('legend', { className: 'pl-field__label' }, p.legend),
       h('div', { className: 'pl-fieldset__body' }, p.children),
       p.hint ? h('div', { className: 'pl-field__hint' }, p.hint) : null);
+  }
+
+  // Auswahlliste links neben einer Detailansicht (Rezepte, Katalog). Gewählter Eintrag mit aria-current.
+  function ItemList(p) {
+    var basis = React.useId();
+    return h('nav', { className: 'pl-items', 'aria-label': p.label },
+      p.groups.map(function (g, gi) {
+        var tid = basis + '-g' + gi;
+        return h('div', { key: gi, role: 'group', 'aria-labelledby': g.title ? tid : undefined, className: 'pl-items__group' },
+          g.title ? h('div', { id: tid, className: 'pl-eyebrow pl-items__title' }, g.title) : null,
+          g.items.map(function (it) {
+            return h('button', { key: it.id, type: 'button', className: 'pl-items__item',
+              'aria-current': it.id === p.value ? 'true' : undefined,
+              onClick: function () { if (p.onSelect) p.onSelect(it.id); } },
+              h('span', { className: 'pl-items__label' }, it.label),
+              it.sub ? h('span', { className: 'pl-small' }, it.sub) : null);
+          }));
+      }));
+  }
+
+  function Chip(p) {
+    return h('span', { className: cx('pl-chip', p.kind && p.kind !== 'neutral' && 'pl-chip--' + p.kind) }, p.children);
+  }
+
+  // Rezept: je Gruppe links die Zutaten (Menge, Skalierungs-%), rechts die nummerierten Schritte.
+  function RecipeGroups(p) {
+    var n = 1;
+    return h('div', { className: 'pl-recipe' },
+      h('div', { className: 'pl-recipe__head', 'aria-hidden': 'true' },
+        h('div', { className: 'pl-recipe__ing' },
+          h('span', null, 'Zutat'), h('span', { className: 'pl-recipe__num' }, 'Menge'),
+          h('span', { className: 'pl-recipe__num' }, p.pctLabel || 'Skal.')),
+        h('span', null, 'Zubereitung')),
+      p.groups.map(function (g, gi) {
+        var start = n; n += g.steps.length;
+        return h('section', { key: g.id || gi, className: 'pl-recipe__group', 'aria-label': g.title || ('Schritte ' + start + '–' + (n - 1)) },
+          h('div', { className: 'pl-recipe__ings' },
+            g.title ? h('div', { className: 'pl-eyebrow' }, g.title) : null,
+            g.ingredients.map(function (i) {
+              return h('div', { key: i.id, className: 'pl-recipe__ing' },
+                h('span', { className: i.base ? 'pl-recipe__base' : undefined }, i.name,
+                  i.base ? h('span', { className: 'pl-sr' }, ' (Basis 100 %)') : null,
+                  i.note ? h('span', { className: 'pl-small pl-recipe__note' }, i.note) : null),
+                h('span', { className: cx('pl-mono pl-recipe__num', i.assumed && 'pl-assumed') },
+                  h('span', { className: 'pl-sr' }, 'Menge '), i.amount, i.assumed ? h('span', { className: 'pl-sr' }, ' (Annahme)') : null),
+                h('span', { className: 'pl-mono pl-recipe__num pl-recipe__pct' }, i.pct ? [h('span', { key: 's', className: 'pl-sr' }, 'Skalierung '), i.pct] : ''));
+            })),
+          h('ol', { className: 'pl-recipe__steps', start: start },
+            g.steps.map(function (s) {
+              return h('li', { key: s.id },
+                h('span', { className: s.assumed ? 'pl-assumed' : undefined }, s.text),
+                s.assumed ? h('span', { className: 'pl-sr' }, ' (Annahme)') : null,
+                s.chips && s.chips.length ? h('span', { className: 'pl-recipe__chips' }, s.chips) : null);
+            })));
+      }));
   }
 
   function Checkbox(p) {
@@ -177,6 +234,6 @@
       p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

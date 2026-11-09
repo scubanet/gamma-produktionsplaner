@@ -62,7 +62,7 @@ Noch kein offizielles GAMMA-Logo im System. Platzhalter ist ein grünes Quadrat 
 
 ## Komponenten
 
-Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
+Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
 
 ## Wie das System weiterwächst
 

@@ -1,0 +1,7 @@
+<!-- @dsCard group="Struktur" height=300 -->
+<div class="pl-root" style="padding:20px;max-width:320px" id="r"></div>
+<script>const {ItemList}=window.Planer;const h=React.createElement;
+function Demo(){const [v,setV]=React.useState('hack');return h(ItemList,{label:'Rezepte',value:v,onSelect:setV,groups:[
+{title:'Gerichte',items:[{id:'hack',label:'Kalbshacktätschli mit Sugo',sub:'Hauptgang · 10 Portionen'},{id:'quiche',label:'Quiche aux Oignons',sub:'Apéro · 10 Portionen'}]},
+{title:'Komponenten',items:[{id:'sugo',label:'Sugo',sub:'Sauce · Charge 1.6 kg'}]}]});}
+ReactDOM.createRoot(document.getElementById('r')).render(h(Demo));</script>

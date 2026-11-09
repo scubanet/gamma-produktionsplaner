@@ -1,0 +1,8 @@
+<!-- @dsCard group="Struktur" height=260 -->
+<div class="pl-root" style="padding:20px" id="r"></div>
+<script>const {RecipeGroups,Chip}=window.Planer;const h=React.createElement;ReactDOM.createRoot(document.getElementById('r')).render(
+h(RecipeGroups,{groups:[
+{id:'a',ingredients:[{id:'1',name:'Weissbrot, entrindet',amount:'315 g',pct:'50 %',note:'≈ Original 250 g × 1.25'},{id:'2',name:'Vollmilch',amount:'250 g',pct:'40 %'}],
+ steps:[{id:'s1',text:'Brot in Würfel schneiden und in der Milch einweichen.',chips:[h(Chip,{key:'a',kind:'aktiv'},'5 min aktiv'),h(Chip,{key:'u',kind:'unbeaufsichtigt'},'15 min unbeaufsichtigt')]}]},
+{id:'b',title:'Fleischmasse',ingredients:[{id:'3',name:'Kalbshackfleisch',amount:'625 g',pct:'100 %',base:true},{id:'4',name:'Peterli, gehackt',amount:'30 g',pct:'4.8 %',assumed:true}],
+ steps:[{id:'s2',text:'Tätschli à 90 g formen.',assumed:true},{id:'s3',text:'Fertig garen bis Kerntemperatur 72 °C.',chips:[h(Chip,{key:'d'},'Combi-Steamer'),h(Chip,{key:'h',kind:'haccp'},'HACCP Kern 72 °C')]}]}]}));</script>
