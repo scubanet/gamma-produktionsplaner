@@ -1,0 +1,3 @@
+/* Nur Grundlagen. Farben, Abstände und Schriften kommen aus tokens.css und design-system/components/bundle.css. */
+html, body { height: 100%; }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font-sans); }
