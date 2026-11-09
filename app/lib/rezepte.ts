@@ -1,0 +1,114 @@
+// Rezeptbibliothek: Daten aus rezept, zutatengruppe, schritt und den Skalierungsfunktionen
+// rezept_faktor / rezept_zutaten_skaliert / rezept_komponenten_skaliert. Die App rechnet nicht.
+import type { Database } from "./database.types";
+import { formatGramm, formatMinuten, formatProzent, formatZahl } from "./format";
+
+type Fn = Database["public"]["Functions"];
+export type Rezept = Pick<
+  Database["public"]["Tables"]["rezept"]["Row"],
+  | "id" | "slug" | "typ" | "name" | "untertitel" | "kategorie" | "quelle" | "basis_portionen" | "portion_g" | "ergibt_g" | "status"
+  | "ergibt_annahme" | "portionen_annahme"
+>;
+export type Gruppe = Pick<Database["public"]["Tables"]["zutatengruppe"]["Row"], "id" | "titel" | "reihenfolge">;
+export type Schritt = Pick<
+  Database["public"]["Tables"]["schritt"]["Row"],
+  "id" | "gruppe_id" | "text" | "reihenfolge" | "temperatur_c" | "aktiv_min" | "unbeaufsichtigt_min" | "haccp" | "annahme"
+> & { geraet: { name: string } | null };
+export type Zutat = Fn["rezept_zutaten_skaliert"]["Returns"][number];
+export type Faktor = Fn["rezept_faktor"]["Returns"][number];
+export type KomponenteSkaliert = Fn["rezept_komponenten_skaliert"]["Returns"][number];
+
+export const istGericht = (r: Pick<Rezept, "typ">) => r.typ === "gericht";
+
+/** Voreinstellungen wie im Mockup: Gericht ×1, ×5, ×12, ×30 der Basisportionen; Komponente 1, 2, 5, 10 Chargen. */
+export function voreinstellungen(r: Rezept): { wert: number; label: string }[] {
+  if (istGericht(r)) {
+    const basis = r.basis_portionen ?? 0;
+    if (basis <= 0) return [];
+    return [1, 5, 12, 30].map((f) => ({ wert: f * basis, label: `${formatZahl(f * basis)} P` }));
+  }
+  return [1, 2, 5, 10].map((c) => ({ wert: c, label: `× ${c}` }));
+}
+
+/** Eingabe für Portionen (ganz) bzw. Chargen (bis 2 Stellen) prüfen; null = ungültig. */
+export function wertAusEingabe(text: string, gericht: boolean): number | null {
+  const t = text.trim().replace(",", ".");
+  const ok = gericht ? /^\d+$/.test(t) : /^\d+(\.\d{1,2})?$/.test(t);
+  if (!ok) return null;
+  const w = Number(t);
+  return w > 0 && w <= 100000 ? w : null;
+}
+
+/** Annahme bei der Basis des Rezepts: Portionen (Gericht) bzw. Ergibt-Menge einer Charge (Komponente). */
+export function basisAnnahme(r: Rezept): boolean {
+  return istGericht(r) ? r.portionen_annahme : r.ergibt_annahme;
+}
+
+export function ergibtText(r: Rezept, f: Faktor | null): { text: string; sub: string; annahme: boolean } {
+  const annahme = basisAnnahme(r);
+  const hinweis = annahme ? (istGericht(r) ? " · Portionen angenommen, siehe offene Punkte" : " · Ergibt-Menge angenommen, siehe offene Punkte") : "";
+  if (!f) return { text: "[Menge]", sub: istGericht(r) ? "Basisportionen fehlen im Rezept" : "Ergibt-Menge fehlt im Rezept", annahme };
+  if (istGericht(r)) {
+    const portion = r.portion_g === null ? "[Portion]" : formatGramm(r.portion_g);
+    return { text: `${formatZahl(f.portionen)} Portionen à ${portion}`, sub: `gesamt ${formatGramm(f.ergibt_g)} · ${f.herleitung}${hinweis}`, annahme };
+  }
+  return { text: formatGramm(f.ergibt_g), sub: `${f.herleitung}${hinweis}`, annahme };
+}
+
+export type Chip = { kind: "neutral" | "temp" | "aktiv" | "unbeaufsichtigt" | "haccp"; text: string };
+
+export function schrittChips(s: Schritt): Chip[] {
+  const c: Chip[] = [];
+  if (s.geraet) c.push({ kind: "neutral", text: s.geraet.name });
+  if (s.temperatur_c !== null) c.push({ kind: "temp", text: `${formatZahl(s.temperatur_c)} °C` });
+  if (s.aktiv_min) c.push({ kind: "aktiv", text: `${formatMinuten(s.aktiv_min)} aktiv` });
+  if (s.unbeaufsichtigt_min) c.push({ kind: "unbeaufsichtigt", text: `${formatMinuten(s.unbeaufsichtigt_min)} unbeaufsichtigt` });
+  if (s.haccp) c.push({ kind: "haccp", text: `HACCP ${s.haccp}` });
+  return c;
+}
+
+export type GruppeAnzeige = {
+  id: string;
+  titel: string | null;
+  zutaten: { id: string; name: string; menge: string; prozent: string; notiz: string; basis: boolean; annahme: boolean }[];
+  schritte: { id: string; text: string; annahme: boolean; chips: Chip[] }[];
+};
+
+/** Gruppen mit skalierten Zutaten und Schritten, in der Reihenfolge des Rezepts. */
+export function gruppenAnzeige(gruppen: Gruppe[], zutaten: Zutat[], schritte: Schritt[], faktor: number | null): GruppeAnzeige[] {
+  const nach = <T,>(a: T[], key: (x: T) => number | null) => [...a].sort((x, y) => (key(x) ?? 0) - (key(y) ?? 0));
+  return nach(gruppen, (g) => g.reihenfolge).map((g) => ({
+    id: g.id,
+    titel: g.titel,
+    zutaten: nach(zutaten.filter((z) => z.gruppe_id === g.id), (z) => z.reihenfolge).map((z) => ({
+      id: z.id,
+      name: z.bezeichnung,
+      menge: formatGramm(z.menge_g),
+      prozent: formatProzent(z.skal_pct),
+      // Herleitung der skalierten Menge: Basismenge aus dem Rezept, sobald skaliert wird.
+      notiz: [z.notiz, faktor !== null && faktor !== 1 ? `Basis ${formatGramm(z.menge_basis_g)}` : null].filter(Boolean).join(" · "),
+      basis: !!z.ist_basis,
+      annahme: !!z.annahme,
+    })),
+    schritte: nach(schritte.filter((s) => s.gruppe_id === g.id), (s) => s.reihenfolge).map((s) => ({
+      id: s.id,
+      text: s.text,
+      annahme: !!s.annahme,
+      chips: schrittChips(s),
+    })),
+  }));
+}
+
+export function geraete(schritte: Schritt[]): string[] {
+  return [...new Set(schritte.map((s) => s.geraet?.name).filter((x): x is string => !!x))];
+}
+
+export function basisZutat(zutaten: Zutat[]): string {
+  return zutaten.find((z) => z.ist_basis)?.bezeichnung ?? "[Basiszutat]";
+}
+
+export function listenSub(r: Rezept): string {
+  const art = r.kategorie ?? (istGericht(r) ? "Gericht" : "Komponente");
+  if (istGericht(r)) return `${art} · ${r.basis_portionen ?? "[Portionen]"} Portionen`;
+  return `${art} · Charge ${r.ergibt_g === null ? "[Menge]" : formatGramm(r.ergibt_g)}`;
+}

@@ -18,9 +18,14 @@ describe("Navigation", () => {
     expect(navEintraege("/systemzuteilung/").find((x) => x.current)?.label).toBe("Systemzuteilung");
   });
 
+  it("Katalog und Rezepte sind erreichbar", () => {
+    expect(navEintraege("/katalog/").find((x) => x.current)?.label).toBe("Katalog");
+    expect(navEintraege("/rezepte").find((x) => x.current)?.label).toBe("Rezepte");
+  });
+
   it("zeigt nicht gebaute Bereiche deaktiviert", () => {
     const e = navEintraege("/");
-    expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Anlässe", "Ressourcen", "Rezepte", "Rentabilität", "Einkauf", "Stammdaten"]);
+    expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Anlässe", "Ressourcen", "Rentabilität", "Einkauf", "Stammdaten"]);
   });
 
   it("nur die Anmeldung ist öffentlich", () => {

@@ -30,3 +30,31 @@ export function formatAnteil(anteil: number): string {
 export function formatProGast(menge: number, einheit: string): string {
   return `${new Intl.NumberFormat("de-CH", { maximumFractionDigits: 3 }).format(menge)} ${einheit}`;
 }
+
+/**
+ * Gramm wie in der Rezeptkarte: ab 1000 g in kg (2 Stellen), unter 10 g mit 1 Stelle, unter 1 g mit 2 Stellen,
+ * sonst ganze Gramm. Eine Menge über 0 wird nie als «0 g» gezeigt.
+ */
+export function formatGramm(g: number | null): string {
+  if (g === null) return "[Menge]";
+  if (g >= 1000) return `${formatZahl(g / 1000, 2)} kg`;
+  if (g > 0 && g < 0.01) return "< 0.01 g";
+  if (g < 10) return `${new Intl.NumberFormat("de-CH", { maximumFractionDigits: g < 1 ? 2 : 1 }).format(g)} g`;
+  return `${formatZahl(Math.round(g))} g`;
+}
+
+/** Minuten als «1 h 30 min» oder «45 min». */
+export function formatMinuten(min: number | null): string {
+  if (min === null) return "–";
+  const h = Math.floor(min / 60);
+  const m = Math.round(min % 60);
+  if (!h) return `${m} min`;
+  return m ? `${h} h ${m} min` : `${h} h`;
+}
+
+/** Skalierungs-Prozent: ab 10 ganz, ab 1 mit 1 Stelle, darunter 2 Stellen. */
+export function formatProzent(p: number | null): string {
+  if (p === null) return "";
+  const stellen = p >= 10 ? 0 : p >= 1 ? 1 : 2;
+  return `${new Intl.NumberFormat("de-CH", { maximumFractionDigits: stellen }).format(p)} %`;
+}

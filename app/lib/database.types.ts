@@ -1154,12 +1154,14 @@ export type Database = {
           basis_portionen: number | null
           besonderes: string | null
           chargengroesse: string | null
+          ergibt_annahme: boolean
           ergibt_g: number | null
           geaendert_am: string
           id: string
           kategorie: string | null
           name: string
           portion_g: number | null
+          portionen_annahme: boolean
           quelle: string | null
           slug: string
           status: string
@@ -1171,12 +1173,14 @@ export type Database = {
           basis_portionen?: number | null
           besonderes?: string | null
           chargengroesse?: string | null
+          ergibt_annahme?: boolean
           ergibt_g?: number | null
           geaendert_am?: string
           id?: string
           kategorie?: string | null
           name: string
           portion_g?: number | null
+          portionen_annahme?: boolean
           quelle?: string | null
           slug: string
           status?: string
@@ -1188,12 +1192,14 @@ export type Database = {
           basis_portionen?: number | null
           besonderes?: string | null
           chargengroesse?: string | null
+          ergibt_annahme?: boolean
           ergibt_g?: number | null
           geaendert_am?: string
           id?: string
           kategorie?: string | null
           name?: string
           portion_g?: number | null
+          portionen_annahme?: boolean
           quelle?: string | null
           slug?: string
           status?: string
@@ -1876,6 +1882,45 @@ export type Database = {
       }
     }
     Functions: {
+      rezept_faktor: {
+        Args: { p_rezept: string; p_wert: number }
+        Returns: {
+          chargen: number
+          ergibt_g: number
+          faktor: number
+          herleitung: string
+          portionen: number
+        }[]
+      }
+      rezept_komponenten_skaliert: {
+        Args: { p_rezept: string; p_wert: number }
+        Returns: {
+          chargen: number
+          ergibt_annahme: boolean
+          ergibt_g: number
+          herleitung: string
+          komponente_id: string
+          menge_g: number
+          menge_pro_portion_g: number
+          name: string
+          reihenfolge: number
+        }[]
+      }
+      rezept_zutaten_skaliert: {
+        Args: { p_rezept: string; p_wert: number }
+        Returns: {
+          annahme: boolean
+          bezeichnung: string
+          gruppe_id: string
+          id: string
+          ist_basis: boolean
+          menge_basis_g: number
+          menge_g: number
+          notiz: string
+          reihenfolge: number
+          skal_pct: number
+        }[]
+      }
       wellen_anzahl: {
         Args: { p_haltbarkeit: number; p_saison: string }
         Returns: number
