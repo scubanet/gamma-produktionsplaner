@@ -6,7 +6,7 @@ export interface KpiTileProps { label: ReactNode; value: ReactNode; detail?: Rea
 export interface StatusPillProps { status?: 'ok' | 'info' | 'warn' | 'critical' | 'neutral'; children: ReactNode; }
 export interface LocationTagProps { location?: 'zentral' | 'vorort' | 'logistik'; children?: ReactNode; }
 export interface SegmentedControlProps { label: string; options: { value: string; label: ReactNode }[]; value?: string; defaultValue?: string; onChange?: (value: string) => void; }
-export interface TextFieldProps { label: ReactNode; id?: string; value?: string; defaultValue?: string; placeholder?: string; hint?: ReactNode; numeric?: boolean; onChange?: (e: unknown) => void; }
+export interface TextFieldProps { label: ReactNode; id?: string; type?: 'text' | 'email' | 'search' | 'tel'; name?: string; autoComplete?: string; required?: boolean; value?: string; defaultValue?: string; placeholder?: string; hint?: ReactNode; numeric?: boolean; onChange?: (e: unknown) => void; }
 export interface CheckboxProps { label: ReactNode; checked?: boolean; defaultChecked?: boolean; onChange?: (e: unknown) => void; }
 export interface DataTableColumn { key: string; label: ReactNode; numeric?: boolean; subKey?: string; render?: (row: Record<string, unknown>) => ReactNode; }
 export interface DataTableProps { columns: DataTableColumn[]; rows: Record<string, unknown>[]; }
