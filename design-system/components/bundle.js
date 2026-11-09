@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
@@ -8,8 +8,8 @@
   function Button(p) {
     var variant = p.variant || 'secondary';
     var cls = cx('pl-btn', 'pl-btn--' + variant, p.className);
-    if (p.href) return h('a', { className: cls, href: p.href }, p.children);
-    return h('button', { type: p.type || 'button', className: cls, disabled: p.disabled, onClick: p.onClick }, p.children);
+    if (p.href) return h('a', { className: cls, href: p.href, 'aria-label': p.ariaLabel }, p.children);
+    return h('button', { type: p.type || 'button', className: cls, disabled: p.disabled, onClick: p.onClick, 'aria-label': p.ariaLabel }, p.children);
   }
 
   function Card(p) {
@@ -88,6 +88,36 @@
       p.hint ? h('div', { className: 'pl-field__hint' }, p.hint) : null);
   }
 
+  // Modaler Dialog über das native <dialog>: Fokus bleibt im Dialog, Escape schliesst.
+  var did = 0;
+  function Dialog(p) {
+    var ref = React.useRef(null);
+    var id = React.useMemo(function () { return p.id || ('pl-d-' + (++did)); }, [p.id]);
+    React.useEffect(function () {
+      var d = ref.current;
+      if (!d) return;
+      if (p.open && !d.open) d.showModal();
+      if (!p.open && d.open) d.close();
+    }, [p.open]);
+    return h('dialog', { ref: ref, className: 'pl-dialog', 'aria-labelledby': id + '-titel',
+      onClose: function () { if (p.onClose) p.onClose(); },
+      onCancel: function (e) { if (p.onCancel) p.onCancel(e); } },
+      p.open ? [
+        h('div', { key: 'k', className: 'pl-dialog__head' },
+          h('h2', { id: id + '-titel', className: 'pl-dialog__title' }, p.title),
+          p.meta ? h('span', { className: 'pl-card__meta' }, p.meta) : null),
+        h('div', { key: 'b', className: 'pl-dialog__body' }, p.children),
+        p.actions ? h('div', { key: 'a', className: 'pl-dialog__actions' }, p.actions) : null
+      ] : null);
+  }
+
+  function Fieldset(p) {
+    return h('fieldset', { className: 'pl-fieldset' },
+      h('legend', { className: 'pl-field__label' }, p.legend),
+      h('div', { className: 'pl-fieldset__body' }, p.children),
+      p.hint ? h('div', { className: 'pl-field__hint' }, p.hint) : null);
+  }
+
   function Checkbox(p) {
     return h('label', { className: 'pl-check' },
       h('input', { type: 'checkbox', defaultChecked: p.defaultChecked, checked: p.checked, onChange: p.onChange }), p.label);
@@ -142,11 +172,11 @@
   }
 
   function Notice(p) {
-    return h('section', { className: 'pl-notice' },
+    return h('section', { className: 'pl-notice', role: p.role },
       p.title ? h('h3', { className: 'pl-notice__title' }, p.title) : null,
       p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

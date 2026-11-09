@@ -40,6 +40,7 @@
   --notice-bg: #FBF3E6;
   --notice-border: #EBD3AE;
   --notice-ink: #5C3A12;
+  --backdrop: rgba(27,36,33,0.45);
   --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --space-1: 4px;
@@ -101,5 +102,6 @@
     --notice-bg: #2E2414;
     --notice-border: #5A4424;
     --notice-ink: #F4D6B3;
+    --backdrop: rgba(0,0,0,0.6);
   }
 }

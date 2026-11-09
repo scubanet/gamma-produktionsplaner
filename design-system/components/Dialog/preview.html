@@ -1,0 +1,9 @@
+<!-- @dsCard group="Struktur" height=110 -->
+<div class="pl-root" style="padding:20px" id="r"></div>
+<script>const {Dialog,Button,TextField}=window.Planer;const h=React.createElement;
+function Demo(){const [o,setO]=React.useState(false);return h(React.Fragment,null,
+h(Button,{onClick:()=>setO(true)},'Komponente bearbeiten'),
+h(Dialog,{open:o,title:'Fregola Sarda',meta:'Basiskomponenten · Zeile 16',onClose:()=>setO(false),
+actions:h(React.Fragment,null,h(Button,{onClick:()=>setO(false)},'Abbrechen'),h(Button,{variant:'primary',onClick:()=>setO(false)},'Speichern'))},
+h(TextField,{id:'demo-bem',label:'Bemerkung',defaultValue:'[Bemerkung]'})));}
+ReactDOM.createRoot(document.getElementById('r')).render(h(Demo));</script>

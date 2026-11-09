@@ -1,0 +1,6 @@
+<!-- @dsCard group="Eingabe" height=170 -->
+<div class="pl-root" style="padding:12px 20px" id="r"></div>
+<script>const {Fieldset,Checkbox}=window.Planer;const h=React.createElement;ReactDOM.createRoot(document.getElementById('r')).render(
+h(Fieldset,{legend:'Produktion',hint:'Haltbarkeit je System, Annahmen aus der Excel.'},
+h(Checkbox,{label:'SV · Sous-vide (21 Tage)',defaultChecked:true}),h(Checkbox,{label:'SF · Schockfrosten (180 Tage)'}),
+h(Checkbox,{label:'FNG · Freeze’n’go (3 Tage)'}),h(Checkbox,{label:'Minute · à la minute vor Ort'})));</script>

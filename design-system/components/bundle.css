@@ -88,6 +88,20 @@
 /* Select (Auswahlliste, nutzt das Feld von TextField) */
 .pl-select { cursor: pointer; padding-right: var(--space-2); }
 
+/* Fieldset: Gruppe von Checkboxen mit Legende, 2-spaltig */
+.pl-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.pl-fieldset > legend { padding: 0; }
+.pl-fieldset__body { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--space-4); }
+@media (max-width: 560px) { .pl-fieldset__body { grid-template-columns: minmax(0, 1fr); } }
+
+/* Dialog */
+.pl-dialog { width: min(720px, calc(100vw - 2 * var(--space-4))); max-height: calc(100vh - 2 * var(--space-8)); padding: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); color: var(--ink); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; overflow: auto; }
+.pl-dialog::backdrop { background: var(--backdrop); }
+.pl-dialog__head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.pl-dialog__title { margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; }
+.pl-dialog__body { display: flex; flex-direction: column; gap: var(--space-5); }
+.pl-dialog__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6); }
+
 /* Checkbox */
 .pl-check { display: flex; align-items: center; gap: 10px; min-height: var(--control-height); font-size: 14px; color: var(--ink); cursor: pointer; }
 .pl-check input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
