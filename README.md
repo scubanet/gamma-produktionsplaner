@@ -10,7 +10,8 @@ Planungs-App für Event-Catering: Ein Anlass (Gäste, Menü, Serviceart, Locatio
 | `design-system/` | Design System «Produktionsplaner»: Tokens, Brand Book, 12 Komponenten (`window.Planer`), Änderungsprotokoll |
 | `mockups/` | Klickbare Screens (Design Components, `.dc.html`), alle aus `planer.css` (Design-System-Tokens) und mit gemeinsamer Navigation `Nav.dc.html`: Leitstand, Anlass erfassen, Ressourcen, Produktionsplan, Rezepte, Rentabilität |
 | `rezepte/` | `rezepte.json`: 14 Rezepte (6 Gerichte, 8 Komponenten) im Rezeptkarten-Format, Annahmen markiert |
-| `db/` | `schema.sql` (PostgreSQL/Supabase), `seed.sql` mit den Rezepten, `kosten.sql` mit Kostenmodell (Lohnsätze, Energie, Fixkosten, Anlässe) und Auswertungen für Deckungsbeitrag und Monatsergebnis |
+| `supabase/` | Massgebend für die Datenbank: Migrationen (`migrations/`) und Import der GAMMA-Excel (`import/`). Details in `docs/supabase.md` |
+| `db/` | Archiv Proof of Concept: `schema.sql` (PostgreSQL/Supabase), `seed.sql` mit den Rezepten, `kosten.sql` mit Kostenmodell (Lohnsätze, Energie, Fixkosten, Anlässe) und Auswertungen für Deckungsbeitrag und Monatsergebnis |
 
 ## Kernprinzip
 
@@ -25,10 +26,14 @@ Zusatzbedarf wird nie als Engpass behandelt: Personal kommt aus dem Freelancer-P
 - Design System: https://claude.ai/artifact/NdcHNeGLn5AuyF27KjoHRC
 - Mockup (Canvas): https://claude.ai/artifact/9isqPxkJizcp9Aqyvmq4kG
 - Lösungsvorschlag (Dokument): https://claude.ai/code/artifact/9d0ba6eb-f543-457f-ae5f-5bcd1e95f0d2
+- Plattform und Datenbank (Dokument): https://claude.ai/artifact/HiKLyLAE2Q4LMsjcLWgaT9
+- Pilot-Datenbank: Supabase-Projekt «Gamma», Zürich (`oqmtocxemtcsvtzmswwx`)
 
 Die Links sind privat, bis sie im Share-Menü freigegeben werden.
 
 ## Stand
+
+9.11.2026: Pilot-Datenbank in Supabase (Zürich) aufgesetzt. Importiert aus den GAMMA-Excel: Katalog Winter Collection 2026/27 (300 Gerichte, 493 Komponenten mit Systemzuteilung), Preisliste (669 Artikel), Quantumtabelle und Faktoren aus dem Verkaufstool, Saison mit 5 Anlässen, Spengler-Cup-Menüs (6 Menülinien, 11 Spiele, 344 Komponentenzeilen), Barkarte und die 14 Rezepte.
 
 Proof of Concept gestartet: Datenbankschema v0.1 und 6 Rezepte erfasst (3 Gerichte, 3 Komponenten, 1 Platzhalter). Offene Punkte pro Rezept stehen in `rezepte.json` und in der Rezeptbibliothek.
 
