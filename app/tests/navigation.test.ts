@@ -14,6 +14,10 @@ describe("Navigation", () => {
     }
   });
 
+  it("markiert die Systemzuteilung als aktiv", () => {
+    expect(navEintraege("/systemzuteilung/").find((x) => x.current)?.label).toBe("Systemzuteilung");
+  });
+
   it("zeigt nicht gebaute Bereiche deaktiviert", () => {
     const e = navEintraege("/");
     expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Anlässe", "Ressourcen", "Rezepte", "Rentabilität", "Einkauf", "Stammdaten"]);

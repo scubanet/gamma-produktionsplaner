@@ -6,6 +6,7 @@ export const BEREICHE: { label: string; href?: string }[] = [
   { label: "Anlässe" },
   { label: "Ressourcen" },
   { label: "Produktionsplan", href: "/produktion/" },
+  { label: "Systemzuteilung", href: "/systemzuteilung/" },
   { label: "Rezepte" },
   { label: "Rentabilität" },
   { label: "Einkauf" },
