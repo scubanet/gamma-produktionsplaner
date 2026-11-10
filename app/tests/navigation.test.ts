@@ -34,7 +34,7 @@ describe("Navigation", () => {
 
   it("zeigt nicht gebaute Bereiche deaktiviert", () => {
     const e = navEintraege("/");
-    expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Ressourcen", "Rentabilität", "Einkauf", "Stammdaten"]);
+    expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Ressourcen", "Rentabilität", "Stammdaten"]);
   });
 
   it("nur die Anmeldung ist öffentlich", () => {

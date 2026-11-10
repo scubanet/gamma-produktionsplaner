@@ -11,7 +11,7 @@ export const BEREICHE: { label: string; href?: string }[] = [
   { label: "Katalog", href: "/katalog/" },
   { label: "Rezepte", href: "/rezepte/" },
   { label: "Rentabilität" },
-  { label: "Einkauf" },
+  { label: "Einkauf", href: "/einkauf/" },
   { label: "Stammdaten" },
 ];
 

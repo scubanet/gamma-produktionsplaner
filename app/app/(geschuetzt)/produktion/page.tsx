@@ -108,6 +108,7 @@ export default function Produktionsliste() {
           <h1 className="pl-h1">Produktionsliste{linienName ? ` – ${linienName}` : ""}</h1>
         </div>
         <div className="pl-actions pl-print-hide">
+          <Button href="/produktion/wellen/">Produktionswellen</Button>
           <Button onClick={() => window.print()} disabled={!daten}>Drucken / PDF</Button>
           <Button variant="primary" onClick={exportieren} disabled={!daten || exportLaeuft}>
             {exportLaeuft ? "Excel wird erstellt …" : "Excel exportieren"}
