@@ -6,7 +6,7 @@ export interface KpiTileProps { label: ReactNode; value: ReactNode; detail?: Rea
 export interface StatusPillProps { status?: 'ok' | 'info' | 'warn' | 'critical' | 'neutral'; children: ReactNode; }
 export interface LocationTagProps { location?: 'zentral' | 'vorort' | 'logistik'; children?: ReactNode; }
 export interface SegmentedControlProps { label: string; options: { value: string; label: ReactNode }[]; value?: string; defaultValue?: string; onChange?: (value: string) => void; }
-export interface TextFieldProps { label: ReactNode; id?: string; type?: 'text' | 'email' | 'search' | 'tel'; name?: string; autoComplete?: string; required?: boolean; invalid?: boolean; value?: string; defaultValue?: string; placeholder?: string; hint?: ReactNode; numeric?: boolean; onChange?: (e: unknown) => void; }
+export interface TextFieldProps { label: ReactNode; id?: string; type?: 'text' | 'email' | 'search' | 'tel' | 'date'; name?: string; autoComplete?: string; required?: boolean; invalid?: boolean; value?: string; defaultValue?: string; placeholder?: string; hint?: ReactNode; numeric?: boolean; onChange?: (e: unknown) => void; }
 export interface SelectProps { label: ReactNode; id?: string; name?: string; options: { value: string; label: string }[]; value?: string; defaultValue?: string; hint?: ReactNode; onChange?: (value: string) => void; }
 export interface DialogProps { open: boolean; title: ReactNode; meta?: ReactNode; id?: string; actions?: ReactNode; onClose?: () => void; onCancel?: (e: { preventDefault: () => void }) => void; children?: ReactNode; }
 export interface FieldsetProps { legend: ReactNode; hint?: ReactNode; children?: ReactNode; }
