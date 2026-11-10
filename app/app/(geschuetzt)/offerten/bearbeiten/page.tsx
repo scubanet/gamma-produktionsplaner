@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, DataTable, Dialog, ItemList, KpiTile, Notice, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
@@ -11,6 +11,7 @@ import {
 } from "@/lib/offerte";
 
 type Stamm = {
+  saisons: { id: string; name: string }[];
   angebotsformen: { code: string; name: string }[];
   betriebe: { code: string; name: string; faktor_vk: number }[];
   mengentypen: string[];
@@ -24,14 +25,15 @@ const SPALTEN_OFFERTE = "id, nummer, name, kunde, datum, ort, gaeste, angebotsfo
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
 
 async function stammLaden(): Promise<Stamm> {
-  const [a, b, m, g] = await Promise.all([
+  const [s, a, b, m, g] = await Promise.all([
+    supabase.from("saison").select("id, name").order("name"),
     supabase.from("angebotsform").select("code, name").order("reihenfolge"),
     supabase.from("betrieb").select("code, name, faktor_vk").order("name"),
     supabase.from("mengentyp").select("code").order("reihenfolge"),
     supabase.from("gericht_katalog").select("id, name, gang, kategorie").order("name"),
   ]);
-  for (const x of [a, b, m, g]) if (x.error) throw x.error;
-  return { angebotsformen: a.data ?? [], betriebe: b.data ?? [], mengentypen: (m.data ?? []).map((x) => x.code), gerichte: g.data ?? [] };
+  for (const x of [s, a, b, m, g]) if (x.error) throw x.error;
+  return { saisons: s.data ?? [], angebotsformen: a.data ?? [], betriebe: b.data ?? [], mengentypen: (m.data ?? []).map((x) => x.code), gerichte: g.data ?? [] };
 }
 
 async function offerteLaden(id: string): Promise<Offerte | null> {
@@ -51,6 +53,7 @@ async function rechnungLaden(id: string): Promise<Rechnung> {
 }
 
 function Bearbeiten() {
+  const router = useRouter();
   const id = useSearchParams().get("id") ?? "";
   const [stamm, setStamm] = useState<Stamm | null>(null);
   const [offerte, setOfferte] = useState<Offerte | null | undefined>(undefined);
@@ -64,6 +67,8 @@ function Bearbeiten() {
   const [suche, setSuche] = useState("");
   const [anteil, setAnteil] = useState<AnteilBearbeitung | null>(null);
   const [anteilOffen, setAnteilOffen] = useState(false);
+  const [bestaetigen, setBestaetigen] = useState<{ saison: string; fehler: string | null; laeuft: boolean }>({ saison: "", fehler: null, laeuft: false });
+  const [bestaetigenOffen, setBestaetigenOffen] = useState(false);
   const meldungRef = useRef<HTMLParagraphElement>(null);
   const anfrage = useRef(0);
 
@@ -161,6 +166,16 @@ function Bearbeiten() {
     neuRechnen();
   }
 
+  async function offerteBestaetigen() {
+    const saison = bestaetigen.saison || stamm?.saisons[0]?.id || "";
+    setBestaetigen({ ...bestaetigen, saison, laeuft: true, fehler: null });
+    const r = await supabase.rpc("offerte_bestaetigen", { p_anlass: id, p_saison: saison });
+    if (r.error) return setBestaetigen({ saison, laeuft: false, fehler: r.error.message });
+    router.push(`/anlaesse/bearbeiten/?id=${id}`);
+  }
+
+  // Bestätigen liest die gespeicherten Kopfdaten: ungespeicherte Änderungen zuerst speichern.
+  const kopfGeaendert = !!kopf && !!offerte && JSON.stringify(kopf) !== JSON.stringify(kopfAus(offerte));
   const s = rechnung?.summe ?? null;
   const setK = (teil: Partial<Kopf>) => setKopf((k) => (k ? { ...k, ...teil } : k));
   const anteilEingabe = anteil ? anteilAus(anteil.text) : null;
@@ -177,10 +192,14 @@ function Bearbeiten() {
         </div>
         <div className="pl-actions">
           <Button href={`/offerten/druck/?id=${id}`}>Offerte als PDF</Button>
+          {offerte?.status === "offerte" ? (
+            <Button variant="primary" onClick={() => setBestaetigenOffen(true)} disabled={kopfGeaendert}>Offerte bestätigen</Button>
+          ) : null}
         </div>
       </header>
 
       {hinweis ? <Notice role="alert" title={hinweis.titel}>{hinweis.text}</Notice> : null}
+      {kopfGeaendert ? <Notice title="Kopfdaten nicht gespeichert">Preise und «Offerte bestätigen» rechnen mit den gespeicherten Kopfdaten. Bitte zuerst «Kopfdaten speichern».</Notice> : null}
       <p className="pl-small" role="status" tabIndex={-1} ref={meldungRef}>{meldung}</p>
 
       <div className="pl-grid-3">
@@ -369,6 +388,37 @@ function Bearbeiten() {
           ) : null}
         </aside>
       </div>
+
+      <Dialog
+        open={bestaetigenOffen}
+        id="bestaetigen"
+        title="Offerte bestätigen"
+        meta={offerte?.nummer ?? undefined}
+        onClose={() => setBestaetigenOffen(false)}
+        onCancel={(e) => bestaetigen.laeuft && e.preventDefault()}
+        actions={
+          <>
+            <Button onClick={() => setBestaetigenOffen(false)} disabled={bestaetigen.laeuft}>Abbrechen</Button>
+            <Button variant="primary" onClick={offerteBestaetigen} disabled={bestaetigen.laeuft || !stamm?.saisons.length}>
+              {bestaetigen.laeuft ? "Wird bestätigt …" : "Bestätigen und als Anlass öffnen"}
+            </Button>
+          </>
+        }
+      >
+        <p>
+          Die Offerte wird ein bestätigter Anlass. Ihre Gerichte werden die Menülinie «Menü» mit einem Service für alle Gäste; die Mengen pro Gast kommen aus der Systemzuteilung,
+          fehlende als [Menge]. Ab dann zählt der Anlass für Produktionswellen und Produktionsliste.
+        </p>
+        <Select
+          id="bestaetigen-saison"
+          label="Saison"
+          value={bestaetigen.saison || stamm?.saisons[0]?.id || ""}
+          onChange={(v) => setBestaetigen({ ...bestaetigen, saison: v, fehler: null })}
+          options={(stamm?.saisons ?? []).map((x) => ({ value: x.id, label: x.name }))}
+        />
+        <p className="pl-small">Voraussetzung: Datum, Gäste und mindestens ein Gericht sind gespeichert.</p>
+        {bestaetigen.fehler ? <Notice role="alert" title="Nicht bestätigt">{bestaetigen.fehler}</Notice> : null}
+      </Dialog>
 
       <Dialog
         open={anteilOffen}

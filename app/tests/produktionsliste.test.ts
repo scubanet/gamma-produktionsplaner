@@ -5,7 +5,7 @@ import { formatAnteil, formatDatum, formatMenge } from "../lib/format";
 
 const liste = (p: Partial<ListeZeile>): ListeZeile => ({
   saison_id: "s", kategorie: "Fleisch", komponente: "Rindsentrecote", status: "ok", menge_total: 79.2, einheit_total: "kg",
-  haltbarkeit_tage: 21, wellen: 3, start_ab: "2026-12-04", komponente_id: "k1", ...p,
+  haltbarkeit_tage: 21, wellen: 3, start_ab: "2026-12-04", komponente_id: "k1", zeilen_ohne_menge: 0, ...p,
 });
 const bedarf = (p: Partial<BedarfZeile>): BedarfZeile => ({
   anlass_id: "a", menuelinie_id: "l1", menuelinie: "Spiel 1 und 6", gang: "Hauptgang", gericht: "Entrecote", komponente_id: "k1",
@@ -16,7 +16,7 @@ describe("Format", () => {
   it("Menge, Datum, Anteil", () => {
     expect(formatMenge(181.5, "kg")).toBe("181.50 kg");
     expect(formatMenge(1200, "Stk")).toBe("1’200 Stk");
-    expect(formatMenge(null, "kg")).toBe("–");
+    expect(formatMenge(null, "kg")).toBe("[Menge]");
     expect(formatDatum("2026-12-04")).toBe("04.12.2026");
     expect(formatAnteil(0.6)).toBe("60 %");
     expect(formatAnteil(1)).toBe("100 %");
@@ -39,6 +39,7 @@ describe("Herleitung", () => {
 
   it("fehlende Werte als Platzhalter, nie geschätzt", () => {
     expect(herleitungTerm(bedarf({ gaeste: null }))).toBe("[Herleitung fehlt]");
+    expect(herleitungTerm(bedarf({ menge_pro_gast: null }))).toBe("1’100 Gäste × 60 % × [Menge]");
     expect(saisonZeilen([liste({})], [])[0].herleitung).toBe("[Herleitung fehlt]");
   });
 });

@@ -10,7 +10,7 @@ export function formatZahl(wert: number, stellen = 0): string {
 
 /** Menge mit Einheit: kg und l mit 2 Stellen, Stk ganzzahlig. */
 export function formatMenge(wert: number | null, einheit: string | null): string {
-  if (wert === null || einheit === null) return "–";
+  if (wert === null || einheit === null) return "[Menge]";
   return `${formatZahl(wert, einheit === "Stk" ? 0 : 2)} ${einheit}`;
 }
 

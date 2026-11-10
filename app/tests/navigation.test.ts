@@ -18,6 +18,10 @@ describe("Navigation", () => {
     expect(navEintraege("/systemzuteilung/").find((x) => x.current)?.label).toBe("Systemzuteilung");
   });
 
+  it("Anlässe sind erreichbar, auch Unterseiten", () => {
+    expect(navEintraege("/anlaesse/karte/").find((x) => x.current)?.label).toBe("Anlässe");
+  });
+
   it("Offerten sind erreichbar", () => {
     expect(navEintraege("/offerten/").find((x) => x.current)?.label).toBe("Offerten");
     expect(navEintraege("/offerten/bearbeiten/").filter((x) => x.current).map((x) => x.label)).toEqual(["Offerten"]);
@@ -30,7 +34,7 @@ describe("Navigation", () => {
 
   it("zeigt nicht gebaute Bereiche deaktiviert", () => {
     const e = navEintraege("/");
-    expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Anlässe", "Ressourcen", "Rentabilität", "Einkauf", "Stammdaten"]);
+    expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Ressourcen", "Rentabilität", "Einkauf", "Stammdaten"]);
   });
 
   it("nur die Anmeldung ist öffentlich", () => {

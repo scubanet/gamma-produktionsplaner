@@ -161,6 +161,13 @@ export type Database = {
             foreignKeyName: "anlass_gericht_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "offerte_summe"
             referencedColumns: ["anlass_id"]
           },
@@ -211,6 +218,13 @@ export type Database = {
             columns: ["anlass_id"]
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_kosten_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
             referencedColumns: ["id"]
           },
           {
@@ -642,6 +656,13 @@ export type Database = {
             foreignKeyName: "karte_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "offerte_summe"
             referencedColumns: ["anlass_id"]
           },
@@ -681,6 +702,13 @@ export type Database = {
             columns: ["karte_id"]
             isOneToOne: false
             referencedRelation: "karte"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "karte_position_karte_id_fkey"
+            columns: ["karte_id"]
+            isOneToOne: false
+            referencedRelation: "karte_uebersicht"
             referencedColumns: ["id"]
           },
         ]
@@ -896,6 +924,13 @@ export type Database = {
             foreignKeyName: "menuelinie_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "offerte_summe"
             referencedColumns: ["anlass_id"]
           },
@@ -958,6 +993,13 @@ export type Database = {
             referencedRelation: "menuelinie"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "menuelinie_gericht_menuelinie_id_fkey"
+            columns: ["menuelinie_id"]
+            isOneToOne: false
+            referencedRelation: "menuelinie_gaeste"
+            referencedColumns: ["menuelinie_id"]
+          },
         ]
       }
       menuelinie_komponente: {
@@ -967,7 +1009,7 @@ export type Database = {
           id: string
           komponente_id: string | null
           linie_gericht_id: string
-          menge_pro_gast: number
+          menge_pro_gast: number | null
           reihenfolge: number
         }
         Insert: {
@@ -976,7 +1018,7 @@ export type Database = {
           id?: string
           komponente_id?: string | null
           linie_gericht_id: string
-          menge_pro_gast: number
+          menge_pro_gast?: number | null
           reihenfolge: number
         }
         Update: {
@@ -985,7 +1027,7 @@ export type Database = {
           id?: string
           komponente_id?: string | null
           linie_gericht_id?: string
-          menge_pro_gast?: number
+          menge_pro_gast?: number | null
           reihenfolge?: number
         }
         Relationships: [
@@ -1087,6 +1129,13 @@ export type Database = {
             columns: ["anlass_id"]
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
             referencedColumns: ["id"]
           },
           {
@@ -1472,6 +1521,13 @@ export type Database = {
             foreignKeyName: "service_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "offerte_summe"
             referencedColumns: ["anlass_id"]
           },
@@ -1488,6 +1544,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "menuelinie"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_menuelinie_id_fkey"
+            columns: ["menuelinie_id"]
+            isOneToOne: false
+            referencedRelation: "menuelinie_gaeste"
+            referencedColumns: ["menuelinie_id"]
           },
         ]
       }
@@ -1691,6 +1754,13 @@ export type Database = {
             foreignKeyName: "menuelinie_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "offerte_summe"
             referencedColumns: ["anlass_id"]
           },
@@ -1724,6 +1794,33 @@ export type Database = {
           },
         ]
       }
+      anlass_uebersicht: {
+        Row: {
+          datum: string | null
+          datum_bis: string | null
+          gaeste_services: number | null
+          id: string | null
+          karten: number | null
+          kunde: string | null
+          menuelinien: number | null
+          name: string | null
+          nummer: string | null
+          ort: string | null
+          saison: string | null
+          saison_id: string | null
+          services: number | null
+          status: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gericht_warenkosten: {
         Row: {
           gericht_id: string | null
@@ -1733,6 +1830,46 @@ export type Database = {
           wk_rohware_chf: number | null
         }
         Relationships: []
+      }
+      karte_uebersicht: {
+        Row: {
+          anlass: string | null
+          anlass_id: string | null
+          id: string | null
+          name: string | null
+          positionen: number | null
+          positionen_ohne_preis: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
       }
       komponente_pruefhinweis: {
         Row: {
@@ -1845,6 +1982,46 @@ export type Database = {
           },
         ]
       }
+      menuelinie_gaeste: {
+        Row: {
+          anlass_id: string | null
+          gaeste: number | null
+          herleitung: string | null
+          menuelinie_id: string | null
+          name: string | null
+          services: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
+      }
       monat_ergebnis: {
         Row: {
           anlaesse: number | null
@@ -1911,6 +2088,13 @@ export type Database = {
             foreignKeyName: "offerte_gericht_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "offerte_summe"
             referencedColumns: ["anlass_id"]
           },
@@ -1965,6 +2149,7 @@ export type Database = {
           start_ab: string | null
           status: string | null
           wellen: number | null
+          zeilen_ohne_menge: number | null
         }
         Relationships: [
           {
@@ -2078,6 +2263,18 @@ export type Database = {
       }
     }
     Functions: {
+      karte_kopieren: {
+        Args: { p_anlass: string; p_karte: string; p_name?: string }
+        Returns: string
+      }
+      menuelinie_gericht_hinzufuegen: {
+        Args: { p_anteil?: number; p_gericht: string; p_linie: string }
+        Returns: string
+      }
+      offerte_bestaetigen: {
+        Args: { p_anlass: string; p_saison: string }
+        Returns: string
+      }
       rezept_faktor: {
         Args: { p_rezept: string; p_wert: number }
         Returns: {

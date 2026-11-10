@@ -4,7 +4,7 @@ import type { SideNavItem } from "./planer";
 export const BEREICHE: { label: string; href?: string }[] = [
   { label: "Leitstand", href: "/" },
   { label: "Offerten", href: "/offerten/" },
-  { label: "Anlässe" },
+  { label: "Anlässe", href: "/anlaesse/" },
   { label: "Ressourcen" },
   { label: "Produktionsplan", href: "/produktion/" },
   { label: "Systemzuteilung", href: "/systemzuteilung/" },

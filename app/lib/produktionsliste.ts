@@ -25,8 +25,9 @@ export type Zeile = {
 
 /** Ein Summand: «1’100 Gäste × 60 % × 120 g». */
 export function herleitungTerm(b: Pick<BedarfZeile, "gaeste" | "anteil" | "menge_pro_gast" | "einheit">): string {
-  if (b.gaeste === null || b.anteil === null || b.menge_pro_gast === null || b.einheit === null) return "[Herleitung fehlt]";
-  return `${formatZahl(b.gaeste)} Gäste × ${formatAnteil(b.anteil)} × ${formatProGast(b.menge_pro_gast, b.einheit)}`;
+  if (b.gaeste === null || b.anteil === null) return "[Herleitung fehlt]";
+  const menge = b.menge_pro_gast === null || b.einheit === null ? "[Menge]" : formatProGast(b.menge_pro_gast, b.einheit);
+  return `${formatZahl(b.gaeste)} Gäste × ${formatAnteil(b.anteil)} × ${menge}`;
 }
 
 /** Saisonsicht: eine Zeile pro Komponente, Herleitung als Summe über alle Menülinien. */
