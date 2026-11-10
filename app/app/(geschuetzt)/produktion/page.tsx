@@ -9,6 +9,10 @@ import {
   type Aufgabe, type BedarfZeile, type ListeZeile, type Richtung, type SortFeld, type Zeile,
 } from "@/lib/produktionsliste";
 import { ZustaendigDialog } from "@/components/produktion/ZustaendigDialog";
+import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
+import type { Hinweis, Regeneration, System, Zuteilung } from "@/lib/systemzuteilung";
+
+type Bearbeiten = { zeile: Zuteilung; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[] };
 import { mengenKontrollen, statusKontrolle, STATUS_ERWARTET, wellenKontrolle, WELLEN_ERWARTET, type Kontrolle } from "@/lib/kontrollwerte";
 import { excelExport } from "@/lib/export";
 
@@ -59,6 +63,37 @@ export default function Produktionsliste() {
   const [zustaendig, setZustaendig] = useState("");
   const [dialog, setDialog] = useState<Zeile | null>(null);
   const [aktionsFehler, setAktionsFehler] = useState<string | null>(null);
+  const [bearbeiten, setBearbeiten] = useState<Bearbeiten | null>(null);
+  const [oeffnet, setOeffnet] = useState<string | null>(null);
+  const [stamm, setStamm] = useState<{ systeme: System[]; regenerationen: Regeneration[] } | null>(null);
+
+  /** Liste neu rechnen lassen: Status, Haltbarkeit, Wellen und Start hängen an der Zuteilung. */
+  function neuLaden() {
+    laden().then((d) => {
+      setDaten(d);
+      setAufgaben(new Map(d.aufgaben.map((a) => [a.komponente_id, a])));
+    }, (e: Error) => setFehler(e.message));
+  }
+
+  /** Komponente mit Zuteilung, Prüfhinweisen und Stammdaten laden und den Dialog der Systemzuteilung öffnen. */
+  async function komponenteOeffnen(z: Zeile) {
+    if (!z.komponenteId || oeffnet) return;
+    setOeffnet(z.komponenteId);
+    setAktionsFehler(null);
+    const [zu, hi, sy, re] = await Promise.all([
+      supabase.from("komponente_zuteilung").select("*").eq("id", z.komponenteId).maybeSingle(),
+      supabase.from("komponente_pruefhinweis").select("*").eq("komponente_id", z.komponenteId),
+      stamm ? Promise.resolve({ data: stamm.systeme, error: null }) : supabase.from("produktionssystem").select("*").order("reihenfolge"),
+      stamm ? Promise.resolve({ data: stamm.regenerationen, error: null }) : supabase.from("regenerationsart").select("*").order("reihenfolge"),
+    ]);
+    setOeffnet(null);
+    const f = zu.error ?? hi.error ?? sy.error ?? re.error;
+    if (f) return setAktionsFehler(`${z.komponente}: ${f.message}`);
+    if (!zu.data) return setAktionsFehler(`${z.komponente}: Komponente nicht gefunden.`);
+    const s = { systeme: sy.data ?? [], regenerationen: re.data ?? [] };
+    setStamm(s);
+    setBearbeiten({ zeile: zu.data, hinweise: hi.data ?? [], ...s });
+  }
 
   useEffect(() => {
     laden().then((d) => {
@@ -154,6 +189,16 @@ export default function Produktionsliste() {
     { key: "wellen", label: "Wellen", numeric: true, render: (r) => (r.wellen === null ? leerwert(r.status as string, "Wellen") : String(r.wellen)) },
     { key: "startAb", label: "Start ab", numeric: true, render: (r) => (r.startAb === null ? leerwert(r.status as string, "Start") : formatDatum(r.startAb as string)) },
     { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+    {
+      key: "bearbeiten",
+      label: <span className="pl-sr">Bearbeiten</span>,
+      printHidden: true,
+      render: (r) => (
+        <Button ariaLabel={`${r.komponente as string} bearbeiten`} onClick={() => komponenteOeffnen(r as unknown as Zeile)} disabled={!r.komponenteId || oeffnet !== null}>
+          {oeffnet === r.komponenteId ? "Lädt …" : "Bearbeiten"}
+        </Button>
+      ),
+    },
   ];
   const tabelle = zeilen.map((z) => ({
     ...z,
@@ -303,6 +348,18 @@ export default function Produktionsliste() {
           bekannte={personen}
           onClose={() => setDialog(null)}
           onSpeichern={(n) => aufgabeSpeichern(dialog.komponenteId!, { zustaendig: n })}
+        />
+      ) : null}
+      {bearbeiten ? (
+        <KomponenteBearbeiten
+          key={bearbeiten.zeile.id}
+          zeile={bearbeiten.zeile}
+          hinweise={bearbeiten.hinweise}
+          systeme={bearbeiten.systeme}
+          regenerationen={bearbeiten.regenerationen}
+          onClose={() => setBearbeiten(null)}
+          onAktualisiert={(_z, _h, gespeichert) => { if (gespeichert) neuLaden(); }}
+          onNeuLaden={neuLaden}
         />
       ) : null}
     </>
