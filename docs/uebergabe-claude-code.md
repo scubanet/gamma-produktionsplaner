@@ -7,7 +7,7 @@ Stand: 10.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut. Ziel blei
 | Bereich | Wo | Stand |
 | --- | --- | --- |
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
-| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 16 Migrationen, siehe `docs/supabase.md` |
+| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 17 Migrationen, siehe `docs/supabase.md` |
 | App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 81 Tests, noch nicht ausgeliefert |
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.7 | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
@@ -23,7 +23,7 @@ Stand: 10.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut. Ziel blei
 | `/produktion/wellen` | Wellen-Vorschlag, übernehmen, Datum ändern, Prüfhinweise | 7 |
 | `/systemzuteilung` | Komponenten mit Status und Prüfhinweisen, Zuteilung bearbeiten | 3 |
 | `/katalog` | Gerichte mit Komponenten, Verknüpfung zu Rezepten | 4 |
-| `/rezepte` | Rezeptkarte mit Skalierung nach Portionen oder Chargen; Bearbeiten von Name, Typ, Basis, Mengen in Gramm, Basiszutat, offenen Punkten | 4 |
+| `/rezepte` | Rezeptkarte mit Skalierung nach Portionen oder Chargen; Bearbeiten von Name, Quelle, Typ, Basis, Mengen in Gramm, Basiszutat, offenen Punkten | 4 |
 | `/offerten`, `/offerten/bearbeiten`, `/offerten/druck` | Offerte mit Preis pro Gast, Deckungsbeitrag, Druckansicht | 5 |
 | `/anlaesse`, `/anlaesse/bearbeiten`, `/anlaesse/karte` | Anlass mit Services, Menülinien, Getränke- und Barkarten | 6 |
 | `/einkauf`, `/einkauf/lieferanten` | Einkaufsliste nach Lieferant und Artikel mit Bestellschluss, Lieferanten pflegen | 7 |

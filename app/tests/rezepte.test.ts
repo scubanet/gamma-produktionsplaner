@@ -179,6 +179,8 @@ describe("Rezept bearbeiten (Eingaben prüfen; gespeichert wird in der Datenbank
   it("Name: wird getrimmt, leer ist ein Fehler", () => {
     expect(args(rezeptArgs(sugo, zutaten, { ...f(), name: "  Sugo al pomodoro " }))?.p_name).toBe("Sugo al pomodoro");
     expect(fehler(rezeptArgs(sugo, zutaten, { ...f(), name: "  " }))).toContain("Namen");
+    expect(f().quelle).toBe("");
+    expect(args(rezeptArgs(sugo, zutaten, { ...f(), quelle: "Andreas Caminada" }))?.p_quelle).toBe("Andreas Caminada");
   });
 
   it("Felder des anderen Typs werden nicht geprüft und bleiben wie geladen", () => {

@@ -8,7 +8,7 @@ Stand: 10.11.2026
 | Region | Central Europe (Zürich), `eu-central-2` |
 | API-URL | https://oqmtocxemtcsvtzmswwx.supabase.co |
 | Zweck | Pilot Winter 2026/27. Danach Umzug auf einen eigenen Server von GAMMA (selbst gehostetes Supabase). |
-| Umfang | 44 Tabellen, 28 Views, 15 Funktionen, 16 Migrationen |
+| Umfang | 44 Tabellen, 28 Views, 15 Funktionen, 17 Migrationen |
 
 ## Aufbau
 
@@ -40,8 +40,9 @@ Stand: 10.11.2026
 | 14 rezepte_my_recipes | Daten: 171 Rezepte aus dem Paprika-Export «My Recipes» über `importer.rezepte` |
 | 15 rezept_pflege | Wertebereiche auf `rezept` und `zutat`, Funktion `rezept_speichern` für die Pflege in der App |
 | 16 rezept_name | `rezept_speichern` nimmt auch den Namen; der Slug bleibt unverändert |
+| 17 rezept_quelle | `rezept_speichern` nimmt auch die Quelle |
 
-Die Versionen in der Datenbank entsprechen den Dateinamen (`20261109000001` bis `20261110000016`).
+Die Versionen in der Datenbank entsprechen den Dateinamen (`20261109000001` bis `20261110000017`).
 
 ### Neue Migration einspielen
 
@@ -95,7 +96,7 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `rezept_zeit`: aktive und unbeaufsichtigte Minuten
 - `rezept_faktor(rezept, wert)`: Faktor aus Portionen (Gericht) oder Chargen (Komponente), mit Herleitung
 - `rezept_zutaten_skaliert(rezept, wert)`, `rezept_komponenten_skaliert(rezept, wert)`: skalierte Mengen
-- `rezept_speichern(rezept, geaendert_am, …)`: speichert Name, Typ, Basis, Mengen in Gramm, Basiszutat und erledigte offene Punkte in einem Schritt. Lehnt ab, wenn der geladene Stand (`geaendert_am`) nicht mehr gilt oder ein Typwechsel bestehende Verknüpfungen bricht. Ein Gericht braucht Basisportionen; Mengen sind über 0 oder leer.
+- `rezept_speichern(rezept, geaendert_am, …)`: speichert Name, Quelle, Typ, Basis, Mengen in Gramm, Basiszutat und erledigte offene Punkte in einem Schritt. Lehnt ab, wenn der geladene Stand (`geaendert_am`) nicht mehr gilt oder ein Typwechsel bestehende Verknüpfungen bricht. Ein Gericht braucht Basisportionen; Mengen sind über 0 oder leer.
 - `rezept_kosten_waren`, `rezept_kosten_arbeit_energie`: aus dem PoC; liefern erst Werte, wenn Zutaten mit Artikeln verknüpft und Lohnsätze erfasst sind
 
 ### Offerte

@@ -127,6 +127,7 @@ export function besonderesZeilen(text: string | null): string[] {
 
 export type RezeptFormular = {
   name: string;
+  quelle: string;
   typ: Rezept["typ"];
   kategorie: string;
   basis_portionen: string;
@@ -148,6 +149,7 @@ const alsText = (n: number | null) => (n === null ? "" : String(n));
 export function rezeptFormular(r: Rezept, zutaten: ZutatRoh[]): RezeptFormular {
   return {
     name: r.name,
+    quelle: r.quelle ?? "",
     typ: r.typ,
     kategorie: r.kategorie ?? "",
     basis_portionen: alsText(r.basis_portionen),
@@ -204,6 +206,7 @@ export function rezeptArgs(r: Rezept, zutaten: ZutatRoh[], f: RezeptFormular): {
       p_rezept: r.id,
       p_geaendert_am: r.geaendert_am,
       p_name: name,
+      p_quelle: f.quelle,
       p_typ: f.typ,
       p_kategorie: f.kategorie,
       // Die erzeugten Typen kennen bei Funktionsargumenten kein null; die Datenbank nimmt es an.

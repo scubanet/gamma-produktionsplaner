@@ -3430,6 +3430,7 @@ export type Database = {
           p_name: string
           p_portion_g: number
           p_portionen_annahme: boolean
+          p_quelle: string
           p_rezept: string
           p_typ: Database["public"]["Enums"]["rezept_typ"]
           p_zutaten: Json
