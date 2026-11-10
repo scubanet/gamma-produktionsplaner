@@ -1,14 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { formatGramm, formatMinuten, formatProzent } from "../lib/format";
 import {
-  basisZutat, ergibtText, geraete, gruppenAnzeige, listenSub, schrittChips, voreinstellungen, wertAusEingabe,
-  type Rezept, type Schritt, type Zutat,
+  basisOptionen, basisZutat, besonderesZeilen, ergibtText, geraete, grammAusEingabe, gruppenAnzeige, listenSub, rezeptArgs, rezeptFormular,
+  schrittChips, voreinstellungen, wertAusEingabe,
+  type Rezept, type Schritt, type Zutat, type ZutatRoh,
 } from "../lib/rezepte";
 import { gruppieren, mengeText, suchen, warenkostenText, type Gericht } from "../lib/katalog";
 
 const gericht: Rezept = {
   id: "r1", slug: "hack", typ: "gericht", name: "Hacktätschli", untertitel: null, kategorie: "Hauptgang", quelle: null,
   basis_portionen: 10, portion_g: 180, ergibt_g: null, status: "entwurf", ergibt_annahme: false, portionen_annahme: false,
+  chargengroesse: null, besonderes: null, geaendert_am: "2026-11-10T10:00:00+00:00",
 };
 const sugo: Rezept = { ...gericht, id: "r2", slug: "sugo", typ: "komponente", name: "Sugo", kategorie: "Sauce", basis_portionen: null, portion_g: null, ergibt_g: 1600 };
 
@@ -118,5 +120,77 @@ describe("Katalog", () => {
   it("Warenkosten: Platzhalter ohne Preis, Annahme mit Zuschlag", () => {
     expect(warenkostenText({ gericht_id: "a", name: "x", wk_rohware_chf: null, wk_inkl_zuschlag_chf: null, komponenten_ohne_preis: 2 })).toMatchObject({ text: "[Preis]", annahme: false });
     expect(warenkostenText({ gericht_id: "a", name: "x", wk_rohware_chf: 4, wk_inkl_zuschlag_chf: 4.8, komponenten_ohne_preis: 0 })).toMatchObject({ text: "CHF 4.80", annahme: true, sub: "Annahme, bitte prüfen: Hauptartikel × Menge pro Portion + Zuschlag" });
+  });
+});
+
+describe("Rezept bearbeiten (Eingaben prüfen; gespeichert wird in der Datenbank)", () => {
+  const zutaten: ZutatRoh[] = [
+    { id: "z1", gruppe_id: "g1", bezeichnung: "Mehl", menge_g: 500, annahme: false, notiz: null, ist_basis: true, reihenfolge: 1 },
+    { id: "z2", gruppe_id: "g1", bezeichnung: "Milch", menge_g: 250, annahme: true, notiz: "2.5 dl (1 ml = 1 g)", ist_basis: false, reihenfolge: 2 },
+    { id: "z3", gruppe_id: "g1", bezeichnung: "Knoblauch", menge_g: null, annahme: false, notiz: "2 Zehen", ist_basis: false, reihenfolge: 3 },
+  ];
+  const f = () => rezeptFormular(sugo, zutaten);
+  const args = (r: ReturnType<typeof rezeptArgs>) => ("args" in r ? r.args : null);
+  const fehler = (r: ReturnType<typeof rezeptArgs>) => ("fehler" in r ? r.fehler : null);
+
+  it("Gramm-Eingabe: leer, Komma, Grenzen", () => {
+    expect(grammAusEingabe("")).toBeNull();
+    expect(grammAusEingabe(" 12,5 ")).toBe(12.5);
+    expect(grammAusEingabe("0")).toBeUndefined();
+    expect(grammAusEingabe("1.234")).toBeUndefined();
+    expect(grammAusEingabe("-3")).toBeUndefined();
+    expect(grammAusEingabe("abc")).toBeUndefined();
+  });
+
+  it("Formular übernimmt den Stand, fehlende Werte sind leer", () => {
+    expect(f()).toMatchObject({ typ: "komponente", ergibt_g: "1600", basis_portionen: "", basis_zutat: "z1", erledigt: [] });
+    expect(f().zutaten.z3).toEqual({ menge: "", annahme: false });
+  });
+
+  it("ohne Änderung gehen keine Zutaten mit, der geladene Stand schon", () => {
+    const a = args(rezeptArgs(sugo, zutaten, f()));
+    expect(a?.p_zutaten).toEqual([]);
+    expect(a).toMatchObject({ p_rezept: "r2", p_geaendert_am: sugo.geaendert_am, p_typ: "komponente", p_ergibt_g: 1600, p_basis_portionen: null, p_basis_zutat: "z1" });
+  });
+
+  it("nur geänderte Zutaten; Annahme ohne Menge fällt weg", () => {
+    const form = f();
+    form.zutaten.z3 = { menge: "12", annahme: true };
+    form.zutaten.z2 = { menge: "", annahme: true };
+    expect(args(rezeptArgs(sugo, zutaten, form))?.p_zutaten).toEqual([
+      { id: "z2", menge_g: null, annahme: false },
+      { id: "z3", menge_g: 12, annahme: true },
+    ]);
+  });
+
+  it("Fehler: ungültige Menge, Gericht ohne Portionen; Basiszutat ohne Menge gilt als keine", () => {
+    const a = f();
+    a.zutaten.z2 = { menge: "viel", annahme: false };
+    expect(fehler(rezeptArgs(sugo, zutaten, a))).toContain("Milch");
+    const b = f();
+    b.zutaten.z1 = { menge: "", annahme: false };
+    expect(args(rezeptArgs(sugo, zutaten, b))?.p_basis_zutat).toBeNull();
+    const c = { ...f(), typ: "gericht" as const };
+    expect(fehler(rezeptArgs(sugo, zutaten, c))).toContain("Basisportionen");
+    expect(args(rezeptArgs(sugo, zutaten, { ...c, basis_portionen: "10" }))).toMatchObject({ p_typ: "gericht", p_basis_portionen: 10 });
+    expect(fehler(rezeptArgs(sugo, zutaten, { ...f(), ergibt_g: "0" }))).toContain("Ergibt");
+  });
+
+  it("Felder des anderen Typs werden nicht geprüft und bleiben wie geladen", () => {
+    const a = args(rezeptArgs(sugo, zutaten, { ...f(), typ: "gericht", basis_portionen: "10", ergibt_g: "5 kg", chargengroesse: "x", ergibt_annahme: true }));
+    expect(a).toMatchObject({ p_ergibt_g: 1600, p_chargengroesse: "", p_ergibt_annahme: false });
+    const b = args(rezeptArgs(gericht, [], { ...rezeptFormular(gericht, []), typ: "komponente", basis_portionen: "abc", portion_g: "0" }));
+    expect(b).toMatchObject({ p_typ: "komponente", p_basis_portionen: 10, p_portion_g: 180 });
+  });
+
+  it("Basiszutat: nur Zutaten mit Menge im Formular; keine Basiszutat ist erlaubt", () => {
+    expect(basisOptionen(zutaten, f()).map((o) => o.value)).toEqual(["z1", "z2"]);
+    expect(basisOptionen(zutaten, f())[0].label).toBe("Mehl · 500 g");
+    expect(args(rezeptArgs(sugo, zutaten, { ...f(), basis_zutat: "" }))?.p_basis_zutat).toBeNull();
+  });
+
+  it("Besonderes: eine Zeile pro Absatz", () => {
+    expect(besonderesZeilen("Erste Zeile\n\n Zweite Zeile ")).toEqual(["Erste Zeile", "Zweite Zeile"]);
+    expect(besonderesZeilen(null)).toEqual([]);
   });
 });
