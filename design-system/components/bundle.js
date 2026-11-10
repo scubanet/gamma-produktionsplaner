@@ -184,12 +184,12 @@
     return h('div', { className: 'pl-table-wrap' },
       h('table', { className: 'pl-table' },
         h('thead', null, h('tr', null, p.columns.map(function (c) {
-          return h('th', { key: c.key, className: c.numeric ? 'pl-num' : undefined }, c.label);
+          return h('th', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined }, c.label);
         }))),
         h('tbody', null, p.rows.map(function (r, i) {
           return h('tr', { key: r.id || i }, p.columns.map(function (c) {
             var v = c.render ? c.render(r) : r[c.key];
-            return h('td', { key: c.key, className: c.numeric ? 'pl-num' : undefined }, v,
+            return h('td', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined }, v,
               c.subKey && r[c.subKey] ? h('span', { className: 'pl-sub' }, r[c.subKey]) : null);
           }));
         }))));

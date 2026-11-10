@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.7 | 10.11.2026 | DataTable-Spalten mit `printHidden` (Aktionen-Spalte nicht drucken, z.B. Getränke- und Barkarten). |
 | 0.6 | 09.11.2026 | Für die Offerte: TextField mit `type="date"`. SideNav mit Offerten nach dem Leitstand. |
 | 0.5 | 09.11.2026 | Für Katalog und Rezepte (aus `mockups/Rezepte.dc.html`): ItemList (Auswahlliste neben einer Detailansicht), Chip (Gerät, Temperatur, Zeit, HACCP an Arbeitsschritten), RecipeGroups (Zutaten und nummerierte Schritte je Gruppe). Hilfsklasse `pl-sr` (nur für Screenreader). TextField mit `invalid` und `aria-describedby`, Select-Hinweis verbunden; numerische Felder mit Dezimaltastatur. SideNav-Reihenfolge mit Katalog. |
 | 0.4 | 09.11.2026 | Für die Systemzuteilung: neue Komponenten Dialog (natives `<dialog>`, Token `backdrop`) und Fieldset (Checkbox-Gruppe mit Legende). Button mit `ariaLabel` für gleichlautende Buttons in Tabellen. Notice mit `role` (alert/status), Dialog mit `onCancel`. SideNav-Reihenfolge mit Systemzuteilung. |

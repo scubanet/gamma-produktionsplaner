@@ -7,3 +7,4 @@ Tabelle für Stücklisten, Personal, Geräte und Ressourcen-Pools.
 - `subKey` für eine zweite Zeile in `ink-muted` (Lieferant, Herleitung).
 - Eine Spalte «Herleitung» erklärt, woher eine berechnete Zahl kommt – Kernprinzip der App.
 - Breite Tabellen scrollen in ihrem eigenen Container.
+- `printHidden` blendet eine Spalte im Druck aus, z.B. die Spalte mit «Bearbeiten»/«Entfernen» auf einer Karte, die als PDF an Gäste geht.
