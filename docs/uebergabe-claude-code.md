@@ -94,3 +94,7 @@ Ohne diese Werte zeigt die App Platzhalter statt Zahlen:
 - Die Commits liegen lokal auf `main`. Auf den Server (`git push`) schiebt Dominik selbst.
 - Lokaler Start: `npm --prefix app run dev`, dann `http://localhost:3000`.
 - Nach jeder Aufgabe: Typprüfung, Tests, Kontrollwerte prüfen, Commit auf Deutsch, kurzer Stand an Dominik.
+
+## Auslieferung
+
+`gamma.atoll-os.com` liegt bei Infomaniak (Webhosting, Apache). Der Workflow `.github/workflows/ausliefern.yml` baut die App bei jedem Push auf `main` und lädt `app/out/` per FTPS hoch. Die nötigen Secrets stehen im Kopf der Workflow-Datei. `app/public/.htaccess` regelt HTTPS, 404-Seite und Cache. In Supabase muss `https://gamma.atoll-os.com` als Site URL und Redirect URL eingetragen sein.

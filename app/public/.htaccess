@@ -1,0 +1,17 @@
+# gamma.atoll-os.com (Infomaniak, Apache): statischer Export von Next.js
+ErrorDocument 404 /404.html
+DirectoryIndex index.html
+
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Dateien mit Hash im Namen dürfen lange im Cache bleiben, Seiten nicht.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <If "%{REQUEST_URI} =~ m#^/_next/static/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+</IfModule>

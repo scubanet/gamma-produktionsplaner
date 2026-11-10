@@ -1,0 +1,60 @@
+# Baut die App und lädt sie zu Infomaniak (gamma.atoll-os.com) hoch.
+# Läuft bei jedem Push auf main, der die App oder das Design System betrifft, und von Hand über «Run workflow».
+# Nötige Secrets im Repo (Settings → Secrets and variables → Actions):
+#   SUPABASE_PUBLISHABLE_KEY  Publishable Key aus Supabase (Project Settings → API Keys)
+#   FTP_SERVER                FTP-Host von Infomaniak, z.B. xxxx.ftp.infomaniak.com
+#   FTP_USERNAME, FTP_PASSWORD  FTP-Benutzer für den Ordner von gamma.atoll-os.com
+#   FTP_ORDNER                Zielordner auf dem Server mit Schrägstrich am Schluss, z.B. ./sites/gamma.atoll-os.com/
+name: Ausliefern
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "design-system/**"
+      - ".github/workflows/ausliefern.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ausliefern
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ausliefern:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - run: npm ci
+
+      - name: Typen prüfen
+        run: npm run typecheck
+
+      - name: App bauen
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://oqmtocxemtcsvtzmswwx.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+
+      - name: Zu Infomaniak hochladen
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./app/out/
+          server-dir: ${{ secrets.FTP_ORDNER }}
