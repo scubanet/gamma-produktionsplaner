@@ -32,9 +32,9 @@ describe("Navigation", () => {
     expect(navEintraege("/rezepte").find((x) => x.current)?.label).toBe("Rezepte");
   });
 
-  it("zeigt nicht gebaute Bereiche deaktiviert", () => {
-    const e = navEintraege("/");
-    expect(e.filter((x) => x.disabled).map((x) => x.label)).toEqual(["Ressourcen", "Rentabilität", "Stammdaten"]);
+  it("alle Bereiche sind gebaut", () => {
+    expect(navEintraege("/").filter((x) => x.disabled)).toEqual([]);
+    expect(navEintraege("/stammdaten/").find((x) => x.current)?.label).toBe("Stammdaten");
   });
 
   it("nur die Anmeldung ist öffentlich", () => {

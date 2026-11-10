@@ -63,6 +63,7 @@ export type Database = {
           saison_id: string | null
           serviceart: string | null
           status: string
+          umsatz_netto_chf: number | null
           vorlauf_tage: number
         }
         Insert: {
@@ -80,6 +81,7 @@ export type Database = {
           saison_id?: string | null
           serviceart?: string | null
           status?: string
+          umsatz_netto_chf?: number | null
           vorlauf_tage?: number
         }
         Update: {
@@ -97,6 +99,7 @@ export type Database = {
           saison_id?: string | null
           serviceart?: string | null
           status?: string
+          umsatz_netto_chf?: number | null
           vorlauf_tage?: number
         }
         Relationships: [
@@ -137,6 +140,80 @@ export type Database = {
           },
         ]
       }
+      anlass_geraet: {
+        Row: {
+          anlass_id: string
+          anzahl: number
+          bemerkung: string | null
+          geraet_id: string
+          id: string
+        }
+        Insert: {
+          anlass_id: string
+          anzahl: number
+          bemerkung?: string | null
+          geraet_id: string
+          id?: string
+        }
+        Update: {
+          anlass_id?: string
+          anzahl?: number
+          bemerkung?: string | null
+          geraet_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_geraet_id_fkey"
+            columns: ["geraet_id"]
+            isOneToOne: false
+            referencedRelation: "geraet"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       anlass_gericht: {
         Row: {
           anlass_id: string
@@ -170,6 +247,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
           },
           {
             foreignKeyName: "anlass_gericht_anlass_id_fkey"
@@ -238,11 +329,104 @@ export type Database = {
             foreignKeyName: "anlass_kosten_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_kosten_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_kosten_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "anlass_uebersicht"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "anlass_kosten_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
+      }
+      anlass_personal: {
+        Row: {
+          anlass_id: string
+          anzahl_eigen: number
+          anzahl_freelancer: number
+          bemerkung: string | null
+          einsatz: string | null
+          id: string
+          reihenfolge: number
+          rolle: string
+          stunden_pro_person: number
+        }
+        Insert: {
+          anlass_id: string
+          anzahl_eigen?: number
+          anzahl_freelancer?: number
+          bemerkung?: string | null
+          einsatz?: string | null
+          id?: string
+          reihenfolge?: number
+          rolle: string
+          stunden_pro_person: number
+        }
+        Update: {
+          anlass_id?: string
+          anzahl_eigen?: number
+          anzahl_freelancer?: number
+          bemerkung?: string | null
+          einsatz?: string | null
+          id?: string
+          reihenfolge?: number
+          rolle?: string
+          stunden_pro_person?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
             referencedRelation: "offerte_summe"
@@ -712,6 +896,20 @@ export type Database = {
             foreignKeyName: "karte_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "anlass_uebersicht"
             referencedColumns: ["id"]
           },
@@ -941,18 +1139,21 @@ export type Database = {
       lohnsatz: {
         Row: {
           chf_pro_h: number
+          chf_pro_h_freelancer: number | null
           gueltig_ab: string
           quelle: string | null
           rolle: string
         }
         Insert: {
           chf_pro_h: number
+          chf_pro_h_freelancer?: number | null
           gueltig_ab: string
           quelle?: string | null
           rolle: string
         }
         Update: {
           chf_pro_h?: number
+          chf_pro_h_freelancer?: number | null
           gueltig_ab?: string
           quelle?: string | null
           rolle?: string
@@ -1010,6 +1211,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
           },
           {
             foreignKeyName: "menuelinie_anlass_id_fkey"
@@ -1221,6 +1436,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
           },
           {
             foreignKeyName: "offerte_gericht_anlass_id_fkey"
@@ -1629,6 +1858,20 @@ export type Database = {
             foreignKeyName: "service_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "anlass_uebersicht"
             referencedColumns: ["id"]
           },
@@ -1851,6 +2094,114 @@ export type Database = {
         }
         Relationships: []
       }
+      anlass_geraet_bedarf: {
+        Row: {
+          anlass_id: string | null
+          anzahl: number | null
+          anzahl_eigen: number | null
+          bemerkung: string | null
+          eigen_anzahl: number | null
+          eigen_frei: number | null
+          frueher_belegt: number | null
+          geraet: string | null
+          geraet_id: string | null
+          herleitung: string | null
+          id: string | null
+          mietbar: boolean | null
+          miete_anzahl: number | null
+          mietkosten_chf: number | null
+          mietpreis_chf_tag: number | null
+          tage: number | null
+          zusatzbedarf: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geraet_geraet_id_fkey"
+            columns: ["geraet_id"]
+            isOneToOne: false
+            referencedRelation: "geraet"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      anlass_kalkulation: {
+        Row: {
+          anlass_id: string | null
+          annahme: boolean | null
+          datum: string | null
+          datum_bis: string | null
+          db_chf: number | null
+          db_pct: number | null
+          db_ziel_pct: number | null
+          ergebnis_chf: number | null
+          ergebnis_pct: number | null
+          fehlend: string | null
+          fix_anteil_chf: number | null
+          fix_zuschlag_pct: number | null
+          gaeste: number | null
+          geraete_anzahl: number | null
+          geraete_miete: number | null
+          herleitung: string | null
+          kunde: string | null
+          monat: string | null
+          name: string | null
+          nummer: string | null
+          personal_anzahl: number | null
+          personal_chf: number | null
+          personal_freelancer: number | null
+          personal_stunden: number | null
+          status: string | null
+          uebrige_chf: number | null
+          umsatz_chf: number | null
+          umsatz_quelle: string | null
+          variabel_chf: number | null
+          waren_chf: number | null
+          zaehlt: boolean | null
+        }
+        Relationships: []
+      }
       anlass_komponente_bedarf: {
         Row: {
           anlass_id: string | null
@@ -1881,6 +2232,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
           },
           {
             foreignKeyName: "menuelinie_anlass_id_fkey"
@@ -1923,6 +2288,88 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "produktionsliste"
             referencedColumns: ["komponente_id"]
+          },
+        ]
+      }
+      anlass_kostenart: {
+        Row: {
+          anlass_id: string | null
+          annahme: boolean | null
+          art: Database["public"]["Enums"]["kostenart"] | null
+          berechnet_chf: number | null
+          gilt_chf: number | null
+          hand_plan_chf: number | null
+          herleitung: string | null
+          ist_chf: number | null
+          ist_erfasst: boolean | null
+          ordnung: number | null
+          plan_chf: number | null
+          unvollstaendig: boolean | null
+        }
+        Relationships: []
+      }
+      anlass_personal_kosten: {
+        Row: {
+          anlass_id: string | null
+          anzahl: number | null
+          anzahl_eigen: number | null
+          anzahl_freelancer: number | null
+          bemerkung: string | null
+          chf_pro_h: number | null
+          chf_pro_h_freelancer: number | null
+          einsatz: string | null
+          freelancer_satz_annahme: boolean | null
+          herleitung: string | null
+          id: string | null
+          kosten_chf: number | null
+          reihenfolge: number | null
+          rolle: string | null
+          stunden: number | null
+          stunden_pro_person: number | null
+          zusatzbedarf: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_personal_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
           },
         ]
       }
@@ -2083,6 +2530,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
           },
           {
             foreignKeyName: "karte_anlass_id_fkey"
@@ -2253,6 +2714,20 @@ export type Database = {
             foreignKeyName: "menuelinie_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
             referencedRelation: "anlass_uebersicht"
             referencedColumns: ["id"]
           },
@@ -2268,13 +2743,20 @@ export type Database = {
       monat_ergebnis: {
         Row: {
           anlaesse: number | null
+          anlaesse_ohne_umsatz: number | null
+          anlaesse_unvollstaendig: number | null
+          annahme: boolean | null
           breakeven_umsatz_chf: number | null
           db_chf: number | null
+          db_pct: number | null
           ergebnis_chf: number | null
           fix_chf: number | null
+          fixkosten_zeilen: number | null
           gaeste: number | null
+          herleitung: string | null
           monat: string | null
           rentabel: boolean | null
+          umsatz_bekannt_chf: number | null
           umsatz_chf: number | null
         }
         Relationships: []
@@ -2326,6 +2808,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
           },
           {
             foreignKeyName: "offerte_gericht_anlass_id_fkey"
@@ -2549,6 +3045,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
           },
           {
             foreignKeyName: "service_anlass_id_fkey"
@@ -2847,6 +3357,23 @@ export type Database = {
       }
     }
     Functions: {
+      anlass_kosten_setzen: {
+        Args: {
+          p_anlass: string
+          p_art: Database["public"]["Enums"]["kostenart"]
+          p_ist: number
+          p_plan: number
+        }
+        Returns: undefined
+      }
+      geraet_zuteilung: {
+        Args: never
+        Returns: {
+          anlass_geraet_id: string
+          eigen_anzahl: number
+          frueher_belegt: number
+        }[]
+      }
       karte_kopieren: {
         Args: { p_anlass: string; p_karte: string; p_name?: string }
         Returns: string

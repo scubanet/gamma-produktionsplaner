@@ -5,14 +5,14 @@ export const BEREICHE: { label: string; href?: string }[] = [
   { label: "Leitstand", href: "/" },
   { label: "Offerten", href: "/offerten/" },
   { label: "Anlässe", href: "/anlaesse/" },
-  { label: "Ressourcen" },
+  { label: "Ressourcen", href: "/ressourcen/" },
   { label: "Produktionsplan", href: "/produktion/" },
   { label: "Systemzuteilung", href: "/systemzuteilung/" },
   { label: "Katalog", href: "/katalog/" },
   { label: "Rezepte", href: "/rezepte/" },
-  { label: "Rentabilität" },
+  { label: "Rentabilität", href: "/rentabilitaet/" },
   { label: "Einkauf", href: "/einkauf/" },
-  { label: "Stammdaten" },
+  { label: "Stammdaten", href: "/stammdaten/" },
 ];
 
 const ohneSchraegstrich = (p: string) => (p.length > 1 ? p.replace(/\/+$/, "") : p);
