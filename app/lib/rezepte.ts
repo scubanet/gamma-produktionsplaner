@@ -126,6 +126,7 @@ export function besonderesZeilen(text: string | null): string[] {
 // --- Rezept bearbeiten: Formular und Prüfung der Eingaben. Gespeichert wird mit rezept_speichern in der Datenbank. ---
 
 export type RezeptFormular = {
+  name: string;
   typ: Rezept["typ"];
   kategorie: string;
   basis_portionen: string;
@@ -146,6 +147,7 @@ const alsText = (n: number | null) => (n === null ? "" : String(n));
 
 export function rezeptFormular(r: Rezept, zutaten: ZutatRoh[]): RezeptFormular {
   return {
+    name: r.name,
     typ: r.typ,
     kategorie: r.kategorie ?? "",
     basis_portionen: alsText(r.basis_portionen),
@@ -171,6 +173,8 @@ export function grammAusEingabe(text: string): number | null | undefined {
 
 /** Eingaben prüfen und die Argumente für rezept_speichern bilden. Es gehen nur geänderte Zutaten mit. */
 export function rezeptArgs(r: Rezept, zutaten: ZutatRoh[], f: RezeptFormular): { args: RezeptArgs } | { fehler: string } {
+  const name = f.name.trim();
+  if (!name) return { fehler: "Das Rezept braucht einen Namen." };
   // Der Dialog zeigt nur die Felder des gewählten Typs; die anderen bleiben, wie sie geladen wurden.
   const gericht = f.typ === "gericht";
   const p = gericht ? f.basis_portionen.trim() : alsText(r.basis_portionen);
@@ -199,6 +203,7 @@ export function rezeptArgs(r: Rezept, zutaten: ZutatRoh[], f: RezeptFormular): {
     args: {
       p_rezept: r.id,
       p_geaendert_am: r.geaendert_am,
+      p_name: name,
       p_typ: f.typ,
       p_kategorie: f.kategorie,
       // Die erzeugten Typen kennen bei Funktionsargumenten kein null; die Datenbank nimmt es an.

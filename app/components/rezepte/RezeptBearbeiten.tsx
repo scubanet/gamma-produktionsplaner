@@ -66,6 +66,8 @@ export function RezeptBearbeiten({ rezept, gruppen, zutaten, offen, onClose, onG
         </>
       }
     >
+      <TextField id="rezept-name" label="Name" required value={f.name} onChange={(e) => set({ name: wert(e) })} hint="Die Adresse des Rezepts (Link) bleibt gleich" />
+
       <div className="pl-grid-2">
         <Select
           id="rezept-typ"

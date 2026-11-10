@@ -3427,6 +3427,7 @@ export type Database = {
           p_erledigt: string[]
           p_geaendert_am: string
           p_kategorie: string
+          p_name: string
           p_portion_g: number
           p_portionen_annahme: boolean
           p_rezept: string

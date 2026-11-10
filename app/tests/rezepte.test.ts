@@ -150,7 +150,7 @@ describe("Rezept bearbeiten (Eingaben prüfen; gespeichert wird in der Datenbank
   it("ohne Änderung gehen keine Zutaten mit, der geladene Stand schon", () => {
     const a = args(rezeptArgs(sugo, zutaten, f()));
     expect(a?.p_zutaten).toEqual([]);
-    expect(a).toMatchObject({ p_rezept: "r2", p_geaendert_am: sugo.geaendert_am, p_typ: "komponente", p_ergibt_g: 1600, p_basis_portionen: null, p_basis_zutat: "z1" });
+    expect(a).toMatchObject({ p_name: "Sugo", p_rezept: "r2", p_geaendert_am: sugo.geaendert_am, p_typ: "komponente", p_ergibt_g: 1600, p_basis_portionen: null, p_basis_zutat: "z1" });
   });
 
   it("nur geänderte Zutaten; Annahme ohne Menge fällt weg", () => {
@@ -174,6 +174,11 @@ describe("Rezept bearbeiten (Eingaben prüfen; gespeichert wird in der Datenbank
     expect(fehler(rezeptArgs(sugo, zutaten, c))).toContain("Basisportionen");
     expect(args(rezeptArgs(sugo, zutaten, { ...c, basis_portionen: "10" }))).toMatchObject({ p_typ: "gericht", p_basis_portionen: 10 });
     expect(fehler(rezeptArgs(sugo, zutaten, { ...f(), ergibt_g: "0" }))).toContain("Ergibt");
+  });
+
+  it("Name: wird getrimmt, leer ist ein Fehler", () => {
+    expect(args(rezeptArgs(sugo, zutaten, { ...f(), name: "  Sugo al pomodoro " }))?.p_name).toBe("Sugo al pomodoro");
+    expect(fehler(rezeptArgs(sugo, zutaten, { ...f(), name: "  " }))).toContain("Namen");
   });
 
   it("Felder des anderen Typs werden nicht geprüft und bleiben wie geladen", () => {
