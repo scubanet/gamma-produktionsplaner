@@ -5,14 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatGramm, formatMinuten, formatZahl } from "@/lib/format";
-import { RezeptBearbeiten } from "@/components/rezepte/RezeptBearbeiten";
 import {
   basisZutat, besonderesZeilen, ergibtText, geraete, gruppenAnzeige, istGericht, listenSub, voreinstellungen, wertAusEingabe,
-  type Faktor, type Gruppe, type KomponenteSkaliert, type Punkt, type Rezept, type Schritt, type Zutat, type ZutatRoh,
+  type Faktor, type Gruppe, type KomponenteSkaliert, type Punkt, type Rezept, type Schritt, type Zutat,
 } from "@/lib/rezepte";
 
 type Zeit = { aktiv_min: number | null; unbeaufsichtigt_min: number | null };
-type Details = { gruppen: Gruppe[]; schritte: Schritt[]; zeit: Zeit | null; offen: Punkt[]; zutaten: ZutatRoh[] };
+type Details = { gruppen: Gruppe[]; schritte: Schritt[]; zeit: Zeit | null; offen: Punkt[] };
 type Skaliert = { faktor: Faktor | null; zutaten: Zutat[]; komponenten: KomponenteSkaliert[]; zeiten: Map<string, Zeit> };
 /** Ergebnis eines Ladevorgangs, gebunden an seinen Schlüssel (Rezept bzw. Rezept + Wert). */
 type Geladen<T> = { schluessel: string } & ({ daten: T; fehler?: undefined } | { daten?: undefined; fehler: string });
@@ -32,20 +31,16 @@ async function detailsLaden(id: string): Promise<Details> {
   const g = await supabase.from("zutatengruppe").select("id, titel, reihenfolge").eq("rezept_id", id);
   if (g.error) throw g.error;
   const ids = g.data.map((x) => x.id);
-  const [s, z, o, zu] = await Promise.all([
+  const [s, z, o] = await Promise.all([
     supabase
       .from("schritt")
       .select("id, gruppe_id, text, reihenfolge, temperatur_c, aktiv_min, unbeaufsichtigt_min, haccp, annahme, geraet(name)")
       .in("gruppe_id", ids.length ? ids : [LEER_UUID]),
     supabase.from("rezept_zeit").select("aktiv_min, unbeaufsichtigt_min").eq("rezept_id", id).maybeSingle(),
     supabase.from("offener_punkt").select("id, text").eq("rezept_id", id).eq("erledigt", false),
-    supabase
-      .from("zutat")
-      .select("id, gruppe_id, bezeichnung, menge_g, annahme, notiz, ist_basis, reihenfolge")
-      .in("gruppe_id", ids.length ? ids : [LEER_UUID]),
   ]);
-  for (const x of [s, z, o, zu]) if (x.error) throw x.error;
-  return { gruppen: g.data, schritte: (s.data ?? []) as unknown as Schritt[], zeit: z.data, offen: o.data ?? [], zutaten: zu.data ?? [] };
+  for (const x of [s, z, o]) if (x.error) throw x.error;
+  return { gruppen: g.data, schritte: (s.data ?? []) as unknown as Schritt[], zeit: z.data, offen: o.data ?? [] };
 }
 
 async function skalieren(r: Rezept, wert: number): Promise<Skaliert> {
@@ -74,11 +69,6 @@ function Rezeptbibliothek() {
   const [wahl, setWahl] = useState<{ rezeptId: string; wert: number | null; eingabe: string } | null>(null);
   const [details, setDetails] = useState<Geladen<Details> | null>(null);
   const [skaliert, setSkaliert] = useState<Geladen<Skaliert> | null>(null);
-  // Bearbeiten: gebunden an den geladenen Stand des Rezepts.
-  const [bearbeiten, setBearbeiten] = useState<string | null>(null);
-  const [meldung, setMeldung] = useState<string | null>(null);
-  // Stand, der gespeichert, aber noch nicht neu geladen ist: Bearbeiten bleibt dafür gesperrt.
-  const [veraltet, setVeraltet] = useState<string | null>(null);
 
   useEffect(() => {
     rezepteLaden().then(setRezepte, (e: Error) => setListenFehler(e.message));
@@ -122,23 +112,7 @@ function Rezeptbibliothek() {
   const fehler = listenFehler ?? d?.fehler ?? s?.fehler ?? null;
   const laedt = (x: unknown) => (x ? null : fehler ? "Keine Daten, siehe Hinweis oben." : "…");
 
-  const waehlen = (neu: string) => {
-    setMeldung(null);
-    router.replace(`/rezepte/?r=${encodeURIComponent(neu)}`);
-  };
-  // Nach dem Speichern: Liste neu laden. Das Rezept-Objekt ändert sich, damit laden Details und Skalierung von selbst neu.
-  const gespeichert = () => {
-    setVeraltet(standSchluessel);
-    setWahl(null);
-    rezepteLaden().then(
-      (neu) => {
-        setRezepte(neu);
-        setListenFehler(null);
-        setMeldung("Rezept gespeichert.");
-      },
-      (e: Error) => setListenFehler(`Gespeichert, aber nicht neu geladen: ${e.message}. Bitte die Seite neu laden.`),
-    );
-  };
+  const waehlen = (neu: string) => router.replace(`/rezepte/?r=${encodeURIComponent(neu)}`);
   const besonderes = besonderesZeilen(rezept?.besonderes ?? null);
   const setze = (teil: Partial<{ wert: number | null; eingabe: string }>) => rezept && setWahl({ ...aktuell, ...teil, rezeptId: rezept.id });
   const gericht = rezept ? istGericht(rezept) : false;
@@ -192,10 +166,12 @@ function Rezeptbibliothek() {
       </header>
 
       {fehler ? <Notice role="alert" title="Rezept nicht geladen">{fehler}</Notice> : null}
-      {meldung ? <Notice role="status">{meldung}</Notice> : null}
 
       <div className="pl-row">
         <div className="pl-col-side">
+          <div>
+            <Button variant="dashed" href="/rezepte/bearbeiten/">+ Rezept</Button>
+          </div>
           {rezepte ? (
             <ItemList
               label="Rezepte"
@@ -216,11 +192,7 @@ function Rezeptbibliothek() {
             <Card
               title={[gericht ? "Gericht" : "Komponente", rezept.kategorie].filter(Boolean).join(" · ")}
               meta={`Status ${rezept.status ?? "[Status]"}`}
-              actions={
-                <Button onClick={() => { setMeldung(null); setBearbeiten(standSchluessel); }} disabled={!d?.daten || veraltet === standSchluessel}>
-                  Bearbeiten
-                </Button>
-              }
+              actions={<Button href={`/rezepte/bearbeiten/?r=${encodeURIComponent(rezept.slug)}`}>Bearbeiten</Button>}
             >
               <div className="pl-grid-3">
                 <div>
@@ -345,18 +317,6 @@ function Rezeptbibliothek() {
           {besonderes.length ? <Notice title="Besonders zu beachten" items={besonderes} /> : null}
 
           {d?.daten?.offen.length ? <Notice title={`Offene Punkte · ${d.daten.offen.length}`} items={d.daten.offen.map((p) => p.text)} /> : null}
-
-          {rezept && d?.daten && bearbeiten !== null && bearbeiten === standSchluessel ? (
-            <RezeptBearbeiten
-              key={standSchluessel}
-              rezept={rezept}
-              gruppen={d.daten.gruppen}
-              zutaten={d.daten.zutaten}
-              offen={d.daten.offen}
-              onClose={() => setBearbeiten(null)}
-              onGespeichert={gespeichert}
-            />
-          ) : null}
         </div>
       </div>
     </>

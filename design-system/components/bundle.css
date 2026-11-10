@@ -14,6 +14,8 @@
 .pl-h1 { margin: 4px 0 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
 .pl-sub { font-size: 15px; color: var(--ink-secondary); }
 .pl-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+/* Formular: Felder und Feldzeilen untereinander, z.B. in einer Karte */
+.pl-stack { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .pl-row { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
 .pl-row--stretch { align-items: stretch; }
 .pl-col-main { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
@@ -83,6 +85,7 @@
 .pl-field__label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-muted); margin-bottom: 6px; }
 .pl-field__input { width: 100%; min-height: var(--control-height); padding: 0 12px; border: 1px solid var(--border-control); border-radius: var(--radius-md); font: inherit; font-family: var(--font-sans); font-size: 14px; color: var(--ink); background: var(--surface); }
 .pl-field__input--mono { font-family: var(--font-mono); }
+.pl-field__input--multiline { display: block; padding: 10px 12px; line-height: 20px; resize: vertical; }
 .pl-field__input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
 .pl-field__hint { font-size: 12px; color: var(--ink-muted); margin-top: 4px; }
 .pl-field__hint--invalid { color: var(--status-critical-ink); }

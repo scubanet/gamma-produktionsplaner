@@ -8,7 +8,7 @@ Stand: 10.11.2026
 | Region | Central Europe (Zürich), `eu-central-2` |
 | API-URL | https://oqmtocxemtcsvtzmswwx.supabase.co |
 | Zweck | Pilot Winter 2026/27. Danach Umzug auf einen eigenen Server von GAMMA (selbst gehostetes Supabase). |
-| Umfang | 44 Tabellen, 28 Views, 15 Funktionen, 17 Migrationen |
+| Umfang | 44 Tabellen, 28 Views, 16 Funktionen, 18 Migrationen |
 
 ## Aufbau
 
@@ -41,8 +41,9 @@ Stand: 10.11.2026
 | 15 rezept_pflege | Wertebereiche auf `rezept` und `zutat`, Funktion `rezept_speichern` für die Pflege in der App |
 | 16 rezept_name | `rezept_speichern` nimmt auch den Namen; der Slug bleibt unverändert |
 | 17 rezept_quelle | `rezept_speichern` nimmt auch die Quelle |
+| 18 rezept_ganz_speichern | `rezept_speichern` nimmt das ganze Rezept als jsonb-Dokument und legt neue Rezepte an (`rezept_slug`); Wertebereiche auf `schritt` |
 
-Die Versionen in der Datenbank entsprechen den Dateinamen (`20261109000001` bis `20261110000017`).
+Die Versionen in der Datenbank entsprechen den Dateinamen (`20261109000001` bis `20261110000018`).
 
 ### Neue Migration einspielen
 
@@ -96,7 +97,8 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `rezept_zeit`: aktive und unbeaufsichtigte Minuten
 - `rezept_faktor(rezept, wert)`: Faktor aus Portionen (Gericht) oder Chargen (Komponente), mit Herleitung
 - `rezept_zutaten_skaliert(rezept, wert)`, `rezept_komponenten_skaliert(rezept, wert)`: skalierte Mengen
-- `rezept_speichern(rezept, geaendert_am, …)`: speichert Name, Quelle, Typ, Basis, Mengen in Gramm, Basiszutat und erledigte offene Punkte in einem Schritt. Lehnt ab, wenn der geladene Stand (`geaendert_am`) nicht mehr gilt oder ein Typwechsel bestehende Verknüpfungen bricht. Ein Gericht braucht Basisportionen; Mengen sind über 0 oder leer.
+- `rezept_speichern(rezept, geaendert_am, daten jsonb)`: speichert das ganze Rezept (Kopf, Gruppen, Zutaten, Schritte, erledigte offene Punkte) in einem Schritt und gibt `{id, slug, geaendert_am}` zurück. Das Dokument ist vollständig: Gruppen, Zutaten und Schritte, die fehlen, werden gelöscht; Einträge mit `id` werden geändert, ohne `id` neu angelegt. `rezept` null legt ein neues Rezept an. Lehnt ab, wenn der geladene Stand (`geaendert_am`) nicht mehr gilt oder ein Typwechsel bestehende Verknüpfungen bricht. Ein Gericht braucht Basisportionen; Mengen sind über 0 oder leer, Minuten ab 0.
+- `rezept_slug(name)`: Adresse (Slug) für ein neues Rezept aus dem Namen
 - `rezept_kosten_waren`, `rezept_kosten_arbeit_energie`: aus dem PoC; liefern erst Werte, wenn Zutaten mit Artikeln verknüpft und Lohnsätze erfasst sind
 
 ### Offerte

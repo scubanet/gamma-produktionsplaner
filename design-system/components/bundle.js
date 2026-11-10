@@ -74,8 +74,11 @@
     var id = React.useMemo(function () { return p.id || ('pl-f-' + (++fid)); }, [p.id]);
     return h('div', { className: 'pl-field' },
       h('label', { className: 'pl-field__label', htmlFor: id }, p.label),
-      h('input', { id: id, type: p.type || 'text', name: p.name, autoComplete: p.autoComplete, required: p.required, className: cx('pl-field__input', p.numeric && 'pl-field__input--mono'), defaultValue: p.defaultValue, value: p.value, onChange: p.onChange, placeholder: p.placeholder, inputMode: p.numeric ? 'decimal' : undefined,
-        'aria-describedby': p.hint ? id + '-hint' : undefined, 'aria-invalid': p.invalid ? 'true' : undefined }),
+      p.multiline
+        ? h('textarea', { id: id, name: p.name, required: p.required, rows: p.rows || 3, className: 'pl-field__input pl-field__input--multiline', defaultValue: p.defaultValue, value: p.value, onChange: p.onChange, placeholder: p.placeholder,
+            'aria-describedby': p.hint ? id + '-hint' : undefined, 'aria-invalid': p.invalid ? 'true' : undefined })
+        : h('input', { id: id, type: p.type || 'text', name: p.name, autoComplete: p.autoComplete, required: p.required, className: cx('pl-field__input', p.numeric && 'pl-field__input--mono'), defaultValue: p.defaultValue, value: p.value, onChange: p.onChange, placeholder: p.placeholder, inputMode: p.numeric ? 'decimal' : undefined,
+            'aria-describedby': p.hint ? id + '-hint' : undefined, 'aria-invalid': p.invalid ? 'true' : undefined }),
       p.hint ? h('div', { id: id + '-hint', className: cx('pl-field__hint', p.invalid && 'pl-field__hint--invalid'), role: p.invalid ? 'alert' : undefined }, p.hint) : null);
   }
 

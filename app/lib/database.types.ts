@@ -3417,25 +3417,10 @@ export type Database = {
           reihenfolge: number
         }[]
       }
+      rezept_slug: { Args: { p_name: string }; Returns: string }
       rezept_speichern: {
-        Args: {
-          p_basis_portionen: number
-          p_basis_zutat: string
-          p_chargengroesse: string
-          p_ergibt_annahme: boolean
-          p_ergibt_g: number
-          p_erledigt: string[]
-          p_geaendert_am: string
-          p_kategorie: string
-          p_name: string
-          p_portion_g: number
-          p_portionen_annahme: boolean
-          p_quelle: string
-          p_rezept: string
-          p_typ: Database["public"]["Enums"]["rezept_typ"]
-          p_zutaten: Json
-        }
-        Returns: string
+        Args: { p_daten: Json; p_geaendert_am: string; p_rezept: string }
+        Returns: Json
       }
       rezept_zutaten_skaliert: {
         Args: { p_rezept: string; p_wert: number }
