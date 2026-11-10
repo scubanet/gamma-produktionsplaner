@@ -4,10 +4,12 @@ import { leerwert, type Zeile } from "./produktionsliste";
 export async function excelExport(zeilen: Zeile[], dateiname: string, mitLinie: boolean) {
   const { default: writeXlsxFile } = await import("write-excel-file/browser");
   const kopf = [
-    "Kategorie", "Komponente", ...(mitLinie ? ["Menülinie", "Gang", "Gericht"] : []), "Status",
+    "Erledigt", "Zuständig", "Kategorie", "Komponente", ...(mitLinie ? ["Menülinie", "Gang", "Gericht"] : []), "Status",
     "Menge", "Einheit", "Haltbarkeit (Tage, Annahme)", "Wellen", "Start ab", "Herleitung",
   ].map((value) => ({ value, fontWeight: "bold" as const }));
   const daten = zeilen.map((z) => [
+    z.erledigtAm ? { value: new Date(z.erledigtAm), format: "dd.mm.yyyy" } : { value: "" },
+    { value: z.zustaendig ?? "" },
     { value: z.kategorie },
     { value: z.komponente },
     ...(mitLinie ? [{ value: z.menuelinie ?? "" }, { value: z.gang ?? "" }, { value: z.gericht ?? "" }] : []),
@@ -19,7 +21,7 @@ export async function excelExport(zeilen: Zeile[], dateiname: string, mitLinie: 
     z.startAb === null ? { value: leerwert(z.status, "Start") } : { value: new Date(`${z.startAb}T00:00:00Z`), format: "dd.mm.yyyy" },
     { value: z.herleitung },
   ]);
-  const breiten = [18, 34, ...(mitLinie ? [16, 12, 34] : []), 9, 10, 8, 14, 8, 11, 80];
+  const breiten = [11, 16, 18, 34, ...(mitLinie ? [16, 12, 34] : []), 9, 10, 8, 14, 8, 11, 80];
   await writeXlsxFile([kopf, ...daten], {
     sheet: "Produktionsliste",
     columns: breiten.map((width) => ({ width })),

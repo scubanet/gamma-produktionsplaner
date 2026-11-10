@@ -21,7 +21,12 @@ export type Zeile = {
   gericht: string | null;
   gang: string | null;
   herleitung: string;
+  /** Checkliste (Tabelle produktion_aufgabe), gilt für die Komponente in der ganzen Saison. */
+  zustaendig: string | null;
+  erledigtAm: string | null;
 };
+
+export type Aufgabe = { komponente_id: string; zustaendig: string | null; erledigt_am: string | null };
 
 /** Ein Summand: «1’100 Gäste × 60 % × 120 g». */
 export function herleitungTerm(b: Pick<BedarfZeile, "gaeste" | "anteil" | "menge_pro_gast" | "einheit">): string {
@@ -59,6 +64,8 @@ export function saisonZeilen(liste: ListeZeile[], bedarf: BedarfZeile[]): Zeile[
       herleitung: teile.length
         ? teile.map((b) => `${herleitungTerm(b)} (${b.menuelinie})`).join(" + ")
         : "[Herleitung fehlt]",
+      zustaendig: null,
+      erledigtAm: null,
     };
   });
 }
@@ -85,19 +92,77 @@ export function linienZeilen(bedarf: BedarfZeile[], liste: ListeZeile[], menueli
         gericht: b.gericht,
         gang: b.gang,
         herleitung: herleitungTerm(b),
+        zustaendig: null,
+        erledigtAm: null,
       };
     });
 }
 
-export type Filter = { kategorie: string; status: string };
-
-export function filtern(zeilen: Zeile[], f: Filter): Zeile[] {
-  return zeilen.filter((z) => (!f.kategorie || z.kategorie === f.kategorie) && (!f.status || z.status === f.status));
+/** Zuständig und Erledigt aus der Checkliste in die Zeilen übernehmen. */
+export function mitAufgaben(zeilen: Zeile[], aufgaben: Map<string, Aufgabe>): Zeile[] {
+  return zeilen.map((z) => {
+    const a = z.komponenteId ? aufgaben.get(z.komponenteId) : undefined;
+    return a ? { ...z, zustaendig: a.zustaendig, erledigtAm: a.erledigt_am } : z;
+  });
 }
 
-/** Sortierung nach Kategorie, dann Komponente. */
-export function sortieren(zeilen: Zeile[]): Zeile[] {
-  return [...zeilen].sort((a, b) => a.kategorie.localeCompare(b.kategorie, "de-CH") || a.komponente.localeCompare(b.komponente, "de-CH"));
+/** Wert für den Filter «Zuständig»: niemand eingetragen. */
+export const OHNE_ZUSTAENDIG = "__ohne";
+
+export type Filter = { kategorie: string; status: string; erledigt?: "" | "offen" | "erledigt"; zustaendig?: string };
+
+export function filtern(zeilen: Zeile[], f: Filter): Zeile[] {
+  return zeilen.filter(
+    (z) =>
+      (!f.kategorie || z.kategorie === f.kategorie) &&
+      (!f.status || z.status === f.status) &&
+      (!f.erledigt || (f.erledigt === "erledigt") === !!z.erledigtAm) &&
+      (!f.zustaendig || (f.zustaendig === OHNE_ZUSTAENDIG ? !z.zustaendig : z.zustaendig === f.zustaendig)),
+  );
+}
+
+export type SortFeld = "kategorie" | "komponente" | "startAb" | "wellen" | "haltbarkeit" | "menge" | "zustaendig" | "erledigt";
+export type Richtung = "auf" | "ab";
+
+export const SORTIERUNGEN: { value: SortFeld; label: string }[] = [
+  { value: "kategorie", label: "Kategorie" },
+  { value: "komponente", label: "Komponente" },
+  { value: "startAb", label: "Start ab" },
+  { value: "wellen", label: "Wellen" },
+  { value: "haltbarkeit", label: "Haltbarkeit" },
+  { value: "menge", label: "Menge" },
+  { value: "zustaendig", label: "Zuständig" },
+  { value: "erledigt", label: "Erledigt" },
+];
+
+const sortWert = (z: Zeile, feld: SortFeld): string | number | null => {
+  switch (feld) {
+    case "kategorie": return z.kategorie || null;
+    case "komponente": return z.komponente;
+    case "startAb": return z.startAb;
+    case "wellen": return z.wellen;
+    case "haltbarkeit": return z.haltbarkeitTage;
+    case "menge": return z.menge;
+    case "zustaendig": return z.zustaendig;
+    case "erledigt": return z.erledigtAm;
+  }
+};
+
+/**
+ * Sortierung nach einem Feld, Leerwerte immer am Schluss (auch absteigend).
+ * Bei Gleichstand nach Kategorie, dann Komponente. Standard: Kategorie aufsteigend.
+ */
+export function sortieren(zeilen: Zeile[], feld: SortFeld = "kategorie", richtung: Richtung = "auf"): Zeile[] {
+  const faktor = richtung === "ab" ? -1 : 1;
+  const vergleich = (a: string | number | null, b: string | number | null) =>
+    typeof a === "number" && typeof b === "number" ? a - b : String(a).localeCompare(String(b), "de-CH");
+  return [...zeilen].sort((x, y) => {
+    const a = sortWert(x, feld), b = sortWert(y, feld);
+    if (a === null && b !== null) return 1;
+    if (b === null && a !== null) return -1;
+    const primaer = a === null || b === null ? 0 : faktor * vergleich(a, b);
+    return primaer || x.kategorie.localeCompare(y.kategorie, "de-CH") || x.komponente.localeCompare(y.komponente, "de-CH");
+  });
 }
 
 /** Leerer Wert bei Haltbarkeit, Wellen, Start: bei Status «offen» unbekannt (Platzhalter), sonst nicht zutreffend («–»). */

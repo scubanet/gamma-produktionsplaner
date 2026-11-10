@@ -1499,6 +1499,86 @@ export type Database = {
           },
         ]
       }
+      produktion_aufgabe: {
+        Row: {
+          erledigt_am: string | null
+          erledigt_von: string | null
+          geaendert_am: string
+          geaendert_von: string | null
+          komponente_id: string
+          saison_id: string
+          zustaendig: string | null
+        }
+        Insert: {
+          erledigt_am?: string | null
+          erledigt_von?: string | null
+          geaendert_am?: string
+          geaendert_von?: string | null
+          komponente_id: string
+          saison_id: string
+          zustaendig?: string | null
+        }
+        Update: {
+          erledigt_am?: string | null
+          erledigt_von?: string | null
+          geaendert_am?: string
+          geaendert_von?: string | null
+          komponente_id?: string
+          saison_id?: string
+          zustaendig?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produktion_aufgabe_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produktion_aufgabe_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "produktion_aufgabe_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produktion_aufgabe_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "produktion_aufgabe_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_summe"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "produktion_aufgabe_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produktion_aufgabe_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "wellen_uebersicht"
+            referencedColumns: ["saison_id"]
+          },
+        ]
+      }
       produktionssystem: {
         Row: {
           bemerkung: string | null

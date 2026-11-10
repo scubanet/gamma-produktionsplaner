@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filtern, herleitungTerm, leerwert, linienZeilen, saisonZeilen, sortieren, type BedarfZeile, type ListeZeile } from "../lib/produktionsliste";
+import { filtern, herleitungTerm, leerwert, linienZeilen, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, type Aufgabe, type BedarfZeile, type ListeZeile } from "../lib/produktionsliste";
 import { mengenKontrollen, statusKontrolle, wellenKontrolle } from "../lib/kontrollwerte";
 import { formatAnteil, formatDatum, formatMenge } from "../lib/format";
 
@@ -64,6 +64,39 @@ describe("Filter und Sortierung", () => {
   });
   it("sortiert nach Kategorie, dann Komponente", () => {
     expect(sortieren(z).map((x) => x.kategorie)).toEqual(["Dessert", "Fisch"]);
+  });
+});
+
+describe("Checkliste", () => {
+  const roh = saisonZeilen(
+    [
+      liste({ komponente_id: "a", komponente: "Zander", kategorie: "Fisch", start_ab: "2026-12-10", wellen: 2 }),
+      liste({ komponente_id: "b", komponente: "Apfel", kategorie: "Dessert", start_ab: "2026-10-19", wellen: 1 }),
+      liste({ komponente_id: "c", komponente: "Käse", kategorie: "Special_Livestation", start_ab: null, wellen: null, status: "offen" }),
+    ],
+    [],
+  );
+  const aufgaben = new Map<string, Aufgabe>([
+    ["a", { komponente_id: "a", zustaendig: "Remo", erledigt_am: "2026-11-10T09:00:00Z" }],
+    ["b", { komponente_id: "b", zustaendig: null, erledigt_am: null }],
+  ]);
+  const z = mitAufgaben(roh, aufgaben);
+
+  it("übernimmt Zuständig und Erledigt", () => {
+    expect(z.find((x) => x.komponenteId === "a")).toMatchObject({ zustaendig: "Remo", erledigtAm: "2026-11-10T09:00:00Z" });
+    expect(z.find((x) => x.komponenteId === "c")).toMatchObject({ zustaendig: null, erledigtAm: null });
+  });
+  it("filtert nach erledigt und zuständig", () => {
+    expect(filtern(z, { kategorie: "", status: "", erledigt: "erledigt" }).map((x) => x.komponente)).toEqual(["Zander"]);
+    expect(filtern(z, { kategorie: "", status: "", erledigt: "offen" })).toHaveLength(2);
+    expect(filtern(z, { kategorie: "", status: "", zustaendig: "Remo" }).map((x) => x.komponente)).toEqual(["Zander"]);
+    expect(filtern(z, { kategorie: "", status: "", zustaendig: OHNE_ZUSTAENDIG })).toHaveLength(2);
+  });
+  it("sortiert nach Start ab und Wellen, Leerwerte am Schluss", () => {
+    expect(sortieren(z, "startAb").map((x) => x.komponente)).toEqual(["Apfel", "Zander", "Käse"]);
+    expect(sortieren(z, "startAb", "ab").map((x) => x.komponente)).toEqual(["Zander", "Apfel", "Käse"]);
+    expect(sortieren(z, "wellen", "ab").map((x) => x.komponente)).toEqual(["Zander", "Apfel", "Käse"]);
+    expect(sortieren(z, "zustaendig").map((x) => x.komponente)).toEqual(["Zander", "Apfel", "Käse"]);
   });
 });
 
