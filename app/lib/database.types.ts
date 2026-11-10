@@ -56,6 +56,7 @@ export type Database = {
           datum_bis: string | null
           gaeste: number | null
           id: string
+          kunde: string | null
           name: string
           nummer: string | null
           ort: string | null
@@ -72,6 +73,7 @@ export type Database = {
           datum_bis?: string | null
           gaeste?: number | null
           id?: string
+          kunde?: string | null
           name: string
           nummer?: string | null
           ort?: string | null
@@ -88,6 +90,7 @@ export type Database = {
           datum_bis?: string | null
           gaeste?: number | null
           id?: string
+          kunde?: string | null
           name?: string
           nummer?: string | null
           ort?: string | null
@@ -155,6 +158,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "anlass_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
             foreignKeyName: "anlass_gericht_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
@@ -202,6 +212,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_kosten_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
           },
         ]
       }
@@ -621,6 +638,13 @@ export type Database = {
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "karte_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
         ]
       }
       karte_position: {
@@ -868,6 +892,13 @@ export type Database = {
             referencedRelation: "anlass_deckungsbeitrag"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
         ]
       }
       menuelinie_gericht: {
@@ -1021,6 +1052,63 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      offerte_gericht: {
+        Row: {
+          anlass_id: string
+          anteil: number | null
+          gericht_id: string
+          reihenfolge: number
+        }
+        Insert: {
+          anlass_id: string
+          anteil?: number | null
+          gericht_id: string
+          reihenfolge?: number
+        }
+        Update: {
+          anlass_id?: string
+          anteil?: number | null
+          gericht_id?: string
+          reihenfolge?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_gericht_id_fkey"
+            columns: ["gericht_id"]
+            isOneToOne: false
+            referencedRelation: "gericht_katalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_gericht_id_fkey"
+            columns: ["gericht_id"]
+            isOneToOne: false
+            referencedRelation: "gericht_warenkosten"
+            referencedColumns: ["gericht_id"]
           },
         ]
       }
@@ -1381,6 +1469,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
             foreignKeyName: "service_menuelinie_id_fkey"
             columns: ["menuelinie_id"]
             isOneToOne: false
@@ -1593,6 +1688,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
             foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
             columns: ["komponente_id"]
             isOneToOne: false
@@ -1754,6 +1856,100 @@ export type Database = {
           monat: string | null
           rentabel: boolean | null
           umsatz_chf: number | null
+        }
+        Relationships: []
+      }
+      offerte_position: {
+        Row: {
+          anlass_id: string | null
+          anteil: number | null
+          anteil_pruefen: boolean | null
+          anteil_summe_typ: number | null
+          anteil_wirksam: number | null
+          bezeichnung: string | null
+          code: string | null
+          einheit: string | null
+          faktor_vk: number | null
+          gang: string | null
+          gericht_id: string | null
+          gerichte_gleicher_typ: number | null
+          herleitung: string | null
+          kategorie: string | null
+          menge_pro_gast: number | null
+          mengentyp: string | null
+          name: string | null
+          quantum: number | null
+          reihenfolge: number | null
+          vk_pro_gast_chf: number | null
+          wk_annahme: boolean | null
+          wk_pro_gast_chf: number | null
+          wk_quelle: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gericht_katalog_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_gericht_id_fkey"
+            columns: ["gericht_id"]
+            isOneToOne: false
+            referencedRelation: "gericht_katalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offerte_gericht_gericht_id_fkey"
+            columns: ["gericht_id"]
+            isOneToOne: false
+            referencedRelation: "gericht_warenkosten"
+            referencedColumns: ["gericht_id"]
+          },
+        ]
+      }
+      offerte_summe: {
+        Row: {
+          anlass_id: string | null
+          deckungsbeitrag_chf: number | null
+          deckungsbeitrag_pct: number | null
+          gaeste: number | null
+          herleitung: string | null
+          mengentypen_anteil_pruefen: number | null
+          mwst_chf: number | null
+          mwst_satz: number | null
+          positionen: number | null
+          positionen_geschaetzt: number | null
+          positionen_ohne_preis: number | null
+          preis_pro_gast_chf: number | null
+          rundung: number | null
+          total_brutto_chf: number | null
+          umsatz_netto_chf: number | null
+          vk_pro_gast_chf: number | null
+          warenkosten_chf: number | null
+          wk_pro_gast_chf: number | null
         }
         Relationships: []
       }

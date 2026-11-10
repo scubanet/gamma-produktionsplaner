@@ -18,6 +18,11 @@ describe("Navigation", () => {
     expect(navEintraege("/systemzuteilung/").find((x) => x.current)?.label).toBe("Systemzuteilung");
   });
 
+  it("Offerten sind erreichbar", () => {
+    expect(navEintraege("/offerten/").find((x) => x.current)?.label).toBe("Offerten");
+    expect(navEintraege("/offerten/bearbeiten/").filter((x) => x.current).map((x) => x.label)).toEqual(["Offerten"]);
+  });
+
   it("Katalog und Rezepte sind erreichbar", () => {
     expect(navEintraege("/katalog/").find((x) => x.current)?.label).toBe("Katalog");
     expect(navEintraege("/rezepte").find((x) => x.current)?.label).toBe("Rezepte");

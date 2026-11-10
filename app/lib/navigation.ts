@@ -3,6 +3,7 @@ import type { SideNavItem } from "./planer";
 // Reihenfolge wie mockups/Nav.dc.html. href nur für Bereiche, die gebaut sind; der Rest bleibt deaktiviert.
 export const BEREICHE: { label: string; href?: string }[] = [
   { label: "Leitstand", href: "/" },
+  { label: "Offerten", href: "/offerten/" },
   { label: "Anlässe" },
   { label: "Ressourcen" },
   { label: "Produktionsplan", href: "/produktion/" },
@@ -16,10 +17,16 @@ export const BEREICHE: { label: string; href?: string }[] = [
 
 const ohneSchraegstrich = (p: string) => (p.length > 1 ? p.replace(/\/+$/, "") : p);
 
+/** Bereich aktiv, wenn der Pfad gleich ist oder darunter liegt (z.B. /offerten/bearbeiten/ → Offerten). */
+function aktiv(href: string, aktuell: string): boolean {
+  const h = ohneSchraegstrich(href);
+  return h === "/" ? aktuell === "/" : aktuell === h || aktuell.startsWith(`${h}/`);
+}
+
 export function navEintraege(pfad: string): SideNavItem[] {
   const aktuell = ohneSchraegstrich(pfad);
   return BEREICHE.map((b) =>
-    b.href ? { label: b.label, href: b.href, current: ohneSchraegstrich(b.href) === aktuell } : { label: b.label, disabled: true },
+    b.href ? { label: b.label, href: b.href, current: aktiv(b.href, aktuell) } : { label: b.label, disabled: true },
   );
 }
 
