@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, Checkbox, Notice, Select, TextField } from "@/lib/planer";
+import { Button, Card, Checkbox, Dialog, Notice, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import type { Gruppe, Punkt, Rezept, ZutatRoh } from "@/lib/rezepte";
 import {
@@ -12,17 +12,17 @@ import {
 
 type Geraet = { id: string; name: string };
 /** Geladener Stand, gebunden an den Slug aus der Adresse ("" = neues Rezept). */
-type Geladen = { slug: string } & ({ rezept: Rezept | null; offen: Punkt[]; geraete: Geraet[]; fehler?: undefined } | { fehler: string });
+type Geladen = { slug: string } & ({ rezept: Rezept | null; offen: Punkt[]; geraete: Geraet[]; admin: boolean; fehler?: undefined } | { fehler: string });
 
 const LEER_UUID = "00000000-0000-0000-0000-000000000000";
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
 const checked = (e: unknown) => (e as { target: HTMLInputElement }).target.checked;
 const sr = (text: string) => <span className="pl-sr">{text}</span>;
 
-async function laden(slug: string): Promise<{ rezept: Rezept | null; offen: Punkt[]; geraete: Geraet[]; formular: RezeptFormular }> {
+async function laden(slug: string): Promise<{ rezept: Rezept | null; offen: Punkt[]; geraete: Geraet[]; admin: boolean; formular: RezeptFormular }> {
   const ge = await supabase.from("geraet").select("id, name").order("name");
   if (ge.error) throw ge.error;
-  if (!slug) return { rezept: null, offen: [], geraete: ge.data, formular: rezeptFormular(null, [], [], []) };
+  if (!slug) return { rezept: null, offen: [], geraete: ge.data, admin: false, formular: rezeptFormular(null, [], [], []) };
 
   const r = await supabase
     .from("rezept")
@@ -34,14 +34,16 @@ async function laden(slug: string): Promise<{ rezept: Rezept | null; offen: Punk
   const g = await supabase.from("zutatengruppe").select("id, titel, reihenfolge").eq("rezept_id", r.data.id);
   if (g.error) throw g.error;
   const ids = g.data.length ? g.data.map((x) => x.id) : [LEER_UUID];
-  const [z, s, o] = await Promise.all([
+  const [z, s, o, ad] = await Promise.all([
     supabase.from("zutat").select("id, gruppe_id, bezeichnung, menge_g, annahme, notiz, ist_basis, reihenfolge").in("gruppe_id", ids),
     supabase.from("schritt").select("id, gruppe_id, text, reihenfolge, geraet_id, temperatur_c, aktiv_min, unbeaufsichtigt_min, haccp, annahme").in("gruppe_id", ids),
     supabase.from("offener_punkt").select("id, text").eq("rezept_id", r.data.id).eq("erledigt", false),
+    // Nur Admins dürfen löschen; die Datenbank prüft das beim Löschen nochmals.
+    supabase.rpc("ist_admin"),
   ]);
-  for (const x of [z, s, o]) if (x.error) throw x.error;
+  for (const x of [z, s, o, ad]) if (x.error) throw x.error;
   const formular = rezeptFormular(r.data, g.data as Gruppe[], (z.data ?? []) as ZutatRoh[], (s.data ?? []) as SchrittRoh[]);
-  return { rezept: r.data, offen: o.data ?? [], geraete: ge.data, formular };
+  return { rezept: r.data, offen: o.data ?? [], geraete: ge.data, admin: ad.data === true, formular };
 }
 
 function RezeptBearbeiten() {
@@ -51,6 +53,7 @@ function RezeptBearbeiten() {
   const [f, setF] = useState<RezeptFormular | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
   const [speichert, setSpeichert] = useState(false);
+  const [loeschen, setLoeschen] = useState<{ offen: boolean; laeuft: boolean; fehler: string | null }>({ offen: false, laeuft: false, fehler: null });
   const zaehler = useRef(0);
   const neuKey = (art: string) => `neu-${art}${++zaehler.current}`;
 
@@ -59,7 +62,7 @@ function RezeptBearbeiten() {
     laden(slug).then(
       (d) => {
         if (!gilt) return;
-        setGeladen({ slug, rezept: d.rezept, offen: d.offen, geraete: d.geraete });
+        setGeladen({ slug, rezept: d.rezept, offen: d.offen, geraete: d.geraete, admin: d.admin });
         setF(d.formular);
         setFehler(null);
       },
@@ -95,7 +98,7 @@ function RezeptBearbeiten() {
     );
   }
 
-  const { rezept, offen, geraete } = stand;
+  const { rezept, offen, geraete, admin } = stand;
   const gericht = f.typ === "gericht";
   const basis = basisOptionen(f);
   const basisWert = basis.some((b) => b.value === f.basis_zutat) ? f.basis_zutat : "";
@@ -128,6 +131,14 @@ function RezeptBearbeiten() {
     }
     const neu = (q.data as { slug?: string } | null)?.slug ?? slug;
     router.replace(`/rezepte/?r=${encodeURIComponent(neu)}`);
+  }
+
+  async function endgueltigLoeschen() {
+    if (!rezept) return;
+    setLoeschen({ offen: true, laeuft: true, fehler: null });
+    const q = await supabase.rpc("rezept_loeschen", { p_rezept: rezept.id });
+    if (q.error) return setLoeschen({ offen: true, laeuft: false, fehler: q.error.message });
+    router.replace("/rezepte/");
   }
 
   return (
@@ -282,6 +293,42 @@ function RezeptBearbeiten() {
             ))}
           </div>
         </Card>
+      ) : null}
+
+      {rezept && admin ? (
+        <Card title="Rezept löschen" meta="nur für Administratoren">
+          <div className="pl-stack">
+            <p className="pl-muted">
+              Löscht das Rezept endgültig, mit allen Zutaten, Schritten und offenen Punkten. Ein Rezept, das im Katalog, in der Systemzuteilung, in einem Anlass
+              oder in einem anderen Rezept verwendet wird, lässt sich nicht löschen.
+            </p>
+            <div>
+              <Button onClick={() => setLoeschen({ offen: true, laeuft: false, fehler: null })} disabled={speichert || loeschen.laeuft}>Rezept löschen …</Button>
+            </div>
+          </div>
+        </Card>
+      ) : null}
+
+      {rezept ? (
+        <Dialog
+          open={loeschen.offen}
+          id="rezept-loeschen"
+          title={`«${rezept.name}» endgültig löschen?`}
+          meta="Das lässt sich nicht rückgängig machen"
+          onClose={() => setLoeschen((x) => ({ ...x, offen: false }))}
+          onCancel={(e) => loeschen.laeuft && e.preventDefault()}
+          actions={
+            <>
+              <Button onClick={() => setLoeschen({ offen: false, laeuft: false, fehler: null })} disabled={loeschen.laeuft}>Abbrechen</Button>
+              <Button variant="primary" onClick={endgueltigLoeschen} disabled={loeschen.laeuft}>
+                {loeschen.laeuft ? "Wird gelöscht …" : "Endgültig löschen"}
+              </Button>
+            </>
+          }
+        >
+          <p>Gelöscht werden das Rezept, seine Zutaten, Schritte und offenen Punkte. Ungespeicherte Änderungen auf dieser Seite gehen verloren.</p>
+          {loeschen.fehler ? <Notice role="alert" title="Nicht gelöscht">{loeschen.fehler}</Notice> : null}
+        </Dialog>
       ) : null}
 
       {/* Dieselbe Meldung nochmals beim unteren Knopf; ohne role, damit sie nicht doppelt vorgelesen wird. */}

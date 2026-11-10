@@ -434,6 +434,24 @@ export type Database = {
           },
         ]
       }
+      app_admin: {
+        Row: {
+          bemerkung: string | null
+          erstellt_am: string
+          user_id: string
+        }
+        Insert: {
+          bemerkung?: string | null
+          erstellt_am?: string
+          user_id: string
+        }
+        Update: {
+          bemerkung?: string | null
+          erstellt_am?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       artikel: {
         Row: {
           aktiv: boolean
@@ -3374,6 +3392,7 @@ export type Database = {
           frueher_belegt: number
         }[]
       }
+      ist_admin: { Args: never; Returns: boolean }
       karte_kopieren: {
         Args: { p_anlass: string; p_karte: string; p_name?: string }
         Returns: string
@@ -3417,6 +3436,7 @@ export type Database = {
           reihenfolge: number
         }[]
       }
+      rezept_loeschen: { Args: { p_rezept: string }; Returns: undefined }
       rezept_slug: { Args: { p_name: string }; Returns: string }
       rezept_speichern: {
         Args: { p_daten: Json; p_geaendert_am: string; p_rezept: string }

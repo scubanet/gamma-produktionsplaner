@@ -97,6 +97,7 @@ Die Gerichte der Winter Collection mit ihren Komponenten.
   - Schritte: Text, Gerät, Temperatur, Minuten aktiv und unbeaufsichtigt, HACCP.
   - Offene Punkte lassen sich als erledigt abhaken.
   - Gespeichert wird alles zusammen mit «Speichern». Entfernte Zeilen sind erst dann gelöscht.
+  - **Rezept löschen** steht unten auf der Pflegeseite und ist nur für Administratoren sichtbar. Es löscht endgültig. Ein Rezept, das im Katalog, in der Systemzuteilung, in einem Anlass oder in einem anderen Rezept verwendet wird, lässt sich nicht löschen; die App nennt die Stelle.
 - Bei importierten Rezepten fehlen oft Grammangaben, Basiszutat und Ergibt-Menge. Das steht pro Rezept unter «Offene Punkte».
 
 ## Einkauf

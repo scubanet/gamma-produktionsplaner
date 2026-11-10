@@ -8,12 +8,13 @@ Stand: 10.11.2026
 | Region | Central Europe (Zürich), `eu-central-2` |
 | API-URL | https://oqmtocxemtcsvtzmswwx.supabase.co |
 | Zweck | Pilot Winter 2026/27. Danach Umzug auf einen eigenen Server von GAMMA (selbst gehostetes Supabase). |
-| Umfang | 44 Tabellen, 28 Views, 16 Funktionen, 18 Migrationen |
+| Umfang | 45 Tabellen, 28 Views, 18 Funktionen, 19 Migrationen |
 
 ## Aufbau
 
 - `supabase/migrations/` ist die massgebende Quelle für das Schema. `db/*.sql` bleibt als Archiv des Proof of Concept.
 - Alle Tabellen haben Row Level Security. Im Pilot dürfen angemeldete Benutzer alles lesen und schreiben (Policy `pilot_angemeldet`), anonyme Zugriffe nichts. Rollen pro Abteilung folgen.
+- Ausnahme: Rezepte löschen dürfen nur Admins. Die Tabelle `app_admin` führt die Benutzer mit Admin-Rechten; jeder sieht darin nur seine eigene Zeile, geschrieben wird sie nur per Migration oder SQL (`insert into app_admin (user_id, bemerkung) …`). `rezept` hat darum eigene Policies statt `pilot_angemeldet`.
 - Alle Views laufen mit `security_invoker = true`. Funktionen, die die App aufruft, sind nur für `authenticated` freigegeben.
 - Import-Funktionen liegen im Schema `importer` und sind über die API nicht erreichbar.
 - Nur Standard-PostgreSQL und offene Supabase-Funktionen, damit der Umzug auf den GAMMA-Server ohne Umbau geht.
@@ -42,8 +43,9 @@ Stand: 10.11.2026
 | 16 rezept_name | `rezept_speichern` nimmt auch den Namen; der Slug bleibt unverändert |
 | 17 rezept_quelle | `rezept_speichern` nimmt auch die Quelle |
 | 18 rezept_ganz_speichern | `rezept_speichern` nimmt das ganze Rezept als jsonb-Dokument und legt neue Rezepte an (`rezept_slug`); Wertebereiche auf `schritt` |
+| 19 rezept_loeschen | Admin-Liste `app_admin`, `ist_admin()`, `rezept_loeschen`; auf `rezept` darf nur ein Admin löschen |
 
-Die Versionen in der Datenbank entsprechen den Dateinamen (`20261109000001` bis `20261110000018`).
+Die Versionen in der Datenbank entsprechen den Dateinamen (`20261109000001` bis `20261110000019`).
 
 ### Neue Migration einspielen
 
@@ -98,6 +100,7 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `rezept_faktor(rezept, wert)`: Faktor aus Portionen (Gericht) oder Chargen (Komponente), mit Herleitung
 - `rezept_zutaten_skaliert(rezept, wert)`, `rezept_komponenten_skaliert(rezept, wert)`: skalierte Mengen
 - `rezept_speichern(rezept, geaendert_am, daten jsonb)`: speichert das ganze Rezept (Kopf, Gruppen, Zutaten, Schritte, erledigte offene Punkte) in einem Schritt und gibt `{id, slug, geaendert_am}` zurück. Das Dokument ist vollständig: Gruppen, Zutaten und Schritte, die fehlen, werden gelöscht; Einträge mit `id` werden geändert, ohne `id` neu angelegt. `rezept` null legt ein neues Rezept an. Lehnt ab, wenn der geladene Stand (`geaendert_am`) nicht mehr gilt oder ein Typwechsel bestehende Verknüpfungen bricht. Ein Gericht braucht Basisportionen; Mengen sind über 0 oder leer, Minuten ab 0.
+- `rezept_loeschen(rezept)`: löscht ein Rezept endgültig samt Gruppen, Zutaten, Schritten und offenen Punkten. Nur für Admins (`ist_admin()`); lehnt ab und nennt die Stelle, solange das Rezept in Katalog, Systemzuteilung, Anlass oder einem anderen Rezept verwendet wird.
 - `rezept_slug(name)`: Adresse (Slug) für ein neues Rezept aus dem Namen
 - `rezept_kosten_waren`, `rezept_kosten_arbeit_energie`: aus dem PoC; liefern erst Werte, wenn Zutaten mit Artikeln verknüpft und Lohnsätze erfasst sind
 
