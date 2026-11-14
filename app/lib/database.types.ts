@@ -690,6 +690,42 @@ export type Database = {
         }
         Relationships: []
       }
+      gebinde: {
+        Row: {
+          aktiv: boolean
+          bemerkung: string | null
+          breite_mm: number | null
+          hoehe_mm: number | null
+          id: string
+          laenge_mm: number | null
+          name: string
+          tara_g: number | null
+          volumen_l: number | null
+        }
+        Insert: {
+          aktiv?: boolean
+          bemerkung?: string | null
+          breite_mm?: number | null
+          hoehe_mm?: number | null
+          id?: string
+          laenge_mm?: number | null
+          name: string
+          tara_g?: number | null
+          volumen_l?: number | null
+        }
+        Update: {
+          aktiv?: boolean
+          bemerkung?: string | null
+          breite_mm?: number | null
+          hoehe_mm?: number | null
+          id?: string
+          laenge_mm?: number | null
+          name?: string
+          tara_g?: number | null
+          volumen_l?: number | null
+        }
+        Relationships: []
+      }
       geraet: {
         Row: {
           anzahl_eigen: number
@@ -1731,17 +1767,22 @@ export type Database = {
           chargengroesse: string | null
           ergibt_annahme: boolean
           ergibt_g: number | null
+          fuellmenge_g: number | null
           geaendert_am: string
+          gebinde_id: string | null
           id: string
           kategorie: string | null
           name: string
           portion_g: number | null
           portionen_annahme: boolean
           quelle: string | null
+          service_min_pro_100: number | null
+          service_rolle: string | null
           slug: string
           status: string
           typ: Database["public"]["Enums"]["rezept_typ"]
           untertitel: string | null
+          verpackung: string | null
           version: number
         }
         Insert: {
@@ -1750,17 +1791,22 @@ export type Database = {
           chargengroesse?: string | null
           ergibt_annahme?: boolean
           ergibt_g?: number | null
+          fuellmenge_g?: number | null
           geaendert_am?: string
+          gebinde_id?: string | null
           id?: string
           kategorie?: string | null
           name: string
           portion_g?: number | null
           portionen_annahme?: boolean
           quelle?: string | null
+          service_min_pro_100?: number | null
+          service_rolle?: string | null
           slug: string
           status?: string
           typ: Database["public"]["Enums"]["rezept_typ"]
           untertitel?: string | null
+          verpackung?: string | null
           version?: number
         }
         Update: {
@@ -1769,17 +1815,22 @@ export type Database = {
           chargengroesse?: string | null
           ergibt_annahme?: boolean
           ergibt_g?: number | null
+          fuellmenge_g?: number | null
           geaendert_am?: string
+          gebinde_id?: string | null
           id?: string
           kategorie?: string | null
           name?: string
           portion_g?: number | null
           portionen_annahme?: boolean
           quelle?: string | null
+          service_min_pro_100?: number | null
+          service_rolle?: string | null
           slug?: string
           status?: string
           typ?: Database["public"]["Enums"]["rezept_typ"]
           untertitel?: string | null
+          verpackung?: string | null
           version?: number
         }
         Relationships: []
@@ -1860,9 +1911,11 @@ export type Database = {
           gruppe_id: string
           haccp: string | null
           id: string
+          menge_pro_durchgang_g: number | null
           ort: string | null
           reihenfolge: number
           rolle: string | null
+          ruest_min: number
           temperatur_c: number | null
           text: string
           unbeaufsichtigt_min: number | null
@@ -1874,9 +1927,11 @@ export type Database = {
           gruppe_id: string
           haccp?: string | null
           id?: string
+          menge_pro_durchgang_g?: number | null
           ort?: string | null
           reihenfolge: number
           rolle?: string | null
+          ruest_min?: number
           temperatur_c?: number | null
           text: string
           unbeaufsichtigt_min?: number | null
@@ -1888,9 +1943,11 @@ export type Database = {
           gruppe_id?: string
           haccp?: string | null
           id?: string
+          menge_pro_durchgang_g?: number | null
           ort?: string | null
           reihenfolge?: number
           rolle?: string | null
+          ruest_min?: number
           temperatur_c?: number | null
           text?: string
           unbeaufsichtigt_min?: number | null

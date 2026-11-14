@@ -7,12 +7,28 @@ import type { Gruppe, Rezept, ZutatRoh } from "./rezepte";
 export type SchrittRoh = Pick<
   Database["public"]["Tables"]["schritt"]["Row"],
   "id" | "gruppe_id" | "text" | "reihenfolge" | "geraet_id" | "temperatur_c" | "aktiv_min" | "unbeaufsichtigt_min" | "haccp" | "annahme"
+  | "ort" | "rolle" | "ruest_min" | "menge_pro_durchgang_g"
 >;
+/** Felder der Planung auf dem Rezept (Gebinde, Service). */
+export type RezeptPlanung = Pick<
+  Database["public"]["Tables"]["rezept"]["Row"],
+  "gebinde_id" | "verpackung" | "fuellmenge_g" | "service_min_pro_100" | "service_rolle"
+>;
+
+/** Ort eines Arbeitsschritts; leer = nicht festgelegt. */
+export const ORTE: { value: string; label: string }[] = [
+  { value: "", label: "nicht festgelegt" },
+  { value: "zentralkueche", label: "Zentralküche Hünenberg" },
+  { value: "vor_ort", label: "vor Ort (Service)" },
+  { value: "logistik", label: "Logistik" },
+];
 
 /** key = id aus der Datenbank oder ein vorläufiger Schlüssel für neue Zeilen; id null = neu. */
 export type ZutatForm = { key: string; id: string | null; bezeichnung: string; menge: string; notiz: string; annahme: boolean };
 export type SchrittForm = {
   key: string; id: string | null; text: string; geraet_id: string; temperatur: string; aktiv: string; unbeaufsichtigt: string; haccp: string; annahme: boolean;
+  /** Planung: Ort, Rolle, Rüstzeit (einmal) und Menge pro Durchgang in Gramm. */
+  ort: string; rolle: string; ruest: string; durchgang: string;
 };
 export type GruppeForm = { key: string; id: string | null; titel: string; zutaten: ZutatForm[]; schritte: SchrittForm[] };
 export type RezeptFormular = {
@@ -26,6 +42,12 @@ export type RezeptFormular = {
   ergibt_g: string;
   chargengroesse: string;
   besonderes: string;
+  /** Planung: Gebinde und Aufwand im Service. */
+  gebinde_id: string;
+  verpackung: string;
+  fuellmenge_g: string;
+  service_min_pro_100: string;
+  service_rolle: string;
   portionen_annahme: boolean;
   ergibt_annahme: boolean;
   /** key der Basiszutat oder "" = keine */
@@ -41,15 +63,17 @@ const nach = <T extends { reihenfolge: number }>(a: T[]) => [...a].sort((x, y) =
 export const neueZutat = (key: string): ZutatForm => ({ key, id: null, bezeichnung: "", menge: "", notiz: "", annahme: false });
 export const neuerSchritt = (key: string): SchrittForm => ({
   key, id: null, text: "", geraet_id: "", temperatur: "", aktiv: "", unbeaufsichtigt: "", haccp: "", annahme: false,
+  ort: "", rolle: "", ruest: "", durchgang: "",
 });
 export const neueGruppe = (key: string): GruppeForm => ({ key, id: null, titel: "", zutaten: [], schritte: [] });
 
 /** Formular aus dem geladenen Stand; ohne Rezept ein leeres Formular für ein neues Rezept. */
-export function rezeptFormular(r: Rezept | null, gruppen: Gruppe[], zutaten: ZutatRoh[], schritte: SchrittRoh[]): RezeptFormular {
+export function rezeptFormular(r: (Rezept & Partial<RezeptPlanung>) | null, gruppen: Gruppe[], zutaten: ZutatRoh[], schritte: SchrittRoh[]): RezeptFormular {
   if (!r) {
     return {
       name: "", untertitel: "", quelle: "", typ: "komponente", kategorie: "", basis_portionen: "", portion_g: "", ergibt_g: "",
-      chargengroesse: "", besonderes: "", portionen_annahme: false, ergibt_annahme: false, basis_zutat: "",
+      chargengroesse: "", besonderes: "", gebinde_id: "", verpackung: "", fuellmenge_g: "", service_min_pro_100: "", service_rolle: "",
+      portionen_annahme: false, ergibt_annahme: false, basis_zutat: "",
       gruppen: [{ ...neueGruppe("neu-g0"), zutaten: [neueZutat("neu-z0")], schritte: [neuerSchritt("neu-s0")] }],
       erledigt: [],
     };
@@ -65,6 +89,11 @@ export function rezeptFormular(r: Rezept | null, gruppen: Gruppe[], zutaten: Zut
     ergibt_g: alsText(r.ergibt_g),
     chargengroesse: r.chargengroesse ?? "",
     besonderes: r.besonderes ?? "",
+    gebinde_id: r.gebinde_id ?? "",
+    verpackung: r.verpackung ?? "",
+    fuellmenge_g: alsText(r.fuellmenge_g ?? null),
+    service_min_pro_100: alsText(r.service_min_pro_100 ?? null),
+    service_rolle: r.service_rolle ?? "",
     portionen_annahme: r.portionen_annahme,
     ergibt_annahme: r.ergibt_annahme,
     basis_zutat: zutaten.find((z) => z.ist_basis)?.id ?? "",
@@ -80,6 +109,7 @@ export function rezeptFormular(r: Rezept | null, gruppen: Gruppe[], zutaten: Zut
         // 0 Minuten ist der Vorgabewert der Tabelle und heisst «keine Angabe».
         aktiv: s.aktiv_min ? String(s.aktiv_min) : "", unbeaufsichtigt: s.unbeaufsichtigt_min ? String(s.unbeaufsichtigt_min) : "",
         haccp: s.haccp ?? "", annahme: s.annahme,
+        ort: s.ort ?? "", rolle: s.rolle ?? "", ruest: s.ruest_min ? String(s.ruest_min) : "", durchgang: alsText(s.menge_pro_durchgang_g),
       })),
     })),
     erledigt: [],
@@ -104,7 +134,9 @@ export const minutenAusEingabe = (text: string) => zahl(text, 2, 0, 100_000);
 export const temperaturAusEingabe = (text: string) => zahl(text.replace("−", "-"), 1, -273, 1000, true);
 
 const zutatLeer = (z: ZutatForm) => !z.bezeichnung.trim() && !z.menge.trim() && !z.notiz.trim();
-const schrittLeer = (s: SchrittForm) => !s.text.trim() && !s.geraet_id && !s.temperatur.trim() && !s.aktiv.trim() && !s.unbeaufsichtigt.trim() && !s.haccp.trim();
+const schrittLeer = (s: SchrittForm) =>
+  !s.text.trim() && !s.geraet_id && !s.temperatur.trim() && !s.aktiv.trim() && !s.unbeaufsichtigt.trim() && !s.haccp.trim()
+  && !s.ort && !s.rolle.trim() && !s.ruest.trim() && !s.durchgang.trim();
 
 /** Zutaten, die als Basiszutat in Frage kommen: alle mit Bezeichnung und gültiger Menge. */
 export function basisOptionen(f: RezeptFormular): { value: string; label: string }[] {
@@ -133,6 +165,11 @@ export function rezeptDaten(r: Rezept | null, f: RezeptFormular): { daten: Json 
   const ergibt = gericht ? (r?.ergibt_g ?? null) : grammAusEingabe(f.ergibt_g);
   if (ergibt === undefined) return { fehler: "Ergibt-Menge in Gramm: Zahl über 0 mit höchstens 2 Stellen, oder leer." };
 
+  const fuellmenge = grammAusEingabe(f.fuellmenge_g);
+  if (fuellmenge === undefined) return { fehler: "Füllmenge pro Gebinde: Gramm als Zahl über 0 mit höchstens 2 Stellen, oder leer." };
+  const service = minutenAusEingabe(f.service_min_pro_100);
+  if (service === undefined) return { fehler: "Aufwand Service: Minuten pro 100 Portionen als Zahl ab 0 mit höchstens 2 Stellen, oder leer." };
+
   const gruppen = [];
   for (const [gi, g] of f.gruppen.entries()) {
     const wo = g.titel.trim() ? `«${g.titel.trim()}»` : `Gruppe ${gi + 1}`;
@@ -160,9 +197,14 @@ export function rezeptDaten(r: Rezept | null, f: RezeptFormular): { daten: Json 
       const aktiv = minutenAusEingabe(s.aktiv);
       const unbeaufsichtigt = minutenAusEingabe(s.unbeaufsichtigt);
       if (aktiv === undefined || unbeaufsichtigt === undefined) return { fehler: `${nr}: Minuten als Zahl ab 0 mit höchstens 2 Stellen, oder leer.` };
+      const ruest = minutenAusEingabe(s.ruest);
+      if (ruest === undefined) return { fehler: `${nr}: Rüstzeit in Minuten als Zahl ab 0 mit höchstens 2 Stellen, oder leer.` };
+      const durchgang = grammAusEingabe(s.durchgang);
+      if (durchgang === undefined) return { fehler: `${nr}: Menge pro Durchgang in Gramm als Zahl über 0 mit höchstens 2 Stellen, oder leer.` };
       schritte.push({
         id: s.id, text, geraet_id: s.geraet_id || null, temperatur_c: temperatur, aktiv_min: aktiv, unbeaufsichtigt_min: unbeaufsichtigt,
         haccp: s.haccp.trim(), annahme: s.annahme,
+        ort: s.ort, rolle: s.rolle.trim(), ruest_min: ruest, menge_pro_durchgang_g: durchgang,
       });
     }
     if (g.id === null && !g.titel.trim() && !zutaten.length && !schritte.length) continue;
@@ -181,6 +223,11 @@ export function rezeptDaten(r: Rezept | null, f: RezeptFormular): { daten: Json 
       ergibt_g: ergibt,
       chargengroesse: gericht ? (r?.chargengroesse ?? "") : f.chargengroesse,
       besonderes: f.besonderes,
+      gebinde_id: f.gebinde_id || null,
+      verpackung: f.verpackung.trim(),
+      fuellmenge_g: fuellmenge,
+      service_min_pro_100: service,
+      service_rolle: f.service_rolle.trim(),
       portionen_annahme: gericht ? f.portionen_annahme : (r?.portionen_annahme ?? false),
       ergibt_annahme: gericht ? (r?.ergibt_annahme ?? false) : f.ergibt_annahme,
       gruppen,

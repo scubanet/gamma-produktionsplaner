@@ -18,7 +18,7 @@ const zutaten: ZutatRoh[] = [
   { id: "z3", gruppe_id: "g2", bezeichnung: "Knoblauch", menge_g: null, annahme: false, notiz: "2 Zehen", ist_basis: false, reihenfolge: 1 },
 ];
 const schritte: SchrittRoh[] = [
-  { id: "s1", gruppe_id: "g2", text: "Andünsten.", reihenfolge: 1, geraet_id: "ger1", temperatur_c: 160, aktiv_min: 5, unbeaufsichtigt_min: 0, haccp: null, annahme: false },
+  { id: "s1", gruppe_id: "g2", text: "Andünsten.", reihenfolge: 1, geraet_id: "ger1", temperatur_c: 160, aktiv_min: 5, unbeaufsichtigt_min: 0, haccp: null, annahme: false, ort: "zentralkueche", rolle: "Koch", ruest_min: 10, menge_pro_durchgang_g: 12000 },
 ];
 const f = () => rezeptFormular(sugo, gruppen, zutaten, schritte);
 type Daten = {
@@ -80,7 +80,7 @@ describe("Dokument für rezept_speichern", () => {
       { id: "z2", bezeichnung: "Milch", menge_g: 250, annahme: true, notiz: "2.5 dl (1 ml = 1 g)", ist_basis: false },
     ]);
     expect(d?.gruppen[1].schritte).toEqual([
-      { id: "s1", text: "Andünsten.", geraet_id: "ger1", temperatur_c: 160, aktiv_min: 5, unbeaufsichtigt_min: null, haccp: "", annahme: false },
+      { id: "s1", text: "Andünsten.", geraet_id: "ger1", temperatur_c: 160, aktiv_min: 5, unbeaufsichtigt_min: null, haccp: "", annahme: false, ort: "zentralkueche", rolle: "Koch", ruest_min: 10, menge_pro_durchgang_g: 12000 },
     ]);
   });
 

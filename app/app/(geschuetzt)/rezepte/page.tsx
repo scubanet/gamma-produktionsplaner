@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { PlanungKarte } from "@/components/rezepte/PlanungKarte";
 import { formatGramm, formatMinuten, formatZahl } from "@/lib/format";
 import {
   basisZutat, besonderesZeilen, ergibtText, geraete, gruppenAnzeige, istGericht, listenSub, voreinstellungen, wertAusEingabe,
@@ -313,6 +314,8 @@ function Rezeptbibliothek() {
               )}
             </Card>
           ) : null}
+
+          {rezept ? <PlanungKarte rezept={rezept} bearbeitenHref={`/rezepte/bearbeiten/?r=${encodeURIComponent(rezept.slug)}`} /> : null}
 
           {besonderes.length ? <Notice title="Besonders zu beachten" items={besonderes} /> : null}
 

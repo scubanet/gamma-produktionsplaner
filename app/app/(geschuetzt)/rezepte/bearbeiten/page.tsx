@@ -6,27 +6,32 @@ import { Button, Card, Checkbox, Dialog, Notice, Select, TextField } from "@/lib
 import { supabase } from "@/lib/supabase";
 import type { Gruppe, Punkt, Rezept, ZutatRoh } from "@/lib/rezepte";
 import {
-  basisOptionen, neueGruppe, neueZutat, neuerSchritt, rezeptDaten, rezeptFormular,
+  basisOptionen, neueGruppe, neueZutat, neuerSchritt, ORTE, rezeptDaten, rezeptFormular,
   type GruppeForm, type RezeptFormular, type SchrittForm, type SchrittRoh, type ZutatForm,
 } from "@/lib/rezept-pflege";
 
 type Geraet = { id: string; name: string };
+type Gebinde = { id: string; name: string };
 /** Geladener Stand, gebunden an den Slug aus der Adresse ("" = neues Rezept). */
-type Geladen = { slug: string } & ({ rezept: Rezept | null; offen: Punkt[]; geraete: Geraet[]; admin: boolean; fehler?: undefined } | { fehler: string });
+type Geladen = { slug: string } & ({ rezept: Rezept | null; offen: Punkt[]; geraete: Geraet[]; gebinde: Gebinde[]; admin: boolean; fehler?: undefined } | { fehler: string });
 
 const LEER_UUID = "00000000-0000-0000-0000-000000000000";
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
 const checked = (e: unknown) => (e as { target: HTMLInputElement }).target.checked;
 const sr = (text: string) => <span className="pl-sr">{text}</span>;
 
-async function laden(slug: string): Promise<{ rezept: Rezept | null; offen: Punkt[]; geraete: Geraet[]; admin: boolean; formular: RezeptFormular }> {
-  const ge = await supabase.from("geraet").select("id, name").order("name");
+async function laden(slug: string): Promise<{ rezept: Rezept | null; offen: Punkt[]; geraete: Geraet[]; gebinde: Gebinde[]; admin: boolean; formular: RezeptFormular }> {
+  const [ge, gb] = await Promise.all([
+    supabase.from("geraet").select("id, name").order("name"),
+    supabase.from("gebinde").select("id, name").eq("aktiv", true).order("name"),
+  ]);
   if (ge.error) throw ge.error;
-  if (!slug) return { rezept: null, offen: [], geraete: ge.data, admin: false, formular: rezeptFormular(null, [], [], []) };
+  if (gb.error) throw gb.error;
+  if (!slug) return { rezept: null, offen: [], geraete: ge.data, gebinde: gb.data, admin: false, formular: rezeptFormular(null, [], [], []) };
 
   const r = await supabase
     .from("rezept")
-    .select("id, slug, typ, name, untertitel, kategorie, quelle, basis_portionen, portion_g, ergibt_g, status, ergibt_annahme, portionen_annahme, chargengroesse, besonderes, geaendert_am")
+    .select("id, slug, typ, name, untertitel, kategorie, quelle, basis_portionen, portion_g, ergibt_g, status, ergibt_annahme, portionen_annahme, chargengroesse, besonderes, geaendert_am, gebinde_id, verpackung, fuellmenge_g, service_min_pro_100, service_rolle")
     .eq("slug", slug)
     .maybeSingle();
   if (r.error) throw r.error;
@@ -36,14 +41,14 @@ async function laden(slug: string): Promise<{ rezept: Rezept | null; offen: Punk
   const ids = g.data.length ? g.data.map((x) => x.id) : [LEER_UUID];
   const [z, s, o, ad] = await Promise.all([
     supabase.from("zutat").select("id, gruppe_id, bezeichnung, menge_g, annahme, notiz, ist_basis, reihenfolge").in("gruppe_id", ids),
-    supabase.from("schritt").select("id, gruppe_id, text, reihenfolge, geraet_id, temperatur_c, aktiv_min, unbeaufsichtigt_min, haccp, annahme").in("gruppe_id", ids),
+    supabase.from("schritt").select("id, gruppe_id, text, reihenfolge, geraet_id, temperatur_c, aktiv_min, unbeaufsichtigt_min, haccp, annahme, ort, rolle, ruest_min, menge_pro_durchgang_g").in("gruppe_id", ids),
     supabase.from("offener_punkt").select("id, text").eq("rezept_id", r.data.id).eq("erledigt", false),
     // Nur Admins dürfen löschen; die Datenbank prüft das beim Löschen nochmals.
     supabase.rpc("ist_admin"),
   ]);
   for (const x of [z, s, o, ad]) if (x.error) throw x.error;
   const formular = rezeptFormular(r.data, g.data as Gruppe[], (z.data ?? []) as ZutatRoh[], (s.data ?? []) as SchrittRoh[]);
-  return { rezept: r.data, offen: o.data ?? [], geraete: ge.data, admin: ad.data === true, formular };
+  return { rezept: r.data, offen: o.data ?? [], geraete: ge.data, gebinde: gb.data, admin: ad.data === true, formular };
 }
 
 function RezeptBearbeiten() {
@@ -62,7 +67,7 @@ function RezeptBearbeiten() {
     laden(slug).then(
       (d) => {
         if (!gilt) return;
-        setGeladen({ slug, rezept: d.rezept, offen: d.offen, geraete: d.geraete, admin: d.admin });
+        setGeladen({ slug, rezept: d.rezept, offen: d.offen, geraete: d.geraete, gebinde: d.gebinde, admin: d.admin });
         setF(d.formular);
         setFehler(null);
       },
@@ -98,7 +103,7 @@ function RezeptBearbeiten() {
     );
   }
 
-  const { rezept, offen, geraete, admin } = stand;
+  const { rezept, offen, geraete, gebinde, admin } = stand;
   const gericht = f.typ === "gericht";
   const basis = basisOptionen(f);
   const basisWert = basis.some((b) => b.value === f.basis_zutat) ? f.basis_zutat : "";
@@ -202,6 +207,27 @@ function RezeptBearbeiten() {
         </div>
       </Card>
 
+      <Card title="Planung: Gebinde und Service" meta="Grundlage für Logistik und Service pro Anlass; leer = noch nicht erfasst">
+        <div className="pl-stack">
+          <div className="pl-grid-3">
+            <Select
+              id="rezept-gebinde"
+              label="Gebinde für den Transport"
+              value={f.gebinde_id}
+              onChange={(v) => set({ gebinde_id: v })}
+              options={[{ value: "", label: "[Gebinde]" }, ...gebinde.map((x) => ({ value: x.id, label: x.name }))]}
+            />
+            <TextField id="rezept-verpackung" label="Verpackung im Gebinde" value={f.verpackung} onChange={(e) => set({ verpackung: wert(e) })} placeholder="z.B. Vakuumbeutel 2 kg, GN 1/1 mit Deckel" />
+            <TextField id="rezept-fuellmenge" label="Füllmenge pro Gebinde in Gramm" numeric value={f.fuellmenge_g} onChange={(e) => set({ fuellmenge_g: wert(e) })} hint="Fertiges Produkt in einem Gebinde, z.B. 12000" />
+          </div>
+          <div className="pl-grid-3">
+            <TextField id="rezept-service" label="Ausgabe im Service: Minuten pro 100 Portionen" numeric value={f.service_min_pro_100} onChange={(e) => set({ service_min_pro_100: wert(e) })} hint="Anrichten und Ausgabe vor Ort, ohne Regenerieren" />
+            <TextField id="rezept-service-rolle" label="Rolle im Service" value={f.service_rolle} onChange={(e) => set({ service_rolle: wert(e) })} placeholder="z.B. Koch, Service" />
+          </div>
+          <p className="pl-small">Regenerieren vor Ort wird als Arbeitsschritt mit Ort «vor Ort» erfasst. Lagerung, Haltbarkeit und Regeneration kommen aus der Systemzuteilung der verknüpften Komponente.</p>
+        </div>
+      </Card>
+
       {f.gruppen.map((g, gi) => {
         const name = g.titel.trim() || `Gruppe ${gi + 1}`;
         return (
@@ -254,8 +280,14 @@ function RezeptBearbeiten() {
                         options={[{ value: "", label: "kein Gerät" }, ...geraete.map((x) => ({ value: x.id, label: x.name }))]}
                       />
                       <TextField id={`s-${s.key}-c`} label="Temperatur °C" numeric value={s.temperatur} onChange={(e) => setSchritt(g.key, s.key, { temperatur: wert(e) })} />
-                      <TextField id={`s-${s.key}-a`} label="aktiv min" numeric value={s.aktiv} onChange={(e) => setSchritt(g.key, s.key, { aktiv: wert(e) })} />
-                      <TextField id={`s-${s.key}-u`} label="unbeaufsichtigt min" numeric value={s.unbeaufsichtigt} onChange={(e) => setSchritt(g.key, s.key, { unbeaufsichtigt: wert(e) })} />
+                      <TextField id={`s-${s.key}-a`} label="aktiv min pro Durchgang" numeric value={s.aktiv} onChange={(e) => setSchritt(g.key, s.key, { aktiv: wert(e) })} />
+                      <TextField id={`s-${s.key}-u`} label="unbeaufsichtigt min pro Durchgang" numeric value={s.unbeaufsichtigt} onChange={(e) => setSchritt(g.key, s.key, { unbeaufsichtigt: wert(e) })} />
+                    </div>
+                    <div className="pl-grid-4">
+                      <Select id={`s-${s.key}-o`} label="Ort" value={s.ort} onChange={(v) => setSchritt(g.key, s.key, { ort: v })} options={ORTE} />
+                      <TextField id={`s-${s.key}-ro`} label="Rolle" value={s.rolle} onChange={(e) => setSchritt(g.key, s.key, { rolle: wert(e) })} placeholder="z.B. Koch" />
+                      <TextField id={`s-${s.key}-r`} label="Rüstzeit min (einmal)" numeric value={s.ruest} onChange={(e) => setSchritt(g.key, s.key, { ruest: wert(e) })} />
+                      <TextField id={`s-${s.key}-d`} label="Menge pro Durchgang g" numeric value={s.durchgang} onChange={(e) => setSchritt(g.key, s.key, { durchgang: wert(e) })} hint="leer = eine Basis-Charge" />
                     </div>
                     <div className="pl-grid-3">
                       <TextField id={`s-${s.key}-h`} label="HACCP" value={s.haccp} onChange={(e) => setSchritt(g.key, s.key, { haccp: wert(e) })} placeholder="z.B. Kern 72 °C" />
