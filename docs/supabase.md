@@ -47,6 +47,7 @@ Stand: 14.11.2026
 | 20 produktion_checkliste | Tabelle `produktion_aufgabe`: Zuständig und Erledigt pro Komponente und Saison. Version `20261110185525` (siehe unten) |
 | 21 checkliste_pro_welle | `produktion_aufgabe` mit `welle_nr` (0 = ohne Welle), View `produktion_checkliste`, `wellenplan` mit `vorschlag_nr` |
 | 22 artikel_vorschlag | Erweiterung `pg_trgm`, Funktion `komponente_artikel_vorschlag` (Vorschläge für den Hauptartikel) |
+| 24 planung_aus_rezept | Views `planung_bedarf`, `planung_produktion_schritt`, `planung_produktion_komponente`, `planung_produktion_rolle`, `planung_produktion_geraet`, `planung_service_komponente` |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
 
 Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde nicht mit `supabase db push` eingespielt und trägt darum einen Zeitstempel (`20261110185525`); die Datei heisst seit dem 14.11.2026 gleich. Neue Migrationen immer mit `supabase db push` einspielen, sonst passen Datei und Datenbank nicht zusammen.
@@ -135,6 +136,16 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `einkauf_position`: Bedarf pro Welle bzw. Anlass und Komponente, mit Hauptartikel, Menge, Kosten, Liefertermin und Bestellschluss
 - `einkauf_artikel`: Einkaufsliste nach Lieferant und Artikel; `einkauf_summe`: Zahlen pro Saison
 - `komponente_artikel_vorschlag(saison, anzahl, schwelle)`: Komponenten der Saison ohne Hauptartikel mit den ähnlichsten aktiven Artikeln nach dem Namen (`pg_trgm`, Standard 3 Vorschläge ab Ähnlichkeit 0.5). Schlägt nur vor; zugeordnet wird von Hand. Probelauf 14.11.2026: 249 Komponenten ohne Hauptartikel
+
+### Planung aus dem Rezept (Migration 24)
+
+- `planung_bedarf`: Bedarf für die Produktion, pro Welle (`wellen_aktuell`) und für Komponenten ohne Welle pro Anlass. Gleiche Quelle wie der Einkauf.
+- `planung_produktion_schritt`: pro Bezug, Komponente und Arbeitsschritt der Zentralküche. Durchgänge = Menge ÷ Menge pro Durchgang, aufgerundet (ohne Angabe die Ergibt-Menge des Rezepts). Aktiv = Rüstzeit + Durchgänge × aktiv. Gerät belegt = Durchgänge × (aktiv + unbeaufsichtigt). Ein Schritt ohne Ort zählt zur Zentralküche.
+- `planung_produktion_komponente`: eine Zeile pro Bezug und Komponente, auch ohne Rezept. `status`: gerechnet, kein Rezept, Menge fehlt, Stück nicht umrechenbar, keine Schritte, Durchgang fehlt.
+- `planung_produktion_rolle`, `planung_produktion_geraet`: aktive Zeit pro Rolle und Belegung pro Gerät, nur gerechnete Schritte.
+- `planung_service_komponente`: pro Service und Komponente. Gebinde = Menge ÷ Füllmenge, aufgerundet; Gewicht = Menge + Gebinde × Tara; Volumen = Gebinde × Volumen; vor Ort aus den Schritten mit Ort `vor_ort`; Ausgabe = Portionen ÷ 100 × Minuten pro 100 Portionen.
+- Entscheide Dominik (14.11.2026): Produktion pro Welle, Logistik und Service pro Service. Liter als Kilogramm (1 l = 1 kg, Annahme, in der App gestrichelt). Stück werden nicht umgerechnet.
+- Kontrollwert aus dem Probelauf (Testrezept, nicht gespeichert): Kartoffelgratin 99 kg in Welle 1 bei 12 kg pro Durchgang = 9 Durchgänge; 30 min Rüstzeit + 9 × (25 + 5 + 5) min = 345 min aktiv. Spiel 1: 33 kg ÷ 12 kg = 3 Gebinde, 330 Portionen × 15 min ÷ 100 = 49.5 min Ausgabe.
 
 ### Ressourcen und Rentabilität
 

@@ -8,17 +8,18 @@ import { chf } from "@/lib/ressourcen";
 import { FELDER, FIXKOSTEN_KATEGORIEN, type Zeile } from "@/lib/stammdaten";
 import { Stammtabelle } from "@/components/stammdaten/Stammtabelle";
 
-type Daten = { lohnsatz: Zeile[]; energiepreis: Zeile[]; fixkosten: Zeile[]; geraet: Zeile[] };
+type Daten = { lohnsatz: Zeile[]; energiepreis: Zeile[]; fixkosten: Zeile[]; geraet: Zeile[]; gebinde: Zeile[] };
 
 async function laden(): Promise<Daten> {
-  const [l, e, f, g] = await Promise.all([
+  const [l, e, f, g, gb] = await Promise.all([
     supabase.from("lohnsatz").select("*").order("rolle").order("gueltig_ab", { ascending: false }),
     supabase.from("energiepreis").select("*").order("gueltig_ab", { ascending: false }),
     supabase.from("fixkosten").select("*").order("kategorie").order("bezeichnung"),
     supabase.from("geraet").select("*").order("name"),
+    supabase.from("gebinde").select("*").order("name"),
   ]);
-  for (const x of [l, e, f, g]) if (x.error) throw x.error;
-  return { lohnsatz: l.data ?? [], energiepreis: e.data ?? [], fixkosten: f.data ?? [], geraet: g.data ?? [] };
+  for (const x of [l, e, f, g, gb]) if (x.error) throw x.error;
+  return { lohnsatz: l.data ?? [], energiepreis: e.data ?? [], fixkosten: f.data ?? [], geraet: g.data ?? [], gebinde: gb.data ?? [] };
 }
 
 const datum = (v: unknown) => (v ? formatDatum(v as string) : "–");
@@ -133,6 +134,30 @@ export default function Stammdaten() {
           mietbar: z.mietbar,
           mietpreis: betrag(z.mietpreis_chf_tag),
           leistung: z.leistung_kw === null ? "[Leistung]" : `${formatZahl(z.leistung_kw as number, 1)} kW`,
+        })}
+        {...gemeinsam}
+      />
+
+      <Stammtabelle
+        tabelle="gebinde"
+        titel="Gebinde"
+        meta="Transportgebinde der Küche; Tara und Volumen bestimmen Gewicht und Ladevolumen pro Anlass"
+        einzahl="Gebinde"
+        felder={FELDER.gebinde}
+        schluessel={["id"]}
+        zeilen={daten?.gebinde ?? null}
+        spalten={[
+          { key: "name", label: "Gebinde", subKey: "bemerkung" },
+          { key: "mass", label: "Mass L × B × H", numeric: true },
+          { key: "tara", label: "Tara", numeric: true },
+          { key: "volumen", label: "Volumen", numeric: true },
+        ]}
+        anzeige={(z) => ({
+          name: z.name,
+          bemerkung: z.bemerkung,
+          mass: z.laenge_mm && z.breite_mm && z.hoehe_mm ? `${z.laenge_mm} × ${z.breite_mm} × ${z.hoehe_mm} mm` : "[Mass]",
+          tara: z.tara_g === null ? "[Tara]" : `${formatZahl((z.tara_g as number) / 1000, 2)} kg`,
+          volumen: z.volumen_l === null ? "[Volumen]" : `${formatZahl(z.volumen_l as number, 1)} l`,
         })}
         {...gemeinsam}
       />

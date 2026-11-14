@@ -70,7 +70,7 @@ export const FIXKOSTEN_KATEGORIEN = [
   { value: "uebrige", label: "Übrige" },
 ];
 
-export const FELDER: Record<"lohnsatz" | "energiepreis" | "fixkosten" | "geraet", Feld[]> = {
+export const FELDER: Record<"lohnsatz" | "energiepreis" | "fixkosten" | "geraet" | "gebinde", Feld[]> = {
   lohnsatz: [
     { key: "rolle", label: "Rolle", art: "text", pflicht: true, hint: "z.B. Koch, Service, Abwasch; gleiche Schreibweise wie beim Personal im Anlass" },
     { key: "chf_pro_h", label: "CHF pro Stunde", art: "betrag", pflicht: true, hint: "inkl. Sozialleistungen, Ferien, 13. Monatslohn" },
@@ -96,6 +96,16 @@ export const FELDER: Record<"lohnsatz" | "energiepreis" | "fixkosten" | "geraet"
     { key: "mietbar", label: "mietbar", art: "ja_nein" },
     { key: "leistung_kw", label: "Leistung kW", art: "betrag" },
     { key: "mietpreis_chf_tag", label: "Mietpreis CHF pro Tag", art: "betrag" },
+  ],
+  gebinde: [
+    { key: "name", label: "Gebinde", art: "text", pflicht: true, hint: "z.B. IFCO-Box, mit Typ oder Höhe" },
+    { key: "laenge_mm", label: "Länge mm", art: "ganz" },
+    { key: "breite_mm", label: "Breite mm", art: "ganz" },
+    { key: "hoehe_mm", label: "Höhe mm", art: "ganz" },
+    { key: "tara_g", label: "Tara in Gramm", art: "betrag", hint: "Leergewicht; braucht es für das Bruttogewicht im Transport" },
+    { key: "volumen_l", label: "Volumen in Litern", art: "betrag", hint: "Aussenvolumen; braucht es für das Ladevolumen" },
+    { key: "bemerkung", label: "Bemerkung", art: "text" },
+    { key: "aktiv", label: "aktiv", art: "ja_nein" },
   ],
 };
 

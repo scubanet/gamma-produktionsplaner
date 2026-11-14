@@ -7,7 +7,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | Bereich | Wo | Stand |
 | --- | --- | --- |
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
-| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 23 Migrationen (23 noch einzuspielen), siehe `docs/supabase.md` |
+| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 24 Migrationen (24 noch einzuspielen), siehe `docs/supabase.md` |
 | App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 95 Tests, Auslieferung über GitHub Actions |
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.8 | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
@@ -21,6 +21,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | `/anmelden` | Anmeldung mit E-Mail-Link, nur bestehende Benutzer | 1 |
 | `/` | Leitstand | 1 |
 | `/produktion` | Produktionsliste pro Saison mit Herleitung, Kontrollwerten, Export Excel und PDF | 2 |
+| `/produktion/aufwand` | Aufwand aus den Rezepten: Produktion pro Welle, Logistik und Service pro Spiel | neu |
 | `/produktion/wellen` | Wellen-Vorschlag, übernehmen, Datum ändern, Prüfhinweise; Erledigt und Zuständig pro Komponente und Welle | 7 |
 | `/systemzuteilung` | Komponenten mit Status und Prüfhinweisen, Zuteilung bearbeiten | 3 |
 | `/katalog` | Gerichte mit Komponenten, Verknüpfung zu Rezepten | 4 |
@@ -45,7 +46,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 Ziel von Dominik: Ausgehend vom Rezept rechnet die App Produktion, Logistik und Service. Basisrezepte (Komponenten) tragen Aufwand, Geräte und Gebinde; Gerichte setzen sie für den Anlass zusammen. Entwurf der Bildschirme: https://claude.ai/artifact/5YJeDKrEEiZx9ck7u4wLjC
 
 - **Etappe 1, gebaut (Migration 23):** Rezept bearbeiten mit Karte «Planung: Gebinde und Service» und pro Schritt Ort, Rolle, Rüstzeit, Menge pro Durchgang. Rezeptkarte mit Karte «Planung»: was erfasst ist, was fehlt, Systemzuteilung der verknüpften Komponenten, Komponente verknüpfen oder lösen.
-- **Etappe 2, offen:** Berechnung pro Anlass und Service: Durchgänge, Stunden pro Rolle, Gerätebelegung, Anzahl Gebinde, Gewicht und Volumen. Ersetzt die Handeingabe unter Ressourcen. Gebinde in den Stammdaten pflegen (Mass, Tara, Volumen der IFCO-Box fehlen).
+- **Etappe 2, gebaut (Migration 24):** Seite `/produktion/aufwand` «Aufwand aus den Rezepten»: Produktion pro Welle (Durchgänge, aktive Zeit, Stunden pro Rolle, Belegung der Geräte), Logistik und Service pro Spiel (Gebinde, Gewicht, Volumen, vor Ort, Ausgabe). Gebinde in den Stammdaten pflegbar. Noch offen: die Zahlen in Ressourcen und Rentabilität übernehmen (heute Handeingabe), Fahrzeuge.
 - **Etappe 3, offen:** Geschirr und Besteck pro Anlass in drei Ebenen (pro Gast und Gang, Abweichung pro Gericht, Material für die Ausgabe). Entscheid Dominik: Wechselfaktor pro Anlass, mit einem vorgeschlagenen Standard, der übersteuert werden kann.
 - Entscheide Dominik: Rezepte basieren auf 10 Portionen. Gebinde ist die IFCO-Box, für gekühlt und TK. Die Systemzuteilung bleibt massgebend für Lagerung und Regeneration.
 - Annahme, noch zu bestätigen: Aufwand der Ausgabe im Service in Minuten pro 100 Portionen.

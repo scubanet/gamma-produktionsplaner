@@ -63,6 +63,12 @@ Ersetzt das Blatt «Spengler Cup» der Excel.
 - **Erledigt:** Hat eine Komponente eine Welle oder keine (Zukauf, nur vor Ort), wird hier abgehakt. Bei mehreren Wellen steht der Stand («2 von 3 Wellen»); abgehakt wird dann im Wellenplan.
 - **Zuständig** gilt hier für alle Wellen der Komponente.
 
+**Aufwand aus Rezepten** (Knopf «Aufwand aus Rezepten»)
+
+- Rechnet aus den verknüpften Rezepten: pro Welle die Durchgänge, die aktive Zeit, die Stunden pro Rolle und die Belegung der Geräte; pro Spiel die Gebinde, Gewicht und Volumen, die Zeit vor Ort und die Ausgabe.
+- Der Status jeder Zeile sagt, was fehlt: kein Rezept, Menge fehlt, Füllmenge fehlt. Summen gelten nur für die gerechneten Komponenten.
+- Gestrichelte Mengen sind Liter, als Kilogramm gerechnet (Annahme).
+
 **Produktionswellen** (Knopf «Produktionswellen»)
 
 - Die App schlägt Wellen vor: Wie oft produziert wird, ergibt sich aus der Haltbarkeit und den Service-Daten.

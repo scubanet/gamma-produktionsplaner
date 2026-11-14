@@ -3042,6 +3042,131 @@ export type Database = {
         }
         Relationships: []
       }
+      planung_bedarf: {
+        Row: {
+          bedarf_am: string | null
+          bezug: string | null
+          bezug_typ: string | null
+          einheit: string | null
+          komponente_id: string | null
+          menge: number | null
+          saison_id: string | null
+          sortierung: number | null
+        }
+        Relationships: []
+      }
+      planung_produktion_geraet: {
+        Row: {
+          bedarf_am: string | null
+          bezug: string | null
+          bezug_typ: string | null
+          durchgaenge: number | null
+          geraet: string | null
+          geraet_id: string | null
+          geraet_min: number | null
+          komponenten: number | null
+          saison_id: string | null
+          sortierung: number | null
+        }
+        Relationships: []
+      }
+      planung_produktion_komponente: {
+        Row: {
+          aktiv_min: number | null
+          bedarf_am: string | null
+          bezug: string | null
+          bezug_typ: string | null
+          durchgaenge: number | null
+          einheit: string | null
+          geraet_min: number | null
+          herleitung: string | null
+          kategorie: string | null
+          komponente: string | null
+          komponente_id: string | null
+          liter_annahme: boolean | null
+          menge: number | null
+          rezept: string | null
+          rezept_id: string | null
+          rezept_slug: string | null
+          saison_id: string | null
+          schritte: number | null
+          sortierung: number | null
+          status: string | null
+        }
+        Relationships: []
+      }
+      planung_produktion_rolle: {
+        Row: {
+          aktiv_min: number | null
+          bedarf_am: string | null
+          bezug: string | null
+          bezug_typ: string | null
+          komponenten: number | null
+          rolle: string | null
+          saison_id: string | null
+          sortierung: number | null
+        }
+        Relationships: []
+      }
+      planung_produktion_schritt: {
+        Row: {
+          aktiv_min: number | null
+          bedarf_am: string | null
+          bezug: string | null
+          bezug_typ: string | null
+          durchgaenge: number | null
+          einheit: string | null
+          geraet: string | null
+          geraet_id: string | null
+          geraet_min: number | null
+          gruppe_nr: number | null
+          herleitung: string | null
+          komponente_id: string | null
+          menge: number | null
+          pro_durchgang_g: number | null
+          rezept_id: string | null
+          rolle: string | null
+          saison_id: string | null
+          schritt: string | null
+          schritt_id: string | null
+          schritt_nr: number | null
+          sortierung: number | null
+        }
+        Relationships: []
+      }
+      planung_service_komponente: {
+        Row: {
+          anlass_id: string | null
+          ausgabe_min: number | null
+          datum: string | null
+          einheit: string | null
+          fuellmenge_g: number | null
+          gebinde: string | null
+          gebinde_anzahl: number | null
+          gewicht_kg: number | null
+          herleitung: string | null
+          kategorie: string | null
+          komponente: string | null
+          komponente_id: string | null
+          liter_annahme: boolean | null
+          menge: number | null
+          portionen: number | null
+          reihenfolge: number | null
+          rezept: string | null
+          rezept_id: string | null
+          rezept_slug: string | null
+          saison_id: string | null
+          service: string | null
+          service_id: string | null
+          service_rolle: string | null
+          status: string | null
+          volumen_l: number | null
+          vorort_aktiv_min: number | null
+          vorort_geraet_min: number | null
+          vorort_schritte: number | null
+        }
+        Relationships: []
+      }
       produktion_checkliste: {
         Row: {
           erledigt_am: string | null
