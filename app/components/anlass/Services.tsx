@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button, Card, DataTable, Dialog, Notice, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
-import { fehlerText, ganzzahl, type Menuelinie, type Service } from "@/lib/anlass";
+import { fehlerText, ganzzahl, geaenderteDaten, ungueltigesDatum, type Menuelinie, type Service } from "@/lib/anlass";
 
 type Form = { id: string | null; name: string; datum: string; gaeste: string; menuelinie_id: string; fehler: string | null };
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
@@ -20,6 +20,12 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
   const [form, setForm] = useState<Form | null>(null);
   const [offen, setOffen] = useState(false);
   const [speichert, setSpeichert] = useState(false);
+  // Alle Daten in einem Dialog: Service-ID → Datum (JJJJ-MM-TT oder leer).
+  const [daten, setDaten] = useState<Record<string, string> | null>(null);
+  const [datenOffen, setDatenOffen] = useState(false);
+  const [datenFehler, setDatenFehler] = useState<string | null>(null);
+  const sortiert = [...services].sort((a, b) => a.reihenfolge - b.reihenfolge);
+  const ohneDatum = services.filter((s) => !s.datum).length;
   const linienName = new Map(linien.map((l) => [l.id, l.name]));
   const gaeste = form ? ganzzahl(form.gaeste, 0, 100000) : null;
 
@@ -48,6 +54,30 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
     onMeldung(`Service ${daten.name} gespeichert.`);
   }
 
+  function datenOeffnen() {
+    setDaten(Object.fromEntries(services.map((s) => [s.id, s.datum ?? ""])));
+    setDatenFehler(null);
+    setDatenOffen(true);
+  }
+
+  async function datenSpeichern() {
+    if (!daten) return;
+    if (ungueltigesDatum(daten) !== null) return setDatenFehler("Datum im Kalender wählen oder als TT.MM.JJJJ eingeben.");
+    const neu = geaenderteDaten(services, daten);
+    if (!neu.length) return setDatenOffen(false);
+    setSpeichert(true);
+    const fehler: string[] = [];
+    for (const n of neu) {
+      const r = await supabase.from("service").update({ datum: n.datum }).eq("id", n.id);
+      if (r.error) fehler.push(`${n.name}: ${fehlerText(r.error)}`);
+    }
+    setSpeichert(false);
+    await onGeaendert();
+    if (fehler.length) return setDatenFehler(`${neu.length - fehler.length} von ${neu.length} gespeichert. Nicht gespeichert: ${fehler.join("; ")}`);
+    setDatenOffen(false);
+    onMeldung(`Datum bei ${neu.length} Service(s) gespeichert. Wellen, Einkauf und Mengen rechnen neu.`);
+  }
+
   async function entfernen(s: Service) {
     const r = await supabase.from("service").delete().eq("id", s.id);
     if (r.error) return onFehler(`Service ${s.name} nicht entfernt`, fehlerText(r.error));
@@ -56,7 +86,13 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
   }
 
   return (
-    <Card title="Services" meta="je Spiel oder Tag mit Gästen und Menülinie" actions={<Button variant="dashed" onClick={() => oeffnen(null)}>+ Service</Button>}>
+    <Card title="Services" meta="je Spiel oder Tag mit Gästen und Menülinie" actions={
+        <span className="pl-actions">
+          {services.length > 1 ? <Button onClick={datenOeffnen}>{ohneDatum ? `Daten erfassen (${ohneDatum} fehlen)` : "Daten ändern"}</Button> : null}
+          <Button variant="dashed" onClick={() => oeffnen(null)}>+ Service</Button>
+        </span>
+      }
+    >
       {services.length ? (
         <DataTable
           columns={[
@@ -75,7 +111,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
               ),
             },
           ]}
-          rows={[...services].sort((a, b) => a.reihenfolge - b.reihenfolge).map((s) => ({
+          rows={sortiert.map((s) => ({
             id: s.id,
             service: s,
             name: s.name,
@@ -124,6 +160,43 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
               />
             </div>
             {form.fehler ? <Notice role="alert" title="Nicht gespeichert">{form.fehler}</Notice> : null}
+          </>
+        ) : null}
+      </Dialog>
+
+      <Dialog
+        open={datenOffen}
+        id="service-daten"
+        title="Daten der Services"
+        meta={`${services.length} Services, ${ohneDatum} ohne Datum`}
+        onClose={() => setDatenOffen(false)}
+        onCancel={(e) => speichert && e.preventDefault()}
+        actions={
+          <>
+            <Button onClick={() => setDatenOffen(false)} disabled={speichert}>Abbrechen</Button>
+            <Button variant="primary" onClick={datenSpeichern} disabled={speichert}>{speichert ? "Wird gespeichert …" : "Daten speichern"}</Button>
+          </>
+        }
+      >
+        {daten ? (
+          <>
+            <div className="pl-grid-2">
+              {sortiert.map((s) => (
+                <TextField
+                  key={s.id}
+                  id={`service-datum-${s.id}`}
+                  type="date"
+                  label={`${s.name}${s.menuelinie_id ? ` · ${linienName.get(s.menuelinie_id) ?? "[Menülinie]"}` : ""}`}
+                  value={daten[s.id] ?? ""}
+                  onChange={(e) => {
+                    setDaten({ ...daten, [s.id]: wert(e) });
+                    setDatenFehler(null);
+                  }}
+                />
+              ))}
+            </div>
+            <p className="pl-small">Ohne Datum weiss die Datenbank nicht, aus welcher Welle ein Service bedient wird. Ein leeres Feld entfernt das Datum.</p>
+            {datenFehler ? <Notice role="alert" title="Nicht gespeichert">{datenFehler}</Notice> : null}
           </>
         ) : null}
       </Dialog>

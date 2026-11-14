@@ -110,6 +110,7 @@ export default function Einkauf() {
         </div>
         <div className="pl-actions pl-print-hide">
           <Button href="/einkauf/lieferanten/">Lieferanten</Button>
+          <Button href="/einkauf/zuordnen/">Artikel zuordnen</Button>
           <Button variant="primary" onClick={() => window.print()} disabled={!daten}>Drucken / PDF</Button>
         </div>
       </header>

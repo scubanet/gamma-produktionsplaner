@@ -114,3 +114,15 @@ export function nachRubrik(p: KartenPosition[]): { rubrik: string; positionen: K
   }
   return out;
 }
+
+/** Datum mehrerer Services in einem Schritt: nur die geänderten, leer = Datum entfernen. */
+export function geaenderteDaten(services: Pick<Service, "id" | "name" | "datum">[], werte: Record<string, string>): { id: string; name: string; datum: string | null }[] {
+  return services
+    .filter((s) => s.id in werte && (werte[s.id] || null) !== (s.datum ?? null))
+    .map((s) => ({ id: s.id, name: s.name, datum: werte[s.id] || null }));
+}
+
+/** Erstes ungültiges Datum (nicht JJJJ-MM-TT oder kein Kalendertag) oder null. */
+export function ungueltigesDatum(werte: Record<string, string>): string | null {
+  return Object.values(werte).find((w) => w !== "" && !(/^\d{4}-\d{2}-\d{2}$/.test(w) && !Number.isNaN(Date.parse(w)))) ?? null;
+}
