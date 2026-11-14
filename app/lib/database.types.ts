@@ -1515,6 +1515,13 @@ export type Database = {
             referencedRelation: "menuelinie_gaeste"
             referencedColumns: ["menuelinie_id"]
           },
+          {
+            foreignKeyName: "menuelinie_gericht_menuelinie_id_fkey"
+            columns: ["menuelinie_id"]
+            isOneToOne: false
+            referencedRelation: "service_gericht_bedarf"
+            referencedColumns: ["menuelinie_id"]
+          },
         ]
       }
       menuelinie_komponente: {
@@ -2243,6 +2250,13 @@ export type Database = {
             columns: ["menuelinie_id"]
             isOneToOne: false
             referencedRelation: "menuelinie_gaeste"
+            referencedColumns: ["menuelinie_id"]
+          },
+          {
+            foreignKeyName: "service_menuelinie_id_fkey"
+            columns: ["menuelinie_id"]
+            isOneToOne: false
+            referencedRelation: "service_gericht_bedarf"
             referencedColumns: ["menuelinie_id"]
           },
         ]
@@ -3771,7 +3785,78 @@ export type Database = {
           service: string | null
           service_id: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+        ]
       }
       service_komponente_bedarf: {
         Row: {
