@@ -154,6 +154,14 @@ Personal, Geräte und Kalkulation pro Anlass.
 
 Lohnsätze pro Rolle, Strompreis, Fixkosten pro Monat, Geräte (Bestand, Mietpreis) und Einstellungen. Mit «+ …» erfassen, mit «Bearbeiten» ändern oder löschen. Solange hier nichts steht, zeigen die Kosten `[Preis]`.
 
+## Benutzer
+
+Nur für Administratoren.
+
+- **Zugang anlegen:** Name und E-Mail eingeben. Die Person öffnet danach gamma.atoll-os.com und lässt sich mit dieser Adresse einen Anmeldelink schicken. Ein Passwort gibt es nicht.
+- **Sperren und Entsperren:** nimmt den Zugang weg, ohne Daten zu löschen.
+- **Zum Admin machen:** Admins verwalten Benutzer und dürfen Rezepte löschen. Den eigenen Zugang kann man weder sperren noch herabstufen.
+
 ## Womit anfangen
 
 Diese Daten fehlen noch und bringen am meisten:

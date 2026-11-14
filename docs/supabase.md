@@ -21,6 +21,15 @@ Stand: 14.11.2026
 - Die App rechnet nicht selbst: Mengen, Preise, Termine, Prüfhinweise und Herleitungstexte kommen aus Views und Funktionen.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Fehlt ein Teil (Preis, Lohnsatz, Service-Datum), ist das Ergebnis leer und die App zeigt einen Platzhalter wie `[Preis]` oder `[Menge]`.
 
+## Benutzerverwaltung (Edge Function `benutzer`)
+
+- `supabase/functions/benutzer/index.ts`: Zugang anlegen, Benutzer auflisten, sperren und entsperren, Admin-Recht geben und entziehen. Nur für Benutzer in `app_admin`; die Funktion prüft das Token der App und arbeitet dann mit dem Service-Schlüssel, der den Server nie verlässt.
+- Ausliefern: `supabase functions deploy benutzer` im Repo-Wurzelordner. Die Funktion gehört nicht zu den Migrationen und wird nicht vom Workflow «Ausliefern» verteilt.
+- Ein neuer Zugang hat kein Passwort und eine bestätigte Adresse; die Person meldet sich mit dem Anmeldelink an. Sperren setzt eine Sperre von rund 100 Jahren, gelöscht wird nichts.
+- Schutz: Niemand sperrt sich selbst oder entzieht sich selbst das Admin-Recht; so bleibt immer mindestens ein Admin.
+- Erlaubte Herkunft (CORS): `https://gamma.atoll-os.com` und `http://localhost:3000`. Beim Umzug auf den GAMMA-Server die Adresse in der Funktion anpassen.
+- Rollen und Rechte pro Abteilung gibt es weiterhin nicht (Entscheid Dominik, 14.11.2026: nur Zugang verwalten).
+
 ## Migrationen
 
 | Migration | Inhalt |

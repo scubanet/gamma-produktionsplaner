@@ -31,6 +31,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | `/einkauf`, `/einkauf/lieferanten`, `/einkauf/zuordnen` | Einkaufsliste nach Lieferant und Artikel mit Bestellschluss, Lieferanten pflegen, Hauptartikel mit Vorschlägen zuordnen | 7 |
 | `/ressourcen` | Personal und Geräte pro Anlass, Zusatzbedarf Freelancer und Miete | 8 |
 | `/rentabilitaet` | Kalkulation pro Anlass, Monatsergebnis, Break-even | 8 |
+| `/benutzer` | Benutzerverwaltung für Admins: Zugang anlegen, sperren, Admin-Recht (Edge Function `benutzer`) | neu |
 | `/stammdaten` | Lohnsätze, Strompreis, Fixkosten, Geräte, Einstellungen | 8 |
 
 ## Nachtrag 14.11.2026
@@ -80,7 +81,6 @@ Müssen nach jeder Änderung gleich herauskommen (zuletzt geprüft nach Migratio
 - Excel-Export für Wellen und Einkauf
 - Bestellungen speichern und verfolgen
 - Rezept: Reihenfolge von Zutaten und Schritten ändern, Warnung bei ungespeicherten Änderungen
-- Admins in der App verwalten (heute per Migration in `app_admin`)
 - Rollen und Rechte pro Abteilung
 - Auslieferung auf `gamma.atoll-os.com`
 

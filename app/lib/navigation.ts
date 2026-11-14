@@ -13,6 +13,7 @@ export const BEREICHE: { label: string; href?: string }[] = [
   { label: "Rentabilität", href: "/rentabilitaet/" },
   { label: "Einkauf", href: "/einkauf/" },
   { label: "Stammdaten", href: "/stammdaten/" },
+  { label: "Benutzer", href: "/benutzer/" },
 ];
 
 const ohneSchraegstrich = (p: string) => (p.length > 1 ? p.replace(/\/+$/, "") : p);
