@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button, Checkbox, Dialog, Fieldset, Notice, Select, StatusPill, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import {
-  fehlertext, formularAus, sperreAus, umschalten, updateAus,
+  fehlertext, formularAus, lagerartSetzen, sperreAus, umschalten, updateAus,
   type Formular, type Hinweis, type Regeneration, type System, type Zuteilung,
 } from "@/lib/systemzuteilung";
 
@@ -135,8 +135,9 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
           ) : undefined
         }
       >
-        <Checkbox label="0–2 °C" checked={f.lager_0_2} onChange={(e) => set({ lager_0_2: checked(e) })} />
-        <Checkbox label="TK" checked={f.lager_tk} onChange={(e) => set({ lager_tk: checked(e) })} />
+        <Checkbox label="0–2 °C" checked={f.lager_0_2} onChange={(e) => set(lagerartSetzen(f, "lager_0_2", checked(e)))} />
+        <Checkbox label="TK" checked={f.lager_tk} onChange={(e) => set(lagerartSetzen(f, "lager_tk", checked(e)))} />
+        <Checkbox label="trocken, bis 18 °C" checked={f.lager_trocken} onChange={(e) => set(lagerartSetzen(f, "lager_trocken", checked(e)))} />
         <Checkbox label="gedeckt" checked={f.lager_gedeckt} onChange={(e) => set({ lager_gedeckt: checked(e) })} />
         <TextField id="lager-tage" label="Lagerung Tage" numeric value={f.lager_tage} onChange={(e) => set({ lager_tage: wert(e) })} placeholder="leer = aus Produktion" />
       </Fieldset>

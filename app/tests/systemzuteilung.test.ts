@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
-  fehlertext, filtern, formularAus, haltbarkeitText, hinweiseNachKomponente, lagerungText, leerAnzeige, sortieren, sperreAus, umschalten, updateAus,
+  fehlertext, filtern, formularAus, haltbarkeitText, lagerartSetzen, hinweiseNachKomponente, lagerungText, leerAnzeige, sortieren, sperreAus, umschalten, updateAus,
   type Hinweis, type Zuteilung,
 } from "../lib/systemzuteilung";
 
 const z = (p: Partial<Zuteilung>): Zuteilung => ({
   id: "k1", kollektion_id: "c", kategorie: "Fleisch", quelle_zeile: 5, name: "Rindsentrecote", cf_stufe: null,
   produktion: ["SV"], lager_0_2: true, lager_tk: false, lager_gedeckt: true, lager_tage: null, regeneration: ["Steamer"],
-  bemerkung: null, hauptartikel_id: null, rezept_id: null, status: "ok", haltbarkeit_tage: 21, nur_vor_ort: false, ...p,
+  bemerkung: null, hauptartikel_id: null, rezept_id: null, status: "ok", haltbarkeit_tage: 21, nur_vor_ort: false, lager_trocken: false, ...p,
 });
 const h = (p: Partial<Hinweis>): Hinweis => ({ komponente_id: "k1", kategorie: "Fleisch", name: "x", code: "c", farbe: "gelb", text: "t", ...p });
 
@@ -15,7 +15,7 @@ describe("Formular", () => {
   it("Hin und zurück ohne Änderung", () => {
     const r = updateAus(formularAus(z({ lager_tage: 5, cf_stufe: 2, bemerkung: "Annahme" })));
     expect(r).toEqual({
-      update: { produktion: ["SV"], lager_0_2: true, lager_tk: false, lager_gedeckt: true, lager_tage: 5, regeneration: ["Steamer"], cf_stufe: 2, bemerkung: "Annahme" },
+      update: { produktion: ["SV"], lager_0_2: true, lager_tk: false, lager_gedeckt: true, lager_trocken: false, lager_tage: 5, regeneration: ["Steamer"], cf_stufe: 2, bemerkung: "Annahme" },
     });
   });
 
@@ -43,6 +43,13 @@ describe("Anzeige", () => {
     expect(lagerungText(z({ lager_tage: 5 }))).toBe("0–2 °C, gedeckt, 5 Tage");
     expect(lagerungText(z({ lager_0_2: false, lager_gedeckt: false }))).toBe("–");
     expect(lagerungText(z({ lager_0_2: false, lager_gedeckt: false, lager_tk: true }))).toBe("TK");
+    expect(lagerungText(z({ lager_0_2: false, lager_gedeckt: false, lager_trocken: true, lager_tage: 90 }))).toBe("trocken, bis 18 °C, 90 Tage");
+    // Trocken schliesst 0–2 °C und TK aus, in beide Richtungen.
+    const f = formularAus(z({ lager_tk: true }));
+    expect(lagerartSetzen(f, "lager_trocken", true)).toMatchObject({ lager_trocken: true, lager_0_2: false, lager_tk: false, lager_gedeckt: true });
+    expect(lagerartSetzen({ ...f, lager_0_2: false, lager_tk: false, lager_trocken: true }, "lager_tk", true)).toMatchObject({ lager_trocken: false, lager_tk: true });
+    expect(lagerartSetzen(f, "lager_tk", false)).toMatchObject({ lager_tk: false, lager_0_2: true });
+    expect(fehlertext({ code: "23514", message: 'violates check constraint "komponente_lager_trocken_check"' })).toMatch(/Trocken/);
   });
 
   it("Datenbankmeldungen verständlich", () => {
@@ -101,6 +108,7 @@ describe("Optimistische Sperre", () => {
       { spalte: "lager_0_2", op: "eq", wert: true },
       { spalte: "lager_tk", op: "eq", wert: false },
       { spalte: "lager_gedeckt", op: "eq", wert: true },
+      { spalte: "lager_trocken", op: "eq", wert: false },
       { spalte: "lager_tage", op: "is", wert: null },
       { spalte: "cf_stufe", op: "eq", wert: 2 },
       { spalte: "bemerkung", op: "eq", wert: 'Sauce "hell"' },

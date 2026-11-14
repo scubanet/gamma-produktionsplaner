@@ -1215,6 +1215,7 @@ export type Database = {
           kollektion_id: string
           lager_0_2: boolean
           lager_gedeckt: boolean
+          lager_trocken: boolean
           lager_tage: number | null
           lager_tk: boolean
           name: string
@@ -1232,6 +1233,7 @@ export type Database = {
           kollektion_id: string
           lager_0_2?: boolean
           lager_gedeckt?: boolean
+          lager_trocken?: boolean
           lager_tage?: number | null
           lager_tk?: boolean
           name: string
@@ -1249,6 +1251,7 @@ export type Database = {
           kollektion_id?: string
           lager_0_2?: boolean
           lager_gedeckt?: boolean
+          lager_trocken?: boolean
           lager_tage?: number | null
           lager_tk?: boolean
           name?: string
@@ -3069,6 +3072,7 @@ export type Database = {
           kollektion_id: string | null
           lager_0_2: boolean | null
           lager_gedeckt: boolean | null
+          lager_trocken: boolean | null
           lager_tage: number | null
           lager_tk: boolean | null
           name: string | null
@@ -3089,6 +3093,7 @@ export type Database = {
           kollektion_id?: string | null
           lager_0_2?: boolean | null
           lager_gedeckt?: boolean | null
+          lager_trocken?: boolean | null
           lager_tage?: number | null
           lager_tk?: boolean | null
           name?: string | null
@@ -3109,6 +3114,7 @@ export type Database = {
           kollektion_id?: string | null
           lager_0_2?: boolean | null
           lager_gedeckt?: boolean | null
+          lager_trocken?: boolean | null
           lager_tage?: number | null
           lager_tk?: boolean | null
           name?: string | null

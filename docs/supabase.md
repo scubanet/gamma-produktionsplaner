@@ -57,6 +57,7 @@ Stand: 14.11.2026
 | 21 checkliste_pro_welle | `produktion_aufgabe` mit `welle_nr` (0 = ohne Welle), View `produktion_checkliste`, `wellenplan` mit `vorschlag_nr` |
 | 22 artikel_vorschlag | Erweiterung `pg_trgm`, Funktion `komponente_artikel_vorschlag` (Vorschläge für den Hauptartikel) |
 | 26 bedarf_pro_spiel | View `service_gericht_bedarf`: Bedarf pro Service, Gericht und Komponente für die Produktionsliste pro Spiel |
+| 27 lager_trocken_kombi_steamer | `komponente.lager_trocken` (trocken, bis 18 °C, z.B. EcoNoma; schliesst 0–2 °C und TK aus; nimmt den roten Hinweis «ohne Kühlung» weg), Regeneration «Kombi-Steamer» |
 | 25 geschirr | Tabellen `service_artikel`, `geschirr_standard`, `anlass_geschirr`, Funktion `anlass_geschirr_vorschlagen`, View `anlass_geschirr_bedarf` |
 | 24 planung_aus_rezept | Views `planung_bedarf`, `planung_produktion_schritt`, `planung_produktion_komponente`, `planung_produktion_rolle`, `planung_produktion_geraet`, `planung_service_komponente` |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
