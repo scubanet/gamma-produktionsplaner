@@ -1833,7 +1833,15 @@ export type Database = {
           verpackung?: string | null
           version?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "rezept_gebinde_id_fkey"
+            columns: ["gebinde_id"]
+            isOneToOne: false
+            referencedRelation: "gebinde"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rezept_komponente: {
         Row: {
