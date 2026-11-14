@@ -6,8 +6,11 @@ import { supabase } from "@/lib/supabase";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import {
   filtern, leerwert, linienZeilen, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, SORTIERUNGEN,
-  type Aufgabe, type BedarfZeile, type ListeZeile, type Richtung, type SortFeld, type Zeile,
+  type BedarfZeile, type ListeZeile, type Richtung, type SortFeld, type Zeile,
 } from "@/lib/produktionsliste";
+import { aufgabenAus, fortschritt, fortschrittText, personen as personenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/lib/checkliste";
+import { checklisteSpeichern } from "@/lib/checkliste-speichern";
+import { alleSeiten } from "@/lib/seiten";
 import { ZustaendigDialog } from "@/components/produktion/ZustaendigDialog";
 import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
 import type { Hinweis, Regeneration, System, Zuteilung } from "@/lib/systemzuteilung";
@@ -18,7 +21,7 @@ import { excelExport } from "@/lib/export";
 
 type Anlass = { id: string; name: string; datum: string | null; datum_bis: string | null; saison_id: string | null; saison: { name: string } | null; menuelinie: { id: string; name: string }[] };
 type StatusZahl = Record<keyof typeof STATUS_ERWARTET, number | null>;
-type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; status: StatusZahl; aufgaben: Aufgabe[] };
+type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; status: StatusZahl; checkliste: ChecklisteZeile[] };
 
 const STATUS_PILL: Record<string, "ok" | "warn" | "info"> = { ok: "ok", offen: "warn", Zukauf: "info" };
 const HALTBARKEIT_HINWEIS = "Annahme aus der Excel (rot markiert), noch mit Philipp und dem Küchenchef zu bestätigen. Wellen und Start hängen davon ab.";
@@ -34,18 +37,23 @@ async function laden(): Promise<Daten> {
   if (!anlass?.saison_id) throw new Error("Kein Anlass mit Menülinien gefunden.");
 
   const statusWerte = Object.keys(STATUS_ERWARTET) as (keyof typeof STATUS_ERWARTET)[];
-  const [liste, bedarf, aufgaben, ...rest] = await Promise.all([
+  const saisonId = anlass.saison_id;
+  // Checkliste: eine Zeile pro Komponente und Welle, kann über 1000 Zeilen haben.
+  const checklisteLaden = alleSeiten<ChecklisteZeile>((von, bis) =>
+    supabase.from("produktion_checkliste").select("*").eq("saison_id", saisonId).order("komponente_id").order("welle_nr").range(von, bis),
+  );
+  const [liste, bedarf, ...rest] = await Promise.all([
     supabase.from("produktionsliste").select("*").eq("saison_id", anlass.saison_id),
     supabase.from("anlass_komponente_bedarf").select("*").in("anlass_id", (a.data as unknown as Anlass[]).filter((x) => x.saison_id === anlass.saison_id).map((x) => x.id)),
-    supabase.from("produktion_aufgabe").select("komponente_id, zustaendig, erledigt_am").eq("saison_id", anlass.saison_id),
     ...WELLEN_ERWARTET.map(([tage]) => supabase.rpc("wellen_anzahl", { p_saison: anlass.saison_id!, p_haltbarkeit: tage })),
     ...statusWerte.map((st) => supabase.from("komponente_zuteilung").select("id", { count: "exact", head: true }).eq("status", st)),
   ]);
-  for (const r of [liste, bedarf, aufgaben, ...rest]) if (r.error) throw r.error;
+  for (const r of [liste, bedarf, ...rest]) if (r.error) throw r.error;
+  const checkliste = await checklisteLaden;
   const wellen = rest.slice(0, WELLEN_ERWARTET.length).map((w) => ((w as { data: unknown }).data as number | null) ?? null);
   const zaehlung = rest.slice(WELLEN_ERWARTET.length) as { count: number | null }[];
   const status = Object.fromEntries(statusWerte.map((st, i) => [st, zaehlung[i].count])) as StatusZahl;
-  return { anlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, status, aufgaben: aufgaben.data ?? [] };
+  return { anlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, status, checkliste };
 }
 
 export default function Produktionsliste() {
@@ -71,7 +79,7 @@ export default function Produktionsliste() {
   function neuLaden() {
     laden().then((d) => {
       setDaten(d);
-      setAufgaben(new Map(d.aufgaben.map((a) => [a.komponente_id, a])));
+      setAufgaben(aufgabenAus(d.checkliste));
     }, (e: Error) => setFehler(e.message));
   }
 
@@ -98,49 +106,50 @@ export default function Produktionsliste() {
   useEffect(() => {
     laden().then((d) => {
       setDaten(d);
-      setAufgaben(new Map(d.aufgaben.map((a) => [a.komponente_id, a])));
+      setAufgaben(aufgabenAus(d.checkliste));
     }, (e: Error) => setFehler(e.message));
   }, []);
 
   const alle = useMemo(() => {
     if (!daten) return [];
     const roh = linie ? linienZeilen(daten.bedarf, daten.liste, linie) : saisonZeilen(daten.liste, daten.bedarf);
-    return sortieren(mitAufgaben(roh, aufgaben), sortFeld, richtung);
+    return sortieren(mitAufgaben(roh, fortschritt(aufgaben.values())), sortFeld, richtung);
   }, [daten, linie, aufgaben, sortFeld, richtung]);
   const zeilen = useMemo(() => filtern(alle, { kategorie, status, erledigt, zustaendig }), [alle, kategorie, status, erledigt, zustaendig]);
-  const personen = useMemo(
-    () => [...new Set([...aufgaben.values()].map((a) => a.zustaendig).filter((n): n is string => !!n))].sort((a, b) => a.localeCompare(b, "de-CH")),
-    [aufgaben],
-  );
+  const personen = useMemo(() => personenAus(aufgaben.values()), [aufgaben]);
   const erledigtZahl = alle.filter((z) => z.erledigtAm).length;
 
-  /** Eine Zeile der Checkliste speichern; die Datenbank setzt Zeitpunkt und Person. */
-  async function aufgabeSpeichern(komponenteId: string, teil: Partial<Pick<Aufgabe, "zustaendig" | "erledigt_am">>): Promise<string | null> {
+  /** Zuständig oder Erledigt für die genannten Wellen einer Komponente speichern; die Datenbank setzt Zeitpunkt und Person. */
+  async function aufgabeSpeichern(komponenteId: string, wellen: number[], teil: { zustaendig: string | null } | { erledigt_am: string | null }): Promise<string | null> {
     if (!daten?.anlass.saison_id) return "Keine Saison geladen.";
-    const vorher = aufgaben.get(komponenteId);
-    const neu: Aufgabe = { komponente_id: komponenteId, zustaendig: vorher?.zustaendig ?? null, erledigt_am: vorher?.erledigt_am ?? null, ...teil };
-    setAufgaben((m) => new Map(m).set(komponenteId, neu));
-    const r = await supabase
-      .from("produktion_aufgabe")
-      .upsert({ saison_id: daten.anlass.saison_id, komponente_id: komponenteId, zustaendig: neu.zustaendig, erledigt_am: neu.erledigt_am })
-      .select("komponente_id, zustaendig, erledigt_am")
-      .single();
-    if (r.error) {
-      setAufgaben((m) => {
-        const k = new Map(m);
-        if (vorher) k.set(komponenteId, vorher); else k.delete(komponenteId);
-        return k;
-      });
-      return r.error.message;
+    if (!wellen.length) return "Für diese Komponente gibt es keinen Eintrag in der Checkliste.";
+    const vorher = new Map(aufgaben);
+    setAufgaben((m) => {
+      const k = new Map(m);
+      for (const nr of wellen) {
+        const alt = k.get(schluessel(komponenteId, nr));
+        k.set(schluessel(komponenteId, nr), { komponente_id: komponenteId, welle_nr: nr, zustaendig: alt?.zustaendig ?? null, erledigt_am: alt?.erledigt_am ?? null, ...teil });
+      }
+      return k;
+    });
+    const r = await checklisteSpeichern(daten.anlass.saison_id, komponenteId, wellen, teil);
+    if ("fehler" in r) {
+      setAufgaben(vorher);
+      return r.fehler;
     }
-    setAufgaben((m) => new Map(m).set(komponenteId, r.data));
+    setAufgaben((m) => {
+      const k = new Map(m);
+      for (const a of r.zeilen) k.set(schluessel(a.komponente_id, a.welle_nr), a);
+      return k;
+    });
     return null;
   }
 
+  /** Direkt abhaken geht nur bei genau einer Welle (oder ohne Welle); sonst im Wellenplan pro Welle. */
   async function abhaken(z: Zeile, an: boolean) {
-    if (!z.komponenteId) return;
+    if (!z.komponenteId || z.wellenNr.length !== 1) return;
     setAktionsFehler(null);
-    const f = await aufgabeSpeichern(z.komponenteId, { erledigt_am: an ? new Date().toISOString() : null });
+    const f = await aufgabeSpeichern(z.komponenteId, z.wellenNr, { erledigt_am: an ? new Date().toISOString() : null });
     if (f) setAktionsFehler(`${z.komponente}: ${f}`);
   }
   const kategorien = useMemo(() => [...new Set((daten?.liste ?? []).map((l) => l.kategorie ?? ""))].filter(Boolean).sort((a, b) => a.localeCompare(b, "de-CH")), [daten]);
@@ -158,13 +167,23 @@ export default function Produktionsliste() {
     {
       key: "erledigt",
       label: "Erledigt",
-      render: (r) => (
-        <Checkbox
-          label={<span className="pl-sr">{`${r.komponente as string} erledigt`}</span>}
-          checked={!!r.erledigtAm}
-          onChange={(e) => abhaken(r as unknown as Zeile, (e as { target: HTMLInputElement }).target.checked)}
-        />
-      ),
+      render: (r) => {
+        const z = r as unknown as Zeile;
+        // Mehrere Wellen: Stand zeigen, abgehakt wird pro Welle im Wellenplan.
+        if (z.wellenNr.length > 1)
+          return (
+            <Button href="/produktion/wellen/" ariaLabel={`${z.komponente}: ${fortschrittText({ wellen: z.wellenNr, erledigt: z.wellenErledigt })} erledigt, im Wellenplan abhaken`}>
+              {fortschrittText({ wellen: z.wellenNr, erledigt: z.wellenErledigt })}
+            </Button>
+          );
+        return (
+          <Checkbox
+            label={<span className="pl-sr">{`${z.komponente} erledigt`}</span>}
+            checked={!!z.erledigtAm}
+            onChange={(e) => abhaken(z, (e as { target: HTMLInputElement }).target.checked)}
+          />
+        );
+      },
     },
     {
       key: "komponente",
@@ -306,12 +325,12 @@ export default function Produktionsliste() {
         <div className="pl-col-main">
           <div className="pl-grid-4">
             <KpiTile label="Zeilen in der Liste" value={daten ? formatZahl(zeilen.length) : warten} detail={daten ? `von ${formatZahl(alle.length)}, nach Filter` : undefined} />
-            <KpiTile label="Erledigt" value={daten ? `${formatZahl(erledigtZahl)} von ${formatZahl(alle.length)}` : warten} detail="abgehakt, ganze Saison" />
+            <KpiTile label="Erledigt" value={daten ? `${formatZahl(erledigtZahl)} von ${formatZahl(alle.length)}` : warten} detail="alle Wellen der Komponente abgehakt" />
             <KpiTile label="davon Zukauf" value={daten ? formatZahl(zeilen.filter((z) => z.status === "Zukauf").length) : warten} detail="CF-Stufe 4 oder 5" />
             <KpiTile label="Frühester Start" value={daten ? formatDatum(fruehesterStart) : warten} detail="Start ab aus Haltbarkeit und Anlassdaten" />
           </div>
 
-          <Card title="Komponenten" meta={`${linie ? "Menge dieser Menülinie; Haltbarkeit, Wellen und Start gelten für die Saison" : "Menge über alle Menülinien der Saison"}. Abhaken und Zuständig gelten pro Komponente für die ganze Saison.`}>
+          <Card title="Komponenten" meta={`${linie ? "Menge dieser Menülinie; Haltbarkeit, Wellen und Start gelten für die Saison" : "Menge über alle Menülinien der Saison"}. Abgehakt wird pro Welle: bei einer Welle direkt hier, bei mehreren im Wellenplan. Zuständig gilt hier für alle Wellen der Komponente.`}>
             {daten ? (
               zeilen.length ? <DataTable columns={spalten} rows={tabelle} /> : <p className="pl-muted">Keine Komponenten für diese Filter.</p>
             ) : fehler ? (
@@ -344,10 +363,16 @@ export default function Produktionsliste() {
           key={dialog.komponenteId}
           komponente={dialog.komponente}
           meta={dialog.kategorie}
-          wert={aufgaben.get(dialog.komponenteId)?.zustaendig ?? null}
+          wert={dialog.zustaendige.length === 1 ? dialog.zustaendige[0] : null}
           bekannte={personen}
+          hinweis={
+            dialog.wellenNr.length > 1
+              ? `Gilt für alle ${dialog.wellenNr.length} Wellen dieser Komponente.${dialog.zustaendige.length > 1 ? ` Heute eingetragen: ${dialog.zustaendige.join(", ")}.` : ""} Pro Welle ändern im Wellenplan.`
+              : "Gilt für diese Komponente in dieser Saison."
+          }
+          entfernbar={dialog.zustaendige.length > 0}
           onClose={() => setDialog(null)}
-          onSpeichern={(n) => aufgabeSpeichern(dialog.komponenteId!, { zustaendig: n })}
+          onSpeichern={(n) => aufgabeSpeichern(dialog.komponenteId!, dialog.wellenNr, { zustaendig: n })}
         />
       ) : null}
       {bearbeiten ? (

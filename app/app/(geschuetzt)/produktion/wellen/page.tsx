@@ -1,13 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Card, DataTable, Dialog, KpiTile, Notice, SegmentedControl, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, Dialog, KpiTile, Notice, SegmentedControl, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import { datumGueltig, hinweisPill, planNachWelle, vorschlagNachTag, type PlanWelle, type PlanZeile, type Uebersicht, type Vorschlag } from "@/lib/wellen";
 
-type Daten = { uebersicht: Uebersicht; vorschlag: Vorschlag[]; plan: PlanZeile[] };
+import { aufgabenAus, fortschritt, personen as personenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/lib/checkliste";
+import { checklisteSpeichern } from "@/lib/checkliste-speichern";
+import { ZustaendigDialog } from "@/components/produktion/ZustaendigDialog";
+
+type Daten = { uebersicht: Uebersicht; vorschlag: Vorschlag[]; plan: PlanZeile[]; checkliste: ChecklisteZeile[] };
+/** Eine Komponente in einer Welle; nr ist die Welle der Komponente im Vorschlag (Schlüssel der Checkliste). */
+type Ziel = { komponenteId: string; komponente: string; kategorie: string; nr: number };
 type WelleForm = { welle: PlanWelle; datum: string; bemerkung: string; fehler: string | null };
 
 const STATUS_PILL: Record<string, "ok" | "warn" | "info"> = { ok: "ok", offen: "warn", Zukauf: "info" };
@@ -19,11 +25,12 @@ async function laden(): Promise<Daten | null> {
   if (u.error) throw u.error;
   if (!u.data?.saison_id) return null;
   const saison = u.data.saison_id;
-  const [vorschlag, plan] = await Promise.all([
+  const [vorschlag, plan, checkliste] = await Promise.all([
     alleSeiten<Vorschlag>((von, bis) => supabase.from("wellen_vorschlag").select("*").eq("saison_id", saison).order("produktion_am").order("komponente_id").range(von, bis)),
     alleSeiten<PlanZeile>((von, bis) => supabase.from("wellenplan").select("*").eq("saison_id", saison).order("nummer").order("komponente_id").range(von, bis)),
+    alleSeiten<ChecklisteZeile>((von, bis) => supabase.from("produktion_checkliste").select("*").eq("saison_id", saison).gt("welle_nr", 0).order("komponente_id").order("welle_nr").range(von, bis)),
   ]);
-  return { uebersicht: u.data, vorschlag, plan };
+  return { uebersicht: u.data, vorschlag, plan, checkliste };
 }
 
 export default function Wellen() {
@@ -36,6 +43,8 @@ export default function Wellen() {
   const [form, setForm] = useState<WelleForm | null>(null);
   const [formOffen, setFormOffen] = useState(false);
   const [speichert, setSpeichert] = useState(false);
+  const [aufgaben, setAufgaben] = useState<Map<string, Aufgabe>>(new Map());
+  const [zustaendigZiel, setZustaendigZiel] = useState<Ziel | null>(null);
   const meldungRef = useRef<HTMLParagraphElement>(null);
   const anfrage = useRef(0);
 
@@ -43,7 +52,10 @@ export default function Wellen() {
     const nr = ++anfrage.current;
     return laden().then(
       (d) => {
-        if (nr === anfrage.current) setDaten(d);
+        if (nr === anfrage.current) {
+          setDaten(d);
+          setAufgaben(aufgabenAus(d?.checkliste ?? []));
+        }
         return true;
       },
       (e: Error) => {
@@ -91,10 +103,80 @@ export default function Wellen() {
     if (await neuLaden()) melden(`Welle ${form.welle.nummer} gespeichert: ${formatDatum(form.datum)}. Prüfhinweise neu gerechnet.`);
   }
 
+  const stand = fortschritt(aufgaben.values());
+  const personen = personenAus(aufgaben.values());
+
+  /** Zuständig oder Erledigt für eine Komponente in den genannten Wellen speichern. */
+  async function aufgabeSpeichern(komponenteId: string, wellen: number[], teil: { zustaendig: string | null } | { erledigt_am: string | null }): Promise<string | null> {
+    if (!u?.saison_id) return "Keine Saison geladen.";
+    const vorher = new Map(aufgaben);
+    setAufgaben((m) => {
+      const k = new Map(m);
+      for (const nr of wellen) {
+        const alt = k.get(schluessel(komponenteId, nr));
+        k.set(schluessel(komponenteId, nr), { komponente_id: komponenteId, welle_nr: nr, zustaendig: alt?.zustaendig ?? null, erledigt_am: alt?.erledigt_am ?? null, ...teil });
+      }
+      return k;
+    });
+    const r = await checklisteSpeichern(u.saison_id, komponenteId, wellen, teil);
+    if ("fehler" in r) {
+      setAufgaben(vorher);
+      return r.fehler;
+    }
+    setAufgaben((m) => {
+      const k = new Map(m);
+      for (const a of r.zeilen) k.set(schluessel(a.komponente_id, a.welle_nr), a);
+      return k;
+    });
+    return null;
+  }
+
+  async function abhaken(z: Ziel, an: boolean) {
+    setHinweis(null);
+    const f = await aufgabeSpeichern(z.komponenteId, [z.nr], { erledigt_am: an ? new Date().toISOString() : null });
+    if (f) setHinweis({ titel: "Nicht gespeichert", text: `${z.komponente}: ${f}` });
+  }
+
+  /** Felder der Checkliste für eine Tabellenzeile; ohne Schlüssel (sollte nicht vorkommen) bleibt die Zeile ohne Häkchen. */
+  const checkFelder = (komponenteId: string | null, komponente: string | null, kategorie: string | null, nr: number | null) => {
+    const ziel: Ziel | null = komponenteId && nr ? { komponenteId, komponente: komponente ?? "[Komponente]", kategorie: kategorie ?? "", nr } : null;
+    const a = ziel ? aufgaben.get(schluessel(ziel.komponenteId, ziel.nr)) : undefined;
+    return { ziel, erledigtAm: a?.erledigt_am ?? null, zustaendig: a?.zustaendig ?? null };
+  };
+  const erledigtIn = (zeilen: { komponente_id: string | null; nr: number | null }[]) =>
+    zeilen.filter((z) => z.komponente_id && z.nr && aufgaben.get(schluessel(z.komponente_id, z.nr))?.erledigt_am).length;
+
+  const erledigtSpalte: DataTableColumn = {
+    key: "erledigt",
+    label: "Erledigt",
+    render: (r) =>
+      r.ziel ? (
+        <Checkbox
+          label={<span className="pl-sr">{`${r.komponente as string} in dieser Welle erledigt`}</span>}
+          checked={!!r.erledigtAm}
+          onChange={(e) => abhaken(r.ziel as Ziel, (e as { target: HTMLInputElement }).target.checked)}
+        />
+      ) : null,
+  };
+  const zustaendigSpalte: DataTableColumn = {
+    key: "zustaendig",
+    label: "Zuständig",
+    render: (r) =>
+      r.ziel ? (
+        <span className="pl-print-hide">
+          <Button variant={r.zustaendig ? "secondary" : "dashed"} onClick={() => setZustaendigZiel(r.ziel as Ziel)} ariaLabel={`Zuständig für ${r.komponente as string} in dieser Welle`}>
+            {(r.zustaendig as string | null) ?? "+ Zuständig"}
+          </Button>
+        </span>
+      ) : null,
+  };
+
   // Menge der Welle hängt an der Annahme, wie Services den Wellen zugeordnet werden (Text unter den Tabellen).
   const mengeSpalte: DataTableColumn = { key: "mengeText", label: <span className="pl-assumed">Menge</span>, numeric: true };
   const basisSpalten: DataTableColumn[] = [
-    { key: "komponente", label: "Komponente", subKey: "kategorie" },
+    erledigtSpalte,
+    { key: "komponente", label: "Komponente", subKey: "kategorie", render: (r) => (r.erledigtAm ? <s className="pl-muted">{r.komponente as string}</s> : (r.komponente as string)) },
+    zustaendigSpalte,
     { key: "status", label: "Status", render: (r) => <StatusPill status={STATUS_PILL[r.status as string] ?? "neutral"}>{r.status as string}</StatusPill> },
     mengeSpalte,
     { key: "haltbarkeit", label: <span className="pl-assumed">Haltbarkeit</span>, numeric: true },
@@ -155,7 +237,7 @@ export default function Wellen() {
                 <Card
                   key={w.welleId}
                   title={`Welle ${w.nummer} · ${w.datum ? formatDatum(w.datum) : "[Datum]"}`}
-                  meta={`spätestens ${w.spaetestens ? formatDatum(w.spaetestens) : "[Datum]"}${w.bemerkung ? ` · ${w.bemerkung}` : ""} · ${w.zeilen.length} Komponenten${w.rot || w.gelb ? ` · ${w.rot} rot, ${w.gelb} gelb` : ""}`}
+                  meta={`spätestens ${w.spaetestens ? formatDatum(w.spaetestens) : "[Datum]"}${w.bemerkung ? ` · ${w.bemerkung}` : ""} · ${w.zeilen.length} Komponenten, ${erledigtIn(w.zeilen.map((z) => ({ komponente_id: z.komponente_id, nr: z.vorschlag_nr })))} erledigt${w.rot || w.gelb ? ` · ${w.rot} rot, ${w.gelb} gelb` : ""}`}
                   actions={
                     <span className="pl-print-hide">
                       <Button
@@ -188,6 +270,7 @@ export default function Wellen() {
                     ]}
                     rows={w.zeilen.map((z) => ({
                       id: `${z.komponente_id}-${z.einheit}`,
+                      ...checkFelder(z.komponente_id, z.komponente, z.kategorie, z.vorschlag_nr),
                       komponente: z.komponente,
                       kategorie: z.kategorie,
                       status: z.status ?? "",
@@ -202,7 +285,7 @@ export default function Wellen() {
                 </Card>
               ))
             : vorschlagWellen.map((w) => (
-                <Card key={w.datum} title={`Welle ${w.nr} · ${formatDatum(w.datum)}`} meta={`spätester Produktionstag: Tag vor der Anlieferung, danach alle «Haltbarkeit» Tage · ${w.zeilen.length} Komponenten`}>
+                <Card key={w.datum} title={`Welle ${w.nr} · ${formatDatum(w.datum)}`} meta={`spätester Produktionstag: Tag vor der Anlieferung, danach alle «Haltbarkeit» Tage · ${w.zeilen.length} Komponenten, ${erledigtIn(w.zeilen)} erledigt`}>
                   <DataTable
                     columns={[
                       ...basisSpalten,
@@ -221,6 +304,7 @@ export default function Wellen() {
                     ]}
                     rows={w.zeilen.map((z) => ({
                       id: `${z.komponente_id}-${z.einheit_total}`,
+                      ...checkFelder(z.komponente_id, z.komponente, z.kategorie, z.nr),
                       komponente: z.komponente,
                       kategorie: z.kategorie,
                       status: z.status ?? "",
@@ -245,10 +329,28 @@ export default function Wellen() {
           <p className="pl-small">
             <span className="pl-assumed">Haltbarkeit</span>: Annahme aus der Excel, noch mit Philipp und dem Küchenchef zu bestätigen. <span className="pl-assumed">Menge</span>: Annahme zur Zuordnung wie im
             Raster der Excel: Ein Service wird aus der spätesten Welle bedient, die vor seinem Datum produziert wird. Termine wie in der Excel: erste Welle am Tag vor der Anlieferung, danach alle «Haltbarkeit» Tage.
+            Erledigt und Zuständig gelten pro Komponente und Welle und bleiben erhalten, wenn der Vorschlag neu übernommen wird. <span className="pl-assumed">Annahme</span>: Ändern sich Anlassdaten oder
+            Haltbarkeit, verschieben sich die Wellen; die Häkchen dann prüfen. Komponenten ohne Welle (Zukauf, offen, nur vor Ort) werden in der Produktionsliste abgehakt.
           </p>
         </>
       ) : daten === undefined ? (
         <p className="pl-muted" role="status">{hinweis ? "Keine Daten." : "Wellen werden geladen …"}</p>
+      ) : null}
+
+      {zustaendigZiel ? (
+        <ZustaendigDialog
+          key={schluessel(zustaendigZiel.komponenteId, zustaendigZiel.nr)}
+          komponente={zustaendigZiel.komponente}
+          meta={zustaendigZiel.kategorie}
+          wert={aufgaben.get(schluessel(zustaendigZiel.komponenteId, zustaendigZiel.nr))?.zustaendig ?? null}
+          bekannte={personen}
+          hinweis="Gilt für diese Komponente in dieser Welle."
+          alleWellen={stand.get(zustaendigZiel.komponenteId)?.wellen.length}
+          onClose={() => setZustaendigZiel(null)}
+          onSpeichern={(n, fuerAlle) =>
+            aufgabeSpeichern(zustaendigZiel.komponenteId, fuerAlle ? (stand.get(zustaendigZiel.komponenteId)?.wellen ?? [zustaendigZiel.nr]) : [zustaendigZiel.nr], { zustaendig: n })
+          }
+        />
       ) : null}
 
       <Dialog

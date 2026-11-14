@@ -1507,6 +1507,7 @@ export type Database = {
           geaendert_von: string | null
           komponente_id: string
           saison_id: string
+          welle_nr: number
           zustaendig: string | null
         }
         Insert: {
@@ -1516,6 +1517,7 @@ export type Database = {
           geaendert_von?: string | null
           komponente_id: string
           saison_id: string
+          welle_nr?: number
           zustaendig?: string | null
         }
         Update: {
@@ -1525,6 +1527,7 @@ export type Database = {
           geaendert_von?: string | null
           komponente_id?: string
           saison_id?: string
+          welle_nr?: number
           zustaendig?: string | null
         }
         Relationships: [
@@ -2974,6 +2977,20 @@ export type Database = {
         }
         Relationships: []
       }
+      produktion_checkliste: {
+        Row: {
+          erledigt_am: string | null
+          erledigt_von: string | null
+          komponente_id: string | null
+          plan_nummer: number | null
+          produktion_am: string | null
+          saison_id: string | null
+          spaetestens_am: string | null
+          welle_nr: number | null
+          zustaendig: string | null
+        }
+        Relationships: []
+      }
       produktionsliste: {
         Row: {
           einheit_total: string | null
@@ -3332,6 +3349,7 @@ export type Database = {
           saison_id: string | null
           spaetestens_am: string | null
           status: string | null
+          vorschlag_nr: number | null
           welle_id: string | null
         }
         Relationships: [
@@ -3476,6 +3494,22 @@ export type Database = {
       karte_kopieren: {
         Args: { p_anlass: string; p_karte: string; p_name?: string }
         Returns: string
+      }
+      komponente_artikel_vorschlag: {
+        Args: { p_anzahl?: number; p_saison: string; p_schwelle?: number }
+        Returns: {
+          aehnlichkeit: number
+          artikel: string
+          artikel_einheit: string
+          artikel_id: string
+          artikelnummer: string
+          kategorie: string
+          komponente: string
+          komponente_id: string
+          preis_pro_einheit: number
+          rang: number
+          status: string
+        }[]
       }
       lieferant_bestelltermin: {
         Args: { p_lieferant: string; p_liefern_bis: string }

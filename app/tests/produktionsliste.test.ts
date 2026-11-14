@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { filtern, herleitungTerm, leerwert, linienZeilen, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, type Aufgabe, type BedarfZeile, type ListeZeile } from "../lib/produktionsliste";
+import { filtern, herleitungTerm, leerwert, linienZeilen, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, type BedarfZeile, type ListeZeile } from "../lib/produktionsliste";
+import { aufgabenAus, fortschritt, fortschrittText, personen, schluessel, type Aufgabe, type ChecklisteZeile } from "../lib/checkliste";
 import { mengenKontrollen, statusKontrolle, wellenKontrolle } from "../lib/kontrollwerte";
 import { formatAnteil, formatDatum, formatMenge } from "../lib/format";
 
@@ -76,15 +77,36 @@ describe("Checkliste", () => {
     ],
     [],
   );
-  const aufgaben = new Map<string, Aufgabe>([
-    ["a", { komponente_id: "a", zustaendig: "Remo", erledigt_am: "2026-11-10T09:00:00Z" }],
-    ["b", { komponente_id: "b", zustaendig: null, erledigt_am: null }],
-  ]);
-  const z = mitAufgaben(roh, aufgaben);
+  // Zander: zwei Wellen, beide erledigt. Apfel: eine Welle, offen. Käse: ohne Welle (0), nichts eingetragen.
+  const aufgaben: Aufgabe[] = [
+    { komponente_id: "a", welle_nr: 1, zustaendig: "Remo", erledigt_am: "2026-11-10T09:00:00Z" },
+    { komponente_id: "a", welle_nr: 2, zustaendig: "Remo", erledigt_am: "2026-11-12T09:00:00Z" },
+    { komponente_id: "b", welle_nr: 1, zustaendig: null, erledigt_am: null },
+    { komponente_id: "c", welle_nr: 0, zustaendig: null, erledigt_am: null },
+  ];
+  const z = mitAufgaben(roh, fortschritt(aufgaben));
 
   it("übernimmt Zuständig und Erledigt", () => {
-    expect(z.find((x) => x.komponenteId === "a")).toMatchObject({ zustaendig: "Remo", erledigtAm: "2026-11-10T09:00:00Z" });
-    expect(z.find((x) => x.komponenteId === "c")).toMatchObject({ zustaendig: null, erledigtAm: null });
+    expect(z.find((x) => x.komponenteId === "a")).toMatchObject({ zustaendig: "Remo", erledigtAm: "2026-11-12T09:00:00Z", wellenNr: [1, 2], wellenErledigt: 2 });
+    expect(z.find((x) => x.komponenteId === "c")).toMatchObject({ zustaendig: null, erledigtAm: null, wellenNr: [0] });
+  });
+  it("gilt erst als erledigt, wenn alle Wellen abgehakt sind", () => {
+    const teil = fortschritt([aufgaben[0], { ...aufgaben[1], erledigt_am: null, zustaendig: "Patisserie" }]).get("a")!;
+    expect(teil).toMatchObject({ erledigt: 1, erledigtAm: null, zustaendige: ["Patisserie", "Remo"] });
+    expect(fortschrittText(teil)).toBe("1 von 2 Wellen");
+    const halb = mitAufgaben(roh, fortschritt([aufgaben[0], { ...aufgaben[1], erledigt_am: null, zustaendig: "Patisserie" }]));
+    expect(filtern(halb, { kategorie: "", status: "", erledigt: "erledigt" })).toHaveLength(0);
+    expect(filtern(halb, { kategorie: "", status: "", zustaendig: "Patisserie" }).map((x) => x.komponente)).toEqual(["Zander"]);
+    expect(halb.find((x) => x.komponenteId === "a")?.zustaendig).toBe("Patisserie, Remo");
+  });
+  it("liest die View produktion_checkliste und überspringt Zeilen ohne Schlüssel", () => {
+    const zeile = (p: Partial<ChecklisteZeile>): ChecklisteZeile => ({
+      saison_id: "s", komponente_id: "a", welle_nr: 1, produktion_am: "2026-12-22", spaetestens_am: "2026-12-22", plan_nummer: null,
+      zustaendig: null, erledigt_am: null, erledigt_von: null, ...p,
+    });
+    const m = aufgabenAus([zeile({}), zeile({ welle_nr: 2, zustaendig: "Remo" }), zeile({ komponente_id: null })]);
+    expect([...m.keys()]).toEqual([schluessel("a", 1), schluessel("a", 2)]);
+    expect(personen(m.values())).toEqual(["Remo"]);
   });
   it("filtert nach erledigt und zuständig", () => {
     expect(filtern(z, { kategorie: "", status: "", erledigt: "erledigt" }).map((x) => x.komponente)).toEqual(["Zander"]);

@@ -2,6 +2,7 @@
 // Die App setzt nur zusammen und filtert; jede Menge stammt aus der Datenbank.
 import type { Database } from "./database.types";
 import { formatAnteil, formatProGast, formatZahl } from "./format";
+import type { Fortschritt } from "./checkliste";
 
 export type ListeZeile = Database["public"]["Views"]["produktionsliste"]["Row"];
 export type BedarfZeile = Database["public"]["Views"]["anlass_komponente_bedarf"]["Row"];
@@ -21,12 +22,14 @@ export type Zeile = {
   gericht: string | null;
   gang: string | null;
   herleitung: string;
-  /** Checkliste (Tabelle produktion_aufgabe), gilt für die Komponente in der ganzen Saison. */
+  /** Checkliste pro Welle (View produktion_checkliste), hier zusammengefasst pro Komponente. */
   zustaendig: string | null;
+  zustaendige: string[];
+  /** Gesetzt, wenn alle Wellen der Komponente abgehakt sind. */
   erledigtAm: string | null;
+  wellenNr: number[];
+  wellenErledigt: number;
 };
-
-export type Aufgabe = { komponente_id: string; zustaendig: string | null; erledigt_am: string | null };
 
 /** Ein Summand: «1’100 Gäste × 60 % × 120 g». */
 export function herleitungTerm(b: Pick<BedarfZeile, "gaeste" | "anteil" | "menge_pro_gast" | "einheit">): string {
@@ -65,7 +68,10 @@ export function saisonZeilen(liste: ListeZeile[], bedarf: BedarfZeile[]): Zeile[
         ? teile.map((b) => `${herleitungTerm(b)} (${b.menuelinie})`).join(" + ")
         : "[Herleitung fehlt]",
       zustaendig: null,
+      zustaendige: [],
       erledigtAm: null,
+      wellenNr: [],
+      wellenErledigt: 0,
     };
   });
 }
@@ -93,16 +99,21 @@ export function linienZeilen(bedarf: BedarfZeile[], liste: ListeZeile[], menueli
         gang: b.gang,
         herleitung: herleitungTerm(b),
         zustaendig: null,
+        zustaendige: [],
         erledigtAm: null,
+        wellenNr: [],
+        wellenErledigt: 0,
       };
     });
 }
 
-/** Zuständig und Erledigt aus der Checkliste in die Zeilen übernehmen. */
-export function mitAufgaben(zeilen: Zeile[], aufgaben: Map<string, Aufgabe>): Zeile[] {
+/** Stand der Checkliste (über alle Wellen der Komponente) in die Zeilen übernehmen. */
+export function mitAufgaben(zeilen: Zeile[], stand: Map<string, Fortschritt>): Zeile[] {
   return zeilen.map((z) => {
-    const a = z.komponenteId ? aufgaben.get(z.komponenteId) : undefined;
-    return a ? { ...z, zustaendig: a.zustaendig, erledigtAm: a.erledigt_am } : z;
+    const f = z.komponenteId ? stand.get(z.komponenteId) : undefined;
+    return f
+      ? { ...z, zustaendig: f.zustaendige.join(", ") || null, zustaendige: f.zustaendige, erledigtAm: f.erledigtAm, wellenNr: f.wellen, wellenErledigt: f.erledigt }
+      : z;
   });
 }
 
@@ -117,7 +128,7 @@ export function filtern(zeilen: Zeile[], f: Filter): Zeile[] {
       (!f.kategorie || z.kategorie === f.kategorie) &&
       (!f.status || z.status === f.status) &&
       (!f.erledigt || (f.erledigt === "erledigt") === !!z.erledigtAm) &&
-      (!f.zustaendig || (f.zustaendig === OHNE_ZUSTAENDIG ? !z.zustaendig : z.zustaendig === f.zustaendig)),
+      (!f.zustaendig || (f.zustaendig === OHNE_ZUSTAENDIG ? !z.zustaendige.length : z.zustaendige.includes(f.zustaendig))),
   );
 }
 
