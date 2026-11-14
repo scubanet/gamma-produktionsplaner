@@ -99,6 +99,9 @@ Die Gerichte der Winter Collection mit ihren Komponenten.
   - Zutaten: Bezeichnung, Menge in Gramm, Notiz (Originalangabe wie «2 EL»), Annahme. «+ Zutat» fügt hinzu, «Entfernen» löscht.
   - Schritte: Text, Gerät, Temperatur, Minuten aktiv und unbeaufsichtigt, HACCP.
   - Offene Punkte lassen sich als erledigt abhaken.
+  - **Planung: Gebinde und Service:** Gebinde (IFCO-Box), Verpackung, Füllmenge pro Gebinde in Gramm und der Aufwand für die Ausgabe in Minuten pro 100 Portionen.
+  - **Pro Schritt:** Ort (Zentralküche, vor Ort, Logistik), Rolle, Rüstzeit (einmal) und Menge pro Durchgang. «aktiv» und «unbeaufsichtigt» gelten pro Durchgang. Regenerieren vor Ort ist ein eigener Schritt mit Ort «vor Ort».
+- **Karte «Planung»** auf der Rezeptkarte: zeigt, was für die Berechnung noch fehlt, und die Systemzuteilung der verknüpften Komponenten. Mit «+ Komponente verknüpfen» wird das Rezept einer Komponente im Katalog zugeordnet.
   - Gespeichert wird alles zusammen mit «Speichern». Entfernte Zeilen sind erst dann gelöscht.
   - **Rezept löschen** steht unten auf der Pflegeseite und ist nur für Administratoren sichtbar. Es löscht endgültig. Ein Rezept, das im Katalog, in der Systemzuteilung, in einem Anlass oder in einem anderen Rezept verwendet wird, lässt sich nicht löschen; die App nennt die Stelle.
 - Bei importierten Rezepten fehlen oft Grammangaben, Basiszutat und Ergibt-Menge. Das steht pro Rezept unter «Offene Punkte».

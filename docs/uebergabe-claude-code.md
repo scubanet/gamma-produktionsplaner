@@ -7,7 +7,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | Bereich | Wo | Stand |
 | --- | --- | --- |
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
-| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 22 Migrationen (21 und 22 noch einzuspielen), siehe `docs/supabase.md` |
+| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 23 Migrationen (23 noch einzuspielen), siehe `docs/supabase.md` |
 | App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 95 Tests, Auslieferung über GitHub Actions |
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.8 | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
@@ -39,6 +39,17 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 - **Artikel zuordnen** (Migration 22, `/einkauf/zuordnen`): Die Datenbank schlägt pro Komponente ohne Hauptartikel bis zu drei Artikel nach Ähnlichkeit des Namens vor; ein Klick ordnet zu. Die Verknüpfung bleibt ein Entscheid von Hand.
 - **Reihenfolge beim Ausliefern:** zuerst `supabase db push` (Migrationen 21 und 22), dann `cd app && npm run types` (die Typen in `database.types.ts` sind für 21 und 22 von Hand nachgeführt und sollen danach gleich herauskommen), erst dann `git push`. Sonst läuft die neue App gegen die alte Datenbank.
 - Tests: Auf Node 22 schlagen 6 ältere Tests wegen des Tausender-Apostrophs fehl (' statt ’). Ob sie mit Node 24 (wie im Workflow) laufen, wurde am 14.11. nicht geprüft.
+
+## Vom Rezept zu Produktion, Logistik und Service (ab 14.11.2026)
+
+Ziel von Dominik: Ausgehend vom Rezept rechnet die App Produktion, Logistik und Service. Basisrezepte (Komponenten) tragen Aufwand, Geräte und Gebinde; Gerichte setzen sie für den Anlass zusammen. Entwurf der Bildschirme: https://claude.ai/artifact/5YJeDKrEEiZx9ck7u4wLjC
+
+- **Etappe 1, gebaut (Migration 23):** Rezept bearbeiten mit Karte «Planung: Gebinde und Service» und pro Schritt Ort, Rolle, Rüstzeit, Menge pro Durchgang. Rezeptkarte mit Karte «Planung»: was erfasst ist, was fehlt, Systemzuteilung der verknüpften Komponenten, Komponente verknüpfen oder lösen.
+- **Etappe 2, offen:** Berechnung pro Anlass und Service: Durchgänge, Stunden pro Rolle, Gerätebelegung, Anzahl Gebinde, Gewicht und Volumen. Ersetzt die Handeingabe unter Ressourcen. Gebinde in den Stammdaten pflegen (Mass, Tara, Volumen der IFCO-Box fehlen).
+- **Etappe 3, offen:** Geschirr und Besteck pro Anlass in drei Ebenen (pro Gast und Gang, Abweichung pro Gericht, Material für die Ausgabe). Entscheid Dominik: Wechselfaktor pro Anlass, mit einem vorgeschlagenen Standard, der übersteuert werden kann.
+- Entscheide Dominik: Rezepte basieren auf 10 Portionen. Gebinde ist die IFCO-Box, für gekühlt und TK. Die Systemzuteilung bleibt massgebend für Lagerung und Regeneration.
+- Annahme, noch zu bestätigen: Aufwand der Ausgabe im Service in Minuten pro 100 Portionen.
+- Pilot: zehn Komponenten von Spiel 1 (Rindsentrecote, Kartoffelgratin, Portweinjus, Kürbis, Risotto, Erbsencrèmesuppe, Sellerie-Apfel-Suppe, Gerstensalat, Gerösteter Blumenkohl, Vitello Tonnato). Am 14.11. hat keine ein verknüpftes Rezept, und Lagerung und Regeneration sind in der Systemzuteilung bei allen leer.
 
 ## Kontrollwerte aus der Excel
 
