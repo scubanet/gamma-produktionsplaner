@@ -9,14 +9,13 @@ export type System = Database["public"]["Tables"]["produktionssystem"]["Row"];
 export type Regeneration = Database["public"]["Tables"]["regenerationsart"]["Row"];
 export type KomponenteUpdate = Pick<
   Database["public"]["Tables"]["komponente"]["Update"],
-  "produktion" | "lager_0_2" | "lager_tk" | "lager_gedeckt" | "lager_trocken" | "lager_tage" | "regeneration" | "cf_stufe" | "bemerkung"
+  "produktion" | "lager_0_2" | "lager_tk" | "lager_trocken" | "lager_tage" | "regeneration" | "cf_stufe" | "bemerkung"
 >;
 
 export type Formular = {
   produktion: string[];
   lager_0_2: boolean;
   lager_tk: boolean;
-  lager_gedeckt: boolean;
   lager_trocken: boolean;
   lager_tage: string;
   regeneration: string[];
@@ -29,7 +28,6 @@ export function formularAus(z: Zuteilung): Formular {
     produktion: z.produktion ?? [],
     lager_0_2: !!z.lager_0_2,
     lager_tk: !!z.lager_tk,
-    lager_gedeckt: !!z.lager_gedeckt,
     lager_trocken: !!z.lager_trocken,
     lager_tage: z.lager_tage === null ? "" : String(z.lager_tage),
     regeneration: z.regeneration ?? [],
@@ -44,7 +42,7 @@ export function umschalten(liste: string[], code: string, an: boolean, reihenfol
   return neu.sort((a, b) => reihenfolge.indexOf(a) - reihenfolge.indexOf(b));
 }
 
-/** Trocken (bis 18 °C) schliesst 0–2 °C und TK aus: Wer das eine ankreuzt, nimmt das andere weg. */
+/** Economat (trocken, bis 18 °C) schliesst 0–2 °C und TK aus: Wer das eine ankreuzt, nimmt das andere weg. */
 export function lagerartSetzen(f: Formular, feld: "lager_0_2" | "lager_tk" | "lager_trocken", an: boolean): Formular {
   if (!an) return { ...f, [feld]: false };
   return feld === "lager_trocken" ? { ...f, lager_trocken: true, lager_0_2: false, lager_tk: false } : { ...f, [feld]: true, lager_trocken: false };
@@ -69,7 +67,6 @@ export function updateAus(f: Formular): { update: KomponenteUpdate } | { fehler:
       produktion: f.produktion,
       lager_0_2: f.lager_0_2,
       lager_tk: f.lager_tk,
-      lager_gedeckt: f.lager_gedeckt,
       lager_trocken: f.lager_trocken,
       lager_tage,
       regeneration: f.regeneration,
@@ -79,13 +76,12 @@ export function updateAus(f: Formular): { update: KomponenteUpdate } | { fehler:
   };
 }
 
-/** Lagerung als Text wie in der Excel: «0–2 °C, gedeckt, 5 Tage». */
-export function lagerungText(z: Pick<Zuteilung, "lager_0_2" | "lager_tk" | "lager_gedeckt" | "lager_tage"> & Partial<Pick<Zuteilung, "lager_trocken">>): string {
+/** Lagerung als Text: «0–2 °C, 5 Tage» oder «Economat, 90 Tage». «gedeckt» wird nicht mehr erfasst (durch Economat ersetzt). */
+export function lagerungText(z: Pick<Zuteilung, "lager_0_2" | "lager_tk" | "lager_tage"> & Partial<Pick<Zuteilung, "lager_trocken">>): string {
   const teile = [
     z.lager_0_2 ? "0–2 °C" : null,
     z.lager_tk ? "TK" : null,
-    z.lager_trocken ? "trocken, bis 18 °C" : null,
-    z.lager_gedeckt ? "gedeckt" : null,
+    z.lager_trocken ? "Economat" : null,
     z.lager_tage !== null && z.lager_tage !== undefined ? `${z.lager_tage} Tage` : null,
   ].filter(Boolean);
   return teile.length ? teile.join(", ") : "–";
@@ -124,7 +120,7 @@ export function sortieren(zeilen: Zuteilung[], kategorien: string[]): Zuteilung[
 /** Postgres-Fehler der Prüfungen verständlich machen. */
 export function fehlertext(e: { message: string; code?: string }): string {
   if (e.code === "23514" && /lager_tage_check/.test(e.message)) return "Lagerung Tage: ab 1 Tag, oder leer lassen.";
-  if (e.code === "23514" && /lager_trocken_check/.test(e.message)) return "Trocken (bis 18 °C) geht nicht zusammen mit 0–2 °C oder TK.";
+  if (e.code === "23514" && /lager_trocken_check/.test(e.message)) return "Economat (trocken, bis 18 °C) geht nicht zusammen mit 0–2 °C oder TK.";
   if (e.code === "22003") return "Zahl zu gross.";
   if (e.code === "23514" && /cf_stufe_check/.test(e.message)) return "CF-Stufe muss zwischen 0 und 5 liegen.";
   return e.message;
@@ -160,7 +156,6 @@ export function sperreAus(z: Zuteilung): Bedingung[] {
     { spalte: "regeneration", op: "eq", wert: arrayLiteral(z.regeneration ?? []) },
     { spalte: "lager_0_2", op: "eq", wert: !!z.lager_0_2 },
     { spalte: "lager_tk", op: "eq", wert: !!z.lager_tk },
-    { spalte: "lager_gedeckt", op: "eq", wert: !!z.lager_gedeckt },
     { spalte: "lager_trocken", op: "eq", wert: !!z.lager_trocken },
   ];
   for (const spalte of ["lager_tage", "cf_stufe", "bemerkung"] as const) {

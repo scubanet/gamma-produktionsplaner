@@ -137,8 +137,7 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
       >
         <Checkbox label="0–2 °C" checked={f.lager_0_2} onChange={(e) => set(lagerartSetzen(f, "lager_0_2", checked(e)))} />
         <Checkbox label="TK" checked={f.lager_tk} onChange={(e) => set(lagerartSetzen(f, "lager_tk", checked(e)))} />
-        <Checkbox label="trocken, bis 18 °C" checked={f.lager_trocken} onChange={(e) => set(lagerartSetzen(f, "lager_trocken", checked(e)))} />
-        <Checkbox label="gedeckt" checked={f.lager_gedeckt} onChange={(e) => set({ lager_gedeckt: checked(e) })} />
+        <Checkbox label="Economat (trocken, bis 18 °C)" checked={f.lager_trocken} onChange={(e) => set(lagerartSetzen(f, "lager_trocken", checked(e)))} />
         <TextField id="lager-tage" label="Lagerung Tage" numeric value={f.lager_tage} onChange={(e) => set({ lager_tage: wert(e) })} placeholder="leer = aus Produktion" />
       </Fieldset>
 

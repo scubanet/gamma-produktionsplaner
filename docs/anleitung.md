@@ -84,7 +84,7 @@ Ersetzt die Kategorienblätter der Excel.
 
 - Liste aller Komponenten mit Status: **offen** (noch nicht zugeteilt), **ok**, **Zukauf** (CF-Stufe 4 oder 5).
 - Suchen und filtern nach Kategorie, Status und Prüfhinweisen.
-- **Bearbeiten** öffnet die Zuteilung: Produktionssystem, Lagerung (0–2 °C, TK, trocken bis 18 °C, gedeckt, Tage), Regeneration und CF-Stufe. Speichern rechnet Status und Prüfhinweise neu.
+- **Bearbeiten** öffnet die Zuteilung: Produktionssystem, Lagerung (0–2 °C, TK, Economat = trocken bis 18 °C, Tage), Regeneration und CF-Stufe. Speichern rechnet Status und Prüfhinweise neu.
 - Hat inzwischen jemand anderes dieselbe Komponente geändert, wird nicht überschrieben; die App lädt den neuen Stand.
 
 ## Katalog
