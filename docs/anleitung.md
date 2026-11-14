@@ -57,7 +57,7 @@ Ersetzt das Blatt «Spengler Cup» der Excel.
 **Produktionsliste**
 
 - Zeigt pro Komponente die Menge für die ganze Saison, Haltbarkeit, Anzahl Wellen und den frühesten Start.
-- Filter: Kategorie, Status, Menülinie.
+- Filter: Kategorie, Status, Spiel. Jedes Spiel wird einzeln gezeigt, mit eigener Menge, Datum und Anlieferung, auch wenn mehrere Spiele dasselbe Menü haben.
 - Die Herleitung zeigt Gäste × Anteil × Menge pro Gast.
 - «Abgleich mit der Excel» vergleicht die Kontrollwerte (z.B. Bündner Trockenfleisch 181.5 kg). Stimmt etwas nicht, zuerst melden.
 - Export als Excel, Drucken als PDF.

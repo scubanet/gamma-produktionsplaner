@@ -47,6 +47,7 @@ Stand: 14.11.2026
 | 20 produktion_checkliste | Tabelle `produktion_aufgabe`: Zuständig und Erledigt pro Komponente und Saison. Version `20261110185525` (siehe unten) |
 | 21 checkliste_pro_welle | `produktion_aufgabe` mit `welle_nr` (0 = ohne Welle), View `produktion_checkliste`, `wellenplan` mit `vorschlag_nr` |
 | 22 artikel_vorschlag | Erweiterung `pg_trgm`, Funktion `komponente_artikel_vorschlag` (Vorschläge für den Hauptartikel) |
+| 26 bedarf_pro_spiel | View `service_gericht_bedarf`: Bedarf pro Service, Gericht und Komponente für die Produktionsliste pro Spiel |
 | 25 geschirr | Tabellen `service_artikel`, `geschirr_standard`, `anlass_geschirr`, Funktion `anlass_geschirr_vorschlagen`, View `anlass_geschirr_bedarf` |
 | 24 planung_aus_rezept | Views `planung_bedarf`, `planung_produktion_schritt`, `planung_produktion_komponente`, `planung_produktion_rolle`, `planung_produktion_geraet`, `planung_service_komponente` |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
@@ -123,6 +124,7 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `menuelinie_gericht_hinzufuegen(linie, gericht, anteil)`: Gericht aus dem Katalog mit seinen Komponenten in eine Menülinie; `karte_kopieren(karte, anlass, name)`
 - `anlass_komponente_bedarf`: Gäste × Anteil × Menge pro Gast je Menülinie
 - `service_komponente_bedarf`: derselbe Bedarf je Service (mit Datum)
+- `service_gericht_bedarf`: Bedarf je Service, Gericht und Komponente mit Datum und Anlieferung. Die Produktionsliste filtert damit pro Spiel, auch wenn mehrere Spiele dieselbe Menülinie haben. Kontrollwert: Rindsentrecote Spiel 1 und Spiel 6 je 39.6 kg, zusammen 79.2 kg wie die Menülinie
 - `produktionsliste`: Menge, Haltbarkeit, Wellen, Start pro Komponente und Saison; `zeilen_ohne_menge` zeigt fehlende Mengen
 - `wellen_anzahl(saison, haltbarkeit)`: Anzahl Produktionswellen wie die Hilfstabelle im Blatt Produktionsplan
 - `wellen_termine(saison, haltbarkeit)`: die Termine dazu (erste Welle am Tag vor der Anlieferung, danach alle «Haltbarkeit» Tage). Migration 12 prüft beim Einspielen, dass die Anzahl mit `wellen_anzahl` übereinstimmt.

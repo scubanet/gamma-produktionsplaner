@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filtern, herleitungTerm, leerwert, linienZeilen, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, type BedarfZeile, type ListeZeile } from "../lib/produktionsliste";
+import { filtern, herleitungTerm, leerwert, linienZeilen, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, spiele, spielZeilen, type BedarfZeile, type ListeZeile, type SpielBedarf } from "../lib/produktionsliste";
 import { aufgabenAus, fortschritt, fortschrittText, personen, schluessel, type Aufgabe, type ChecklisteZeile } from "../lib/checkliste";
 import { mengenKontrollen, statusKontrolle, wellenKontrolle } from "../lib/kontrollwerte";
 import { formatAnteil, formatDatum, formatMenge } from "../lib/format";
@@ -50,6 +50,22 @@ describe("Menülinie", () => {
     const z = linienZeilen([bedarf({}), bedarf({ menuelinie_id: "l2" })], [liste({ menge_total: 999 })], "l1");
     expect(z).toHaveLength(1);
     expect(z[0]).toMatchObject({ menge: 79.2, haltbarkeitTage: 21, wellen: 3, gericht: "Entrecote", menuelinie: "Spiel 1 und 6" });
+  });
+});
+
+describe("Pro Spiel", () => {
+  const sp = (p: Partial<SpielBedarf>): SpielBedarf => ({
+    service_id: "s1", service: "Spiel 1", reihenfolge: 1, datum: "2026-12-26", anlieferung: "2026-12-25", anlass_id: "a", menuelinie_id: "l1", menuelinie: "Spiel 1 und 6",
+    gang: "Hauptgang", gericht: "Entrecote", komponente_id: "k1", komponente: "Rindsentrecote", gaeste: 550, anteil: 0.6, menge_pro_gast: 120, einheit: "g", menge_total: 39.6, einheit_total: "kg", ...p,
+  });
+  const beide = [sp({}), sp({ service_id: "s6", service: "Spiel 6", reihenfolge: 6, datum: "2026-12-28", anlieferung: "2026-12-27" })];
+
+  it("zwei Spiele mit demselben Menü bleiben getrennt", () => {
+    expect(spiele(beide).map((s) => [s.name, s.datum, s.gaeste])).toEqual([["Spiel 1", "2026-12-26", 550], ["Spiel 6", "2026-12-28", 550]]);
+    const z = spielZeilen(beide, [liste({ menge_total: 79.2 })], "s1");
+    expect(z).toHaveLength(1);
+    expect(z[0]).toMatchObject({ menge: 39.6, einheit: "kg", gericht: "Entrecote", menuelinie: "Spiel 1 und 6", haltbarkeitTage: 21 });
+    expect(z[0].herleitung).toMatch(/^550 Gäste × 60 % × 120 g$/);
   });
 });
 

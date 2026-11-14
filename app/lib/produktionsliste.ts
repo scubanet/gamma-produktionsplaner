@@ -6,6 +6,25 @@ import type { Fortschritt } from "./checkliste";
 
 export type ListeZeile = Database["public"]["Views"]["produktionsliste"]["Row"];
 export type BedarfZeile = Database["public"]["Views"]["anlass_komponente_bedarf"]["Row"];
+/** Bedarf je Service (Spiel): gleiche Spalten wie BedarfZeile, dazu Service, Datum und Anlieferung. */
+export type SpielBedarf = Database["public"]["Views"]["service_gericht_bedarf"]["Row"];
+export type Spiel = { id: string; name: string; datum: string | null; anlieferung: string | null; gaeste: number | null; menuelinie: string | null; reihenfolge: number };
+
+/** Die Services der geladenen Zeilen, je einmal, in ihrer Reihenfolge. */
+export function spiele(bedarf: SpielBedarf[]): Spiel[] {
+  const m = new Map<string, Spiel>();
+  for (const b of bedarf) {
+    if (b.service_id && !m.has(b.service_id)) {
+      m.set(b.service_id, { id: b.service_id, name: b.service ?? "[Service]", datum: b.datum, anlieferung: b.anlieferung, gaeste: b.gaeste, menuelinie: b.menuelinie, reihenfolge: b.reihenfolge ?? 0 });
+    }
+  }
+  return [...m.values()].sort((a, b) => a.reihenfolge - b.reihenfolge);
+}
+
+/** Ein Spiel: eine Zeile pro Gericht-Komponente mit der Menge dieses Spiels; Haltbarkeit, Wellen und Start aus der Saison. */
+export function spielZeilen(bedarf: SpielBedarf[], liste: ListeZeile[], serviceId: string): Zeile[] {
+  return linienZeilen(bedarf.filter((b) => b.service_id === serviceId), liste, null);
+}
 
 export type Zeile = {
   id: string;
@@ -77,10 +96,10 @@ export function saisonZeilen(liste: ListeZeile[], bedarf: BedarfZeile[]): Zeile[
 }
 
 /** Menülinie: eine Zeile pro Gericht-Komponente der Linie; Haltbarkeit, Wellen und Start aus der Saison. */
-export function linienZeilen(bedarf: BedarfZeile[], liste: ListeZeile[], menuelinieId: string): Zeile[] {
+export function linienZeilen(bedarf: BedarfZeile[], liste: ListeZeile[], menuelinieId: string | null): Zeile[] {
   const saison = new Map(liste.map((l) => [l.komponente_id, l]));
   return bedarf
-    .filter((b) => b.menuelinie_id === menuelinieId)
+    .filter((b) => menuelinieId === null || b.menuelinie_id === menuelinieId)
     .map((b, i) => {
       const s = saison.get(b.komponente_id);
       return {

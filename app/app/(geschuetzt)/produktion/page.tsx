@@ -5,8 +5,8 @@ import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, S
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import {
-  filtern, leerwert, linienZeilen, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, SORTIERUNGEN,
-  type BedarfZeile, type ListeZeile, type Richtung, type SortFeld, type Zeile,
+  filtern, leerwert, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, SORTIERUNGEN, spiele, spielZeilen,
+  type BedarfZeile, type SpielBedarf, type ListeZeile, type Richtung, type SortFeld, type Zeile,
 } from "@/lib/produktionsliste";
 import { aufgabenAus, fortschritt, fortschrittText, personen as personenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/lib/checkliste";
 import { checklisteSpeichern } from "@/lib/checkliste-speichern";
@@ -21,7 +21,7 @@ import { excelExport } from "@/lib/export";
 
 type Anlass = { id: string; name: string; datum: string | null; datum_bis: string | null; saison_id: string | null; saison: { name: string } | null; menuelinie: { id: string; name: string }[] };
 type StatusZahl = Record<keyof typeof STATUS_ERWARTET, number | null>;
-type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; status: StatusZahl; checkliste: ChecklisteZeile[] };
+type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; status: StatusZahl; checkliste: ChecklisteZeile[]; proSpiel: SpielBedarf[] };
 
 const STATUS_PILL: Record<string, "ok" | "warn" | "info"> = { ok: "ok", offen: "warn", Zukauf: "info" };
 const HALTBARKEIT_HINWEIS = "Annahme aus der Excel (rot markiert), noch mit Philipp und dem Küchenchef zu bestätigen. Wellen und Start hängen davon ab.";
@@ -42,6 +42,11 @@ async function laden(): Promise<Daten> {
   const checklisteLaden = alleSeiten<ChecklisteZeile>((von, bis) =>
     supabase.from("produktion_checkliste").select("*").eq("saison_id", saisonId).order("komponente_id").order("welle_nr").range(von, bis),
   );
+  const anlassIds = (a.data as unknown as Anlass[]).filter((x) => x.saison_id === anlass.saison_id).map((x) => x.id);
+  // Bedarf je Spiel: Services × Gerichte × Komponenten, kann über 1000 Zeilen haben.
+  const proSpielLaden = alleSeiten<SpielBedarf>((von, bis) =>
+    supabase.from("service_gericht_bedarf").select("*").in("anlass_id", anlassIds).order("reihenfolge").order("service_id").order("komponente_id").range(von, bis),
+  );
   const [liste, bedarf, ...rest] = await Promise.all([
     supabase.from("produktionsliste").select("*").eq("saison_id", anlass.saison_id),
     supabase.from("anlass_komponente_bedarf").select("*").in("anlass_id", (a.data as unknown as Anlass[]).filter((x) => x.saison_id === anlass.saison_id).map((x) => x.id)),
@@ -50,10 +55,11 @@ async function laden(): Promise<Daten> {
   ]);
   for (const r of [liste, bedarf, ...rest]) if (r.error) throw r.error;
   const checkliste = await checklisteLaden;
+  const proSpiel = await proSpielLaden;
   const wellen = rest.slice(0, WELLEN_ERWARTET.length).map((w) => ((w as { data: unknown }).data as number | null) ?? null);
   const zaehlung = rest.slice(WELLEN_ERWARTET.length) as { count: number | null }[];
   const status = Object.fromEntries(statusWerte.map((st, i) => [st, zaehlung[i].count])) as StatusZahl;
-  return { anlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, status, checkliste };
+  return { anlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, status, checkliste, proSpiel };
 }
 
 export default function Produktionsliste() {
@@ -112,7 +118,7 @@ export default function Produktionsliste() {
 
   const alle = useMemo(() => {
     if (!daten) return [];
-    const roh = linie ? linienZeilen(daten.bedarf, daten.liste, linie) : saisonZeilen(daten.liste, daten.bedarf);
+    const roh = linie ? spielZeilen(daten.proSpiel, daten.liste, linie) : saisonZeilen(daten.liste, daten.bedarf);
     return sortieren(mitAufgaben(roh, fortschritt(aufgaben.values())), sortFeld, richtung);
   }, [daten, linie, aufgaben, sortFeld, richtung]);
   const zeilen = useMemo(() => filtern(alle, { kategorie, status, erledigt, zustaendig }), [alle, kategorie, status, erledigt, zustaendig]);
@@ -160,7 +166,10 @@ export default function Produktionsliste() {
   const abweichungen = kontrollen.filter((k) => k.ok === false).length;
 
   const warten = fehler ? "–" : "…";
-  const linienName = daten?.anlass.menuelinie.find((l) => l.id === linie)?.name;
+  // «linie» hält den gewählten Service (Spiel); leer = ganze Saison.
+  const spielListe = useMemo(() => spiele(daten?.proSpiel ?? []), [daten]);
+  const spiel = spielListe.find((s) => s.id === linie) ?? null;
+  const linienName = spiel?.name;
   const fruehesterStart = zeilen.map((z) => z.startAb).filter((d): d is string => !!d).sort()[0] ?? null;
 
   const spalten: DataTableColumn[] = [
@@ -203,7 +212,7 @@ export default function Produktionsliste() {
       ),
     },
     { key: "status", label: "Status", render: (r) => <StatusPill status={STATUS_PILL[r.status as string] ?? "neutral"}>{r.status as string}</StatusPill> },
-    { key: "menge", label: linie ? "Menge Linie" : "Menge Saison", numeric: true, render: (r) => formatMenge(r.menge as number | null, r.einheit as string | null) },
+    { key: "menge", label: linie ? "Menge Spiel" : "Menge Saison", numeric: true, render: (r) => formatMenge(r.menge as number | null, r.einheit as string | null) },
     { key: "haltbarkeitTage", label: <span className="pl-assumed" title={HALTBARKEIT_HINWEIS}>Haltbarkeit</span>, numeric: true, render: (r) => (r.haltbarkeitTage === null ? leerwert(r.status as string, "Haltbarkeit") : `${r.haltbarkeitTage} Tage`) },
     { key: "wellen", label: "Wellen", numeric: true, render: (r) => (r.wellen === null ? leerwert(r.status as string, "Wellen") : String(r.wellen)) },
     { key: "startAb", label: "Start ab", numeric: true, render: (r) => (r.startAb === null ? leerwert(r.status as string, "Start") : formatDatum(r.startAb as string)) },
@@ -264,10 +273,11 @@ export default function Produktionsliste() {
       <div className="pl-grid-3 pl-print-hide">
         <Select
           id="filter-linie"
-          label="Menülinie"
+          label="Spiel"
           value={linie}
           onChange={setLinie}
-          options={[{ value: "", label: "Alle Menülinien (Saison)" }, ...(daten?.anlass.menuelinie ?? []).map((l) => ({ value: l.id, label: l.name })).sort((a, b) => a.label.localeCompare(b.label, "de-CH"))]}
+          hint="Jedes Spiel einzeln, auch wenn mehrere dasselbe Menü haben"
+          options={[{ value: "", label: "Alle Spiele (Saison)" }, ...spielListe.map((s) => ({ value: s.id, label: `${s.name} · ${s.datum ? formatDatum(s.datum) : "[Datum]"} · Menü «${s.menuelinie ?? "[Menülinie]"}»` }))]}
         />
         <Select
           id="filter-kategorie"
@@ -331,7 +341,7 @@ export default function Produktionsliste() {
             <KpiTile label="Frühester Start" value={daten ? formatDatum(fruehesterStart) : warten} detail="Start ab aus Haltbarkeit und Anlassdaten" />
           </div>
 
-          <Card title="Komponenten" meta={`${linie ? "Menge dieser Menülinie; Haltbarkeit, Wellen und Start gelten für die Saison" : "Menge über alle Menülinien der Saison"}. Abgehakt wird pro Welle: bei einer Welle direkt hier, bei mehreren im Wellenplan. Zuständig gilt hier für alle Wellen der Komponente.`}>
+          <Card title="Komponenten" meta={`${spiel ? `Menge für ${spiel.name}: ${spiel.gaeste === null ? "[Gäste]" : formatZahl(spiel.gaeste)} Gäste, Spiel am ${spiel.datum ? formatDatum(spiel.datum) : "[Datum]"}, Anlieferung ${spiel.anlieferung ? formatDatum(spiel.anlieferung) : "[Datum]"}; Haltbarkeit, Wellen und Start gelten für die Saison` : "Menge über alle Spiele der Saison"}. Abgehakt wird pro Welle: bei einer Welle direkt hier, bei mehreren im Wellenplan. Zuständig gilt hier für alle Wellen der Komponente.`}>
             {daten ? (
               zeilen.length ? <DataTable columns={spalten} rows={tabelle} /> : <p className="pl-muted">Keine Komponenten für diese Filter.</p>
             ) : fehler ? (

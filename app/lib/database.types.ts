@@ -3750,6 +3750,29 @@ export type Database = {
           },
         ]
       }
+      service_gericht_bedarf: {
+        Row: {
+          anlass_id: string | null
+          anlieferung: string | null
+          anteil: number | null
+          datum: string | null
+          einheit: string | null
+          einheit_total: string | null
+          gaeste: number | null
+          gang: string | null
+          gericht: string | null
+          komponente: string | null
+          komponente_id: string | null
+          menge_pro_gast: number | null
+          menge_total: number | null
+          menuelinie: string | null
+          menuelinie_id: string | null
+          reihenfolge: number | null
+          service: string | null
+          service_id: string | null
+        }
+        Relationships: []
+      }
       service_komponente_bedarf: {
         Row: {
           anlass_id: string | null

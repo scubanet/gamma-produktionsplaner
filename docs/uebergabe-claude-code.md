@@ -7,7 +7,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | Bereich | Wo | Stand |
 | --- | --- | --- |
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
-| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 25 Migrationen (25 noch einzuspielen), siehe `docs/supabase.md` |
+| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 26 Migrationen (26 noch einzuspielen), siehe `docs/supabase.md` |
 | App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 95 Tests, Auslieferung über GitHub Actions |
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.8 | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
