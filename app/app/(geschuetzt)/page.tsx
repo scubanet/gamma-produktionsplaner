@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Card, KpiTile, Notice } from "@/lib/planer";
+import { Card, KpiTile, Notice } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
-import { useSitzung } from "@/components/Anmeldung";
 
 const STATUS = [
   { wert: "ok", label: "Komponenten ok" },
@@ -14,7 +13,6 @@ const STATUS = [
 type Zaehlung = Record<(typeof STATUS)[number]["wert"], number | null>;
 
 export default function Leitstand() {
-  const sitzung = useSitzung();
   const [zahlen, setZahlen] = useState<Zaehlung | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
 
@@ -36,10 +34,6 @@ export default function Leitstand() {
         <div>
           <div className="pl-crumb">GAMMA Catering · Winter Collection 2026/27</div>
           <h1 className="pl-h1">Leitstand</h1>
-        </div>
-        <div className="pl-actions">
-          <span className="pl-small">{sitzung?.user.email}</span>
-          <Button onClick={() => supabase.auth.signOut()}>Abmelden</Button>
         </div>
       </header>
 
