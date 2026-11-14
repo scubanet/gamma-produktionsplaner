@@ -49,6 +49,7 @@ Ersetzt das Blatt «Spengler Cup» der Excel.
 - **Anlass bearbeiten:** Kopfdaten, Services und Menülinien.
   - **Service:** ein Tag oder ein Spiel mit Datum und Gästezahl. Das Datum braucht es für Wellen und Einkauf. Mit «Daten erfassen» lassen sich die Daten aller Services in einem Schritt eintragen.
   - **Menülinie:** ein Menü, das für einen oder mehrere Services gilt (z.B. «Spiel 1 und 6»). Gerichte kommen aus dem Katalog und bringen ihre Komponenten mit. Der Anteil sagt, wie viele Gäste das Gericht nehmen; die Menge pro Gast lässt sich pro Komponente ändern.
+- **Geschirr und Besteck:** «Standard übernehmen» schlägt die Positionen für die Gänge des Menüs vor (aus den Stammdaten, je Angebotsform). Jede Position lässt sich bearbeiten: Stück pro Gast, Wechselfaktor, Reserve. Material für die Ausgabe (Platten, Wärmebehälter) als feste Stückzahl ohne Gang. Die Tabelle zeigt Bedarf, eigenen Bestand, Zusatzbedarf Miete, Körbe und Gewicht.
 - **Getränke- und Barkarten:** Positionen mit Rubrik, Bezeichnung, Menge und Preis pflegen, umbenennen, drucken. Positionen ohne Preis werden angezeigt.
 
 ## Produktionsplan

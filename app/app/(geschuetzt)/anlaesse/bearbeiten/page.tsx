@@ -9,6 +9,7 @@ import { formatDatum } from "@/lib/format";
 import { ANLASS_SPALTEN, statusLabel, statusPill, zeitraum, type Anlass, type LinieGericht, type LinieKomponente, type Menuelinie, type Service } from "@/lib/anlass";
 import { AnlassKopf, type Stamm } from "@/components/anlass/AnlassKopf";
 import { Services } from "@/components/anlass/Services";
+import { Geschirr } from "@/components/anlass/Geschirr";
 import { Menuelinien, type KatalogGericht, type LinieGaeste } from "@/components/anlass/Menuelinien";
 import { Karten, type Vorlage } from "@/components/anlass/Karten";
 
@@ -148,6 +149,13 @@ function Bearbeiten() {
             komponenten={daten.komponenten}
             katalog={stamm.katalog}
             onGeaendert={neuLaden}
+            onMeldung={melden}
+            onFehler={fehler}
+          />
+          <Geschirr
+            anlassId={a.id}
+            angebotsform={a.angebotsform}
+            gaenge={[...new Set(daten.gerichte.map((g) => g.gang))]}
             onMeldung={melden}
             onFehler={fehler}
           />

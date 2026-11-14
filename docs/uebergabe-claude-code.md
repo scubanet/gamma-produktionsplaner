@@ -7,7 +7,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | Bereich | Wo | Stand |
 | --- | --- | --- |
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
-| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 24 Migrationen (24 noch einzuspielen), siehe `docs/supabase.md` |
+| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 25 Migrationen (25 noch einzuspielen), siehe `docs/supabase.md` |
 | App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 95 Tests, Auslieferung über GitHub Actions |
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.8 | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
@@ -47,7 +47,7 @@ Ziel von Dominik: Ausgehend vom Rezept rechnet die App Produktion, Logistik und 
 
 - **Etappe 1, gebaut (Migration 23):** Rezept bearbeiten mit Karte «Planung: Gebinde und Service» und pro Schritt Ort, Rolle, Rüstzeit, Menge pro Durchgang. Rezeptkarte mit Karte «Planung»: was erfasst ist, was fehlt, Systemzuteilung der verknüpften Komponenten, Komponente verknüpfen oder lösen.
 - **Etappe 2, gebaut (Migration 24):** Seite `/produktion/aufwand` «Aufwand aus den Rezepten»: Produktion pro Welle (Durchgänge, aktive Zeit, Stunden pro Rolle, Belegung der Geräte), Logistik und Service pro Spiel (Gebinde, Gewicht, Volumen, vor Ort, Ausgabe). Gebinde in den Stammdaten pflegbar. Noch offen: die Zahlen in Ressourcen und Rentabilität übernehmen (heute Handeingabe), Fahrzeuge.
-- **Etappe 3, offen:** Geschirr und Besteck pro Anlass in drei Ebenen (pro Gast und Gang, Abweichung pro Gericht, Material für die Ausgabe). Entscheid Dominik: Wechselfaktor pro Anlass, mit einem vorgeschlagenen Standard, der übersteuert werden kann.
+- **Etappe 3, gebaut (Migration 25):** Karte «Geschirr und Besteck» unter Anlass bearbeiten: Standard übernehmen, Positionen übersteuern oder ergänzen, Bedarf mit eigenem Bestand, Miete, Körben und Gewicht. Stammdaten «Geschirr und Besteck» (Artikel) und «Standard Geschirr» (pro Angebotsform und Gang). Entscheid Dominik: Wechselfaktor pro Anlass, mit Standard, der übersteuert werden kann. Der Standard ist leer und von Dominik festzulegen. Noch offen: Mietkosten in die Kalkulation des Anlasses, gleichzeitige Anlässe beim Bestand, Geschirr in die Logistik (Fahrzeuge).
 - Entscheide Dominik: Rezepte basieren auf 10 Portionen. Gebinde ist die IFCO-Box, für gekühlt und TK. Die Systemzuteilung bleibt massgebend für Lagerung und Regeneration.
 - Annahme, noch zu bestätigen: Aufwand der Ausgabe im Service in Minuten pro 100 Portionen.
 - Pilot: zehn Komponenten von Spiel 1 (Rindsentrecote, Kartoffelgratin, Portweinjus, Kürbis, Risotto, Erbsencrèmesuppe, Sellerie-Apfel-Suppe, Gerstensalat, Gerösteter Blumenkohl, Vitello Tonnato). Am 14.11. hat keine ein verknüpftes Rezept, und Lagerung und Regeneration sind in der Systemzuteilung bei allen leer.

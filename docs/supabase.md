@@ -47,6 +47,7 @@ Stand: 14.11.2026
 | 20 produktion_checkliste | Tabelle `produktion_aufgabe`: Zuständig und Erledigt pro Komponente und Saison. Version `20261110185525` (siehe unten) |
 | 21 checkliste_pro_welle | `produktion_aufgabe` mit `welle_nr` (0 = ohne Welle), View `produktion_checkliste`, `wellenplan` mit `vorschlag_nr` |
 | 22 artikel_vorschlag | Erweiterung `pg_trgm`, Funktion `komponente_artikel_vorschlag` (Vorschläge für den Hauptartikel) |
+| 25 geschirr | Tabellen `service_artikel`, `geschirr_standard`, `anlass_geschirr`, Funktion `anlass_geschirr_vorschlagen`, View `anlass_geschirr_bedarf` |
 | 24 planung_aus_rezept | Views `planung_bedarf`, `planung_produktion_schritt`, `planung_produktion_komponente`, `planung_produktion_rolle`, `planung_produktion_geraet`, `planung_service_komponente` |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
 
@@ -146,6 +147,15 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `planung_service_komponente`: pro Service und Komponente. Gebinde = Menge ÷ Füllmenge, aufgerundet; Gewicht = Menge + Gebinde × Tara; Volumen = Gebinde × Volumen; vor Ort aus den Schritten mit Ort `vor_ort`; Ausgabe = Portionen ÷ 100 × Minuten pro 100 Portionen.
 - Entscheide Dominik (14.11.2026): Produktion pro Welle, Logistik und Service pro Service. Liter als Kilogramm (1 l = 1 kg, Annahme, in der App gestrichelt). Stück werden nicht umgerechnet.
 - Kontrollwert aus dem Probelauf (Testrezept, nicht gespeichert): Kartoffelgratin 99 kg in Welle 1 bei 12 kg pro Durchgang = 9 Durchgänge; 30 min Rüstzeit + 9 × (25 + 5 + 5) min = 345 min aktiv. Spiel 1: 33 kg ÷ 12 kg = 3 Gebinde, 330 Portionen × 15 min ÷ 100 = 49.5 min Ausgabe.
+
+### Geschirr und Besteck (Migration 25)
+
+- `service_artikel`: Teller, Besteck, Gläser, Material für die Ausgabe mit eigenem Bestand, Mietpreis pro Stück und Anlass, Stück pro Korb und Gewicht.
+- `geschirr_standard`: Vorschlag pro Angebotsform und Gang (Stück pro Gast, Wechselfaktor, Reserve). Leer angelegt; Dominik legt die Werte in den Stammdaten fest.
+- `anlass_geschirr`: Positionen am Anlass, entweder pro Gast (mit Gang) oder als feste Stückzahl (ohne Gang, für die Ausgabe). Eine Position pro Anlass, Gang und Artikel.
+- `anlass_geschirr_vorschlagen(anlass)`: übernimmt den Standard der Angebotsform für die Gänge, die im Menü des Anlasses vorkommen. Bestehende Positionen bleiben.
+- `anlass_geschirr_bedarf`: Bedarf = Gäste × Stück pro Gast × Wechselfaktor × (1 + Reserve), aufgerundet; eigener Bestand zuerst, der Rest Miete; Mietkosten, Körbe, Gewicht. Annahme: Gäste = grösster Service des Anlasses (dazwischen wird abgewaschen). Gleichzeitige Anlässe sind beim Bestand noch nicht berücksichtigt.
+- Kontrollwert aus dem Probelauf (nicht gespeichert): 550 Gäste × 1 × 1.5 + 10 % = 908 Stück; bei 600 im Bestand 308 Miete.
 
 ### Ressourcen und Rentabilität
 

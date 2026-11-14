@@ -5,21 +5,23 @@ import { Notice, StatusPill } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { chf } from "@/lib/ressourcen";
-import { FELDER, FIXKOSTEN_KATEGORIEN, type Zeile } from "@/lib/stammdaten";
+import { ANGEBOTSFORMEN, FELDER, FIXKOSTEN_KATEGORIEN, SERVICE_ARTEN, standardFelder, type Zeile } from "@/lib/stammdaten";
 import { Stammtabelle } from "@/components/stammdaten/Stammtabelle";
 
-type Daten = { lohnsatz: Zeile[]; energiepreis: Zeile[]; fixkosten: Zeile[]; geraet: Zeile[]; gebinde: Zeile[] };
+type Daten = { lohnsatz: Zeile[]; energiepreis: Zeile[]; fixkosten: Zeile[]; geraet: Zeile[]; gebinde: Zeile[]; serviceArtikel: Zeile[]; standard: Zeile[] };
 
 async function laden(): Promise<Daten> {
-  const [l, e, f, g, gb] = await Promise.all([
+  const [l, e, f, g, gb, sa, gs] = await Promise.all([
     supabase.from("lohnsatz").select("*").order("rolle").order("gueltig_ab", { ascending: false }),
     supabase.from("energiepreis").select("*").order("gueltig_ab", { ascending: false }),
     supabase.from("fixkosten").select("*").order("kategorie").order("bezeichnung"),
     supabase.from("geraet").select("*").order("name"),
     supabase.from("gebinde").select("*").order("name"),
+    supabase.from("service_artikel").select("*").order("art").order("name"),
+    supabase.from("geschirr_standard").select("*").order("angebotsform").order("gang"),
   ]);
-  for (const x of [l, e, f, g, gb]) if (x.error) throw x.error;
-  return { lohnsatz: l.data ?? [], energiepreis: e.data ?? [], fixkosten: f.data ?? [], geraet: g.data ?? [], gebinde: gb.data ?? [] };
+  for (const x of [l, e, f, g, gb, sa, gs]) if (x.error) throw x.error;
+  return { lohnsatz: l.data ?? [], energiepreis: e.data ?? [], fixkosten: f.data ?? [], geraet: g.data ?? [], gebinde: gb.data ?? [], serviceArtikel: sa.data ?? [], standard: gs.data ?? [] };
 }
 
 const datum = (v: unknown) => (v ? formatDatum(v as string) : "–");
@@ -158,6 +160,58 @@ export default function Stammdaten() {
           mass: z.laenge_mm && z.breite_mm && z.hoehe_mm ? `${z.laenge_mm} × ${z.breite_mm} × ${z.hoehe_mm} mm` : "[Mass]",
           tara: z.tara_g === null ? "[Tara]" : `${formatZahl((z.tara_g as number) / 1000, 2)} kg`,
           volumen: z.volumen_l === null ? "[Volumen]" : `${formatZahl(z.volumen_l as number, 1)} l`,
+        })}
+        {...gemeinsam}
+      />
+
+      <Stammtabelle
+        tabelle="service_artikel"
+        titel="Geschirr und Besteck"
+        meta="Artikel für den Service; eigener Bestand und Mietpreis bestimmen den Zusatzbedarf pro Anlass"
+        einzahl="Artikel"
+        felder={FELDER.service_artikel}
+        schluessel={["id"]}
+        zeilen={daten?.serviceArtikel ?? null}
+        spalten={[
+          { key: "name", label: "Artikel", subKey: "art" },
+          { key: "bestand", label: "Eigener Bestand", numeric: true },
+          { key: "mietpreis", label: "Mietpreis pro Stück", numeric: true },
+          { key: "korb", label: "Stück pro Korb", numeric: true },
+          { key: "gewicht", label: "Gewicht", numeric: true },
+        ]}
+        anzeige={(z) => ({
+          name: z.name,
+          art: SERVICE_ARTEN.find((a) => a.value === z.art)?.label ?? z.art,
+          bestand: formatZahl(z.anzahl_eigen as number),
+          mietpreis: betrag(z.mietpreis_chf),
+          korb: z.stueck_pro_korb === null ? "[Stück]" : formatZahl(z.stueck_pro_korb as number),
+          gewicht: z.gewicht_g === null ? "[Gewicht]" : `${formatZahl(z.gewicht_g as number)} g`,
+        })}
+        {...gemeinsam}
+      />
+
+      <Stammtabelle
+        tabelle="geschirr_standard"
+        titel="Standard Geschirr"
+        meta="Vorschlag pro Angebotsform und Gang; im Anlass lässt sich jede Position übersteuern"
+        einzahl="Standard-Position"
+        felder={standardFelder((daten?.serviceArtikel ?? []).map((a) => ({ value: a.id as string, label: a.name as string })))}
+        schluessel={["id"]}
+        zeilen={daten?.standard ?? null}
+        spalten={[
+          { key: "gang", label: "Gang", subKey: "form" },
+          { key: "artikel", label: "Artikel" },
+          { key: "stueck", label: "Stück pro Gast", numeric: true },
+          { key: "faktor", label: "Wechselfaktor", numeric: true },
+          { key: "reserve", label: "Reserve", numeric: true },
+        ]}
+        anzeige={(z) => ({
+          gang: z.gang,
+          form: ANGEBOTSFORMEN.find((a) => a.value === z.angebotsform)?.label ?? z.angebotsform,
+          artikel: (daten?.serviceArtikel ?? []).find((a) => a.id === z.artikel_id)?.name ?? "[Artikel]",
+          stueck: String(z.stueck_pro_gast),
+          faktor: String(z.wechselfaktor),
+          reserve: `${z.reserve_pct} %`,
         })}
         {...gemeinsam}
       />

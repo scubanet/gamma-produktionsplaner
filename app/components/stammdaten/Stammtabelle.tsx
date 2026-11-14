@@ -5,7 +5,7 @@ import { Button, Card, Checkbox, DataTable, Dialog, Notice, Select, TextField, t
 import { supabase } from "@/lib/supabase";
 import { fehlerText, formularAus, werteAus, type Feld, type Formular, type Zeile } from "@/lib/stammdaten";
 
-type Tabelle = "lohnsatz" | "energiepreis" | "fixkosten" | "geraet" | "gebinde";
+type Tabelle = "lohnsatz" | "energiepreis" | "fixkosten" | "geraet" | "gebinde" | "service_artikel" | "geschirr_standard";
 
 /** Eine Stammdaten-Tabelle mit Erfassen, Ändern und Löschen im Dialog. */
 export function Stammtabelle({ tabelle, titel, meta, einzahl, felder, schluessel, zeilen, ladefehler, spalten, anzeige, onGeaendert, onMeldung }: {

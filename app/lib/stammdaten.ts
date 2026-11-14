@@ -70,7 +70,45 @@ export const FIXKOSTEN_KATEGORIEN = [
   { value: "uebrige", label: "Übrige" },
 ];
 
-export const FELDER: Record<"lohnsatz" | "energiepreis" | "fixkosten" | "geraet" | "gebinde", Feld[]> = {
+export const ANGEBOTSFORMEN = [
+  { value: "menue_3", label: "3-Gang-Menü" },
+  { value: "buffet", label: "Buffet" },
+  { value: "live_station", label: "Live Station" },
+  { value: "flying_dinner", label: "Flying Dinner" },
+];
+/** Gänge wie in den Menülinien geschrieben; der Standard greift nur bei gleicher Schreibweise. */
+export const GAENGE = ["Vorspeise", "Suppe", "Spezialität", "Hauptgang", "Dessert", "Brunch"].map((g) => ({ value: g, label: g }));
+export const SERVICE_ARTEN = [
+  { value: "teller", label: "Teller und Schalen" },
+  { value: "besteck", label: "Besteck" },
+  { value: "glas", label: "Gläser" },
+  { value: "serviette", label: "Servietten" },
+  { value: "ausgabe", label: "Material für die Ausgabe" },
+  { value: "sonstiges", label: "Sonstiges" },
+];
+
+/** Felder für den Standard pro Angebotsform und Gang; die Artikel kommen aus der Datenbank. */
+export function standardFelder(artikel: { value: string; label: string }[]): Feld[] {
+  return [
+    { key: "angebotsform", label: "Angebotsform", art: "auswahl", pflicht: true, optionen: ANGEBOTSFORMEN },
+    { key: "gang", label: "Gang", art: "auswahl", pflicht: true, optionen: GAENGE },
+    { key: "artikel_id", label: "Artikel", art: "auswahl", pflicht: true, optionen: artikel },
+    { key: "stueck_pro_gast", label: "Stück pro Gast", art: "betrag", pflicht: true, hint: "meist 1" },
+    { key: "wechselfaktor", label: "Wechselfaktor", art: "betrag", pflicht: true, hint: "1 = jeder Gast einmal; 1.5 = jeder zweite nimmt einen zweiten" },
+    { key: "reserve_pct", label: "Reserve %", art: "betrag", pflicht: true, hint: "0 bis 100" },
+  ];
+}
+
+export const FELDER: Record<"lohnsatz" | "energiepreis" | "fixkosten" | "geraet" | "gebinde" | "service_artikel", Feld[]> = {
+  service_artikel: [
+    { key: "name", label: "Artikel", art: "text", pflicht: true, hint: "z.B. Teller flach 27 cm, Suppentasse, Menügabel" },
+    { key: "art", label: "Art", art: "auswahl", pflicht: true, optionen: SERVICE_ARTEN },
+    { key: "anzahl_eigen", label: "Eigener Bestand", art: "ganz", pflicht: true, hint: "0 = alles wird gemietet" },
+    { key: "mietpreis_chf", label: "Mietpreis CHF pro Stück und Anlass", art: "betrag" },
+    { key: "stueck_pro_korb", label: "Stück pro Korb", art: "ganz", hint: "für die Anzahl Körbe im Transport" },
+    { key: "gewicht_g", label: "Gewicht pro Stück in Gramm", art: "betrag" },
+    { key: "aktiv", label: "aktiv", art: "ja_nein" },
+  ],
   lohnsatz: [
     { key: "rolle", label: "Rolle", art: "text", pflicht: true, hint: "z.B. Koch, Service, Abwasch; gleiche Schreibweise wie beim Personal im Anlass" },
     { key: "chf_pro_h", label: "CHF pro Stunde", art: "betrag", pflicht: true, hint: "inkl. Sozialleistungen, Ferien, 13. Monatslohn" },

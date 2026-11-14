@@ -292,6 +292,45 @@ export type Database = {
           },
         ]
       }
+      anlass_geschirr: {
+        Row: {
+          anlass_id: string
+          artikel_id: string
+          aus_standard: boolean
+          bemerkung: string | null
+          gang: string | null
+          id: string
+          reserve_pct: number
+          stueck_fix: number | null
+          stueck_pro_gast: number | null
+          wechselfaktor: number
+        }
+        Insert: {
+          anlass_id: string
+          artikel_id: string
+          aus_standard?: boolean
+          bemerkung?: string | null
+          gang?: string | null
+          id?: string
+          reserve_pct?: number
+          stueck_fix?: number | null
+          stueck_pro_gast?: number | null
+          wechselfaktor?: number
+        }
+        Update: {
+          anlass_id?: string
+          artikel_id?: string
+          aus_standard?: boolean
+          bemerkung?: string | null
+          gang?: string | null
+          id?: string
+          reserve_pct?: number
+          stueck_fix?: number | null
+          stueck_pro_gast?: number | null
+          wechselfaktor?: number
+        }
+        Relationships: []
+      }
       anlass_kosten: {
         Row: {
           anlass_id: string
@@ -760,6 +799,36 @@ export type Database = {
           mietbar?: boolean
           mietpreis_chf_tag?: number | null
           name?: string
+        }
+        Relationships: []
+      }
+      geschirr_standard: {
+        Row: {
+          angebotsform: string
+          artikel_id: string
+          gang: string
+          id: string
+          reserve_pct: number
+          stueck_pro_gast: number
+          wechselfaktor: number
+        }
+        Insert: {
+          angebotsform: string
+          artikel_id: string
+          gang: string
+          id?: string
+          reserve_pct?: number
+          stueck_pro_gast?: number
+          wechselfaktor?: number
+        }
+        Update: {
+          angebotsform?: string
+          artikel_id?: string
+          gang?: string
+          id?: string
+          reserve_pct?: number
+          stueck_pro_gast?: number
+          wechselfaktor?: number
         }
         Relationships: []
       }
@@ -2180,6 +2249,39 @@ export type Database = {
           },
         ]
       }
+      service_artikel: {
+        Row: {
+          aktiv: boolean
+          anzahl_eigen: number
+          art: string
+          gewicht_g: number | null
+          id: string
+          mietpreis_chf: number | null
+          name: string
+          stueck_pro_korb: number | null
+        }
+        Insert: {
+          aktiv?: boolean
+          anzahl_eigen?: number
+          art?: string
+          gewicht_g?: number | null
+          id?: string
+          mietpreis_chf?: number | null
+          name: string
+          stueck_pro_korb?: number | null
+        }
+        Update: {
+          aktiv?: boolean
+          anzahl_eigen?: number
+          art?: string
+          gewicht_g?: number | null
+          id?: string
+          mietpreis_chf?: number | null
+          name?: string
+          stueck_pro_korb?: number | null
+        }
+        Relationships: []
+      }
       zutat: {
         Row: {
           annahme: boolean
@@ -2300,6 +2402,31 @@ export type Database = {
       }
     }
     Views: {
+      anlass_geschirr_bedarf: {
+        Row: {
+          anlass_id: string | null
+          art: string | null
+          artikel: string | null
+          artikel_id: string | null
+          aus_standard: boolean | null
+          bedarf: number | null
+          bemerkung: string | null
+          eigen: number | null
+          gaeste: number | null
+          gang: string | null
+          gewicht_kg: number | null
+          herleitung: string | null
+          id: string | null
+          koerbe: number | null
+          miete: number | null
+          mietkosten_chf: number | null
+          reserve_pct: number | null
+          stueck_fix: number | null
+          stueck_pro_gast: number | null
+          wechselfaktor: number | null
+        }
+        Relationships: []
+      }
       anlass_deckungsbeitrag: {
         Row: {
           datum: string | null
@@ -3912,6 +4039,7 @@ export type Database = {
       }
     }
     Functions: {
+      anlass_geschirr_vorschlagen: { Args: { p_anlass: string }; Returns: number }
       anlass_kosten_setzen: {
         Args: {
           p_anlass: string
