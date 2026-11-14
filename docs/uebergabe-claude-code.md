@@ -109,7 +109,7 @@ Ohne diese Werte zeigt die App Platzhalter statt Zahlen:
 
 ## Arbeitsweise
 
-- Migrationen spielt Dominik im Terminal ein (`supabase db push`, mit `Y` bestätigen). Danach `cd app && npm run types`, Typprüfung und Tests.
+- Migrationen spielt Dominik im Terminal ein (`supabase db push --remote`, bestätigen; seit CLI 3 zielt der Befehl ohne `--remote` auf die lokale Datenbank). Danach `cd app && npm run types`, Typprüfung und Tests.
 - Prüfen in der Datenbank nur lesend. Nichts direkt im Dashboard ändern.
 - Die Commits liegen lokal auf `main`. Auf den Server (`git push`) schiebt Dominik selbst.
 - Lokaler Start: `npm --prefix app run dev`, dann `http://localhost:3000`.

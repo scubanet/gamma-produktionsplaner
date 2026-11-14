@@ -68,7 +68,7 @@ Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde ni
 ### Neue Migration einspielen
 
 1. Datei in `supabase/migrations/` anlegen (Zeitstempel-Präfix).
-2. Im Repo-Wurzelordner `supabase db push` ausführen und mit `Y` bestätigen. Im Pilot macht das Dominik im Terminal.
+2. Im Repo-Wurzelordner `supabase db push --remote` ausführen und bestätigen (seit CLI 3 zielt der Befehl ohne `--remote` auf die lokale Datenbank). Im Pilot macht das Dominik im Terminal.
 3. Typen neu erzeugen: `cd app && npm run types`, dann `npm run typecheck`. Die Datei `app/lib/database.types.ts` committen.
 
 Eine eingespielte Migration wird nicht mehr geändert. Korrekturen kommen als neue Migration (Beispiel: 09 nach 08).
