@@ -329,7 +329,57 @@ export type Database = {
           stueck_pro_gast?: number | null
           wechselfaktor?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_artikel_id_fkey"
+            columns: ["artikel_id"]
+            isOneToOne: false
+            referencedRelation: "service_artikel"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       anlass_kosten: {
         Row: {
@@ -802,36 +852,6 @@ export type Database = {
         }
         Relationships: []
       }
-      geschirr_standard: {
-        Row: {
-          angebotsform: string
-          artikel_id: string
-          gang: string
-          id: string
-          reserve_pct: number
-          stueck_pro_gast: number
-          wechselfaktor: number
-        }
-        Insert: {
-          angebotsform: string
-          artikel_id: string
-          gang: string
-          id?: string
-          reserve_pct?: number
-          stueck_pro_gast?: number
-          wechselfaktor?: number
-        }
-        Update: {
-          angebotsform?: string
-          artikel_id?: string
-          gang?: string
-          id?: string
-          reserve_pct?: number
-          stueck_pro_gast?: number
-          wechselfaktor?: number
-        }
-        Relationships: []
-      }
       gericht_katalog: {
         Row: {
           code: string | null
@@ -971,6 +991,51 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "kategorie"
             referencedColumns: ["code"]
+          },
+        ]
+      }
+      geschirr_standard: {
+        Row: {
+          angebotsform: string
+          artikel_id: string
+          gang: string
+          id: string
+          reserve_pct: number
+          stueck_pro_gast: number
+          wechselfaktor: number
+        }
+        Insert: {
+          angebotsform: string
+          artikel_id: string
+          gang: string
+          id?: string
+          reserve_pct?: number
+          stueck_pro_gast?: number
+          wechselfaktor?: number
+        }
+        Update: {
+          angebotsform?: string
+          artikel_id?: string
+          gang?: string
+          id?: string
+          reserve_pct?: number
+          stueck_pro_gast?: number
+          wechselfaktor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "geschirr_standard_angebotsform_fkey"
+            columns: ["angebotsform"]
+            isOneToOne: false
+            referencedRelation: "angebotsform"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "geschirr_standard_artikel_id_fkey"
+            columns: ["artikel_id"]
+            isOneToOne: false
+            referencedRelation: "service_artikel"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -2182,6 +2247,39 @@ export type Database = {
           },
         ]
       }
+      service_artikel: {
+        Row: {
+          aktiv: boolean
+          anzahl_eigen: number
+          art: string
+          gewicht_g: number | null
+          id: string
+          mietpreis_chf: number | null
+          name: string
+          stueck_pro_korb: number | null
+        }
+        Insert: {
+          aktiv?: boolean
+          anzahl_eigen?: number
+          art?: string
+          gewicht_g?: number | null
+          id?: string
+          mietpreis_chf?: number | null
+          name: string
+          stueck_pro_korb?: number | null
+        }
+        Update: {
+          aktiv?: boolean
+          anzahl_eigen?: number
+          art?: string
+          gewicht_g?: number | null
+          id?: string
+          mietpreis_chf?: number | null
+          name?: string
+          stueck_pro_korb?: number | null
+        }
+        Relationships: []
+      }
       welle_komponente: {
         Row: {
           einheit: string
@@ -2248,39 +2346,6 @@ export type Database = {
             referencedColumns: ["welle_id"]
           },
         ]
-      }
-      service_artikel: {
-        Row: {
-          aktiv: boolean
-          anzahl_eigen: number
-          art: string
-          gewicht_g: number | null
-          id: string
-          mietpreis_chf: number | null
-          name: string
-          stueck_pro_korb: number | null
-        }
-        Insert: {
-          aktiv?: boolean
-          anzahl_eigen?: number
-          art?: string
-          gewicht_g?: number | null
-          id?: string
-          mietpreis_chf?: number | null
-          name: string
-          stueck_pro_korb?: number | null
-        }
-        Update: {
-          aktiv?: boolean
-          anzahl_eigen?: number
-          art?: string
-          gewicht_g?: number | null
-          id?: string
-          mietpreis_chf?: number | null
-          name?: string
-          stueck_pro_korb?: number | null
-        }
-        Relationships: []
       }
       zutat: {
         Row: {
@@ -2402,31 +2467,6 @@ export type Database = {
       }
     }
     Views: {
-      anlass_geschirr_bedarf: {
-        Row: {
-          anlass_id: string | null
-          art: string | null
-          artikel: string | null
-          artikel_id: string | null
-          aus_standard: boolean | null
-          bedarf: number | null
-          bemerkung: string | null
-          eigen: number | null
-          gaeste: number | null
-          gang: string | null
-          gewicht_kg: number | null
-          herleitung: string | null
-          id: string | null
-          koerbe: number | null
-          miete: number | null
-          mietkosten_chf: number | null
-          reserve_pct: number | null
-          stueck_fix: number | null
-          stueck_pro_gast: number | null
-          wechselfaktor: number | null
-        }
-        Relationships: []
-      }
       anlass_deckungsbeitrag: {
         Row: {
           datum: string | null
@@ -2511,6 +2551,81 @@ export type Database = {
             columns: ["geraet_id"]
             isOneToOne: false
             referencedRelation: "geraet"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      anlass_geschirr_bedarf: {
+        Row: {
+          anlass_id: string | null
+          art: string | null
+          artikel: string | null
+          artikel_id: string | null
+          aus_standard: boolean | null
+          bedarf: number | null
+          bemerkung: string | null
+          eigen: number | null
+          gaeste: number | null
+          gang: string | null
+          gewicht_kg: number | null
+          herleitung: string | null
+          id: string | null
+          koerbe: number | null
+          miete: number | null
+          mietkosten_chf: number | null
+          reserve_pct: number | null
+          stueck_fix: number | null
+          stueck_pro_gast: number | null
+          wechselfaktor: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "anlass_geschirr_artikel_id_fkey"
+            columns: ["artikel_id"]
+            isOneToOne: false
+            referencedRelation: "service_artikel"
             referencedColumns: ["id"]
           },
         ]
@@ -4039,7 +4154,10 @@ export type Database = {
       }
     }
     Functions: {
-      anlass_geschirr_vorschlagen: { Args: { p_anlass: string }; Returns: number }
+      anlass_geschirr_vorschlagen: {
+        Args: { p_anlass: string }
+        Returns: number
+      }
       anlass_kosten_setzen: {
         Args: {
           p_anlass: string
