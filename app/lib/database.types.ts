@@ -1215,9 +1215,9 @@ export type Database = {
           kollektion_id: string
           lager_0_2: boolean
           lager_gedeckt: boolean
-          lager_trocken: boolean
           lager_tage: number | null
           lager_tk: boolean
+          lager_trocken: boolean
           name: string
           produktion: string[]
           quelle_zeile: number
@@ -1233,9 +1233,9 @@ export type Database = {
           kollektion_id: string
           lager_0_2?: boolean
           lager_gedeckt?: boolean
-          lager_trocken?: boolean
           lager_tage?: number | null
           lager_tk?: boolean
+          lager_trocken?: boolean
           name: string
           produktion?: string[]
           quelle_zeile: number
@@ -1251,9 +1251,9 @@ export type Database = {
           kollektion_id?: string
           lager_0_2?: boolean
           lager_gedeckt?: boolean
-          lager_trocken?: boolean
           lager_tage?: number | null
           lager_tk?: boolean
+          lager_trocken?: boolean
           name?: string
           produktion?: string[]
           quelle_zeile?: number
@@ -3072,9 +3072,9 @@ export type Database = {
           kollektion_id: string | null
           lager_0_2: boolean | null
           lager_gedeckt: boolean | null
-          lager_trocken: boolean | null
           lager_tage: number | null
           lager_tk: boolean | null
+          lager_trocken: boolean | null
           name: string | null
           nur_vor_ort: boolean | null
           produktion: string[] | null
@@ -3093,9 +3093,9 @@ export type Database = {
           kollektion_id?: string | null
           lager_0_2?: boolean | null
           lager_gedeckt?: boolean | null
-          lager_trocken?: boolean | null
           lager_tage?: number | null
           lager_tk?: boolean | null
+          lager_trocken?: boolean | null
           name?: string | null
           nur_vor_ort?: never
           produktion?: string[] | null
@@ -3114,9 +3114,9 @@ export type Database = {
           kollektion_id?: string | null
           lager_0_2?: boolean | null
           lager_gedeckt?: boolean | null
-          lager_trocken?: boolean | null
           lager_tage?: number | null
           lager_tk?: boolean | null
+          lager_trocken?: boolean | null
           name?: string | null
           nur_vor_ort?: never
           produktion?: string[] | null
