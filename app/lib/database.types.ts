@@ -280,6 +280,13 @@ export type Database = {
             foreignKeyName: "anlass_gericht_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "anlass_gericht_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
           },
@@ -809,6 +816,13 @@ export type Database = {
             foreignKeyName: "gericht_katalog_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "gericht_katalog_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
           },
@@ -1149,6 +1163,13 @@ export type Database = {
             foreignKeyName: "komponente_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "komponente_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
           },
@@ -1448,6 +1469,13 @@ export type Database = {
           text?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "offener_punkt_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
           {
             foreignKeyName: "offener_punkt_rezept_id_fkey"
             columns: ["rezept_id"]
@@ -1867,8 +1895,22 @@ export type Database = {
             foreignKeyName: "rezept_komponente_gericht_id_fkey"
             columns: ["gericht_id"]
             isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "rezept_komponente_gericht_id_fkey"
+            columns: ["gericht_id"]
+            isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rezept_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
           },
           {
             foreignKeyName: "rezept_komponente_komponente_id_fkey"
@@ -2208,6 +2250,13 @@ export type Database = {
             foreignKeyName: "zutat_komponente_id_fkey"
             columns: ["komponente_id"]
             isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "zutat_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
           },
@@ -2233,6 +2282,13 @@ export type Database = {
           titel?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "zutatengruppe_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
           {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
             columns: ["rezept_id"]
@@ -2847,6 +2903,13 @@ export type Database = {
             foreignKeyName: "komponente_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "komponente_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
           },
@@ -3068,7 +3131,15 @@ export type Database = {
           saison_id: string | null
           sortierung: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "schritt_geraet_id_fkey"
+            columns: ["geraet_id"]
+            isOneToOne: false
+            referencedRelation: "geraet"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       planung_produktion_komponente: {
         Row: {
@@ -3093,7 +3164,29 @@ export type Database = {
           sortierung: number | null
           status: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "komponente_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "komponente_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "komponente_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "rezept"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       planung_produktion_rolle: {
         Row: {
@@ -3132,7 +3225,15 @@ export type Database = {
           schritt_nr: number | null
           sortierung: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "schritt_geraet_id_fkey"
+            columns: ["geraet_id"]
+            isOneToOne: false
+            referencedRelation: "geraet"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       planung_service_komponente: {
         Row: {
@@ -3165,7 +3266,120 @@ export type Database = {
           vorort_geraet_min: number | null
           vorort_schritte: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_summe"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "wellen_uebersicht"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "komponente_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "komponente_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "komponente_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "rezept"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
       }
       produktion_checkliste: {
         Row: {
@@ -3237,6 +3451,13 @@ export type Database = {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "zutatengruppe_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
           },
@@ -3248,6 +3469,13 @@ export type Database = {
           waren_chf: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "zutatengruppe_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
           {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
             columns: ["rezept_id"]
@@ -3264,6 +3492,13 @@ export type Database = {
           unbeaufsichtigt_min: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "zutatengruppe_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
           {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
             columns: ["rezept_id"]
@@ -3649,8 +3884,22 @@ export type Database = {
             foreignKeyName: "zutat_komponente_id_fkey"
             columns: ["komponente_id"]
             isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
+          },
+          {
+            foreignKeyName: "zutat_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
             referencedRelation: "rezept"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zutatengruppe_rezept_id_fkey"
+            columns: ["rezept_id"]
+            isOneToOne: false
+            referencedRelation: "planung_produktion_schritt"
+            referencedColumns: ["rezept_id"]
           },
           {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
