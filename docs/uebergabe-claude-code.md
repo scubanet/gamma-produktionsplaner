@@ -1,14 +1,14 @@
 # Übergabe an Claude Code
 
-Stand: 10.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut. Ziel bleibt der Pilot mit White Turf im Februar 2027. Der Spengler Cup (26.–31.12.2026) läuft noch über die Excel; die App rechnet parallel mit, als Abgleich.
+Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Checkliste pro Welle und schnellere Datenerfassung (siehe unten). Ziel bleibt der Pilot mit White Turf im Februar 2027. Der Spengler Cup (26.–31.12.2026) läuft noch über die Excel; die App rechnet parallel mit, als Abgleich.
 
 ## Was da ist
 
 | Bereich | Wo | Stand |
 | --- | --- | --- |
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
-| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 19 Migrationen, siehe `docs/supabase.md` |
-| App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 85 Tests, noch nicht ausgeliefert |
+| Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 22 Migrationen (21 und 22 noch einzuspielen), siehe `docs/supabase.md` |
+| App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 95 Tests, Auslieferung über GitHub Actions |
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.8 | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
 | Anleitung | `docs/anleitung.md` | Bedienung pro Modul |
@@ -21,16 +21,24 @@ Stand: 10.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut. Ziel blei
 | `/anmelden` | Anmeldung mit E-Mail-Link, nur bestehende Benutzer | 1 |
 | `/` | Leitstand | 1 |
 | `/produktion` | Produktionsliste pro Saison mit Herleitung, Kontrollwerten, Export Excel und PDF | 2 |
-| `/produktion/wellen` | Wellen-Vorschlag, übernehmen, Datum ändern, Prüfhinweise | 7 |
+| `/produktion/wellen` | Wellen-Vorschlag, übernehmen, Datum ändern, Prüfhinweise; Erledigt und Zuständig pro Komponente und Welle | 7 |
 | `/systemzuteilung` | Komponenten mit Status und Prüfhinweisen, Zuteilung bearbeiten | 3 |
 | `/katalog` | Gerichte mit Komponenten, Verknüpfung zu Rezepten | 4 |
 | `/rezepte`, `/rezepte/bearbeiten` | Rezeptkarte mit Skalierung nach Portionen oder Chargen; Pflegeseite für Kopf, Gruppen, Zutaten, Schritte und offene Punkte (ändern, hinzufügen, löschen), neues Rezept anlegen, Rezept löschen (nur Admin) | 4 |
 | `/offerten`, `/offerten/bearbeiten`, `/offerten/druck` | Offerte mit Preis pro Gast, Deckungsbeitrag, Druckansicht | 5 |
 | `/anlaesse`, `/anlaesse/bearbeiten`, `/anlaesse/karte` | Anlass mit Services, Menülinien, Getränke- und Barkarten | 6 |
-| `/einkauf`, `/einkauf/lieferanten` | Einkaufsliste nach Lieferant und Artikel mit Bestellschluss, Lieferanten pflegen | 7 |
+| `/einkauf`, `/einkauf/lieferanten`, `/einkauf/zuordnen` | Einkaufsliste nach Lieferant und Artikel mit Bestellschluss, Lieferanten pflegen, Hauptartikel mit Vorschlägen zuordnen | 7 |
 | `/ressourcen` | Personal und Geräte pro Anlass, Zusatzbedarf Freelancer und Miete | 8 |
 | `/rentabilitaet` | Kalkulation pro Anlass, Monatsergebnis, Break-even | 8 |
 | `/stammdaten` | Lohnsätze, Strompreis, Fixkosten, Geräte, Einstellungen | 8 |
+
+## Nachtrag 14.11.2026
+
+- **Checkliste pro Welle** (Migration 21): Abgehakt wird pro Komponente und Welle im Wellenplan. Die Produktionsliste zeigt bei mehreren Wellen den Stand («2 von 3 Wellen»), bei einer Welle oder ohne Welle das Häkchen direkt. Zuständig lässt sich pro Welle oder für alle Wellen setzen. Alte Häkchen von Komponenten mit Wellen werden nicht übernommen (welche Welle gemeint war, ist unbekannt); am 14.11. gab es keines.
+- **Daten der Services in einem Dialog** (Anlass bearbeiten → Services → «Daten erfassen»): alle Spiele auf einmal statt einzeln.
+- **Artikel zuordnen** (Migration 22, `/einkauf/zuordnen`): Die Datenbank schlägt pro Komponente ohne Hauptartikel bis zu drei Artikel nach Ähnlichkeit des Namens vor; ein Klick ordnet zu. Die Verknüpfung bleibt ein Entscheid von Hand.
+- **Reihenfolge beim Ausliefern:** zuerst `supabase db push` (Migrationen 21 und 22), dann `cd app && npm run types` (die Typen in `database.types.ts` sind für 21 und 22 von Hand nachgeführt und sollen danach gleich herauskommen), erst dann `git push`. Sonst läuft die neue App gegen die alte Datenbank.
+- Tests: Auf Node 22 schlagen 6 ältere Tests wegen des Tausender-Apostrophs fehl (' statt ’). Ob sie mit Node 24 (wie im Workflow) laufen, wurde am 14.11. nicht geprüft.
 
 ## Kontrollwerte aus der Excel
 

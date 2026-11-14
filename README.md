@@ -33,6 +33,8 @@ Die Links sind privat, bis sie im Share-Menü freigegeben werden.
 
 ## Stand
 
+14.11.2026: Checkliste pro Produktionswelle, Daten aller Services in einem Dialog, Hauptartikel mit Vorschlägen zuordnen (Migrationen 21 und 22). Dateiname der Migration 20 an die Datenbank angeglichen.
+
 10.11.2026: App mit allen Screens der ersten Übergabe gebaut (Produktion, Wellen, Systemzuteilung, Katalog, Rezepte, Offerten, Anlässe, Einkauf, Ressourcen, Rentabilität, Stammdaten). Datenbank mit 19 Migrationen, Rezeptbibliothek mit 185 Rezepten. Details in `docs/uebergabe-claude-code.md` und `docs/supabase.md`.
 
 9.11.2026: Pilot-Datenbank in Supabase (Zürich) aufgesetzt. Importiert aus den GAMMA-Excel: Katalog Winter Collection 2026/27 (300 Gerichte, 493 Komponenten mit Systemzuteilung), Preisliste (669 Artikel), Quantumtabelle und Faktoren aus dem Verkaufstool, Saison mit 5 Anlässen, Spengler-Cup-Menüs (6 Menülinien, 11 Spiele, 344 Komponentenzeilen), Barkarte und die 14 Rezepte.

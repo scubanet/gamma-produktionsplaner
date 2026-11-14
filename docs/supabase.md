@@ -1,6 +1,6 @@
 # Supabase – Pilot-Datenbank
 
-Stand: 10.11.2026
+Stand: 14.11.2026
 
 | | |
 | --- | --- |
@@ -8,7 +8,7 @@ Stand: 10.11.2026
 | Region | Central Europe (Zürich), `eu-central-2` |
 | API-URL | https://oqmtocxemtcsvtzmswwx.supabase.co |
 | Zweck | Pilot Winter 2026/27. Danach Umzug auf einen eigenen Server von GAMMA (selbst gehostetes Supabase). |
-| Umfang | 45 Tabellen, 28 Views, 18 Funktionen, 19 Migrationen |
+| Umfang | 46 Tabellen, 29 Views, 20 Funktionen, 22 Migrationen (21 und 22 am 14.11.2026 geschrieben, mit `supabase db push` einzuspielen) |
 
 ## Aufbau
 
@@ -44,8 +44,11 @@ Stand: 10.11.2026
 | 17 rezept_quelle | `rezept_speichern` nimmt auch die Quelle |
 | 18 rezept_ganz_speichern | `rezept_speichern` nimmt das ganze Rezept als jsonb-Dokument und legt neue Rezepte an (`rezept_slug`); Wertebereiche auf `schritt` |
 | 19 rezept_loeschen | Admin-Liste `app_admin`, `ist_admin()`, `rezept_loeschen`; auf `rezept` darf nur ein Admin löschen |
+| 20 produktion_checkliste | Tabelle `produktion_aufgabe`: Zuständig und Erledigt pro Komponente und Saison. Version `20261110185525` (siehe unten) |
+| 21 checkliste_pro_welle | `produktion_aufgabe` mit `welle_nr` (0 = ohne Welle), View `produktion_checkliste`, `wellenplan` mit `vorschlag_nr` |
+| 22 artikel_vorschlag | Erweiterung `pg_trgm`, Funktion `komponente_artikel_vorschlag` (Vorschläge für den Hauptartikel) |
 
-Die Versionen in der Datenbank entsprechen den Dateinamen (`20261109000001` bis `20261110000019`).
+Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde nicht mit `supabase db push` eingespielt und trägt darum einen Zeitstempel (`20261110185525`); die Datei heisst seit dem 14.11.2026 gleich. Neue Migrationen immer mit `supabase db push` einspielen, sonst passen Datei und Datenbank nicht zusammen.
 
 ### Neue Migration einspielen
 
@@ -121,6 +124,7 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `wellen_termine(saison, haltbarkeit)`: die Termine dazu (erste Welle am Tag vor der Anlieferung, danach alle «Haltbarkeit» Tage). Migration 12 prüft beim Einspielen, dass die Anzahl mit `wellen_anzahl` übereinstimmt.
 - `wellen_vorschlag`: Komponente × Welle mit Menge nach Service-Datum; `wellenplan_uebernehmen(saison)` speichert ihn in `produktionswelle` und `welle_komponente`
 - `wellenplan`: gespeicherter Plan mit Prüfhinweisen (rot, gelb); `wellen_uebersicht`: Zahlen pro Saison
+- `produktion_checkliste`: eine Zeile pro Saison, Komponente und Welle mit Produktionstag (aus dem Plan, sonst aus dem Vorschlag), Zuständig und Erledigt. `welle_nr` ist die Welle der Komponente im Vorschlag; Komponenten ohne Welle (Zukauf, offen, nur vor Ort) haben `welle_nr` 0. Geschrieben wird in `produktion_aufgabe`; Zeitpunkt und Person des Häkchens setzt ein Trigger. Die Einträge bleiben erhalten, wenn der Vorschlag neu übernommen wird. Annahme: Ändern sich Anlassdaten oder Haltbarkeit, verschieben sich die Wellen-Nummern.
 
 ### Einkauf
 
@@ -128,6 +132,7 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `wellen_aktuell`: Datum aus dem Plan, Menge immer aktuell aus dem Vorschlag
 - `einkauf_position`: Bedarf pro Welle bzw. Anlass und Komponente, mit Hauptartikel, Menge, Kosten, Liefertermin und Bestellschluss
 - `einkauf_artikel`: Einkaufsliste nach Lieferant und Artikel; `einkauf_summe`: Zahlen pro Saison
+- `komponente_artikel_vorschlag(saison, anzahl, schwelle)`: Komponenten der Saison ohne Hauptartikel mit den ähnlichsten aktiven Artikeln nach dem Namen (`pg_trgm`, Standard 3 Vorschläge ab Ähnlichkeit 0.5). Schlägt nur vor; zugeordnet wird von Hand. Probelauf 14.11.2026: 249 Komponenten ohne Hauptartikel
 
 ### Ressourcen und Rentabilität
 

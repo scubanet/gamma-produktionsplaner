@@ -47,7 +47,7 @@ Ersetzt das Blatt «Spengler Cup» der Excel.
 
 - **Liste:** alle Anlässe, filterbar nach Status.
 - **Anlass bearbeiten:** Kopfdaten, Services und Menülinien.
-  - **Service:** ein Tag oder ein Spiel mit Datum und Gästezahl. Das Datum braucht es für Wellen und Einkauf.
+  - **Service:** ein Tag oder ein Spiel mit Datum und Gästezahl. Das Datum braucht es für Wellen und Einkauf. Mit «Daten erfassen» lassen sich die Daten aller Services in einem Schritt eintragen.
   - **Menülinie:** ein Menü, das für einen oder mehrere Services gilt (z.B. «Spiel 1 und 6»). Gerichte kommen aus dem Katalog und bringen ihre Komponenten mit. Der Anteil sagt, wie viele Gäste das Gericht nehmen; die Menge pro Gast lässt sich pro Komponente ändern.
 - **Getränke- und Barkarten:** Positionen mit Rubrik, Bezeichnung, Menge und Preis pflegen, umbenennen, drucken. Positionen ohne Preis werden angezeigt.
 
@@ -60,12 +60,15 @@ Ersetzt das Blatt «Spengler Cup» der Excel.
 - Die Herleitung zeigt Gäste × Anteil × Menge pro Gast.
 - «Abgleich mit der Excel» vergleicht die Kontrollwerte (z.B. Bündner Trockenfleisch 181.5 kg). Stimmt etwas nicht, zuerst melden.
 - Export als Excel, Drucken als PDF.
+- **Erledigt:** Hat eine Komponente eine Welle oder keine (Zukauf, nur vor Ort), wird hier abgehakt. Bei mehreren Wellen steht der Stand («2 von 3 Wellen»); abgehakt wird dann im Wellenplan.
+- **Zuständig** gilt hier für alle Wellen der Komponente.
 
 **Produktionswellen** (Knopf «Produktionswellen»)
 
 - Die App schlägt Wellen vor: Wie oft produziert wird, ergibt sich aus der Haltbarkeit und den Service-Daten.
 - **Vorschlag übernehmen** speichert den Plan. Das ersetzt einen bestehenden Plan.
 - Danach lässt sich pro Welle der Produktionstag ändern und eine Bemerkung setzen.
+- **Erledigt** und **Zuständig** pro Komponente in jeder Welle. Im Dialog «Zuständig» lässt sich die Person gleich für alle Wellen der Komponente setzen.
 - Hinweise oben zeigen, was fehlt: Services ohne Datum, Komponenten ohne Zuteilung.
 
 ## Systemzuteilung
@@ -109,6 +112,12 @@ Die Gerichte der Winter Collection mit ihren Komponenten.
 - **Noch nicht verknüpft:** Komponenten ohne Hauptartikel. Mit «Zuordnen» einen Artikel wählen, dann erscheint die Komponente in der Liste.
 - **Zukauf ohne Artikel:** Zukauf-Komponenten, die noch keinen Artikel haben.
 - Solange der Wellenplan nicht übernommen ist, rechnet die Liste mit dem Vorschlag.
+
+**Artikel zuordnen** (Knopf «Artikel zuordnen»)
+
+- Zeigt alle Komponenten der Saison ohne Hauptartikel, je mit bis zu drei Vorschlägen aus der Preisliste (ähnlicher Name, Prozentzahl = Ähnlichkeit).
+- Ein Klick auf den Vorschlag ordnet zu. Passt keiner: «Artikel suchen».
+- Ein ähnlicher Name ist noch nicht der richtige Artikel: vor dem Klick prüfen. Ändern lässt sich die Zuordnung in der Einkaufsliste unter «Verknüpfte Komponenten».
 
 **Lieferanten** (Knopf «Lieferanten»)
 
