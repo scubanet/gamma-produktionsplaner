@@ -9,8 +9,8 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
 | Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 26 Migrationen (26 noch einzuspielen), siehe `docs/supabase.md` |
 | App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 95 Tests, Auslieferung über GitHub Actions |
-| Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.13 (Look nach gammacatering.com, Navigation oben, Detailspalte) | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
-| UI/UX | `docs/plan-ui-ux-look-d.md` | Plan vom 15.11.2026: elf Aufgaben aus der UI/UX-Prüfung, Struktur der Variante D; Aufgaben 1 bis 9 gebaut |
+| Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.14 (Look nach gammacatering.com, Navigation oben, Detailspalte, Küchenpass) | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
+| UI/UX | `docs/plan-ui-ux-look-d.md` | Plan vom 15.11.2026: elf Aufgaben aus der UI/UX-Prüfung, Struktur der Variante D; Aufgaben 1 bis 9 und 11 gebaut, 10 zurückgestellt |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
 | Anleitung | `docs/anleitung.md` | Bedienung pro Modul |
 | Rezepte | Tabellen `rezept` … `schritt` | 185 Rezepte: 14 aus `rezepte/rezepte.json`, 171 aus dem Paprika-Export «My Recipes» |
@@ -23,6 +23,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | `/` | Leitstand | 1 |
 | `/produktion` | Produktionsliste pro Saison mit Herleitung, Kontrollwerten, Export Excel und PDF | 2 |
 | `/produktion/aufwand` | Aufwand aus den Rezepten: Produktion pro Welle, Logistik und Service pro Spiel | neu |
+| `/kueche` | Küchenpass: eine Welle zum Abhaken am Posten, für Handy und Tablet; Startseite der Web-App auf dem Home-Bildschirm | neu |
 | `/produktion/wellen` | Wellen-Vorschlag, übernehmen, Datum ändern, Prüfhinweise; Erledigt und Zuständig pro Komponente und Welle | 7 |
 | `/systemzuteilung` | Komponenten mit Status und Prüfhinweisen, Zuteilung bearbeiten | 3 |
 | `/katalog` | Gerichte mit Komponenten, Verknüpfung zu Rezepten | 4 |

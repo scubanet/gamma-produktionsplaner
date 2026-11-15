@@ -51,6 +51,7 @@ Inter Tight für alles Lesbare, IBM Plex Mono für Zahlen (tabellarische Ziffern
 - Kopfzeile: Breadcrumb (`caption`), Seitentitel, rechts die Aktionen (Sekundär vor Primär).
 - Inhalt in Karten (`radius-lg`, Rahmen `border`, keine Schatten), Abstände `space-6`, KPI-Reihen `space-4`.
 - Abschnitte ohne Karte beginnen mit `pl-section-title` (Grossbuchstaben, Linie in `ink`); darunter Zeilen `pl-todo` oder `pl-list-row`. So ist der Leitstand gebaut.
+- Zum Abhaken am Posten (Küchenpass) dienen Zeilen `pl-pass`: ganze Zeile klickbar, Häkchen 32 px.
 - Alles bricht um: Navigation stapelt sich über dem Inhalt, Kartenreihen werden einspaltig, Tabellen und Zeitpläne scrollen in ihrem Container.
 
 ## Ikonografie

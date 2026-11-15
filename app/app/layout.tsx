@@ -6,6 +6,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Produktionsplaner – GAMMA Catering",
   description: "Produktionsplanung von GAMMA Catering, Hünenberg",
+  // Auf dem Home-Bildschirm öffnet die App im Küchenpass (public/manifest.webmanifest).
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "Planer" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

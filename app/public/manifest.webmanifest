@@ -1,0 +1,10 @@
+{
+  "name": "Produktionsplaner GAMMA Catering",
+  "short_name": "Planer",
+  "start_url": "/kueche/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#4C0C14",
+  "icons": []
+}

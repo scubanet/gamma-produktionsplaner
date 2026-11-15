@@ -209,6 +209,16 @@
 .pl-details[open] { padding-bottom: var(--space-4); }
 @media print { .pl-split { display: block; } .pl-split__detail { display: none; } }
 
+/* Küchenpass: grosse Zeilen zum Abhaken am Posten (Handy und Tablet). */
+.pl-pass { display: flex; align-items: center; gap: var(--space-4); min-height: 72px; padding: var(--space-3) var(--space-2) var(--space-3) 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.pl-pass input[type=checkbox] { flex: none; width: 32px; height: 32px; margin: 0; accent-color: var(--accent); }
+.pl-pass:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+.pl-pass__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pl-pass__name { font-size: 18px; line-height: 24px; font-weight: 600; }
+.pl-pass__menge { flex: none; font-family: var(--font-mono); font-size: 18px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pl-pass--erledigt .pl-pass__name { text-decoration: line-through; color: var(--ink-muted); }
+.pl-pass--erledigt .pl-pass__menge { color: var(--ink-muted); }
+
 /* Leitstand: Abschnittstitel, Aufgabenzeilen mit Zahl, Listenzeilen, Fortschritt und Anteile. */
 .pl-lead { font-size: 20px; line-height: 26px; font-weight: 500; }
 .pl-section-title { margin: 0; padding-bottom: 10px; border-bottom: 1px solid var(--ink); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }

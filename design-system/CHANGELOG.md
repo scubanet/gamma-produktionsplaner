@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.14 | 15.11.2026 | Für den Küchenpass (`/kueche/`): Klasse `pl-pass` (72 px hohe Zeile mit 32-px-Häkchen, Name 18/600, Menge in Mono; erledigt durchgestrichen). |
 | 0.13 | 15.11.2026 | Neue Komponente DetailPanel und Layout `pl-split` (Liste mit Detailspalte statt Dialog), DataTable mit `isSelected`. `pl-h1--name`: Namen als Seitentitel in Normalschrift. `pl-details` für aufklappbare Abschnitte (Abgleich mit der Excel). |
 | 0.12 | 15.11.2026 | Für den Leitstand: Klassen `pl-section-title` (Abschnittstitel mit Linie), `pl-todo` (Aufgabenzeile mit Zahl und Ziel), `pl-list-row` (Listenzeile, auch als Link), `pl-progress` (Fortschritt), `pl-anteil` (Anteile nebeneinander), `pl-lead`. |
 | 0.11 | 15.11.2026 | DataTable: Sortieren per Spaltenkopf (`sortable`, `sort`, `onSort`, `aria-sort`). Produktionsliste nutzt es statt der Felder «Sortieren nach» und «Reihenfolge». |
@@ -21,4 +22,4 @@
 - GAMMA-Logo als Asset und Webfont-Lizenz PP Neue Montreal, sobald von GAMMA bestätigt (Hausfarben seit 0.9 drin).
 - Struktur aus Variante D in die App: Kontextzeile Saison/Anlass/Spiel, Suche, Detailspalte statt Dialog (Plan in `docs/plan-ui-ux-look-d.md`; Navigation seit 0.10 drin).
 - Komponenten für Einkauf und Stammdaten, wenn diese Screens entstehen.
-- Tablet-Ansicht für die Küche (Produktionsplan im Querformat).
+- Icons (192 und 512 px) für die Web-App auf dem Home-Bildschirm, sobald das GAMMA-Logo vorliegt.
