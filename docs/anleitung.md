@@ -1,6 +1,23 @@
 # Anleitung Produktionsplaner
 
-Stand: 10.11.2026. Kurze Bedienungsanleitung pro Modul. Die Module stehen links in der Navigation in dieser Reihenfolge.
+Stand: 15.11.2026. Kurze Bedienungsanleitung pro Modul.
+
+## Navigation
+
+Oben stehen sechs Bereiche. Die Seiten eines Bereichs erscheinen als Reiter direkt darunter.
+
+| Bereich | Seiten |
+| --- | --- |
+| Leitstand | Leitstand |
+| Verkauf | Offerten, Anlässe |
+| Produktion | Produktionsplan, Ressourcen, Einkauf, Küchenpass |
+| Küche | Rezepte, Katalog, Systemzuteilung |
+| Auswertung | Rentabilität |
+| Verwaltung | Stammdaten, Benutzer |
+
+- Hat eine Seite mehrere Ansichten, stehen sie als zweite Reihe Reiter über dem Seitentitel: im Produktionsplan «Liste», «Wellen», «Aufwand aus Rezepten»; im Einkauf «Einkaufsliste», «Lieferanten», «Artikel zuordnen».
+- Auf dem Handy steht oben nur «GAMMACATERING» und «Menü». «Menü» klappt die Bereiche und «Abmelden» auf.
+- Rechts oben steht die eigene E-Mail-Adresse und «Abmelden».
 
 ## Grundsätze, die überall gelten
 
@@ -10,6 +27,9 @@ Stand: 10.11.2026. Kurze Bedienungsanleitung pro Modul. Die Module stehen links 
 - **Prüfhinweise (rot, gelb) sperren nichts.** Sie zeigen, wo etwas nicht plausibel ist.
 - **Zusatzbedarf ist kein Fehler.** «+1 Freelancer» oder «+1 Miete» heisst nur: Das braucht es zusätzlich.
 - **Drucken** geht auf den meisten Seiten über den Knopf «Drucken»; im Druckdialog lässt sich auch ein PDF sichern.
+- **Speichern wird bestätigt.** Nach dem Speichern steht unter dem Seitentitel eine Zeile, was gespeichert wurde. Ein Fehler erscheint als Hinweis «Nicht gespeichert».
+- **Ungespeicherte Änderungen:** Im Rezept und im Kopf des Anlasses steht neben «Speichern» der Hinweis «Ungespeicherte Änderungen», und der Browser fragt nach, bevor die Seite verlassen wird.
+- **Tabellen sortieren:** In der Produktionsliste sortiert ein Klick auf den Spaltenkopf, der zweite Klick dreht die Richtung. Der Pfeil zeigt den Stand.
 
 ## Der Weg durch die App
 
@@ -24,11 +44,17 @@ Katalog, Systemzuteilung, Rezepte und Stammdaten sind die Grundlagen dafür.
 
 ## Anmelden
 
-E-Mail-Adresse eingeben, den Link in der E-Mail öffnen. Es gibt kein Passwort. Anmelden können sich nur bereits erfasste Benutzer. Abmelden geht im Leitstand.
+E-Mail-Adresse eingeben, den Link in der E-Mail öffnen. Es gibt kein Passwort. Anmelden können sich nur bereits erfasste Benutzer. Abmelden geht auf jeder Seite oben rechts, auf dem Handy im «Menü».
 
 ## Leitstand
 
-Übersicht mit den nächsten Schritten. Von hier geht es in die Module.
+Zeigt, was ansteht. Jede Zeile führt mit einem Klick zur richtigen Seite.
+
+- **Nächster Anlass** oben rechts, mit den Tagen bis zum Beginn.
+- **Zu erledigen:** Komponenten ohne Systemzuteilung, Prüfhinweise, Stand der Checkliste (erledigt / alle Aufgaben), Komponenten im Zukauf.
+- **Produktionswellen:** Fortschritt pro Welle der Saison des nächsten Anlasses. «Ohne Welle» sind Komponenten im Zukauf, ohne Zuteilung oder nur vor Ort.
+- **Anlässe der Saison** mit Datum; ein Klick öffnet den Anlass.
+- **Zuteilung der Komponenten:** Anteile ok, offen, Zukauf.
 
 ## Offerten
 
@@ -57,20 +83,22 @@ Ersetzt das Blatt «Spengler Cup» der Excel.
 **Produktionsliste**
 
 - Zeigt pro Komponente die Menge für die ganze Saison, Haltbarkeit, Anzahl Wellen und den frühesten Start.
+- **Suchen:** Das Suchfeld findet nach Komponente, Kategorie, Gericht, Gang und zuständiger Person, auch ohne Umlaute («bundner») und mit mehreren Wörtern.
+- **Bearbeiten** öffnet die Zuteilung der Komponente rechts neben der Liste, mit Menge, Wellen, Start und Herleitung. Die Liste bleibt sichtbar, die gewählte Zeile ist markiert. Auf schmalen Bildschirmen (Handy, Tablet hochkant) öffnet sich stattdessen ein Dialog.
 - Filter: Kategorie, Status, Spiel. Jedes Spiel wird einzeln gezeigt, mit eigener Menge, Datum und Anlieferung, auch wenn mehrere Spiele dasselbe Menü haben.
 - Die Herleitung zeigt Gäste × Anteil × Menge pro Gast.
-- «Abgleich mit der Excel» vergleicht die Kontrollwerte (z.B. Bündner Trockenfleisch 181.5 kg). Stimmt etwas nicht, zuerst melden.
-- Export als Excel, Drucken als PDF.
+- «Abgleich mit der Excel» steht aufklappbar unter der Tabelle und vergleicht die Kontrollwerte (z.B. Bündner Trockenfleisch 181.5 kg). Zugeklappt zeigt die Zeile, ob alle Werte gleich sind. Stimmt etwas nicht, zuerst melden.
+- Export als Excel (exportiert, was gerade angezeigt wird, also auch ein Suchergebnis), Drucken als PDF.
 - **Erledigt:** Hat eine Komponente eine Welle oder keine (Zukauf, nur vor Ort), wird hier abgehakt. Bei mehreren Wellen steht der Stand («2 von 3 Wellen»); abgehakt wird dann im Wellenplan.
 - **Zuständig** gilt hier für alle Wellen der Komponente.
 
-**Aufwand aus Rezepten** (Knopf «Aufwand aus Rezepten»)
+**Aufwand aus Rezepten** (Reiter «Aufwand aus Rezepten»)
 
 - Rechnet aus den verknüpften Rezepten: pro Welle die Durchgänge, die aktive Zeit, die Stunden pro Rolle und die Belegung der Geräte; pro Spiel die Gebinde, Gewicht und Volumen, die Zeit vor Ort und die Ausgabe.
 - Der Status jeder Zeile sagt, was fehlt: kein Rezept, Menge fehlt, Füllmenge fehlt. Summen gelten nur für die gerechneten Komponenten.
 - Gestrichelte Mengen sind Liter, als Kilogramm gerechnet (Annahme).
 
-**Produktionswellen** (Knopf «Produktionswellen»)
+**Produktionswellen** (Reiter «Wellen»)
 
 - Die App schlägt Wellen vor: Wie oft produziert wird, ergibt sich aus der Haltbarkeit und den Service-Daten.
 - **Vorschlag übernehmen** speichert den Plan. Das ersetzt einen bestehenden Plan.
@@ -78,13 +106,24 @@ Ersetzt das Blatt «Spengler Cup» der Excel.
 - **Erledigt** und **Zuständig** pro Komponente in jeder Welle. Im Dialog «Zuständig» lässt sich die Person gleich für alle Wellen der Komponente setzen.
 - Hinweise oben zeigen, was fehlt: Services ohne Datum, Komponenten ohne Zuteilung.
 
+## Küchenpass
+
+Für das Handy oder Tablet am Posten: eine Welle zum Abhaken.
+
+- Beim Öffnen steht die erste Welle, in der noch etwas offen ist. Gibt es mehrere Wellen, lässt sich oben wechseln.
+- Die ganze Zeile ist antippbar. Ein Häkchen gilt für diese Komponente in dieser Welle und erscheint auch im Wellenplan und in der Produktionsliste.
+- Oben steht der Fortschritt (erledigt / alle). «Noch offen», «Erledigt» und «Alle» filtern die Liste.
+- Klappt das Speichern nicht (z.B. kein Netz), geht das Häkchen zurück und ein Hinweis erscheint. Dann nochmals abhaken.
+- Zuständig und Termine werden im Wellenplan geändert.
+- **Auf den Home-Bildschirm:** In Safari «Teilen» → «Zum Home-Bildschirm». Die App startet dann direkt im Küchenpass.
+
 ## Systemzuteilung
 
 Ersetzt die Kategorienblätter der Excel.
 
 - Liste aller Komponenten mit Status: **offen** (noch nicht zugeteilt), **ok**, **Zukauf** (CF-Stufe 4 oder 5).
 - Suchen und filtern nach Kategorie, Status und Prüfhinweisen.
-- **Bearbeiten** öffnet die Zuteilung: Produktionssystem, Lagerung (0–2 °C, TK, Economat = trocken bis 18 °C, Tage), Regeneration und CF-Stufe. Speichern rechnet Status und Prüfhinweise neu.
+- **Bearbeiten** öffnet die Zuteilung rechts neben der Liste (auf schmalen Bildschirmen als Dialog): Produktionssystem, Lagerung (0–2 °C, TK, Economat = trocken bis 18 °C, Tage), Regeneration und CF-Stufe. Speichern rechnet Status und Prüfhinweise neu.
 - Hat inzwischen jemand anderes dieselbe Komponente geändert, wird nicht überschrieben; die App lädt den neuen Stand.
 
 ## Katalog
@@ -97,7 +136,7 @@ Die Gerichte der Winter Collection mit ihren Komponenten.
 
 ## Rezepte
 
-- **Liste links:** Gerichte und Komponenten. «+ Rezept» legt ein neues an.
+- **Liste links:** Gerichte und Komponenten, mit Suchfeld nach Name oder Kategorie. «+ Rezept» legt ein neues an.
 - **Rezeptkarte:** Zutaten und Zubereitung, Zeiten, Geräte, «Besonders zu beachten», offene Punkte.
 - **Skalieren:** oben eine Voreinstellung wählen oder eine eigene Zahl eingeben. Ein Gericht skaliert nach Portionen, eine Komponente nach Chargen. Zeiten werden nicht skaliert.
 - **Bearbeiten** öffnet die Pflegeseite:
@@ -123,13 +162,13 @@ Die Gerichte der Winter Collection mit ihren Komponenten.
 - **Zukauf ohne Artikel:** Zukauf-Komponenten, die noch keinen Artikel haben.
 - Solange der Wellenplan nicht übernommen ist, rechnet die Liste mit dem Vorschlag.
 
-**Artikel zuordnen** (Knopf «Artikel zuordnen»)
+**Artikel zuordnen** (Reiter «Artikel zuordnen»)
 
 - Zeigt alle Komponenten der Saison ohne Hauptartikel, je mit bis zu drei Vorschlägen aus der Preisliste (ähnlicher Name, Prozentzahl = Ähnlichkeit).
 - Ein Klick auf den Vorschlag ordnet zu. Passt keiner: «Artikel suchen».
 - Ein ähnlicher Name ist noch nicht der richtige Artikel: vor dem Klick prüfen. Ändern lässt sich die Zuordnung in der Einkaufsliste unter «Verknüpfte Komponenten».
 
-**Lieferanten** (Knopf «Lieferanten»)
+**Lieferanten** (Reiter «Lieferanten»)
 
 - Lieferant erfassen mit Liefertagen, Bestellschluss (Stunde), Vorlauf in Tagen, Telefon und E-Mail.
 - Artikel einem Lieferanten zuordnen: nach Namen oder Preisliste filtern und zuweisen.

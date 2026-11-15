@@ -1,6 +1,6 @@
 # Supabase – Pilot-Datenbank
 
-Stand: 14.11.2026
+Stand: 15.11.2026
 
 | | |
 | --- | --- |
@@ -8,7 +8,7 @@ Stand: 14.11.2026
 | Region | Central Europe (Zürich), `eu-central-2` |
 | API-URL | https://oqmtocxemtcsvtzmswwx.supabase.co |
 | Zweck | Pilot Winter 2026/27. Danach Umzug auf einen eigenen Server von GAMMA (selbst gehostetes Supabase). |
-| Umfang | 46 Tabellen, 29 Views, 20 Funktionen, 22 Migrationen (21 und 22 am 14.11.2026 geschrieben, mit `supabase db push` einzuspielen) |
+| Umfang | 50 Tabellen, 38 Views, 21 Funktionen, 29 Migrationen (alle eingespielt, gezählt am 15.11.2026) |
 
 ## Aufbau
 
@@ -59,6 +59,7 @@ Stand: 14.11.2026
 | 26 bedarf_pro_spiel | View `service_gericht_bedarf`: Bedarf pro Service, Gericht und Komponente für die Produktionsliste pro Spiel |
 | 27 lager_trocken_kombi_steamer | `komponente.lager_trocken` (trocken, bis 18 °C, z.B. EcoNoma; schliesst 0–2 °C und TK aus; nimmt den roten Hinweis «ohne Kühlung» weg), Regeneration «Kombi-Steamer» |
 | 28 economat_statt_gedeckt | Lagerung «Economat» (Spalte `lager_trocken`) ersetzt «gedeckt»; Prüfregel `fng_ohne_gedeckt` entfernt; `lager_gedeckt` bleibt ungenutzt stehen |
+| 29 leitstand | View `leitstand_wellen`: Aufgaben und erledigte Aufgaben der Checkliste pro Saison und Welle, für den Leitstand |
 | 25 geschirr | Tabellen `service_artikel`, `geschirr_standard`, `anlass_geschirr`, Funktion `anlass_geschirr_vorschlagen`, View `anlass_geschirr_bedarf` |
 | 24 planung_aus_rezept | Views `planung_bedarf`, `planung_produktion_schritt`, `planung_produktion_komponente`, `planung_produktion_rolle`, `planung_produktion_geraet`, `planung_service_komponente` |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
@@ -68,7 +69,7 @@ Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde ni
 ### Neue Migration einspielen
 
 1. Datei in `supabase/migrations/` anlegen (Zeitstempel-Präfix).
-2. Im Repo-Wurzelordner `supabase db push --remote` ausführen und bestätigen (seit CLI 3 zielt der Befehl ohne `--remote` auf die lokale Datenbank). Im Pilot macht das Dominik im Terminal.
+2. Im Repo-Wurzelordner zuerst `supabase db push --remote --dry-run` (zeigt, was eingespielt würde), dann `supabase db push --remote` ausführen und bestätigen (seit CLI 3 zielt der Befehl ohne `--remote` auf die lokale Datenbank). Ohne Terminal, also aus einem Skript oder durch Claude, braucht es `--yes` statt der Rückfrage.
 3. Typen neu erzeugen: `cd app && npm run types`, dann `npm run typecheck`. Die Datei `app/lib/database.types.ts` committen.
 
 Eine eingespielte Migration wird nicht mehr geändert. Korrekturen kommen als neue Migration (Beispiel: 09 nach 08).
@@ -141,6 +142,7 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `wellen_termine(saison, haltbarkeit)`: die Termine dazu (erste Welle am Tag vor der Anlieferung, danach alle «Haltbarkeit» Tage). Migration 12 prüft beim Einspielen, dass die Anzahl mit `wellen_anzahl` übereinstimmt.
 - `wellen_vorschlag`: Komponente × Welle mit Menge nach Service-Datum; `wellenplan_uebernehmen(saison)` speichert ihn in `produktionswelle` und `welle_komponente`
 - `wellenplan`: gespeicherter Plan mit Prüfhinweisen (rot, gelb); `wellen_uebersicht`: Zahlen pro Saison
+- `leitstand_wellen`: zählt die Checkliste pro Saison und Welle (`aufgaben`, `erledigt`). Kontrollwert am 15.11.2026: ohne Welle 172, Welle 1 77, Welle 2 3, erledigt überall 0
 - `produktion_checkliste`: eine Zeile pro Saison, Komponente und Welle mit Produktionstag (aus dem Plan, sonst aus dem Vorschlag), Zuständig und Erledigt. `welle_nr` ist die Welle der Komponente im Vorschlag; Komponenten ohne Welle (Zukauf, offen, nur vor Ort) haben `welle_nr` 0. Geschrieben wird in `produktion_aufgabe`; Zeitpunkt und Person des Häkchens setzt ein Trigger. Die Einträge bleiben erhalten, wenn der Vorschlag neu übernommen wird. Annahme: Ändern sich Anlassdaten oder Haltbarkeit, verschieben sich die Wellen-Nummern.
 
 ### Einkauf

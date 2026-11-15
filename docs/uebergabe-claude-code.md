@@ -12,7 +12,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.14 (Look nach gammacatering.com, Navigation oben, Detailspalte, Küchenpass) | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | UI/UX | `docs/plan-ui-ux-look-d.md` | Plan vom 15.11.2026: elf Aufgaben aus der UI/UX-Prüfung, Struktur der Variante D; Aufgaben 1 bis 9 und 11 gebaut, 10 zurückgestellt |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
-| Anleitung | `docs/anleitung.md` | Bedienung pro Modul |
+| Anleitung | `docs/anleitung.md` | Bedienung pro Modul, Stand 15.11.2026 mit neuer Navigation |
 | Rezepte | Tabellen `rezept` … `schritt` | 185 Rezepte: 14 aus `rezepte/rezepte.json`, 171 aus dem Paprika-Export «My Recipes» |
 
 ## Screens
