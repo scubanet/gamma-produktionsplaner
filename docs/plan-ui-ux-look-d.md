@@ -21,7 +21,7 @@
 
 ## Reihenfolge und Befund
 
-**Stand 15.11.2026:** Aufgaben 1, 2 und 3 sind gebaut und ausgeliefert (Design System 0.10). Weiter mit Aufgabe 4.
+**Stand 15.11.2026:** Aufgaben 1 bis 5 sind gebaut und ausgeliefert (Design System 0.11). Zu Aufgabe 4: Systemzuteilung und Katalog hatten bereits eine Suche (in der Prüfung übersehen); neu ist sie in Produktionsliste und Rezepten. Weiter mit Aufgabe 6.
 
 | Nr. | Aufgabe | Befund | Schwere |
 | --- | --- | --- | --- |

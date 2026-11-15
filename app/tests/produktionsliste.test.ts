@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filtern, herleitungTerm, leerwert, linienZeilen, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, spiele, spielZeilen, type BedarfZeile, type ListeZeile, type SpielBedarf } from "../lib/produktionsliste";
+import { filtern, herleitungTerm, leerwert, linienZeilen, mitAufgaben, naechsteSortierung, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, spiele, spielZeilen, type BedarfZeile, type ListeZeile, type SpielBedarf } from "../lib/produktionsliste";
 import { aufgabenAus, fortschritt, fortschrittText, personen, schluessel, type Aufgabe, type ChecklisteZeile } from "../lib/checkliste";
 import { mengenKontrollen, statusKontrolle, wellenKontrolle } from "../lib/kontrollwerte";
 import { formatAnteil, formatDatum, formatMenge } from "../lib/format";
@@ -174,5 +174,15 @@ describe("Nachbesserungen aus dem Review", () => {
     expect(statusKontrolle({ ok: 310, offen: 130, Zukauf: 53 }).ok).toBe(true);
     expect(statusKontrolle({ ok: 309, offen: 131, Zukauf: 53 }).ok).toBe(false);
     expect(statusKontrolle({ ok: null, offen: 130, Zukauf: 53 }).ok).toBeNull();
+  });
+});
+
+describe("Sortierung per Spaltenkopf", () => {
+  it("neue Spalte beginnt aufsteigend", () => {
+    expect(naechsteSortierung({ feld: "kategorie", richtung: "ab" }, "menge")).toEqual({ feld: "menge", richtung: "auf" });
+  });
+  it("dieselbe Spalte wechselt die Richtung", () => {
+    expect(naechsteSortierung({ feld: "menge", richtung: "auf" }, "menge")).toEqual({ feld: "menge", richtung: "ab" });
+    expect(naechsteSortierung({ feld: "menge", richtung: "ab" }, "menge")).toEqual({ feld: "menge", richtung: "auf" });
   });
 });

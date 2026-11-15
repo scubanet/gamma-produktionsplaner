@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, type DataTableColumn } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
+import { suchen } from "@/lib/suche";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import {
-  filtern, leerwert, mitAufgaben, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, SORTIERUNGEN, spiele, spielZeilen,
+  filtern, leerwert, mitAufgaben, naechsteSortierung, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, SORT_SPALTEN, spiele, spielZeilen,
   type BedarfZeile, type SpielBedarf, type ListeZeile, type Richtung, type SortFeld, type Zeile,
 } from "@/lib/produktionsliste";
 import { aufgabenAus, fortschritt, fortschrittText, personen as personenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/lib/checkliste";
@@ -73,6 +74,7 @@ export default function Produktionsliste() {
   const [aufgaben, setAufgaben] = useState<Map<string, Aufgabe>>(new Map());
   const [sortFeld, setSortFeld] = useState<SortFeld>("kategorie");
   const [richtung, setRichtung] = useState<Richtung>("auf");
+  const [suche, setSuche] = useState("");
   const [erledigt, setErledigt] = useState<"" | "offen" | "erledigt">("");
   const [zustaendig, setZustaendig] = useState("");
   const [dialog, setDialog] = useState<Zeile | null>(null);
@@ -121,7 +123,10 @@ export default function Produktionsliste() {
     const roh = linie ? spielZeilen(daten.proSpiel, daten.liste, linie) : saisonZeilen(daten.liste, daten.bedarf);
     return sortieren(mitAufgaben(roh, fortschritt(aufgaben.values())), sortFeld, richtung);
   }, [daten, linie, aufgaben, sortFeld, richtung]);
-  const zeilen = useMemo(() => filtern(alle, { kategorie, status, erledigt, zustaendig }), [alle, kategorie, status, erledigt, zustaendig]);
+  const zeilen = useMemo(
+    () => suchen(filtern(alle, { kategorie, status, erledigt, zustaendig }), suche, (z) => [z.komponente, z.kategorie, z.gericht, z.gang, ...z.zustaendige]),
+    [alle, kategorie, status, erledigt, zustaendig, suche],
+  );
   const personen = useMemo(() => personenAus(aufgaben.values()), [aufgaben]);
   const erledigtZahl = alle.filter((z) => z.erledigtAm).length;
 
@@ -176,6 +181,7 @@ export default function Produktionsliste() {
     {
       key: "erledigt",
       label: "Erledigt",
+      sortable: true,
       render: (r) => {
         const z = r as unknown as Zeile;
         // Mehrere Wellen: Stand zeigen, abgehakt wird pro Welle im Wellenplan.
@@ -197,12 +203,15 @@ export default function Produktionsliste() {
     {
       key: "komponente",
       label: "Komponente",
+      sortable: true,
       subKey: "unterzeile",
       render: (r) => (r.erledigtAm ? <s className="pl-muted">{r.komponente as string}</s> : (r.komponente as string)),
     },
+    { key: "kategorie", label: "Kategorie", sortable: true },
     {
       key: "zustaendig",
       label: "Zuständig",
+      sortable: true,
       render: (r) => (
         <span className="pl-print-hide">
           <Button variant={r.zustaendig ? "secondary" : "dashed"} onClick={() => setDialog(r as unknown as Zeile)} ariaLabel={`Zuständig für ${r.komponente as string}`}>
@@ -212,10 +221,10 @@ export default function Produktionsliste() {
       ),
     },
     { key: "status", label: "Status", render: (r) => <StatusPill status={STATUS_PILL[r.status as string] ?? "neutral"}>{r.status as string}</StatusPill> },
-    { key: "menge", label: linie ? "Menge Spiel" : "Menge Saison", numeric: true, render: (r) => formatMenge(r.menge as number | null, r.einheit as string | null) },
-    { key: "haltbarkeitTage", label: <span className="pl-assumed" title={HALTBARKEIT_HINWEIS}>Haltbarkeit</span>, numeric: true, render: (r) => (r.haltbarkeitTage === null ? leerwert(r.status as string, "Haltbarkeit") : `${r.haltbarkeitTage} Tage`) },
-    { key: "wellen", label: "Wellen", numeric: true, render: (r) => (r.wellen === null ? leerwert(r.status as string, "Wellen") : String(r.wellen)) },
-    { key: "startAb", label: "Start ab", numeric: true, render: (r) => (r.startAb === null ? leerwert(r.status as string, "Start") : formatDatum(r.startAb as string)) },
+    { key: "menge", label: linie ? "Menge Spiel" : "Menge Saison", numeric: true, sortable: true, render: (r) => formatMenge(r.menge as number | null, r.einheit as string | null) },
+    { key: "haltbarkeitTage", label: <span className="pl-assumed" title={HALTBARKEIT_HINWEIS}>Haltbarkeit</span>, numeric: true, sortable: true, render: (r) => (r.haltbarkeitTage === null ? leerwert(r.status as string, "Haltbarkeit") : `${r.haltbarkeitTage} Tage`) },
+    { key: "wellen", label: "Wellen", numeric: true, sortable: true, render: (r) => (r.wellen === null ? leerwert(r.status as string, "Wellen") : String(r.wellen)) },
+    { key: "startAb", label: "Start ab", numeric: true, sortable: true, render: (r) => (r.startAb === null ? leerwert(r.status as string, "Start") : formatDatum(r.startAb as string)) },
     { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
     {
       key: "bearbeiten",
@@ -230,7 +239,7 @@ export default function Produktionsliste() {
   ];
   const tabelle = zeilen.map((z) => ({
     ...z,
-    unterzeile: [z.gericht ? `${z.kategorie} · ${z.gang} · ${z.gericht}` : z.kategorie, z.erledigtAm ? `erledigt ${formatDatum(z.erledigtAm.slice(0, 10))}` : ""].filter(Boolean).join(" · "),
+    unterzeile: [z.gericht ? `${z.gang} · ${z.gericht}` : "", z.erledigtAm ? `erledigt ${formatDatum(z.erledigtAm.slice(0, 10))}` : ""].filter(Boolean).join(" · "),
   })) as unknown as Record<string, unknown>[];
 
   async function exportieren() {
@@ -295,23 +304,15 @@ export default function Produktionsliste() {
         </div>
       </div>
 
-      <div className="pl-grid-4 pl-print-hide">
-        <Select
-          id="sortierung"
-          label="Sortieren nach"
-          value={sortFeld}
-          onChange={(v) => setSortFeld(v as SortFeld)}
-          options={SORTIERUNGEN}
+      <div className="pl-grid-3 pl-print-hide">
+        <TextField
+          id="suche"
+          type="search"
+          label="Suchen"
+          placeholder="Komponente, Gericht oder Person"
+          value={suche}
+          onChange={(e) => setSuche((e as { target: HTMLInputElement }).target.value)}
         />
-        <div>
-          <div className="pl-label">Reihenfolge</div>
-          <SegmentedControl
-            label="Reihenfolge"
-            value={richtung}
-            onChange={(v) => setRichtung(v as Richtung)}
-            options={[{ value: "auf", label: "aufsteigend" }, { value: "ab", label: "absteigend" }]}
-          />
-        </div>
         <div>
           <div className="pl-label">Erledigt</div>
           <SegmentedControl
@@ -341,7 +342,20 @@ export default function Produktionsliste() {
 
           <Card title="Komponenten" meta={`${spiel ? `Menge für ${spiel.name}: ${spiel.gaeste === null ? "[Gäste]" : formatZahl(spiel.gaeste)} Gäste, Spiel am ${spiel.datum ? formatDatum(spiel.datum) : "[Datum]"}, Anlieferung ${spiel.anlieferung ? formatDatum(spiel.anlieferung) : "[Datum]"}; Haltbarkeit, Wellen und Start gelten für die Saison` : "Menge über alle Spiele der Saison"}. Abgehakt wird pro Welle: bei einer Welle direkt hier, bei mehreren im Wellenplan. Zuständig gilt hier für alle Wellen der Komponente.`}>
             {daten ? (
-              zeilen.length ? <DataTable columns={spalten} rows={tabelle} /> : <p className="pl-muted">Keine Komponenten für diese Filter.</p>
+              zeilen.length ? (
+                <DataTable
+                  columns={spalten}
+                  rows={tabelle}
+                  sort={{ key: Object.keys(SORT_SPALTEN).find((k) => SORT_SPALTEN[k] === sortFeld) ?? "kategorie", dir: richtung }}
+                  onSort={(k) => {
+                    const n = naechsteSortierung({ feld: sortFeld, richtung }, SORT_SPALTEN[k]);
+                    setSortFeld(n.feld);
+                    setRichtung(n.richtung);
+                  }}
+                />
+              ) : (
+                <p className="pl-muted">{suche.trim() ? `Nichts gefunden für «${suche.trim()}».` : "Keine Komponenten für diese Filter."}</p>
+              )
             ) : fehler ? (
               <p className="pl-muted">Keine Daten, siehe Hinweis oben.</p>
             ) : (

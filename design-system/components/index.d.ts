@@ -17,8 +17,8 @@ export interface RecipeIngredient { id: string; name: ReactNode; amount: ReactNo
 export interface RecipeStep { id: string; text: ReactNode; assumed?: boolean; chips?: ReactNode[]; }
 export interface RecipeGroupsProps { groups: { id?: string; title?: ReactNode; ingredients: RecipeIngredient[]; steps: RecipeStep[] }[]; pctLabel?: string; }
 export interface CheckboxProps { label: ReactNode; checked?: boolean; defaultChecked?: boolean; onChange?: (e: unknown) => void; }
-export interface DataTableColumn { key: string; label: ReactNode; numeric?: boolean; printHidden?: boolean; subKey?: string; render?: (row: Record<string, unknown>) => ReactNode; }
-export interface DataTableProps { columns: DataTableColumn[]; rows: Record<string, unknown>[]; }
+export interface DataTableColumn { key: string; label: ReactNode; numeric?: boolean; printHidden?: boolean; sortable?: boolean; subKey?: string; render?: (row: Record<string, unknown>) => ReactNode; }
+export interface DataTableProps { columns: DataTableColumn[]; rows: Record<string, unknown>[]; sort?: { key: string; dir: 'auf' | 'ab' }; onSort?: (key: string) => void; }
 export interface TimelineBar { label: string; from: number; to: number; location?: 'zentral' | 'vorort' | 'logistik'; }
 export interface TimelineProps { start: number; end: number; step?: number; marker?: number; lanes: { name: string; bars: TimelineBar[] }[]; }
 export interface SideNavItem { label: string; href?: string; current?: boolean; disabled?: boolean; }

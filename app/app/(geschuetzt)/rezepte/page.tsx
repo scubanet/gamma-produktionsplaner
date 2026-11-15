@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { suchen } from "@/lib/suche";
 import { PlanungKarte } from "@/components/rezepte/PlanungKarte";
 import { formatGramm, formatMinuten, formatZahl } from "@/lib/format";
 import {
@@ -66,6 +67,7 @@ function Rezeptbibliothek() {
   const slug = useSearchParams().get("r");
   const [rezepte, setRezepte] = useState<Rezept[] | null>(null);
   const [listenFehler, setListenFehler] = useState<string | null>(null);
+  const [suche, setSuche] = useState("");
   // Skalierung pro Rezept: gehört der Stand nicht zum gewählten Rezept, gilt die erste Voreinstellung.
   const [wahl, setWahl] = useState<{ rezeptId: string; wert: number | null; eingabe: string } | null>(null);
   const [details, setDetails] = useState<Geladen<Details> | null>(null);
@@ -76,6 +78,7 @@ function Rezeptbibliothek() {
   }, []);
 
   const rezept = useMemo(() => rezepte?.find((r) => r.slug === slug) ?? rezepte?.[0] ?? null, [rezepte, slug]);
+  const gefunden = useMemo(() => suchen(rezepte ?? [], suche, (r) => [r.name, r.kategorie]), [rezepte, suche]);
   const presets = useMemo(() => (rezept ? voreinstellungen(rezept) : []), [rezept]);
   const aktuell = wahl && rezept && wahl.rezeptId === rezept.id ? wahl : { rezeptId: rezept?.id ?? "", wert: presets[0]?.wert ?? null, eingabe: "" };
   const wert = aktuell.wert;
@@ -174,15 +177,31 @@ function Rezeptbibliothek() {
             <Button variant="dashed" href="/rezepte/bearbeiten/">+ Rezept</Button>
           </div>
           {rezepte ? (
-            <ItemList
-              label="Rezepte"
-              value={rezept?.slug ?? undefined}
-              onSelect={waehlen}
-              groups={(["gericht", "komponente"] as const).map((typ) => ({
-                title: typ === "gericht" ? "Gerichte" : "Komponenten",
-                items: rezepte.filter((r) => r.typ === typ).map((r) => ({ id: r.slug, label: r.name, sub: listenSub(r) })),
-              }))}
-            />
+            <>
+              <TextField
+                id="rezept-suche"
+                type="search"
+                label="Rezept suchen"
+                placeholder="Name oder Kategorie"
+                value={suche}
+                onChange={(e) => setSuche((e as { target: HTMLInputElement }).target.value)}
+              />
+              {gefunden.length ? (
+                <ItemList
+                  label="Rezepte"
+                  value={rezept?.slug ?? undefined}
+                  onSelect={waehlen}
+                  groups={(["gericht", "komponente"] as const)
+                    .map((typ) => ({
+                      title: typ === "gericht" ? "Gerichte" : "Komponenten",
+                      items: gefunden.filter((r) => r.typ === typ).map((r) => ({ id: r.slug, label: r.name, sub: listenSub(r) })),
+                    }))
+                    .filter((g) => g.items.length)}
+                />
+              ) : (
+                <p className="pl-muted" role="status">Nichts gefunden für «{suche.trim()}».</p>
+              )}
+            </>
           ) : (
             <p className="pl-muted" role="status">{listenFehler ? "Keine Daten." : "Rezepte werden geladen …"}</p>
           )}

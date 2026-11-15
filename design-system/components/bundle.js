@@ -187,7 +187,12 @@
     return h('div', { className: 'pl-table-wrap' },
       h('table', { className: 'pl-table' },
         h('thead', null, h('tr', null, p.columns.map(function (c) {
-          return h('th', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined }, c.label);
+          var kann = c.sortable && p.onSort;
+          var ist = p.sort && p.sort.key === c.key;
+          return h('th', { key: c.key, scope: 'col', className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined,
+            'aria-sort': kann ? (ist ? (p.sort.dir === 'ab' ? 'descending' : 'ascending') : 'none') : undefined },
+            kann ? h('button', { type: 'button', className: 'pl-table__sort', onClick: function () { p.onSort(c.key); } },
+              c.label, h('span', { 'aria-hidden': 'true' }, ist ? (p.sort.dir === 'ab' ? ' ↓' : ' ↑') : '')) : c.label);
         }))),
         h('tbody', null, p.rows.map(function (r, i) {
           return h('tr', { key: r.id || i }, p.columns.map(function (c) {

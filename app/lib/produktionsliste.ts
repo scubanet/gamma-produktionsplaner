@@ -154,16 +154,18 @@ export function filtern(zeilen: Zeile[], f: Filter): Zeile[] {
 export type SortFeld = "kategorie" | "komponente" | "startAb" | "wellen" | "haltbarkeit" | "menge" | "zustaendig" | "erledigt";
 export type Richtung = "auf" | "ab";
 
-export const SORTIERUNGEN: { value: SortFeld; label: string }[] = [
-  { value: "kategorie", label: "Kategorie" },
-  { value: "komponente", label: "Komponente" },
-  { value: "startAb", label: "Start ab" },
-  { value: "wellen", label: "Wellen" },
-  { value: "haltbarkeit", label: "Haltbarkeit" },
-  { value: "menge", label: "Menge" },
-  { value: "zustaendig", label: "Zuständig" },
-  { value: "erledigt", label: "Erledigt" },
-];
+export type Sortierung = { feld: SortFeld; richtung: Richtung };
+
+/** Klick auf einen Spaltenkopf: neue Spalte beginnt aufsteigend, dieselbe Spalte wechselt die Richtung. */
+export function naechsteSortierung(jetzt: Sortierung, feld: SortFeld): Sortierung {
+  return jetzt.feld === feld ? { feld, richtung: jetzt.richtung === "auf" ? "ab" : "auf" } : { feld, richtung: "auf" };
+}
+
+/** Spalten der Tabelle, nach denen sortiert werden kann: Schlüssel der Spalte → Sortierfeld. */
+export const SORT_SPALTEN: Record<string, SortFeld> = {
+  erledigt: "erledigt", komponente: "komponente", kategorie: "kategorie", zustaendig: "zustaendig",
+  menge: "menge", haltbarkeitTage: "haltbarkeit", wellen: "wellen", startAb: "startAb",
+};
 
 const sortWert = (z: Zeile, feld: SortFeld): string | number | null => {
   switch (feld) {

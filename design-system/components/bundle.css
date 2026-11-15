@@ -184,6 +184,14 @@
 .pl-notice ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.5; }
 
 /* Druck: «Drucken / PDF» ohne Navigation und Bedienelemente, helle Werte, Tabellenkopf auf jeder Seite */
+.pl-table th { vertical-align: bottom; }
+.pl-table th.pl-num { font-family: var(--font-sans); font-size: 11px; }
+.pl-table__sort { display: inline-flex; align-items: flex-end; min-height: var(--control-height); padding: 0 0 10px; border: 0; background: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
+.pl-table__sort:hover, .pl-table th[aria-sort=ascending] .pl-table__sort, .pl-table th[aria-sort=descending] .pl-table__sort { color: var(--ink); }
+.pl-table__sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pl-table th:has(.pl-table__sort) { padding-bottom: 0; }
+@media print { .pl-table__sort { min-height: 0; padding-bottom: 0; } .pl-table th:has(.pl-table__sort) { padding-bottom: 10px; } }
+
 /* TopNav und Tabs: Hauptnavigation oben mit sechs Bereichen, Seiten und Ansichten als Tabs. */
 .pl-app--top { flex-direction: column; flex-wrap: nowrap; }
 .pl-app--top .pl-main { flex: 1 1 auto; }
