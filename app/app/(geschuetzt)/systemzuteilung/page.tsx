@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { useSchmal } from "@/lib/schmal";
 import { formatZahl } from "@/lib/format";
 import {
   filtern, haltbarkeitText, hinweiseNachKomponente, lagerungText, leerAnzeige, sortieren,
@@ -41,6 +42,7 @@ export default function Systemzuteilung() {
   const [filter, setFilter] = useState<Filter>({ kategorie: "", status: "", hinweis: "", suche: "" });
   const [bearbeiten, setBearbeiten] = useState<Zuteilung | null>(null);
   const [meldung, setMeldung] = useState("");
+  const schmal = useSchmal();
   const meldungRef = useRef<HTMLParagraphElement>(null);
 
   const neuLaden = () => laden().then(setDaten, (e: Error) => setFehler(e.message));
@@ -172,13 +174,14 @@ export default function Systemzuteilung() {
 
       <p className="pl-small" role="status" tabIndex={-1} ref={meldungRef}>{meldung}</p>
 
-      <section className="pl-card">
+      <div className="pl-split">
+      <section className="pl-card pl-split__liste">
         <div className="pl-card__head">
           <h2 className="pl-card__title">Komponenten</h2>
           <span className="pl-card__meta">{daten ? `${formatZahl(zeilen.length)} von ${formatZahl(alle.length)}` : ""}</span>
         </div>
         {daten ? (
-          zeilen.length ? <DataTable columns={spalten} rows={tabelle} /> : <p className="pl-muted">Keine Komponenten für diese Filter.</p>
+          zeilen.length ? <DataTable columns={spalten} rows={tabelle} isSelected={(r) => !!bearbeiten && r.id === bearbeiten.id} /> : <p className="pl-muted">Keine Komponenten für diese Filter.</p>
         ) : fehler ? (
           <p className="pl-muted">Keine Daten, siehe Hinweis oben.</p>
         ) : (
@@ -190,7 +193,24 @@ export default function Systemzuteilung() {
         </p>
       </section>
 
-      {bearbeiten && daten ? (
+      {bearbeiten && daten && !schmal ? (
+        <aside className="pl-split__detail pl-print-hide">
+          <KomponenteBearbeiten
+            alsSpalte
+            key={bearbeiten.id}
+            zeile={bearbeiten}
+            hinweise={hinweise.get(bearbeiten.id ?? "") ?? []}
+            systeme={daten.systeme}
+            regenerationen={daten.regenerationen}
+            onClose={geschlossen}
+            onAktualisiert={aktualisiert}
+            onNeuLaden={neuLaden}
+          />
+        </aside>
+      ) : null}
+      </div>
+
+      {bearbeiten && daten && schmal ? (
         <KomponenteBearbeiten
           key={bearbeiten.id}
           zeile={bearbeiten}

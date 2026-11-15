@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
@@ -116,6 +116,17 @@
       ] : null);
   }
 
+  function DetailPanel(p) {
+    return h('section', { className: 'pl-panel', 'aria-label': p.label || 'Detail' },
+      h('div', { className: 'pl-panel__head' },
+        h('div', null,
+          p.meta ? h('div', { className: 'pl-crumb' }, p.meta) : null,
+          h('h2', { className: 'pl-panel__title' }, p.title)),
+        p.onClose ? h('button', { type: 'button', className: 'pl-panel__close', 'aria-label': 'Detail schliessen', onClick: p.onClose }, '×') : null),
+      h('div', { className: 'pl-panel__body' }, p.children),
+      p.actions ? h('div', { className: 'pl-panel__actions' }, p.actions) : null);
+  }
+
   function Fieldset(p) {
     return h('fieldset', { className: 'pl-fieldset' },
       h('legend', { className: 'pl-field__label' }, p.legend),
@@ -195,7 +206,7 @@
               c.label, h('span', { 'aria-hidden': 'true' }, ist ? (p.sort.dir === 'ab' ? ' ↓' : ' ↑') : '')) : c.label);
         }))),
         h('tbody', null, p.rows.map(function (r, i) {
-          return h('tr', { key: r.id || i }, p.columns.map(function (c) {
+          return h('tr', { key: r.id || i, className: p.isSelected && p.isSelected(r) ? 'pl-table__row--selected' : undefined }, p.columns.map(function (c) {
             var v = c.render ? c.render(r) : r[c.key];
             return h('td', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined }, v,
               c.subKey && r[c.subKey] ? h('span', { className: 'pl-sub' }, r[c.subKey]) : null);
@@ -262,6 +273,6 @@
       p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.13 | 15.11.2026 | Neue Komponente DetailPanel und Layout `pl-split` (Liste mit Detailspalte statt Dialog), DataTable mit `isSelected`. `pl-h1--name`: Namen als Seitentitel in Normalschrift. `pl-details` für aufklappbare Abschnitte (Abgleich mit der Excel). |
 | 0.12 | 15.11.2026 | Für den Leitstand: Klassen `pl-section-title` (Abschnittstitel mit Linie), `pl-todo` (Aufgabenzeile mit Zahl und Ziel), `pl-list-row` (Listenzeile, auch als Link), `pl-progress` (Fortschritt), `pl-anteil` (Anteile nebeneinander), `pl-lead`. |
 | 0.11 | 15.11.2026 | DataTable: Sortieren per Spaltenkopf (`sortable`, `sort`, `onSort`, `aria-sort`). Produktionsliste nutzt es statt der Felder «Sortieren nach» und «Reihenfolge». |
 | 0.10 | 15.11.2026 | Neue Komponenten TopNav (Hauptnavigation oben mit sechs Bereichen, unter 760 px als Menü einklappbar) und Tabs (Seiten eines Bereichs, Ansichten einer Seite). Layout-Klasse `pl-app--top`. Die App nutzt TopNav statt SideNav. |

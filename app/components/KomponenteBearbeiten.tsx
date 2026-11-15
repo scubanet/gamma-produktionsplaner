@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Checkbox, Dialog, Fieldset, Notice, Select, StatusPill, TextField } from "@/lib/planer";
+import { useState, type ReactNode } from "react";
+import { Button, Checkbox, DetailPanel, Dialog, Fieldset, Notice, Select, StatusPill, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import {
   fehlertext, formularAus, lagerartSetzen, sperreAus, umschalten, updateAus,
@@ -18,6 +18,10 @@ type Props = {
   onAktualisiert: (zeile: Zuteilung, hinweise: Hinweis[], gespeichert: boolean) => void;
   /** Gespeichert, aber nicht nachgeladen: die Seite lädt alles neu. */
   onNeuLaden: () => void;
+  /** Als Spalte neben der Liste statt als Dialog (breite Screens). Bleibt nach dem Speichern offen. */
+  alsSpalte?: boolean;
+  /** Nur in der Spalte: Angaben der Seite über dem Formular, z.B. Menge und Herleitung. */
+  zusatz?: ReactNode;
 };
 
 const checked = (e: unknown) => (e as { target: HTMLInputElement }).target.checked;
@@ -32,7 +36,7 @@ async function nachladen(id: string) {
   return { zeile: z.data, hinweise: h.data ?? [] };
 }
 
-export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen, onClose, onAktualisiert, onNeuLaden }: Props) {
+export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen, onClose, onAktualisiert, onNeuLaden, alsSpalte, zusatz }: Props) {
   const [offen, setOffen] = useState(true);
   const [basis, setBasis] = useState<{ zeile: Zuteilung; hinweise: Hinweis[] }>({ zeile, hinweise });
   const [f, setF] = useState<Formular>(() => formularAus(zeile));
@@ -74,26 +78,23 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
       return setFehler("Nicht gespeichert: Die Komponente wurde inzwischen von jemand anderem geändert. Der aktuelle Stand ist geladen, bitte die Änderung erneut eingeben.");
     }
     onAktualisiert(neu.zeile, neu.hinweise, true);
-    setOffen(false);
+    if (alsSpalte) {
+      // Die Spalte bleibt offen und zeigt den gespeicherten Stand.
+      setBasis({ zeile: neu.zeile, hinweise: neu.hinweise });
+      setF(formularAus(neu.zeile));
+    } else setOffen(false);
   }
 
-  return (
-    <Dialog
-      open={offen}
-      id="komponente-bearbeiten"
-      title={basis.zeile.name ?? "[Komponente]"}
-      meta={`${basis.zeile.kategorie} · Excel-Zeile ${basis.zeile.quelle_zeile}`}
-      onClose={onClose}
-      onCancel={(e) => speichert && e.preventDefault()}
-      actions={
-        <>
-          <Button onClick={() => setOffen(false)} disabled={speichert}>Abbrechen</Button>
-          <Button variant="primary" onClick={speichern} disabled={speichert}>
-            {speichert ? "Wird gespeichert …" : "Speichern"}
-          </Button>
-        </>
-      }
-    >
+  const titel = basis.zeile.name ?? "[Komponente]";
+  const meta = `${basis.zeile.kategorie} · Excel-Zeile ${basis.zeile.quelle_zeile}`;
+  const speichernButton = (
+    <Button variant="primary" onClick={speichern} disabled={speichert}>
+      {speichert ? "Wird gespeichert …" : "Speichern"}
+    </Button>
+  );
+
+  const inhalt = (
+    <>
       {basis.hinweise.length ? (
         <div>
           <div className="pl-label">Prüfhinweise (gespeicherter Stand)</div>
@@ -165,6 +166,44 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
       </div>
 
       {fehler ? <Notice role="alert" title="Nicht gespeichert">{fehler}</Notice> : null}
+    </>
+  );
+
+  if (alsSpalte)
+    return (
+      <DetailPanel
+        title={titel}
+        meta={meta}
+        label={`Zuteilung ${titel}`}
+        onClose={onClose}
+        actions={
+          <>
+            {speichernButton}
+            <Button onClick={onClose} disabled={speichert}>Schliessen</Button>
+          </>
+        }
+      >
+        {zusatz}
+        {inhalt}
+      </DetailPanel>
+    );
+
+  return (
+    <Dialog
+      open={offen}
+      id="komponente-bearbeiten"
+      title={titel}
+      meta={meta}
+      onClose={onClose}
+      onCancel={(e) => speichert && e.preventDefault()}
+      actions={
+        <>
+          <Button onClick={() => setOffen(false)} disabled={speichert}>Abbrechen</Button>
+          {speichernButton}
+        </>
+      }
+    >
+      {inhalt}
     </Dialog>
   );
 }

@@ -1,0 +1,5 @@
+<!-- @dsCard group="Layout" height=320 -->
+<div class="pl-root" style="max-width:380px;background:var(--ground)" id="r"></div>
+<script>const {DetailPanel,Button,TextField}=window.Planer;const h=React.createElement;ReactDOM.createRoot(document.getElementById('r')).render(
+h(DetailPanel,{title:'Gerösteter Blumenkohl',meta:'Basiskomponenten',onClose:function(){},actions:h(React.Fragment,null,h(Button,{variant:'primary'},'Speichern'),h(Button,null,'Abbrechen'))},
+h(TextField,{label:'Lagerung Tage',numeric:true,defaultValue:'180'}),h(TextField,{label:'Bemerkung'}))));</script>

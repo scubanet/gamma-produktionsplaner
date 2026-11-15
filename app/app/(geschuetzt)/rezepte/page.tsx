@@ -136,7 +136,7 @@ function Rezeptbibliothek() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">Rezepte · {rezepte ? `${rezepte.length} Rezepte` : "…"}</div>
-          <h1 className="pl-h1">{rezept?.name ?? "Rezeptbibliothek"}</h1>
+          <h1 className={rezept ? "pl-h1 pl-h1--name" : "pl-h1"}>{rezept?.name ?? "Rezeptbibliothek"}</h1>
           {rezept?.untertitel ? <div className="pl-sub">{rezept.untertitel}</div> : null}
         </div>
         {rezept && presets.length ? (

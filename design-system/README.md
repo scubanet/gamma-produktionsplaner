@@ -41,7 +41,7 @@ Regeln:
 
 Inter Tight für alles Lesbare, IBM Plex Mono für Zahlen (tabellarische Ziffern, damit Mengen untereinander stehen). Beide von Google Fonts. Inter Tight ist Platzhalter für die Hausschrift PP Neue Montreal der Website; sie ist lizenzpflichtig und ersetzt Inter Tight in `font-sans`, sobald GAMMA die Webfont-Lizenz bestätigt.
 
-- Seitentitel `page-title` 44/500 in Grossbuchstaben, Kartentitel `section-title` 16/600, Text `body` 14/400.
+- Seitentitel `page-title` 44/500 in Grossbuchstaben; ist der Titel ein Name aus den Daten (Rezept, Gericht, Anlass, Karte, Offerte), steht er mit `pl-h1--name` in Normalschrift 36/500, Kartentitel `section-title` 16/600, Text `body` 14/400.
 - Labels `label` 12/500 in `ink-muted`; Tabellenköpfe und Breadcrumb `table-head` 11/500 in Grossbuchstaben mit 0.08em Laufweite, Tabellenkopf mit Linie in `ink`; Gang-Bezeichnungen `eyebrow` 12/600 in Grossbuchstaben mit 0.06em Laufweite.
 - Kennzahlen `kpi` 30 und `kpi-lg` 40 in Mono; Tabellenzahlen `figure` 13 in Mono, rechtsbündig.
 
@@ -63,7 +63,7 @@ Noch kein offizielles GAMMA-Logo im System. Platzhalter ist ein bordeauxrotes Qu
 
 ## Komponenten
 
-Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
+Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
 
 ## Wie das System weiterwächst
 

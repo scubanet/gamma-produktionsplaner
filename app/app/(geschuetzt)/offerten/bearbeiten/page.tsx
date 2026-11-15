@@ -188,7 +188,7 @@ function Bearbeiten() {
           <div className="pl-crumb">
             <a href="/offerten/">Offerten</a> · {offerte?.nummer ?? "…"}
           </div>
-          <h1 className="pl-h1">{offerte?.name ?? "Offerte"}</h1>
+          <h1 className={offerte ? "pl-h1 pl-h1--name" : "pl-h1"}>{offerte?.name ?? "Offerte"}</h1>
         </div>
         <div className="pl-actions">
           <Button href={`/offerten/druck/?id=${id}`}>Offerte als PDF</Button>

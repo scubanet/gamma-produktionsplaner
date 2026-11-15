@@ -84,7 +84,7 @@ function Katalogansicht() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">Katalog · {daten ? `${daten.kollektion} · ${formatZahl(daten.gerichte.length)} Gerichte` : "…"}</div>
-          <h1 className="pl-h1">{gericht?.name ?? "Katalog"}</h1>
+          <h1 className={gericht ? "pl-h1 pl-h1--name" : "pl-h1"}>{gericht?.name ?? "Katalog"}</h1>
         </div>
       </header>
 

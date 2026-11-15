@@ -112,7 +112,7 @@ function KarteBearbeiten() {
           <div className="pl-crumb pl-print-hide">
             <a href="/anlaesse/">Anlässe</a> · {daten?.anlass ? <a href={`/anlaesse/bearbeiten/?id=${daten.anlass.id}`}>{daten.anlass.name}</a> : "ohne Anlass"}
           </div>
-          <h1 className="pl-h1">{k?.name ?? "Karte"}</h1>
+          <h1 className={k ? "pl-h1 pl-h1--name" : "pl-h1"}>{k?.name ?? "Karte"}</h1>
           {daten?.anlass ? <div className="pl-sub">{daten.anlass.name}</div> : null}
         </div>
         <div className="pl-actions pl-print-hide">

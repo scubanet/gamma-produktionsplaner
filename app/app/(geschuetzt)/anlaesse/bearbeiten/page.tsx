@@ -118,7 +118,7 @@ function Bearbeiten() {
           <div className="pl-crumb">
             <a href="/anlaesse/">Anlässe</a> · {a ? `${a.nummer ?? "[Nummer]"} · ${zeitraum(a.datum, a.datum_bis, formatDatum)} · ${a.ort ?? "[Ort]"}` : "…"}
           </div>
-          <h1 className="pl-h1">{a?.name ?? "Anlass"}</h1>
+          <h1 className={a ? "pl-h1 pl-h1--name" : "pl-h1"}>{a?.name ?? "Anlass"}</h1>
         </div>
         {a ? <StatusPill status={statusPill(a.status)}>{statusLabel(a.status)}</StatusPill> : null}
       </header>

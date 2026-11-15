@@ -158,7 +158,7 @@ function RezeptBearbeiten() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">Rezepte · {titel}</div>
-          <h1 className="pl-h1">{f.name.trim() || "[Name]"}</h1>
+          <h1 className="pl-h1 pl-h1--name">{f.name.trim() || "[Name]"}</h1>
           <div className="pl-sub">Mengen gelten für die Basis des Rezepts: Basisportionen beim Gericht, eine Charge bei der Komponente.</div>
         </div>
         <div className="pl-actions">

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
 import { suchen } from "@/lib/suche";
+import { useSchmal } from "@/lib/schmal";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import {
@@ -76,6 +77,7 @@ export default function Produktionsliste() {
   const [richtung, setRichtung] = useState<Richtung>("auf");
   const [suche, setSuche] = useState("");
   const [meldung, setMeldung] = useState("");
+  const schmal = useSchmal();
   const meldungRef = useRef<HTMLParagraphElement>(null);
   const [erledigt, setErledigt] = useState<"" | "offen" | "erledigt">("");
   const [zustaendig, setZustaendig] = useState("");
@@ -168,6 +170,13 @@ export default function Produktionsliste() {
       setAktionsFehler(`${z.komponente}: ${f}`);
     } else setMeldung(an ? `${z.komponente} als erledigt gespeichert.` : `${z.komponente} wieder offen.`);
   }
+  /** Nach dem Speichern der Zuteilung: Status, Haltbarkeit, Wellen und Start hängen daran, darum die Liste neu rechnen. */
+  function komponenteGespeichert(z: Zuteilung, _h: Hinweis[], gespeichert: boolean) {
+    if (!gespeichert) return;
+    setMeldung(`${z.name} gespeichert: Status ${z.status}. Liste neu gerechnet.`);
+    neuLaden();
+  }
+  const gewaehlt = bearbeiten ? zeilen.find((z) => z.komponenteId === bearbeiten.zeile.id) ?? null : null;
   const kategorien = useMemo(() => [...new Set((daten?.liste ?? []).map((l) => l.kategorie ?? ""))].filter(Boolean).sort((a, b) => a.localeCompare(b, "de-CH")), [daten]);
 
   const kontrollen: Kontrolle[] = daten
@@ -337,8 +346,8 @@ export default function Produktionsliste() {
         />
       </div>
 
-      <div className="pl-row">
-        <div className="pl-col-main">
+      <div className="pl-split">
+        <div className="pl-split__liste">
           <div className="pl-grid-4">
             <KpiTile label="Zeilen in der Liste" value={daten ? formatZahl(zeilen.length) : warten} detail={daten ? `von ${formatZahl(alle.length)}, nach Filter` : undefined} />
             <KpiTile label="Erledigt" value={daten ? `${formatZahl(erledigtZahl)} von ${formatZahl(alle.length)}` : warten} detail="alle Wellen der Komponente abgehakt" />
@@ -352,6 +361,7 @@ export default function Produktionsliste() {
                 <DataTable
                   columns={spalten}
                   rows={tabelle}
+                  isSelected={(r) => !!bearbeiten && r.komponenteId === bearbeiten.zeile.id}
                   sort={{ key: Object.keys(SORT_SPALTEN).find((k) => SORT_SPALTEN[k] === sortFeld) ?? "kategorie", dir: richtung }}
                   onSort={(k) => {
                     const n = naechsteSortierung({ feld: sortFeld, richtung }, SORT_SPALTEN[k]);
@@ -371,10 +381,12 @@ export default function Produktionsliste() {
               <span className="pl-assumed">Haltbarkeit</span>: {HALTBARKEIT_HINWEIS} [Haltbarkeit] = noch nicht zugeteilt (Status offen); – = trifft nicht zu (Zukauf oder nur vor Ort).
             </p>
           </Card>
-        </div>
 
-        <aside className="pl-col-side pl-print-hide">
-          <Card title="Abgleich mit der Excel" meta={daten ? (abweichungen ? `${abweichungen} Abweichung(en)` : "alle Kontrollwerte gleich") : undefined}>
+          <details className="pl-details pl-print-hide">
+            <summary>
+              Abgleich mit der Excel
+              <span className="pl-small">{daten ? (abweichungen ? `${abweichungen} Abweichung(en)` : "alle Kontrollwerte gleich") : ""}</span>
+            </summary>
             <DataTable
               columns={[
                 { key: "label", label: "Kontrollwert" },
@@ -384,8 +396,42 @@ export default function Produktionsliste() {
               ]}
               rows={kontrollen.map((k, i) => ({ id: i, ...k }))}
             />
-          </Card>
-        </aside>
+          </details>
+        </div>
+
+        {bearbeiten && !schmal ? (
+          <aside className="pl-split__detail pl-print-hide">
+            <KomponenteBearbeiten
+              alsSpalte
+              key={bearbeiten.zeile.id}
+              zeile={bearbeiten.zeile}
+              hinweise={bearbeiten.hinweise}
+              systeme={bearbeiten.systeme}
+              regenerationen={bearbeiten.regenerationen}
+              onClose={() => setBearbeiten(null)}
+              onAktualisiert={komponenteGespeichert}
+              onNeuLaden={neuLaden}
+              zusatz={
+                gewaehlt ? (
+                  <div className="pl-grid-2">
+                    <div>
+                      <div className="pl-label">{linie ? "Menge Spiel" : "Menge Saison"}</div>
+                      <div className="pl-lead pl-mono">{formatMenge(gewaehlt.menge, gewaehlt.einheit)}</div>
+                    </div>
+                    <div>
+                      <div className="pl-label">Wellen · Start ab</div>
+                      <div className="pl-lead pl-mono">{gewaehlt.wellen ?? "–"} · {gewaehlt.startAb ? formatDatum(gewaehlt.startAb) : "–"}</div>
+                    </div>
+                    <div style={{ gridColumn: "1 / -1" }}>
+                      <div className="pl-label">Herleitung</div>
+                      <div className="pl-small">{gewaehlt.herleitung}</div>
+                    </div>
+                  </div>
+                ) : undefined
+              }
+            />
+          </aside>
+        ) : null}
       </div>
       {dialog?.komponenteId ? (
         <ZustaendigDialog
@@ -408,7 +454,7 @@ export default function Produktionsliste() {
           }}
         />
       ) : null}
-      {bearbeiten ? (
+      {bearbeiten && schmal ? (
         <KomponenteBearbeiten
           key={bearbeiten.zeile.id}
           zeile={bearbeiten.zeile}
@@ -416,11 +462,7 @@ export default function Produktionsliste() {
           systeme={bearbeiten.systeme}
           regenerationen={bearbeiten.regenerationen}
           onClose={() => setBearbeiten(null)}
-          onAktualisiert={(z, _h, gespeichert) => {
-            if (!gespeichert) return;
-            setMeldung(`${z.name} gespeichert: Status ${z.status}. Liste neu gerechnet.`);
-            neuLaden();
-          }}
+          onAktualisiert={komponenteGespeichert}
           onNeuLaden={neuLaden}
         />
       ) : null}
