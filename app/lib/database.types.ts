@@ -3177,6 +3177,15 @@ export type Database = {
           },
         ]
       }
+      leitstand_wellen: {
+        Row: {
+          aufgaben: number | null
+          erledigt: number | null
+          saison_id: string | null
+          welle_nr: number | null
+        }
+        Relationships: []
+      }
       menuelinie_gaeste: {
         Row: {
           anlass_id: string | null

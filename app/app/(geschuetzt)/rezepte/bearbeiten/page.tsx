@@ -142,7 +142,7 @@ function RezeptBearbeiten() {
       return setFehler(q.error.message);
     }
     const neu = (q.data as { slug?: string } | null)?.slug ?? slug;
-    router.replace(`/rezepte/?r=${encodeURIComponent(neu)}`);
+    router.replace(`/rezepte/?r=${encodeURIComponent(neu)}&gespeichert=1`);
   }
 
   async function endgueltigLoeschen() {

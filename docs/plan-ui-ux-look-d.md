@@ -21,7 +21,7 @@
 
 ## Reihenfolge und Befund
 
-**Stand 15.11.2026:** Aufgaben 1 bis 5 sind gebaut und ausgeliefert (Design System 0.11). Zu Aufgabe 4: Systemzuteilung und Katalog hatten bereits eine Suche (in der Prüfung übersehen); neu ist sie in Produktionsliste und Rezepten. Weiter mit Aufgabe 6.
+**Stand 15.11.2026:** Aufgaben 1 bis 7 sind gebaut und ausgeliefert (Design System 0.12, Migration 29 eingespielt). Zu Aufgabe 6: Elf Seiten bestätigten das Speichern schon (in der Prüfung übersehen); ergänzt wurden Produktionsliste und Rezept, ohne `lib/meldung.ts`, nach dem bestehenden Muster. Zu Aufgabe 4: Systemzuteilung und Katalog hatten bereits eine Suche (in der Prüfung übersehen); neu ist sie in Produktionsliste und Rezepten. Weiter mit Aufgabe 8.
 
 | Nr. | Aufgabe | Befund | Schwere |
 | --- | --- | --- | --- |

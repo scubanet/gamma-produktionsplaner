@@ -186,6 +186,26 @@
 /* Druck: «Drucken / PDF» ohne Navigation und Bedienelemente, helle Werte, Tabellenkopf auf jeder Seite */
 .pl-table th { vertical-align: bottom; }
 .pl-table th.pl-num { font-family: var(--font-sans); font-size: 11px; }
+/* Leitstand: Abschnittstitel, Aufgabenzeilen mit Zahl, Listenzeilen, Fortschritt und Anteile. */
+.pl-lead { font-size: 20px; line-height: 26px; font-weight: 500; }
+.pl-section-title { margin: 0; padding-bottom: 10px; border-bottom: 1px solid var(--ink); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+.pl-todo { display: flex; align-items: center; gap: var(--space-4); min-height: 72px; padding: var(--space-2) 0; border-bottom: 1px solid var(--border); color: var(--ink); text-decoration: none; }
+.pl-todo:hover, .pl-list-row[href]:hover { background: var(--surface-sunken); }
+.pl-todo:focus-visible, .pl-list-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.pl-todo__zahl { flex: none; min-width: 84px; font-size: 30px; line-height: 36px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pl-todo__text { flex: 1; min-width: 0; }
+.pl-todo__titel { display: block; font-size: 16px; line-height: 22px; font-weight: 600; }
+.pl-todo__ziel { margin-left: auto; padding-left: var(--space-3); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+.pl-list-row { display: flex; align-items: center; gap: var(--space-3); min-height: 52px; padding: 0 var(--space-3) 0 0; border-bottom: 1px solid var(--border); color: var(--ink); text-decoration: none; }
+.pl-list-row__titel { flex: 1; min-width: 0; font-weight: 500; }
+.pl-list-row[aria-current=true] { padding-left: var(--space-3); background: var(--surface-sunken); box-shadow: inset 3px 0 0 var(--accent); }
+.pl-list-row[aria-current=true] .pl-list-row__titel { font-weight: 600; }
+.pl-progress { flex: 2; height: 8px; background: var(--surface-hover); }
+.pl-progress__bar { display: block; height: 100%; background: var(--accent); }
+.pl-anteil { display: flex; height: 14px; margin: var(--space-4) 0 var(--space-3); }
+.pl-anteil__teil { flex: 0 0 0; }
+@media (max-width: 560px) { .pl-todo { flex-wrap: wrap; } .pl-todo__ziel { margin-left: 0; flex-basis: 100%; padding-left: 0; } }
+
 .pl-table__sort { display: inline-flex; align-items: flex-end; min-height: var(--control-height); padding: 0 0 10px; border: 0; background: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
 .pl-table__sort:hover, .pl-table th[aria-sort=ascending] .pl-table__sort, .pl-table th[aria-sort=descending] .pl-table__sort { color: var(--ink); }
 .pl-table__sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

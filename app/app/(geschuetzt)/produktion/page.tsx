@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
 import { suchen } from "@/lib/suche";
 import { supabase } from "@/lib/supabase";
@@ -75,6 +75,8 @@ export default function Produktionsliste() {
   const [sortFeld, setSortFeld] = useState<SortFeld>("kategorie");
   const [richtung, setRichtung] = useState<Richtung>("auf");
   const [suche, setSuche] = useState("");
+  const [meldung, setMeldung] = useState("");
+  const meldungRef = useRef<HTMLParagraphElement>(null);
   const [erledigt, setErledigt] = useState<"" | "offen" | "erledigt">("");
   const [zustaendig, setZustaendig] = useState("");
   const [dialog, setDialog] = useState<Zeile | null>(null);
@@ -161,7 +163,10 @@ export default function Produktionsliste() {
     if (!z.komponenteId || z.wellenNr.length !== 1) return;
     setAktionsFehler(null);
     const f = await aufgabeSpeichern(z.komponenteId, z.wellenNr, { erledigt_am: an ? new Date().toISOString() : null });
-    if (f) setAktionsFehler(`${z.komponente}: ${f}`);
+    if (f) {
+      setMeldung("");
+      setAktionsFehler(`${z.komponente}: ${f}`);
+    } else setMeldung(an ? `${z.komponente} als erledigt gespeichert.` : `${z.komponente} wieder offen.`);
   }
   const kategorien = useMemo(() => [...new Set((daten?.liste ?? []).map((l) => l.kategorie ?? ""))].filter(Boolean).sort((a, b) => a.localeCompare(b, "de-CH")), [daten]);
 
@@ -276,6 +281,7 @@ export default function Produktionsliste() {
       {fehler ? <Notice title="Produktionsliste nicht geladen">{fehler}</Notice> : null}
       {exportFehler ? <Notice title="Excel-Export fehlgeschlagen">{exportFehler}</Notice> : null}
       {aktionsFehler ? <Notice title="Nicht gespeichert">{aktionsFehler}</Notice> : null}
+      <p className="pl-small pl-print-hide" role="status" tabIndex={-1} ref={meldungRef}>{meldung}</p>
 
       <div className="pl-grid-3 pl-print-hide">
         <Select
@@ -395,7 +401,11 @@ export default function Produktionsliste() {
           }
           entfernbar={dialog.zustaendige.length > 0}
           onClose={() => setDialog(null)}
-          onSpeichern={(n) => aufgabeSpeichern(dialog.komponenteId!, dialog.wellenNr, { zustaendig: n })}
+          onSpeichern={async (n) => {
+            const f = await aufgabeSpeichern(dialog.komponenteId!, dialog.wellenNr, { zustaendig: n });
+            if (!f) setMeldung(n ? `Zuständig für ${dialog.komponente}: ${n}.` : `Zuständig für ${dialog.komponente} entfernt.`);
+            return f;
+          }}
         />
       ) : null}
       {bearbeiten ? (
@@ -406,7 +416,11 @@ export default function Produktionsliste() {
           systeme={bearbeiten.systeme}
           regenerationen={bearbeiten.regenerationen}
           onClose={() => setBearbeiten(null)}
-          onAktualisiert={(_z, _h, gespeichert) => { if (gespeichert) neuLaden(); }}
+          onAktualisiert={(z, _h, gespeichert) => {
+            if (!gespeichert) return;
+            setMeldung(`${z.name} gespeichert: Status ${z.status}. Liste neu gerechnet.`);
+            neuLaden();
+          }}
           onNeuLaden={neuLaden}
         />
       ) : null}

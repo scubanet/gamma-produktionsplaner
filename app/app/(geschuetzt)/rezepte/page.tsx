@@ -64,7 +64,10 @@ async function skalieren(r: Rezept, wert: number): Promise<Skaliert> {
 
 function Rezeptbibliothek() {
   const router = useRouter();
-  const slug = useSearchParams().get("r");
+  const parameter = useSearchParams();
+  const slug = parameter.get("r");
+  // Nach dem Speichern leitet die Pflegeseite mit gespeichert=1 hierher; beim nächsten Wechsel des Rezepts ist der Hinweis weg.
+  const gespeichert = parameter.get("gespeichert") === "1";
   const [rezepte, setRezepte] = useState<Rezept[] | null>(null);
   const [listenFehler, setListenFehler] = useState<string | null>(null);
   const [suche, setSuche] = useState("");
@@ -170,6 +173,7 @@ function Rezeptbibliothek() {
       </header>
 
       {fehler ? <Notice role="alert" title="Rezept nicht geladen">{fehler}</Notice> : null}
+      <p className="pl-small" role="status">{gespeichert && rezept ? `Rezept «${rezept.name}» gespeichert.` : ""}</p>
 
       <div className="pl-row">
         <div className="pl-col-side">
