@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap");
 
 /* Produktionsplaner – Komponenten. Alle Werte kommen aus tokens.css. */
 .pl-root, .pl-root * { box-sizing: border-box; }
@@ -9,9 +9,10 @@
 .pl-app *, .pl-app *::before, .pl-app *::after { box-sizing: border-box; }
 .pl-main { flex: 999 1 560px; min-width: 0; padding: var(--space-8) var(--space-10) 48px; display: flex; flex-direction: column; gap: var(--space-6); }
 .pl-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
-.pl-crumb { font-size: 13px; color: var(--ink-muted); }
+.pl-crumb { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
 .pl-crumb a { color: var(--ink-muted); }
-.pl-h1 { margin: 4px 0 0; font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+.pl-h1 { margin: 6px 0 0; font-size: 44px; line-height: 46px; font-weight: 500; letter-spacing: -0.02em; text-transform: uppercase; text-wrap: balance; }
+@media (max-width: 560px) { .pl-h1 { font-size: 32px; line-height: 34px; } }
 .pl-sub { font-size: 15px; color: var(--ink-secondary); }
 .pl-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
 /* Formular: Felder und Feldzeilen untereinander, z.B. in einer Karte */
@@ -61,7 +62,7 @@
 .pl-kpi__detail { font-size: 12px; color: var(--ink-muted); }
 
 /* Status pill */
-.pl-pill { display: inline-block; padding: 3px 10px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pl-pill { display: inline-block; padding: 3px 10px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; white-space: nowrap; }
 .pl-pill--ok { background: var(--status-ok-bg); color: var(--status-ok-ink); }
 .pl-pill--info { background: var(--status-info-bg); color: var(--status-info-ink); }
 .pl-pill--warn { background: var(--status-warn-bg); color: var(--status-warn-ink); }
@@ -76,7 +77,7 @@
 .pl-loc--logistik .pl-loc__swatch { background: var(--loc-logistik-tint); border-color: var(--loc-logistik); }
 
 /* Segmented control */
-.pl-seg { display: inline-flex; flex-wrap: wrap; padding: var(--space-1); gap: var(--space-1); background: var(--surface-sunken); border-radius: 10px; }
+.pl-seg { display: inline-flex; flex-wrap: wrap; padding: var(--space-1); gap: var(--space-1); background: var(--surface-sunken); border-radius: var(--radius-lg); }
 .pl-seg__opt { min-height: var(--control-height); padding: 0 16px; border: 0; border-radius: var(--radius-md); background: transparent; font: inherit; font-family: var(--font-sans); font-size: 14px; color: var(--ink-secondary); cursor: pointer; }
 .pl-seg__opt[aria-checked="true"] { background: var(--surface); box-shadow: var(--shadow-raised); font-weight: 600; color: var(--ink); }
 .pl-seg__opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
@@ -119,7 +120,7 @@
 .pl-items__label { font-size: 14px; font-weight: 500; }
 
 /* Chip: Merkmal eines Arbeitsschritts (Gerät, Temperatur, Zeit, HACCP) */
-.pl-chip { display: inline-block; padding: 1px 8px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 500; background: var(--surface-sunken); color: var(--ink-secondary); }
+.pl-chip { display: inline-block; padding: 1px 8px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; background: var(--surface-sunken); color: var(--ink-secondary); }
 .pl-chip--temp { background: var(--loc-zentral-tint); color: var(--loc-zentral-ink); }
 .pl-chip--aktiv { background: var(--accent-tint); color: var(--accent-strong); }
 .pl-chip--unbeaufsichtigt { background: var(--grid-line); color: var(--ink-muted); font-style: italic; }
@@ -147,7 +148,7 @@
 /* Data table */
 .pl-table-wrap { overflow-x: auto; }
 .pl-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.pl-table th { text-align: left; font-size: 12px; font-weight: 500; color: var(--ink-muted); padding: 0 12px 10px 0; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.pl-table th { text-align: left; font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); padding: 0 12px 10px 0; border-bottom: 1px solid var(--ink); white-space: nowrap; }
 .pl-table td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--divider); vertical-align: top; color: var(--ink); }
 .pl-table .pl-num { font-family: var(--font-mono); font-size: 13px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .pl-table .pl-sub { display: block; font-size: 12px; color: var(--ink-muted); }
@@ -171,7 +172,7 @@
 .pl-nav { width: var(--sidenav-width); max-width: 100%; background: var(--surface); border-right: 1px solid var(--border); padding: var(--space-6) var(--space-4); display: flex; flex-direction: column; gap: var(--space-1); }
 .pl-nav__brand { display: flex; align-items: center; gap: 10px; padding: 0 12px var(--space-6); font-weight: 600; font-size: 15px; line-height: 1.2; }
 .pl-nav__brand small { display: block; font-weight: 400; font-size: 12px; color: var(--ink-muted); }
-.pl-nav__mark { width: 28px; height: 28px; border-radius: 7px; background: var(--accent); flex: none; }
+.pl-nav__mark { width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--accent); flex: none; }
 .pl-nav__item { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 12px; border-radius: var(--radius-md); text-decoration: none; color: var(--ink-secondary); font-size: 14px; }
 .pl-nav__item:hover { background: var(--surface-hover); color: var(--ink); }
 .pl-nav__item[aria-current="page"] { background: var(--accent-tint); color: var(--accent-strong); font-weight: 600; }

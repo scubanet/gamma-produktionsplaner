@@ -21,28 +21,28 @@ Ein Anlass (Gäste, Menü, Serviceart, Location) wird einmal erfasst. Daraus rec
 
 ## Farbe
 
-Ein Akzent, drei Ortsfarben, vier Statusfarben – sonst neutrale Grautöne mit leichtem Grünstich.
+Die Farben folgen seit Version 0.9 der Website gammacatering.com: weisser Grund, Fast-Schwarz, Bordeaux als einzige Aktionsfarbe, Status in Salbei, Gelb und Hellblau. Dazu drei Ortsfarben.
 
 | Rolle | Token | Einsatz |
 | --- | --- | --- |
 | Grund | `ground`, `surface` | Seite und Karten |
-| Akzent | `accent` (Salbeigrün) | Primär-Button, aktiver Nav-Eintrag, Gang-Bezeichnungen, Marker im Zeitplan |
+| Akzent | `accent` (Bordeaux) | Primär-Button, aktiver Nav-Eintrag, Gang-Bezeichnungen, Marker im Zeitplan |
 | Ort | `loc-zentral` (Blau), `loc-vorort` (Orange), `loc-logistik` (Grau) | Zeitplan-Balken, Schrittnummern, Legende |
 | Status | `status-ok`, `status-info`, `status-warn`, `status-critical` | StatusPill |
 | Panel | `panel`, `panel-ink` | Die eine dunkle Zusammenfassung pro Screen |
 
 Regeln:
 
-- Pro Ansicht genau eine Farbcodierung. Im Leitstand bedeuten Blau/Orange/Grün die Anlässe A/B/C – dort keine Ortsfarben gleichzeitig.
+- Pro Ansicht genau eine Farbcodierung. Im Leitstand bedeuten Blau/Orange/Bordeaux die Anlässe A/B/C – dort keine Ortsfarben gleichzeitig.
 - Zusatzbedarf ist `status-info`, nicht `status-critical`. Rot ist für echte Fehler reserviert (Allergen-Konflikt, stornierte Lieferung).
 - Blau und Orange unterscheiden sich auch in der Helligkeit, damit sie bei Farbsehschwäche lesbar bleiben.
 
 ## Typografie
 
-IBM Plex Sans für alles Lesbare, IBM Plex Mono für Zahlen (tabellarische Ziffern, damit Mengen untereinander stehen). Beide von Google Fonts.
+Inter Tight für alles Lesbare, IBM Plex Mono für Zahlen (tabellarische Ziffern, damit Mengen untereinander stehen). Beide von Google Fonts. Inter Tight ist Platzhalter für die Hausschrift PP Neue Montreal der Website; sie ist lizenzpflichtig und ersetzt Inter Tight in `font-sans`, sobald GAMMA die Webfont-Lizenz bestätigt.
 
-- Seitentitel `page-title` 28/600, Kartentitel `section-title` 16/600, Text `body` 14/400.
-- Labels `label` 12/500 in `ink-muted`; Gang-Bezeichnungen `eyebrow` 12/600 in Grossbuchstaben mit 0.06em Laufweite.
+- Seitentitel `page-title` 44/500 in Grossbuchstaben, Kartentitel `section-title` 16/600, Text `body` 14/400.
+- Labels `label` 12/500 in `ink-muted`; Tabellenköpfe und Breadcrumb `table-head` 11/500 in Grossbuchstaben mit 0.08em Laufweite, Tabellenkopf mit Linie in `ink`; Gang-Bezeichnungen `eyebrow` 12/600 in Grossbuchstaben mit 0.06em Laufweite.
 - Kennzahlen `kpi` 30 und `kpi-lg` 40 in Mono; Tabellenzahlen `figure` 13 in Mono, rechtsbündig.
 
 ## Layout
@@ -58,7 +58,7 @@ Linien-Icons, 18 px, Strichstärke 1.8, `currentColor`, abgerundete Enden. Keine
 
 ## Logo
 
-Noch kein offizielles GAMMA-Logo im System. Platzhalter ist ein grünes Quadrat (`accent`, Radius 7 px) mit dem Produktnamen in Text. Sobald das GAMMA-Logo vorliegt, kommt es als Asset hierher.
+Noch kein offizielles GAMMA-Logo im System. Platzhalter ist ein bordeauxrotes Quadrat (`accent`, `radius-sm`) mit dem Produktnamen in Text. Sobald das GAMMA-Logo vorliegt, kommt es als Asset hierher.
 
 ## Komponenten
 
