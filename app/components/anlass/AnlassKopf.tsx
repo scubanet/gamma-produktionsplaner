@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button, Card, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { istGeaendert, useUngespeichert } from "@/lib/ungespeichert";
 import { formatZahl } from "@/lib/format";
 import { ANLASS_SPALTEN, STATUS, fehlerText, kopfAus, kopfUpdate, type Anlass, type Kopf } from "@/lib/anlass";
 
@@ -23,6 +24,8 @@ export function AnlassKopf({ anlass, stamm, onGespeichert, onFehler }: {
   const [k, setK] = useState<Kopf>(() => kopfAus(anlass));
   const [speichert, setSpeichert] = useState(false);
   const set = (teil: Partial<Kopf>) => setK((x) => ({ ...x, ...teil }));
+  const geaendert = istGeaendert(k, kopfAus(anlass));
+  useUngespeichert(geaendert && !speichert);
 
   async function speichern() {
     const r = kopfUpdate(k);
@@ -78,6 +81,7 @@ export function AnlassKopf({ anlass, stamm, onGespeichert, onFehler }: {
           <TextField id="bemerkung" label="Interne Bemerkung" value={k.bemerkung} onChange={(e) => set({ bemerkung: wert(e) })} />
         </div>
         <div className="pl-actions">
+          {geaendert ? <span className="pl-small" role="status">Ungespeicherte Änderungen</span> : null}
           <Button type="submit" variant="primary" disabled={speichert}>
             {speichert ? "Wird gespeichert …" : "Anlass speichern"}
           </Button>

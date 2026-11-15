@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Checkbox, Dialog, Notice, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { istGeaendert, useUngespeichert } from "@/lib/ungespeichert";
 import type { Gruppe, Punkt, Rezept, ZutatRoh } from "@/lib/rezepte";
 import {
   basisOptionen, neueGruppe, neueZutat, neuerSchritt, ORTE, rezeptDaten, rezeptFormular,
@@ -56,6 +57,8 @@ function RezeptBearbeiten() {
   const slug = useSearchParams().get("r") ?? "";
   const [geladen, setGeladen] = useState<Geladen | null>(null);
   const [f, setF] = useState<RezeptFormular | null>(null);
+  // Stand beim Laden: der Vergleich zeigt, ob es ungespeicherte Änderungen gibt.
+  const [ausgang, setAusgang] = useState<RezeptFormular | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
   const [speichert, setSpeichert] = useState(false);
   const [loeschen, setLoeschen] = useState<{ offen: boolean; laeuft: boolean; fehler: string | null }>({ offen: false, laeuft: false, fehler: null });
@@ -69,6 +72,7 @@ function RezeptBearbeiten() {
         if (!gilt) return;
         setGeladen({ slug, rezept: d.rezept, offen: d.offen, geraete: d.geraete, gebinde: d.gebinde, admin: d.admin });
         setF(d.formular);
+        setAusgang(d.formular);
         setFehler(null);
       },
       (e: Error) => gilt && setGeladen({ slug, fehler: e.message }),
@@ -77,6 +81,9 @@ function RezeptBearbeiten() {
       gilt = false;
     };
   }, [slug]);
+
+  const geaendert = f !== null && ausgang !== null && istGeaendert(f, ausgang);
+  useUngespeichert(geaendert && !speichert && !loeschen.laeuft);
 
   const stand = geladen?.slug === slug ? geladen : null;
   const zurueck = `/rezepte/${slug ? `?r=${encodeURIComponent(slug)}` : ""}`;
@@ -156,6 +163,7 @@ function RezeptBearbeiten() {
         </div>
         <div className="pl-actions">
           <Button href={zurueck}>Abbrechen</Button>
+          {geaendert ? <span className="pl-small" role="status">Ungespeicherte Änderungen</span> : null}
           <Button variant="primary" onClick={speichern} disabled={speichert}>
             {speichert ? "Wird gespeichert …" : "Speichern"}
           </Button>
@@ -368,6 +376,7 @@ function RezeptBearbeiten() {
 
       <div className="pl-actions">
         <Button href={zurueck}>Abbrechen</Button>
+        {geaendert ? <span className="pl-small">Ungespeicherte Änderungen</span> : null}
         <Button variant="primary" onClick={speichern} disabled={speichert}>
           {speichert ? "Wird gespeichert …" : "Speichern"}
         </Button>
