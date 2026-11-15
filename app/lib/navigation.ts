@@ -1,20 +1,35 @@
 import type { SideNavItem } from "./planer";
 
-// Reihenfolge wie mockups/Nav.dc.html. href nur für Bereiche, die gebaut sind; der Rest bleibt deaktiviert.
-export const BEREICHE: { label: string; href?: string }[] = [
-  { label: "Leitstand", href: "/" },
-  { label: "Offerten", href: "/offerten/" },
-  { label: "Anlässe", href: "/anlaesse/" },
-  { label: "Ressourcen", href: "/ressourcen/" },
-  { label: "Produktionsplan", href: "/produktion/" },
-  { label: "Systemzuteilung", href: "/systemzuteilung/" },
-  { label: "Katalog", href: "/katalog/" },
-  { label: "Rezepte", href: "/rezepte/" },
-  { label: "Rentabilität", href: "/rentabilitaet/" },
-  { label: "Einkauf", href: "/einkauf/" },
-  { label: "Stammdaten", href: "/stammdaten/" },
-  { label: "Benutzer", href: "/benutzer/" },
+export type Bereich = { label: string; href: string };
+export type Gruppe = { label: string; bereiche: Bereich[] };
+export type NavEintrag = { label: string; href: string; current: boolean };
+
+// Sechs Bereiche in der Hauptnavigation; die Seiten eines Bereichs stehen als Tabs darunter.
+export const GRUPPEN: Gruppe[] = [
+  { label: "Leitstand", bereiche: [{ label: "Leitstand", href: "/" }] },
+  { label: "Verkauf", bereiche: [{ label: "Offerten", href: "/offerten/" }, { label: "Anlässe", href: "/anlaesse/" }] },
+  { label: "Produktion", bereiche: [{ label: "Produktionsplan", href: "/produktion/" }, { label: "Ressourcen", href: "/ressourcen/" }, { label: "Einkauf", href: "/einkauf/" }] },
+  { label: "Küche", bereiche: [{ label: "Rezepte", href: "/rezepte/" }, { label: "Katalog", href: "/katalog/" }, { label: "Systemzuteilung", href: "/systemzuteilung/" }] },
+  { label: "Auswertung", bereiche: [{ label: "Rentabilität", href: "/rentabilitaet/" }] },
+  { label: "Verwaltung", bereiche: [{ label: "Stammdaten", href: "/stammdaten/" }, { label: "Benutzer", href: "/benutzer/" }] },
 ];
+
+/** Flache Liste aller Seiten (alte SideNav in den Mockups). */
+export const BEREICHE: { label: string; href?: string }[] = GRUPPEN.flatMap((g) => g.bereiche);
+
+/** Ansichten innerhalb einer Seite. Hier zählt der genaue Pfad, nicht «liegt darunter». */
+const ANSICHTEN: Record<string, Bereich[]> = {
+  "/produktion": [
+    { label: "Liste", href: "/produktion/" },
+    { label: "Wellen", href: "/produktion/wellen/" },
+    { label: "Aufwand aus Rezepten", href: "/produktion/aufwand/" },
+  ],
+  "/einkauf": [
+    { label: "Einkaufsliste", href: "/einkauf/" },
+    { label: "Lieferanten", href: "/einkauf/lieferanten/" },
+    { label: "Artikel zuordnen", href: "/einkauf/zuordnen/" },
+  ],
+};
 
 const ohneSchraegstrich = (p: string) => (p.length > 1 ? p.replace(/\/+$/, "") : p);
 
@@ -29,6 +44,30 @@ export function navEintraege(pfad: string): SideNavItem[] {
   return BEREICHE.map((b) =>
     b.href ? { label: b.label, href: b.href, current: aktiv(b.href, aktuell) } : { label: b.label, disabled: true },
   );
+}
+
+const gruppeVon = (aktuell: string) => GRUPPEN.find((g) => g.bereiche.some((b) => aktiv(b.href, aktuell)));
+
+/** Hauptnavigation: ein Eintrag pro Bereich, verlinkt auf dessen erste Seite. */
+export function hauptnav(pfad: string): NavEintrag[] {
+  const g = gruppeVon(ohneSchraegstrich(pfad));
+  return GRUPPEN.map((x) => ({ label: x.label, href: x.bereiche[0].href, current: x === g }));
+}
+
+/** Seiten des aktuellen Bereichs; leer, wenn der Bereich nur eine Seite hat. */
+export function unternav(pfad: string): NavEintrag[] {
+  const aktuell = ohneSchraegstrich(pfad);
+  const g = gruppeVon(aktuell);
+  if (!g || g.bereiche.length < 2) return [];
+  return g.bereiche.map((b) => ({ label: b.label, href: b.href, current: aktiv(b.href, aktuell) }));
+}
+
+/** Ansichten der aktuellen Seite (z.B. Liste, Wellen, Aufwand); leer, wenn die Seite keine hat. */
+export function seitenTabs(pfad: string): NavEintrag[] {
+  const aktuell = ohneSchraegstrich(pfad);
+  const wurzel = Object.keys(ANSICHTEN).find((w) => aktuell === w || aktuell.startsWith(`${w}/`));
+  if (!wurzel) return [];
+  return ANSICHTEN[wurzel].map((a) => ({ label: a.label, href: a.href, current: ohneSchraegstrich(a.href) === aktuell }));
 }
 
 export const ANMELDEN = "/anmelden/";

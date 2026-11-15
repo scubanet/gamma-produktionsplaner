@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.10 | 15.11.2026 | Neue Komponenten TopNav (Hauptnavigation oben mit sechs Bereichen, unter 760 px als Menü einklappbar) und Tabs (Seiten eines Bereichs, Ansichten einer Seite). Layout-Klasse `pl-app--top`. Die App nutzt TopNav statt SideNav. |
 | 0.9 | 15.11.2026 | Look nach gammacatering.com (Variante D): Farb-Tokens neu (weisser Grund, Fast-Schwarz `ink`, Bordeaux `accent`, Status in Salbei, Gelb, Hellblau; Dunkel-Thema neutral statt grünstichig). Schrift `font-sans` Inter Tight als Platzhalter für PP Neue Montreal. Radien 3/3/4 px. Seitentitel 44/500 in Grossbuchstaben, neuer Textstil `table-head`; Tabellenkopf und Breadcrumb in Grossbuchstaben, Tabellenkopf-Linie in `ink`. StatusPill und Chip eckig (`radius-sm`). Ortsfarben unverändert. |
 | 0.8 | 10.11.2026 | Für die Rezeptpflege: TextField mit `multiline` und `rows` (mehrzeiliges Feld für Arbeitsschritte und Notizen). Hilfsklasse `pl-stack` (Felder und Feldzeilen untereinander). |
 | 0.7 | 10.11.2026 | DataTable-Spalten mit `printHidden` (Aktionen-Spalte nicht drucken, z.B. Getränke- und Barkarten). |
@@ -15,6 +16,6 @@
 ## Offen
 
 - GAMMA-Logo als Asset und Webfont-Lizenz PP Neue Montreal, sobald von GAMMA bestätigt (Hausfarben seit 0.9 drin).
-- Struktur aus Variante D in die App: Hauptnavigation mit sechs Bereichen, Kontextzeile Saison/Anlass/Spiel, Suche, Detailspalte statt Dialog.
+- Struktur aus Variante D in die App: Kontextzeile Saison/Anlass/Spiel, Suche, Detailspalte statt Dialog (Plan in `docs/plan-ui-ux-look-d.md`; Navigation seit 0.10 drin).
 - Komponenten für Einkauf und Stammdaten, wenn diese Screens entstehen.
 - Tablet-Ansicht für die Küche (Produktionsplan im Querformat).

@@ -192,7 +192,6 @@ export default function Wellen() {
           <h1 className="pl-h1">Produktionswellen</h1>
         </div>
         <div className="pl-actions pl-print-hide">
-          <Button href="/produktion/">Produktionsliste</Button>
           <Button onClick={() => window.print()} disabled={!daten}>Drucken / PDF</Button>
           <Button variant="primary" onClick={() => setUebernehmenOffen(true)} disabled={!vorschlagWellen.length}>
             {hatPlan ? "Vorschlag neu übernehmen" : "Vorschlag übernehmen"}

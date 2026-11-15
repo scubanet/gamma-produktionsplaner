@@ -47,7 +47,7 @@ Inter Tight für alles Lesbare, IBM Plex Mono für Zahlen (tabellarische Ziffern
 
 ## Layout
 
-- Seitennavigation links (`sidenav-width` 232 px), Inhalt rechts mit `space-8` oben und `space-10` seitlich.
+- Hauptnavigation oben (TopNav) mit sechs Bereichen, darunter die Seiten des Bereichs als Tabs; Inhalt mit `space-8` oben und `space-10` seitlich. Die SideNav (links, `sidenav-width` 232 px) bleibt für die Mockups.
 - Kopfzeile: Breadcrumb (`caption`), Seitentitel, rechts die Aktionen (Sekundär vor Primär).
 - Inhalt in Karten (`radius-lg`, Rahmen `border`, keine Schatten), Abstände `space-6`, KPI-Reihen `space-4`.
 - Alles bricht um: Navigation stapelt sich über dem Inhalt, Kartenreihen werden einspaltig, Tabellen und Zeitpläne scrollen in ihrem Container.
@@ -62,7 +62,7 @@ Noch kein offizielles GAMMA-Logo im System. Platzhalter ist ein bordeauxrotes Qu
 
 ## Komponenten
 
-Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
+Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
 
 ## Wie das System weiterwächst
 

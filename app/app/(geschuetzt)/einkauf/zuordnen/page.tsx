@@ -84,9 +84,6 @@ export default function ArtikelZuordnenSeite() {
           </div>
           <h1 className="pl-h1">Artikel zuordnen</h1>
         </div>
-        <div className="pl-actions">
-          <Button href="/einkauf/">Einkaufsliste</Button>
-        </div>
       </header>
 
       {fehler ? <Notice role="alert" title={fehler.titel}>{fehler.text}</Notice> : null}

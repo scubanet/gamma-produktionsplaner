@@ -21,6 +21,8 @@
 
 ## Reihenfolge und Befund
 
+**Stand 15.11.2026:** Aufgaben 1, 2 und 3 sind gebaut und ausgeliefert (Design System 0.10). Weiter mit Aufgabe 4.
+
 | Nr. | Aufgabe | Befund | Schwere |
 | --- | --- | --- | --- |
 | 1 | Warnung bei ungespeicherten Änderungen | Editor verliert Eingaben beim Wegklicken | kritisch |

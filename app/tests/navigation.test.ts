@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { istOeffentlich, navEintraege } from "../lib/navigation";
+import { GRUPPEN, hauptnav, istOeffentlich, navEintraege, seitenTabs, unternav } from "../lib/navigation";
 
 describe("Navigation", () => {
   it("markiert den Leitstand als aktiv", () => {
@@ -41,5 +41,39 @@ describe("Navigation", () => {
     expect(istOeffentlich("/anmelden/")).toBe(true);
     expect(istOeffentlich("/anmelden")).toBe(true);
     expect(istOeffentlich("/")).toBe(false);
+  });
+});
+
+describe("Navigation in Bereichen", () => {
+  it("hat sechs Bereiche in dieser Reihenfolge", () => {
+    expect(GRUPPEN.map((g) => g.label)).toEqual(["Leitstand", "Verkauf", "Produktion", "Küche", "Auswertung", "Verwaltung"]);
+  });
+
+  it("jede Seite gehört zu genau einem Bereich", () => {
+    const alle = GRUPPEN.flatMap((g) => g.bereiche.map((b) => b.href));
+    expect([...alle].sort()).toEqual(
+      ["/", "/anlaesse/", "/benutzer/", "/einkauf/", "/katalog/", "/offerten/", "/produktion/", "/rentabilitaet/", "/ressourcen/", "/rezepte/", "/stammdaten/", "/systemzuteilung/"].sort(),
+    );
+  });
+
+  it("markiert den Bereich der aktuellen Seite und verlinkt auf dessen erste Seite", () => {
+    expect(hauptnav("/katalog/").find((x) => x.current)).toEqual({ label: "Küche", href: "/rezepte/", current: true });
+    expect(hauptnav("/").filter((x) => x.current).map((x) => x.label)).toEqual(["Leitstand"]);
+  });
+
+  it("Unterseiten zählen zum Bereich", () => {
+    expect(hauptnav("/produktion/wellen").find((x) => x.current)?.label).toBe("Produktion");
+  });
+
+  it("zeigt die Seiten des Bereichs, ausser er hat nur eine", () => {
+    expect(unternav("/einkauf/lieferanten/").map((x) => [x.label, x.current])).toEqual([["Produktionsplan", false], ["Ressourcen", false], ["Einkauf", true]]);
+    expect(unternav("/")).toEqual([]);
+    expect(unternav("/rentabilitaet/")).toEqual([]);
+  });
+
+  it("Ansichten einer Seite: genau eine ist aktiv", () => {
+    expect(seitenTabs("/produktion/wellen/").filter((x) => x.current).map((x) => x.label)).toEqual(["Wellen"]);
+    expect(seitenTabs("/produktion/").filter((x) => x.current).map((x) => x.label)).toEqual(["Liste"]);
+    expect(seitenTabs("/rezepte/")).toEqual([]);
   });
 });

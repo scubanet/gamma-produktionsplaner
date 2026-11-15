@@ -70,8 +70,6 @@ export default function Aufwand() {
           <div className="pl-sub">Produktion pro Welle, Logistik und Service pro Spiel</div>
         </div>
         <div className="pl-actions pl-print-hide">
-          <Button href="/produktion/">Produktionsliste</Button>
-          <Button href="/produktion/wellen/">Produktionswellen</Button>
           <Button onClick={() => window.print()} disabled={!daten}>Drucken / PDF</Button>
         </div>
       </header>

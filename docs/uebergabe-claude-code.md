@@ -9,8 +9,8 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
 | Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 26 Migrationen (26 noch einzuspielen), siehe `docs/supabase.md` |
 | App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 95 Tests, Auslieferung über GitHub Actions |
-| Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.9 (Look nach gammacatering.com) | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
-| UI/UX | `docs/plan-ui-ux-look-d.md` | Plan vom 15.11.2026: elf Aufgaben aus der UI/UX-Prüfung, Struktur der Variante D; noch nicht begonnen |
+| Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.10 (Look nach gammacatering.com, Navigation oben) | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
+| UI/UX | `docs/plan-ui-ux-look-d.md` | Plan vom 15.11.2026: elf Aufgaben aus der UI/UX-Prüfung, Struktur der Variante D; Aufgaben 1 bis 3 gebaut |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
 | Anleitung | `docs/anleitung.md` | Bedienung pro Modul |
 | Rezepte | Tabellen `rezept` … `schritt` | 185 Rezepte: 14 aus `rezepte/rezepte.json`, 171 aus dem Paprika-Export «My Recipes» |

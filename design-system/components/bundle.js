@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
@@ -231,12 +231,32 @@
       }));
   }
 
+  function TopNav(p) {
+    var st = React.useState(false), offen = st[0], setOffen = st[1];
+    return h('header', { className: 'pl-top' },
+      h('a', { className: 'pl-top__brand', href: '/' }, p.company || 'GAMMACATERING'),
+      h('button', { type: 'button', className: 'pl-top__toggle', 'aria-expanded': offen, 'aria-controls': 'pl-top-menu', onClick: function () { setOffen(!offen); } }, 'Menü'),
+      h('nav', { id: 'pl-top-menu', className: cx('pl-top__nav', offen && 'pl-top__nav--offen'), 'aria-label': 'Hauptnavigation' },
+        p.items.map(function (it) {
+          return h('a', { key: it.label, className: 'pl-top__item', href: it.href, 'aria-current': it.current ? 'page' : undefined }, it.label);
+        })),
+      p.actions ? h('div', { className: 'pl-top__actions' }, p.actions) : null);
+  }
+
+  function Tabs(p) {
+    if (!p.items || !p.items.length) return null;
+    return h('nav', { className: cx('pl-tabs', p.tone === 'sunken' && 'pl-tabs--sunken'), 'aria-label': p.label },
+      p.items.map(function (it) {
+        return h('a', { key: it.label, className: 'pl-tabs__item', href: it.href, 'aria-current': it.current ? 'page' : undefined }, it.label);
+      }));
+  }
+
   function Notice(p) {
     return h('section', { className: 'pl-notice', role: p.role },
       p.title ? h('h3', { className: 'pl-notice__title' }, p.title) : null,
       p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();
