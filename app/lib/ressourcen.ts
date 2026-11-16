@@ -1,7 +1,7 @@
 // Ressourcen und Kalkulation pro Anlass. Stunden, Kosten, Zusatzbedarf, Deckungsbeitrag und Fixkosten-Anteil
 // rechnen die Views anlass_personal_kosten, anlass_geraet_bedarf, anlass_kostenart und anlass_kalkulation.
 import type { Database } from "./database.types";
-import { formatZahl } from "./format";
+import { formatZahl, zahlDeCh } from "./format";
 
 type V = Database["public"]["Views"];
 export type Kalkulation = V["anlass_kalkulation"]["Row"];
@@ -17,7 +17,7 @@ export const KOSTENART_LABEL: Record<string, string> = {
 /** Betrag in CHF; unbekannt als Platzhalter mit dem Namen des fehlenden Werts. */
 export function chf(wert: number | null | undefined, platzhalter = "[Preis]"): string {
   if (wert === null || wert === undefined) return platzhalter;
-  const s = new Intl.NumberFormat("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.abs(wert));
+  const s = zahlDeCh(Math.abs(wert), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return `${wert < 0 ? "− " : ""}CHF ${s}`;
 }
 

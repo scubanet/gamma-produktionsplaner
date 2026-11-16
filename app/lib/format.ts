@@ -1,11 +1,16 @@
 // Anzeigeformate nach README des Design Systems: 2.40 kg, 14.11.2026, Tausender mit Apostroph.
 // Nur Formatierung, keine Berechnung: Mengen kommen fertig aus der Datenbank.
 
-const zahl = (stellen: number) =>
-  new Intl.NumberFormat("de-CH", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
+/**
+ * Zahl nach de-CH. Das Tausenderzeichen hängt sonst vom Browser ab (' oder ’, je nach Version);
+ * hier immer der typografische Apostroph, damit Anzeige, Druck und Tests überall gleich sind.
+ */
+export function zahlDeCh(wert: number, optionen: Intl.NumberFormatOptions = {}): string {
+  return new Intl.NumberFormat("de-CH", optionen).format(wert).replace(/'/g, "’");
+}
 
 export function formatZahl(wert: number, stellen = 0): string {
-  return zahl(stellen).format(wert);
+  return zahlDeCh(wert, { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
 }
 
 /** Menge mit Einheit: kg und l mit 2 Stellen, Stk ganzzahlig. */
@@ -28,7 +33,7 @@ export function formatAnteil(anteil: number): string {
 
 /** Menge pro Gast ohne überflüssige Nullen: 120.000 → «120 g», 7.5 → «7.5 g». */
 export function formatProGast(menge: number, einheit: string): string {
-  return `${new Intl.NumberFormat("de-CH", { maximumFractionDigits: 3 }).format(menge)} ${einheit}`;
+  return `${zahlDeCh(menge, { maximumFractionDigits: 3 })} ${einheit}`;
 }
 
 /**
@@ -39,7 +44,7 @@ export function formatGramm(g: number | null): string {
   if (g === null) return "[Menge]";
   if (g >= 1000) return `${formatZahl(g / 1000, 2)} kg`;
   if (g > 0 && g < 0.01) return "< 0.01 g";
-  if (g < 10) return `${new Intl.NumberFormat("de-CH", { maximumFractionDigits: g < 1 ? 2 : 1 }).format(g)} g`;
+  if (g < 10) return `${zahlDeCh(g, { maximumFractionDigits: g < 1 ? 2 : 1 })} g`;
   return `${formatZahl(Math.round(g))} g`;
 }
 
@@ -56,5 +61,5 @@ export function formatMinuten(min: number | null): string {
 export function formatProzent(p: number | null): string {
   if (p === null) return "";
   const stellen = p >= 10 ? 0 : p >= 1 ? 1 : 2;
-  return `${new Intl.NumberFormat("de-CH", { maximumFractionDigits: stellen }).format(p)} %`;
+  return `${zahlDeCh(p, { maximumFractionDigits: stellen })} %`;
 }

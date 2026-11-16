@@ -1,6 +1,7 @@
 // Katalog: Gerichte der Kollektion mit ihren Komponenten (gericht_katalog, gericht_komponente),
 // Status aus komponente_zuteilung, Warenkosten aus gericht_warenkosten, Quantum je Angebotsform.
 import type { Database } from "./database.types";
+import { zahlDeCh } from "./format";
 
 type T = Database["public"]["Tables"];
 type V = Database["public"]["Views"];
@@ -35,7 +36,7 @@ export function gruppieren(gerichte: Gericht[], kategorien: string[]): { titel: 
 /** Menge pro Portion steht in der Excel in kg (z.B. 0.17); fehlt sie, kommt die Menge aus dem Quantum. */
 export function mengeText(kg: number | null): string {
   if (kg === null) return "[Menge]";
-  return `${new Intl.NumberFormat("de-CH", { minimumFractionDigits: 3, maximumFractionDigits: 4 }).format(kg)} kg`;
+  return `${zahlDeCh(kg, { minimumFractionDigits: 3, maximumFractionDigits: 4 })} kg`;
 }
 
 export function warenkostenText(w: Warenkosten | undefined): { text: string; sub: string; annahme: boolean } {
@@ -46,5 +47,5 @@ export function warenkostenText(w: Warenkosten | undefined): { text: string; sub
   const sub = w.komponenten_ohne_preis
     ? `Annahme, unvollständig: ${w.komponenten_ohne_preis} Komponente(n) ohne Preis`
     : "Annahme, bitte prüfen: Hauptartikel × Menge pro Portion + Zuschlag";
-  return { text: `CHF ${new Intl.NumberFormat("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(w.wk_inkl_zuschlag_chf)}`, sub, annahme: true };
+  return { text: `CHF ${zahlDeCh(w.wk_inkl_zuschlag_chf, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, sub, annahme: true };
 }

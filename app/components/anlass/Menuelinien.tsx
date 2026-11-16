@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Button, Card, DataTable, Dialog, ItemList, Notice, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
-import { formatZahl } from "@/lib/format";
+import { formatZahl, zahlDeCh } from "@/lib/format";
 import { anteilAus, anteilText } from "@/lib/offerte";
 import { dezimal, fehlerText, gerichteNachGang, type LinieGericht, type LinieKomponente, type Menuelinie } from "@/lib/anlass";
 
@@ -163,7 +163,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
                         id: k.id,
                         k,
                         bezeichnung: k.bezeichnung,
-                        mengeText: k.menge_pro_gast === null ? "[Menge]" : `${new Intl.NumberFormat("de-CH", { maximumFractionDigits: 2 }).format(k.menge_pro_gast)} ${k.einheit}`,
+                        mengeText: k.menge_pro_gast === null ? "[Menge]" : `${zahlDeCh(k.menge_pro_gast, { maximumFractionDigits: 2 })} ${k.einheit}`,
                       }))}
                   />
                 </div>

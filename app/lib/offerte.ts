@@ -2,7 +2,7 @@
 // Mengen, Warenkosten, Preise, MWST und Deckungsbeitrag rechnen die Views offerte_position und
 // offerte_summe. Die App zeigt an, prüft Eingaben und schreibt nur Kopf und Gerichte.
 import type { Database } from "./database.types";
-import { formatZahl } from "./format";
+import { formatZahl, zahlDeCh } from "./format";
 
 type T = Database["public"]["Tables"];
 type V = Database["public"]["Views"];
@@ -15,7 +15,7 @@ export type Summe = V["offerte_summe"]["Row"];
 
 export function formatChf(wert: number | null): string {
   if (wert === null) return "[Preis]";
-  return `CHF ${new Intl.NumberFormat("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(wert)}`;
+  return `CHF ${zahlDeCh(wert, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 export type Kopf = { name: string; kunde: string; datum: string; ort: string; gaeste: string; angebotsform: string; betrieb: string; bemerkung: string };
