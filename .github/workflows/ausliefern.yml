@@ -43,6 +43,9 @@ jobs:
       - name: Typen prüfen
         run: npm run typecheck
 
+      - name: Tests
+        run: npm test
+
       - name: App bauen
         run: npm run build
         env:
@@ -50,7 +53,8 @@ jobs:
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
 
       - name: Zu Infomaniak hochladen
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        # Fremde Action mit Zugriff auf das FTP-Passwort: auf den Commit von v4.3.5 festgelegt, nicht auf das Tag.
+        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
