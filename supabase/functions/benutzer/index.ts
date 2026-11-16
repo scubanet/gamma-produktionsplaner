@@ -9,6 +9,10 @@ const ERLAUBTE_HERKUNFT = ["https://gamma.atoll-os.com", "http://localhost:3000"
 // Rund 100 Jahre: gilt als gesperrt, bis ein Admin entsperrt.
 const SPERRE = "876000h";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const gesperrt = (u: unknown, jetzt = Date.now()) => {
+  const bis = (u as { banned_until?: string | null }).banned_until;
+  return !!bis && Date.parse(bis) > jetzt;
+};
 
 Deno.serve(async (req) => {
   const herkunft = req.headers.get("origin") ?? "";
@@ -19,6 +23,7 @@ Deno.serve(async (req) => {
     Vary: "Origin",
   };
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+  if (req.method !== "POST") return new Response("Nur POST.", { status: 405, headers: { ...cors, Allow: "POST, OPTIONS" } });
   const antwort = (body: unknown) => new Response(JSON.stringify(body), { headers: { ...cors, "Content-Type": "application/json" } });
   const fehler = (text: string) => antwort({ fehler: text });
 
@@ -32,11 +37,14 @@ Deno.serve(async (req) => {
     const wer = await admin.auth.getUser(token);
     if (wer.error || !wer.data.user) return fehler("Nicht angemeldet.");
     const ich = wer.data.user;
+    // Ein Token gilt nach dem Sperren noch bis zu einer Stunde. Hier zählt die Sperre sofort.
+    if (gesperrt(ich)) return fehler("Dieser Zugang ist gesperrt.");
     const istAdmin = await admin.from("app_admin").select("user_id").eq("user_id", ich.id).maybeSingle();
     if (istAdmin.error) return fehler(istAdmin.error.message);
     if (!istAdmin.data) return fehler("Nur Administratoren verwalten Benutzer.");
 
-    const p = await req.json().catch(() => ({}));
+    const roh = await req.json().catch(() => null);
+    const p: Record<string, unknown> = roh && typeof roh === "object" && !Array.isArray(roh) ? roh : {};
     const aktion = String(p.aktion ?? "");
 
     if (aktion === "liste") {
@@ -55,7 +63,7 @@ Deno.serve(async (req) => {
           name: (u.user_metadata?.name as string | undefined) ?? "",
           erstellt_am: u.created_at,
           letzte_anmeldung: u.last_sign_in_at ?? null,
-          gesperrt: !!(u as { banned_until?: string }).banned_until && Date.parse((u as { banned_until?: string }).banned_until!) > jetzt,
+          gesperrt: gesperrt(u, jetzt),
           admin: adminIds.has(u.id),
           ich: u.id === ich.id,
         })),
@@ -65,7 +73,9 @@ Deno.serve(async (req) => {
     if (aktion === "anlegen") {
       const email = String(p.email ?? "").trim().toLowerCase();
       const name = String(p.name ?? "").trim();
-      if (!EMAIL.test(email)) return fehler("E-Mail-Adresse prüfen.");
+      // Gleiche Grenzen wie in der App (lib/benutzer.ts); hier nochmals, weil die Funktion auch direkt aufrufbar ist.
+      if (email.length > 254 || !EMAIL.test(email)) return fehler("E-Mail-Adresse prüfen.");
+      if (name.length > 80) return fehler("Name: höchstens 80 Zeichen.");
       // Kein Passwort: Der Benutzer meldet sich mit dem Anmeldelink an. Die Adresse gilt als bestätigt.
       const r = await admin.auth.admin.createUser({ email, email_confirm: true, user_metadata: name ? { name } : {} });
       if (r.error) return fehler(/already|registered|exists/i.test(r.error.message) ? "Diese E-Mail-Adresse hat schon einen Zugang." : r.error.message);
@@ -98,6 +108,8 @@ Deno.serve(async (req) => {
 
     return fehler("Unbekannte Aktion.");
   } catch (e) {
-    return fehler(e instanceof Error ? e.message : "Unbekannter Fehler.");
+    // Einzelheiten ins Protokoll der Funktion, nicht an den Browser.
+    console.error("benutzer:", e);
+    return fehler("Unerwarteter Fehler. Bitte nochmals versuchen.");
   }
 });
