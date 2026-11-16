@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { GRUPPEN, hauptnav, istOeffentlich, navEintraege, seitenTabs, unternav } from "../lib/navigation";
+import { GRUPPEN, hauptnav, istOeffentlich, navEintraege, seitenTabs, sichererPfad, unternav } from "../lib/navigation";
 
 describe("Navigation", () => {
   it("markiert den Leitstand als aktiv", () => {
@@ -75,5 +75,16 @@ describe("Navigation in Bereichen", () => {
     expect(seitenTabs("/produktion/wellen/").filter((x) => x.current).map((x) => x.label)).toEqual(["Wellen"]);
     expect(seitenTabs("/produktion/").filter((x) => x.current).map((x) => x.label)).toEqual(["Liste"]);
     expect(seitenTabs("/rezepte/")).toEqual([]);
+  });
+
+  it("Ziel nach der Anmeldung: nur Pfade dieser App", () => {
+    expect(sichererPfad("/produktion/wellen/?id=1")).toBe("/produktion/wellen/?id=1");
+    expect(sichererPfad(null)).toBe("/");
+    expect(sichererPfad("")).toBe("/");
+    expect(sichererPfad("https://fremd.example/")).toBe("/");
+    expect(sichererPfad("//fremd.example/")).toBe("/");
+    expect(sichererPfad("/\\fremd.example/")).toBe("/");
+    expect(sichererPfad("/\tfremd")).toBe("/");
+    expect(sichererPfad("javascript:alert(1)")).toBe("/");
   });
 });

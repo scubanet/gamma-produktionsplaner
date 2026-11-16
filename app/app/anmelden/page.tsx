@@ -4,12 +4,9 @@ import { Suspense, useEffect, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Notice, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
-import { ANMELDEN } from "@/lib/navigation";
+import { ANMELDEN, sichererPfad } from "@/lib/navigation";
 
 type Zustand = { art: "bereit" } | { art: "sendet" } | { art: "gesendet"; email: string } | { art: "fehler"; text: string };
-
-// Nur interne Pfade zulassen, damit ?weiter= nicht auf fremde Seiten führt.
-const sichererPfad = (p: string | null) => (p && p.startsWith("/") && !p.startsWith("//") ? p : "/");
 
 function Formular() {
   const router = useRouter();

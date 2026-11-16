@@ -72,6 +72,16 @@ export function seitenTabs(pfad: string): NavEintrag[] {
 
 export const ANMELDEN = "/anmelden/";
 
+/**
+ * Ziel nach der Anmeldung (?weiter=): nur Pfade dieser App. Abgelehnt werden fremde Adressen,
+ * «//host» und «/\\host» (Browser lesen den Rückstrich als Schrägstrich) sowie Steuerzeichen.
+ */
+export function sichererPfad(p: string | null | undefined): string {
+  if (!p || !p.startsWith("/") || p.startsWith("//")) return "/";
+  if (/[\\\u0000-\u001f\u007f]/.test(p)) return "/";
+  return p;
+}
+
 export function istOeffentlich(pfad: string): boolean {
   return ohneSchraegstrich(pfad) === ohneSchraegstrich(ANMELDEN);
 }
