@@ -8,7 +8,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | --- | --- | --- |
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
 | Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 26 Migrationen (26 noch einzuspielen), siehe `docs/supabase.md` |
-| App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 95 Tests, Auslieferung über GitHub Actions |
+| App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 146 Tests, Auslieferung über GitHub Actions |
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.14 (Look nach gammacatering.com, Navigation oben, Detailspalte, Küchenpass) | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | UI/UX | `docs/plan-ui-ux-look-d.md` | Plan vom 15.11.2026: elf Aufgaben aus der UI/UX-Prüfung, Struktur der Variante D; Aufgaben 1 bis 9 und 11 gebaut, 10 zurückgestellt |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
@@ -42,7 +42,25 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 - **Daten der Services in einem Dialog** (Anlass bearbeiten → Services → «Daten erfassen»): alle Spiele auf einmal statt einzeln.
 - **Artikel zuordnen** (Migration 22, `/einkauf/zuordnen`): Die Datenbank schlägt pro Komponente ohne Hauptartikel bis zu drei Artikel nach Ähnlichkeit des Namens vor; ein Klick ordnet zu. Die Verknüpfung bleibt ein Entscheid von Hand.
 - **Reihenfolge beim Ausliefern:** zuerst `supabase db push` (Migrationen 21 und 22), dann `cd app && npm run types` (die Typen in `database.types.ts` sind für 21 und 22 von Hand nachgeführt und sollen danach gleich herauskommen), erst dann `git push`. Sonst läuft die neue App gegen die alte Datenbank.
-- Tests: Auf Node 22 schlagen 6 ältere Tests wegen des Tausender-Apostrophs fehl (' statt ’). Ob sie mit Node 24 (wie im Workflow) laufen, wurde am 14.11. nicht geprüft.
+- Tests: Auf Node 22 schlugen 6 ältere Tests wegen des Tausender-Apostrophs fehl (' statt ’). Seit 16.11. setzt `zahlDeCh` das Zeichen fest; alle Tests laufen auf Node 22.
+
+## Nachtrag 16.11.2026: Härtung
+
+Prüfung von Datenbank, Anmeldung, Edge Function, App und Auslieferung. Die Berater von Supabase melden nichts ausser «Leaked Password Protection» (ohne Bedeutung, Anmeldung läuft ohne Passwort). Geändert und committet, noch nicht ausgeliefert:
+
+- **Migration 30** (`haertung_anon`): nimmt der Rolle `anon` alle Rechte im Schema `public`, auch für künftige Objekte. Bisher sperrte nur Row Level Security. Die Migration prüft sich selbst und bricht ab, falls `authenticated` etwas verliert. Einspielen mit `supabase db push --remote`; die Typen ändern sich nicht.
+- **Edge Function `benutzer`**: nur POST, gesperrte Admins sofort abgewiesen, Länge von Name und E-Mail auch auf dem Server geprüft, unerwartete Fehler nur noch im Protokoll. Ausliefern mit `supabase functions deploy benutzer`.
+- **`app/public/.htaccess`**: HSTS, Content Security Policy (nur eigene Dateien, Google Fonts, Supabase), kein Einbetten in fremde Seiten, versteckte Dateien gesperrt. Nach dem Ausliefern jede Seite einmal öffnen; meldet die Browser-Konsole «Content Security Policy», die Zeile in der `.htaccess` anpassen. Beim Umzug auf den GAMMA-Server die Supabase-Adresse in `connect-src` ersetzen.
+- **App**: Tausenderzeichen überall gleich (`zahlDeCh` in `lib/format.ts`), damit laufen die 6 Tests auch auf Node 22; Ziel nach der Anmeldung strenger geprüft (`sichererPfad`); Fehlerseite `app/app/error.tsx` statt leerem Bildschirm.
+- **Workflow**: Tests laufen vor dem Bauen; die FTP-Action ist auf einen Commit festgelegt.
+
+Von Dominik zu prüfen (im Dashboard, nicht im Repo):
+
+1. Authentication → Sign In / Providers: «Allow new users to sign up» muss aus sein. Sonst kann sich jede Person mit dem Publishable Key selbst einen Zugang anlegen und sieht und ändert alles, weil die Policies für jeden angemeldeten Benutzer gelten.
+2. Authentication → URL Configuration: als Redirect URL nur `https://gamma.atoll-os.com/**` und für die Entwicklung `http://localhost:3000/**`, keine Platzhalter für andere Adressen.
+3. Sperren wirkt erst, wenn das Token abläuft (höchstens eine Stunde, Einstellung «JWT expiry»).
+
+Offen, nicht selbst entschieden: Rechte pro Rolle (heute darf jeder angemeldete Benutzer alles ausser Rezepte löschen und Benutzer verwalten, auch Lohnsätze lesen und ändern); Schriften selbst ausliefern statt von Google laden; automatische Sicherung der Datenbank ausserhalb von Supabase.
 
 ## Vom Rezept zu Produktion, Logistik und Service (ab 14.11.2026)
 
