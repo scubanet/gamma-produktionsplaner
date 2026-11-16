@@ -8,6 +8,20 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Dateien mit Hash im Namen dürfen lange im Cache bleiben, Seiten nicht.
 <IfModule mod_headers.c>
+  # Sicherheit. «always», damit die Kopfzeilen auch auf der 404-Seite und bei Umleitungen stehen.
+  # Nur noch über HTTPS (ein halbes Jahr); der Browser merkt sich das.
+  Header always set Strict-Transport-Security "max-age=15552000"
+  # Dateityp nicht raten, die App nicht in fremde Seiten einbetten, Adresse nicht an fremde Seiten weitergeben.
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  # Content Security Policy: Die App lädt nur eigene Dateien und die Schriften von Google und spricht nur mit
+  # der Supabase-Datenbank. Eingeschleuster Code kann so keine Daten an fremde Server schicken.
+  # Beim Umzug auf den GAMMA-Server die Supabase-Adresse in connect-src anpassen (https und wss).
+  # 'unsafe-inline' bei script-src braucht der statische Export von Next.js (Startdaten stehen als Script in der Seite).
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://oqmtocxemtcsvtzmswwx.supabase.co wss://oqmtocxemtcsvtzmswwx.supabase.co; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
   <FilesMatch "\.html$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
@@ -15,3 +29,8 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
     Header set Cache-Control "public, max-age=31536000, immutable"
   </If>
 </IfModule>
+
+# Versteckte Dateien nicht ausliefern (.htaccess, .ftp-deploy-sync-state.json der Auslieferung).
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
