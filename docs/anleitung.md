@@ -44,7 +44,7 @@ Katalog, Systemzuteilung, Rezepte und Stammdaten sind die Grundlagen dafür.
 
 ## Anmelden
 
-E-Mail-Adresse eingeben, den Link in der E-Mail öffnen. Es gibt kein Passwort. Anmelden können sich nur bereits erfasste Benutzer. Abmelden geht auf jeder Seite oben rechts, auf dem Handy im «Menü».
+E-Mail-Adresse eingeben. In der E-Mail den Link öffnen und auf «Jetzt anmelden» klicken, oder den Code aus der E-Mail auf der Anmeldeseite eintippen. Link und Code gelten eine Stunde und nur einmal. Es gibt kein Passwort. Anmelden können sich nur bereits erfasste Benutzer. Abmelden geht auf jeder Seite oben rechts, auf dem Handy im «Menü».
 
 ## Leitstand
 
