@@ -3,9 +3,10 @@
 import { useMemo, useState } from "react";
 import { Button, Card, DataTable, Dialog, ItemList, Notice, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { RezeptLink } from "@/components/RezeptLink";
 import { formatZahl, zahlDeCh } from "@/lib/format";
 import { anteilAus, anteilText } from "@/lib/offerte";
-import { dezimal, fehlerText, gerichteNachGang, rezeptHref, type LinieGericht, type LinieKomponente, type Menuelinie } from "@/lib/anlass";
+import { dezimal, fehlerText, gerichteNachGang, type LinieGericht, type LinieKomponente, type Menuelinie } from "@/lib/anlass";
 
 export type LinieGaeste = { menuelinie_id: string | null; gaeste: number | null; herleitung: string | null; services: number | null };
 export type KatalogGericht = { id: string; name: string; gang: string | null; kategorie: string };
@@ -16,17 +17,6 @@ type Bearbeitung =
   | { art: "menge"; komponente: LinieKomponente; text: string; einheit: string; fehler: string | null };
 
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
-
-/** Name als Sprung zur Rezeptkarte in neuem Tab (die gewählte Menülinie bleibt offen); ohne Rezept Text mit [Rezept]. */
-function RezeptLink({ name, slug }: { name: string; slug: string | undefined }) {
-  const href = rezeptHref(slug);
-  if (!href) return <>{name} <span className="pl-mono pl-small">[Rezept]</span></>;
-  return (
-    <a href={href} target="_blank" rel="noopener">
-      {name}<span className="pl-sr"> – Rezept in neuem Tab öffnen</span>
-    </a>
-  );
-}
 
 export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, katalog, rezeptVonKomponente, rezeptVonGericht, onGeaendert, onMeldung, onFehler }: {
   anlassId: string;

@@ -48,7 +48,32 @@ export type Zeile = {
   erledigtAm: string | null;
   wellenNr: number[];
   wellenErledigt: number;
+  /** Aus der Systemzuteilung (mitZuteilung): Produktionssysteme als Codes, Lagerart, Slug des Rezepts. */
+  produktion: string[];
+  lagerung: string | null;
+  rezeptSlug: string | null;
 };
+
+export type ZuteilungKurz = { id: string | null; produktion: string[] | null; lager_0_2: boolean | null; lager_tk: boolean | null; lager_trocken: boolean | null; rezept_id: string | null };
+
+/** Lagerart als Text: «0–2 °C», «TK», «Economat»; ohne Angabe null. */
+export function lagerart(z: Pick<ZuteilungKurz, "lager_0_2" | "lager_tk" | "lager_trocken">): string | null {
+  return [z.lager_0_2 ? "0–2 °C" : null, z.lager_tk ? "TK" : null, z.lager_trocken ? "Economat" : null].filter(Boolean).join(", ") || null;
+}
+
+/** Konservierung in einem Text: «SF · SV · TK»; ohne Zuteilung null. «TK» gibt es als System und als Lagerart, darum ohne Doppel. */
+export function konservierungText(z: Pick<Zeile, "produktion" | "lagerung">): string | null {
+  return [...new Set([...z.produktion, z.lagerung])].filter(Boolean).join(" · ") || null;
+}
+
+/** Produktionssystem, Lagerart und Rezept aus der Systemzuteilung in die Zeilen übernehmen. */
+export function mitZuteilung(zeilen: Zeile[], zuteilung: ZuteilungKurz[], rezeptSlug: Map<string, string>): Zeile[] {
+  const m = new Map(zuteilung.map((z) => [z.id, z]));
+  return zeilen.map((z) => {
+    const k = z.komponenteId ? m.get(z.komponenteId) : undefined;
+    return k ? { ...z, produktion: k.produktion ?? [], lagerung: lagerart(k), rezeptSlug: (k.rezept_id && rezeptSlug.get(k.rezept_id)) || null } : z;
+  });
+}
 
 /** Ein Summand: «1’100 Gäste × 60 % × 120 g». */
 export function herleitungTerm(b: Pick<BedarfZeile, "gaeste" | "anteil" | "menge_pro_gast" | "einheit">): string {
@@ -91,6 +116,9 @@ export function saisonZeilen(liste: ListeZeile[], bedarf: BedarfZeile[]): Zeile[
       erledigtAm: null,
       wellenNr: [],
       wellenErledigt: 0,
+      produktion: [],
+      lagerung: null,
+      rezeptSlug: null,
     };
   });
 }
@@ -122,6 +150,9 @@ export function linienZeilen(bedarf: BedarfZeile[], liste: ListeZeile[], menueli
         erledigtAm: null,
         wellenNr: [],
         wellenErledigt: 0,
+        produktion: [],
+        lagerung: null,
+        rezeptSlug: null,
       };
     });
 }
@@ -198,6 +229,6 @@ export function sortieren(zeilen: Zeile[], feld: SortFeld = "kategorie", richtun
 }
 
 /** Leerer Wert bei Haltbarkeit, Wellen, Start: bei Status «offen» unbekannt (Platzhalter), sonst nicht zutreffend («–»). */
-export function leerwert(status: string, feld: "Haltbarkeit" | "Wellen" | "Start"): string {
+export function leerwert(status: string, feld: "Haltbarkeit" | "Wellen" | "Start" | "Konservierung"): string {
   return status === "offen" ? `[${feld}]` : "–";
 }

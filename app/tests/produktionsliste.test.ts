@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filtern, herleitungTerm, leerwert, linienZeilen, mitAufgaben, naechsteSortierung, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, spiele, spielZeilen, type BedarfZeile, type ListeZeile, type SpielBedarf } from "../lib/produktionsliste";
+import { filtern, herleitungTerm, konservierungText, lagerart, leerwert, linienZeilen, mitAufgaben, mitZuteilung, naechsteSortierung, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, spiele, spielZeilen, type BedarfZeile, type ListeZeile, type SpielBedarf } from "../lib/produktionsliste";
 import { aufgabenAus, fortschritt, fortschrittText, personen, schluessel, type Aufgabe, type ChecklisteZeile } from "../lib/checkliste";
 import { mengenKontrollen, statusKontrolle, wellenKontrolle } from "../lib/kontrollwerte";
 import { formatAnteil, formatDatum, formatMenge } from "../lib/format";
@@ -184,5 +184,28 @@ describe("Sortierung per Spaltenkopf", () => {
   it("dieselbe Spalte wechselt die Richtung", () => {
     expect(naechsteSortierung({ feld: "menge", richtung: "auf" }, "menge")).toEqual({ feld: "menge", richtung: "ab" });
     expect(naechsteSortierung({ feld: "menge", richtung: "ab" }, "menge")).toEqual({ feld: "menge", richtung: "auf" });
+  });
+});
+
+describe("Konservierung und Rezept aus der Systemzuteilung", () => {
+  const leer = { id: "x", komponenteId: "k1", komponente: "Rindsragout", kategorie: "Fleisch", status: "ok", menge: 1, einheit: "kg", haltbarkeitTage: 180, wellen: 1, startAb: null, menuelinie: null, gericht: null, gang: null, herleitung: "", zustaendig: null, zustaendige: [], erledigtAm: null, wellenNr: [], wellenErledigt: 0, produktion: [], lagerung: null, rezeptSlug: null };
+  it("übernimmt Produktionssystem, Lagerart und Slug; unbekannte Komponente bleibt leer", () => {
+    const z = mitZuteilung(
+      [leer, { ...leer, id: "y", komponenteId: "k2" }],
+      [{ id: "k1", produktion: ["SF", "SV"], lager_0_2: false, lager_tk: true, lager_trocken: false, rezept_id: "r1" }],
+      new Map([["r1", "rindsragout"]]),
+    );
+    expect(z[0]).toMatchObject({ produktion: ["SF", "SV"], lagerung: "TK", rezeptSlug: "rindsragout" });
+    expect(konservierungText(z[0])).toBe("SF · SV · TK");
+    expect(z[1]).toMatchObject({ produktion: [], lagerung: null, rezeptSlug: null });
+    expect(konservierungText(z[1])).toBeNull();
+    expect(konservierungText({ produktion: ["SV", "TK"], lagerung: "TK" })).toBe("SV · TK");
+  });
+  it("Lagerart und Platzhalter", () => {
+    expect(lagerart({ lager_0_2: true, lager_tk: false, lager_trocken: null })).toBe("0–2 °C");
+    expect(lagerart({ lager_0_2: false, lager_tk: false, lager_trocken: true })).toBe("Economat");
+    expect(lagerart({ lager_0_2: null, lager_tk: null, lager_trocken: null })).toBeNull();
+    expect(leerwert("offen", "Konservierung")).toBe("[Konservierung]");
+    expect(leerwert("Zukauf", "Konservierung")).toBe("–");
   });
 });
