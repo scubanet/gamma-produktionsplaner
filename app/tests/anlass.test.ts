@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dezimal, fehlerText, ganzzahl, gerichteNachGang, kopfAus, kopfUpdate, nachRubrik, statusLabel, zeitraum, type Anlass, type KartenPosition, type LinieGericht } from "../lib/anlass";
+import { dezimal, fehlerText, ganzzahl, gerichteNachGang, kopfAus, kopfUpdate, nachRubrik, rezeptHref, rezeptSlugs, statusLabel, zeitraum, type Anlass, type KartenPosition, type LinieGericht } from "../lib/anlass";
 import { formatDatum } from "../lib/format";
 
 const anlass: Anlass = {
@@ -61,5 +61,20 @@ describe("Anzeige", () => {
   it("Datenbankmeldungen", () => {
     expect(fehlerText({ code: "23503", message: 'violates foreign key constraint "service_menuelinie_id_fkey"' })).toMatch(/Services umstellen/);
     expect(fehlerText({ code: "23505", message: 'duplicate key "anlass_nummer_key"' })).toBe("Diese Anlassnummer gibt es schon.");
+  });
+});
+
+describe("Rezept-Link", () => {
+  it("ordnet Komponenten über das Rezept dem Slug zu, ohne Rezept kein Eintrag", () => {
+    const m = rezeptSlugs(
+      [{ id: "k1", rezept_id: "r1" }, { id: "k2", rezept_id: null }, { id: "k3", rezept_id: "fehlt" }],
+      [{ id: "r1", slug: "bunter-blattsalat" }],
+    );
+    expect([...m]).toEqual([["k1", "bunter-blattsalat"]]);
+  });
+  it("baut die Adresse der Rezeptkarte, ohne Slug null", () => {
+    expect(rezeptHref("croûtons & co")).toBe("/rezepte/?r=cro%C3%BBtons%20%26%20co");
+    expect(rezeptHref(undefined)).toBeNull();
+    expect(rezeptHref("")).toBeNull();
   });
 });

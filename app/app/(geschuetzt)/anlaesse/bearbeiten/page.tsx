@@ -6,7 +6,7 @@ import { Notice, StatusPill } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum } from "@/lib/format";
-import { ANLASS_SPALTEN, statusLabel, statusPill, zeitraum, type Anlass, type LinieGericht, type LinieKomponente, type Menuelinie, type Service } from "@/lib/anlass";
+import { ANLASS_SPALTEN, rezeptSlugs, statusLabel, statusPill, zeitraum, type Anlass, type LinieGericht, type LinieKomponente, type Menuelinie, type Service } from "@/lib/anlass";
 import { AnlassKopf, type Stamm } from "@/components/anlass/AnlassKopf";
 import { Services } from "@/components/anlass/Services";
 import { Geschirr } from "@/components/anlass/Geschirr";
@@ -26,15 +26,27 @@ type Daten = {
 
 const LEER = "00000000-0000-0000-0000-000000000000";
 
-async function stammLaden(): Promise<Stamm & { katalog: KatalogGericht[] }> {
+type StammDaten = Stamm & { katalog: KatalogGericht[]; rezeptVonKomponente: Map<string, string>; rezeptVonGericht: Map<string, string> };
+
+async function stammLaden(): Promise<StammDaten> {
   const [s, b, a, g] = await Promise.all([
     supabase.from("saison").select("id, name").order("name"),
     supabase.from("betrieb").select("code, name, faktor_vk").order("name"),
     supabase.from("angebotsform").select("code, name").order("reihenfolge"),
-    supabase.from("gericht_katalog").select("id, name, gang, kategorie").order("name"),
+    supabase.from("gericht_katalog").select("id, name, gang, kategorie, rezept_id").order("name"),
   ]);
   for (const x of [s, b, a, g]) if (x.error) throw x.error;
-  return { saisons: s.data ?? [], betriebe: b.data ?? [], angebotsformen: a.data ?? [], katalog: g.data ?? [] };
+  // Für den Sprung zur Rezeptkarte: nur Komponenten mit verknüpftem Rezept.
+  const [komp, rez] = await Promise.all([
+    alleSeiten((von, bis) => supabase.from("komponente").select("id, rezept_id").not("rezept_id", "is", null).order("id").range(von, bis)),
+    alleSeiten((von, bis) => supabase.from("rezept").select("id, slug").order("id").range(von, bis)),
+  ]);
+  return {
+    saisons: s.data ?? [], betriebe: b.data ?? [], angebotsformen: a.data ?? [],
+    katalog: (g.data ?? []).map(({ id, name, gang, kategorie }) => ({ id, name, gang, kategorie })),
+    rezeptVonKomponente: rezeptSlugs(komp, rez),
+    rezeptVonGericht: rezeptSlugs(g.data ?? [], rez),
+  };
 }
 
 async function laden(id: string): Promise<Daten> {
@@ -70,7 +82,7 @@ async function laden(id: string): Promise<Daten> {
 
 function Bearbeiten() {
   const id = useSearchParams().get("id") ?? "";
-  const [stamm, setStamm] = useState<(Stamm & { katalog: KatalogGericht[] }) | null>(null);
+  const [stamm, setStamm] = useState<StammDaten | null>(null);
   const [daten, setDaten] = useState<Daten | null>(null);
   const [hinweis, setHinweis] = useState<{ titel: string; text: string } | null>(null);
   const [meldung, setMeldung] = useState("");
@@ -148,6 +160,8 @@ function Bearbeiten() {
             gerichte={daten.gerichte}
             komponenten={daten.komponenten}
             katalog={stamm.katalog}
+            rezeptVonKomponente={stamm.rezeptVonKomponente}
+            rezeptVonGericht={stamm.rezeptVonGericht}
             onGeaendert={neuLaden}
             onMeldung={melden}
             onFehler={fehler}

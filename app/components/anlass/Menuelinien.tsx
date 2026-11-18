@@ -5,7 +5,7 @@ import { Button, Card, DataTable, Dialog, ItemList, Notice, Select, TextField } 
 import { supabase } from "@/lib/supabase";
 import { formatZahl, zahlDeCh } from "@/lib/format";
 import { anteilAus, anteilText } from "@/lib/offerte";
-import { dezimal, fehlerText, gerichteNachGang, type LinieGericht, type LinieKomponente, type Menuelinie } from "@/lib/anlass";
+import { dezimal, fehlerText, gerichteNachGang, rezeptHref, type LinieGericht, type LinieKomponente, type Menuelinie } from "@/lib/anlass";
 
 export type LinieGaeste = { menuelinie_id: string | null; gaeste: number | null; herleitung: string | null; services: number | null };
 export type KatalogGericht = { id: string; name: string; gang: string | null; kategorie: string };
@@ -17,13 +17,26 @@ type Bearbeitung =
 
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
 
-export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, katalog, onGeaendert, onMeldung, onFehler }: {
+/** Name als Sprung zur Rezeptkarte in neuem Tab (die gewählte Menülinie bleibt offen); ohne Rezept Text mit [Rezept]. */
+function RezeptLink({ name, slug }: { name: string; slug: string | undefined }) {
+  const href = rezeptHref(slug);
+  if (!href) return <>{name} <span className="pl-mono pl-small">[Rezept]</span></>;
+  return (
+    <a href={href} target="_blank" rel="noopener">
+      {name}<span className="pl-sr"> – Rezept in neuem Tab öffnen</span>
+    </a>
+  );
+}
+
+export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, katalog, rezeptVonKomponente, rezeptVonGericht, onGeaendert, onMeldung, onFehler }: {
   anlassId: string;
   linien: Menuelinie[];
   gaeste: LinieGaeste[];
   gerichte: LinieGericht[];
   komponenten: LinieKomponente[];
   katalog: KatalogGericht[];
+  rezeptVonKomponente: Map<string, string>;
+  rezeptVonGericht: Map<string, string>;
   onGeaendert: () => Promise<void>;
   onMeldung: (text: string) => void;
   onFehler: (titel: string, text: string) => void;
@@ -103,7 +116,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
   return (
     <Card
       title="Menülinien"
-      meta="Menge pro Gast je Komponente; Bedarf = Gäste der Linie × Anteil × Menge (Produktionsliste)"
+      meta="Menge pro Gast je Komponente; Bedarf = Gäste der Linie × Anteil × Menge (Produktionsliste). Klick auf den Namen öffnet das Rezept."
       actions={<Button variant="dashed" onClick={() => oeffnen({ art: "linie", id: null, text: "", fehler: null })}>+ Menülinie</Button>}
     >
       {linie ? (
@@ -127,7 +140,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
                 <div key={x.id}>
                   <div className="pl-head">
                     <div>
-                      <strong>{x.bezeichnung}</strong>
+                      <strong>{x.gericht_id && rezeptVonGericht.has(x.gericht_id) ? <RezeptLink name={x.bezeichnung} slug={rezeptVonGericht.get(x.gericht_id)} /> : x.bezeichnung}</strong>
                       <div className="pl-small">Anteil {anteilText(x.anteil)} % der Gäste{x.gericht_id ? "" : " · nicht aus dem Katalog"}</div>
                     </div>
                     <div className="pl-actions">
@@ -137,7 +150,14 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
                   </div>
                   <DataTable
                     columns={[
-                      { key: "bezeichnung", label: "Komponente" },
+                      {
+                        key: "bezeichnung",
+                        label: "Komponente",
+                        render: (r) => {
+                          const k = r.k as LinieKomponente;
+                          return <RezeptLink name={k.bezeichnung} slug={k.komponente_id ? rezeptVonKomponente.get(k.komponente_id) : undefined} />;
+                        },
+                      },
                       {
                         key: "mengeText",
                         label: "Menge pro Gast",

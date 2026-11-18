@@ -126,3 +126,17 @@ export function geaenderteDaten(services: Pick<Service, "id" | "name" | "datum">
 export function ungueltigesDatum(werte: Record<string, string>): string | null {
   return Object.values(werte).find((w) => w !== "" && !(/^\d{4}-\d{2}-\d{2}$/.test(w) && !Number.isNaN(Date.parse(w)))) ?? null;
 }
+
+/** Adresse der Rezeptkarte; null ohne Rezept. */
+export const rezeptHref = (slug: string | null | undefined): string | null => (slug ? `/rezepte/?r=${encodeURIComponent(slug)}` : null);
+
+/** Slug des Rezepts je Komponente bzw. Katalog-Gericht (Schlüssel = deren id); ohne verknüpftes Rezept kein Eintrag. */
+export function rezeptSlugs(verknuepft: { id: string; rezept_id: string | null }[], rezepte: { id: string; slug: string }[]): Map<string, string> {
+  const slug = new Map(rezepte.map((r) => [r.id, r.slug]));
+  const out = new Map<string, string>();
+  for (const v of verknuepft) {
+    const s = v.rezept_id ? slug.get(v.rezept_id) : undefined;
+    if (s) out.set(v.id, s);
+  }
+  return out;
+}
