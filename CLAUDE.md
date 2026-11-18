@@ -21,7 +21,7 @@ Vor jeder Arbeit lesen: `docs/uebergabe-claude-code.md` (Stand, Aufgaben, Reihen
 
 ## Fachbegriffe (aus den GAMMA-Excel)
 
-- **Systemzuteilung:** pro Komponente Produktionssystem (FNG, SF, SV, Past., HF, NTG, ÜNG, Minute), Lagerung (0–2 °C, TK, gedeckt, Tage), Regeneration (BS, Steamer, Grill, Herd, Salamander, SV, Fritteuse, Auftauen), CF-Stufe 0–5. Status offen, ok oder Zukauf (CF 4/5).
+- **Systemzuteilung:** pro Komponente Produktionssystem (FNG, SF, SV, Past., HF, NTG, ÜNG, Frisch, Minute), Lagerung (0–2 °C, TK, gedeckt, Tage), Regeneration (BS, Steamer, Grill, Herd, Salamander, SV, Fritteuse, Auftauen), CF-Stufe 0–5. Status offen, ok oder Zukauf (CF 4/5).
 - **Basiskomponente:** Komponente, die in mehreren Gerichten vorkommt und nur einmal zugeteilt wird. Ein «Verweis» in der Excel ist in der Datenbank eine Verknüpfung Gericht → Komponente.
 - **Quantum:** Gramm oder ml pro Gast und Gangtyp je Angebotsform (3-Gang-Menü, Buffet, Live Station, Flying Dinner).
 - **Faktor:** Verkaufspreis = Warenkosten × Faktor (Catering 3.5, Theater Casino 4).

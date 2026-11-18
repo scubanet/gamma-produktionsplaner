@@ -65,6 +65,7 @@ Stand: 15.11.2026
 | 26 bedarf_pro_spiel | View `service_gericht_bedarf`: Bedarf pro Service, Gericht und Komponente für die Produktionsliste pro Spiel |
 | 27 lager_trocken_kombi_steamer | `komponente.lager_trocken` (trocken, bis 18 °C, z.B. EcoNoma; schliesst 0–2 °C und TK aus; nimmt den roten Hinweis «ohne Kühlung» weg), Regeneration «Kombi-Steamer» |
 | 28 economat_statt_gedeckt | Lagerung «Economat» (Spalte `lager_trocken`) ersetzt «gedeckt»; Prüfregel `fng_ohne_gedeckt` entfernt; `lager_gedeckt` bleibt ungenutzt stehen |
+| 31 produktionssystem_frisch | Produktionssystem `Frisch` (frisch, nur gekühlt 0 bis 2 °C, Standard 3 Tage) für Produkte wie Thonsauce oder Salatsauce; `Minute` und `TK` rücken in der Reihenfolge nach |
 | 29 leitstand | View `leitstand_wellen`: Aufgaben und erledigte Aufgaben der Checkliste pro Saison und Welle, für den Leitstand |
 | 25 geschirr | Tabellen `service_artikel`, `geschirr_standard`, `anlass_geschirr`, Funktion `anlass_geschirr_vorschlagen`, View `anlass_geschirr_bedarf` |
 | 24 planung_aus_rezept | Views `planung_bedarf`, `planung_produktion_schritt`, `planung_produktion_komponente`, `planung_produktion_rolle`, `planung_produktion_geraet`, `planung_service_komponente` |
