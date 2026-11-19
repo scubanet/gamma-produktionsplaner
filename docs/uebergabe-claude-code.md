@@ -138,3 +138,7 @@ Ohne diese Werte zeigt die App Platzhalter statt Zahlen:
 ## Auslieferung
 
 `gamma.atoll-os.com` liegt bei Infomaniak (Webhosting, Apache). Der Workflow `.github/workflows/ausliefern.yml` baut die App bei jedem Push auf `main` und lädt `app/out/` per FTPS hoch. Die nötigen Secrets stehen im Kopf der Workflow-Datei. `app/public/.htaccess` regelt HTTPS, 404-Seite und Cache. In Supabase muss `https://gamma.atoll-os.com` als Site URL und Redirect URL eingetragen sein.
+
+## Nachtrag 19.11.2026: Plan Datenkette
+
+Kritische Durchsicht von Repo und Datenbank: `docs/plan-datenkette.md`. Zwölf Aufgaben und die Datenerfassung durch Dominik; Ziel ist der Durchstich von Spiel 1 mit echten Zahlen. Noch nichts gebaut. Die Etiketten folgen danach.
