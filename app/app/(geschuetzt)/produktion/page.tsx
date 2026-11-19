@@ -24,7 +24,7 @@ import { excelExport } from "@/lib/export";
 
 type Anlass = { id: string; name: string; datum: string | null; datum_bis: string | null; saison_id: string | null; saison: { name: string } | null; menuelinie: { id: string; name: string }[] };
 type StatusZahl = Record<keyof typeof STATUS_ERWARTET, number | null>;
-type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; status: StatusZahl; checkliste: ChecklisteZeile[]; proSpiel: SpielBedarf[]; zuteilung: ZuteilungKurz[]; rezeptSlug: Map<string, string>; systemName: Map<string, string> };
+type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; status: StatusZahl; checkliste: ChecklisteZeile[]; proSpiel: SpielBedarf[]; zuteilung: ZuteilungKurz[]; rezepte: Map<string, { slug: string; status: string }>; systemName: Map<string, string> };
 
 const STATUS_PILL: Record<string, "ok" | "warn" | "info"> = { ok: "ok", offen: "warn", Zukauf: "info" };
 const HALTBARKEIT_HINWEIS = "Annahme aus der Excel (rot markiert), noch mit Philipp und dem Küchenchef zu bestätigen. Wellen und Start hängen davon ab.";
@@ -54,7 +54,7 @@ async function laden(): Promise<Daten> {
   const zuteilungLaden = alleSeiten<ZuteilungKurz>((von, bis) =>
     supabase.from("komponente_zuteilung").select("id, produktion, lager_0_2, lager_tk, lager_trocken, rezept_id").order("id").range(von, bis),
   );
-  const rezepteLaden = alleSeiten<{ id: string; slug: string }>((von, bis) => supabase.from("rezept").select("id, slug").order("id").range(von, bis));
+  const rezepteLaden = alleSeiten<{ id: string; slug: string; status: string }>((von, bis) => supabase.from("rezept").select("id, slug, status").order("id").range(von, bis));
   const systemeLaden = supabase.from("produktionssystem").select("code, name");
   const [liste, bedarf, ...rest] = await Promise.all([
     supabase.from("produktionsliste").select("*").eq("saison_id", anlass.saison_id),
@@ -72,7 +72,7 @@ async function laden(): Promise<Daten> {
   if (systeme.error) throw systeme.error;
   return {
     anlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, status, checkliste, proSpiel, zuteilung,
-    rezeptSlug: new Map(rezepte.map((r) => [r.id, r.slug])),
+    rezepte: new Map(rezepte.map((r) => [r.id, { slug: r.slug, status: r.status }])),
     systemName: new Map((systeme.data ?? []).map((s) => [s.code, s.name])),
   };
 }
@@ -138,7 +138,7 @@ export default function Produktionsliste() {
   const alle = useMemo(() => {
     if (!daten) return [];
     const roh = linie ? spielZeilen(daten.proSpiel, daten.liste, linie) : saisonZeilen(daten.liste, daten.bedarf);
-    return sortieren(mitAufgaben(mitZuteilung(roh, daten.zuteilung, daten.rezeptSlug), fortschritt(aufgaben.values())), sortFeld, richtung);
+    return sortieren(mitAufgaben(mitZuteilung(roh, daten.zuteilung, daten.rezepte), fortschritt(aufgaben.values())), sortFeld, richtung);
   }, [daten, linie, aufgaben, sortFeld, richtung]);
   const zeilen = useMemo(
     () => suchen(filtern(alle, { kategorie, status, erledigt, zustaendig }), suche, (z) => [z.komponente, z.kategorie, z.gericht, z.gang, ...z.zustaendige, ...z.produktion, z.lagerung]),
@@ -233,7 +233,7 @@ export default function Produktionsliste() {
       sortable: true,
       subKey: "unterzeile",
       render: (r) => {
-        const name = <RezeptLink name={r.komponente as string} slug={r.rezeptSlug as string | null} />;
+        const name = <RezeptLink name={r.komponente as string} slug={r.rezeptSlug as string | null} status={r.rezeptStatus as string | null} />;
         return r.erledigtAm ? <s className="pl-muted">{name}</s> : name;
       },
     },
@@ -406,7 +406,7 @@ export default function Produktionsliste() {
               <p className="pl-muted" role="status">Produktionsliste wird geladen …</p>
             )}
             <p className="pl-small">
-              <span className="pl-assumed">Haltbarkeit</span>: {HALTBARKEIT_HINWEIS} [Haltbarkeit] = noch nicht zugeteilt (Status offen); – = trifft nicht zu (Zukauf oder nur vor Ort). Konservierung = Produktionssystem und Lagerart aus der Systemzuteilung{daten ? ` (${[...daten.systemName].map(([c, n]) => `${c} = ${n}`).join("; ")})` : ""}. Klick auf den Namen öffnet das Rezept; [Rezept] = noch keines verknüpft.
+              <span className="pl-assumed">Haltbarkeit</span>: {HALTBARKEIT_HINWEIS} [Haltbarkeit] = noch nicht zugeteilt (Status offen); – = trifft nicht zu (Zukauf oder nur vor Ort). Konservierung = Produktionssystem und Lagerart aus der Systemzuteilung{daten ? ` (${[...daten.systemName].map(([c, n]) => `${c} = ${n}`).join("; ")})` : ""}. Klick auf den Namen öffnet das Rezept; [Rezept] = noch keines verknüpft; «Rezept Entwurf» oder «Rezept Geprüft» = Rezept noch nicht freigegeben.
             </p>
           </Card>
 

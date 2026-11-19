@@ -122,3 +122,26 @@ export function listenSub(r: Rezept): string {
 export function besonderesZeilen(text: string | null): string[] {
   return (text ?? "").split("\n").map((z) => z.trim()).filter(Boolean);
 }
+
+// Freigabe (Migration 32): Entwurf → Geprüft → Freigegeben. Gesetzt wird der Status in der Datenbank (rezept_status_setzen).
+export const FREIGEGEBEN = "freigegeben";
+const STATUS_TEXT: Record<string, string> = { entwurf: "Entwurf", geprueft: "Geprüft", freigegeben: "Freigegeben" };
+
+export const statusText = (status: string | null | undefined): string => STATUS_TEXT[status ?? ""] ?? "[Status]";
+export const statusPill = (status: string | null | undefined): "ok" | "info" | "warn" => (status === FREIGEGEBEN ? "ok" : status === "geprueft" ? "info" : "warn");
+
+/** Ein Rezept, das es gibt, aber nicht freigegeben ist: seine Werte gelten wie Annahmen. Ohne Rezept (null) nichts zu kennzeichnen. */
+export const nichtFreigegeben = (status: string | null | undefined): boolean => !!status && status !== FREIGEGEBEN;
+
+/** Knöpfe zum Status: «Geprüft» für alle; freigeben und eine Freigabe zurücknehmen nur für Admins (die Datenbank prüft es nochmals). */
+export function statusSchritte(status: string | null | undefined, admin: boolean): { status: string; label: string }[] {
+  const entwurf = { status: "entwurf", label: "Zurück auf Entwurf" };
+  const freigeben = { status: FREIGEGEBEN, label: "Freigeben" };
+  if (status === FREIGEGEBEN) return admin ? [entwurf] : [];
+  if (status === "geprueft") return admin ? [freigeben, entwurf] : [entwurf];
+  return admin ? [{ status: "geprueft", label: "Geprüft" }, freigeben] : [{ status: "geprueft", label: "Geprüft" }];
+}
+
+export const STATUS_ALLE = "alle";
+export const STATUS_FILTER = [{ value: STATUS_ALLE, label: "Alle" }, ...Object.entries(STATUS_TEXT).map(([value, label]) => ({ value, label }))];
+export const nachStatus = <R extends Pick<Rezept, "status">>(rezepte: R[], status: string): R[] => (status === STATUS_ALLE ? rezepte : rezepte.filter((r) => r.status === status));

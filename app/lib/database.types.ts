@@ -3177,6 +3177,22 @@ export type Database = {
           },
         ]
       }
+      leitstand_rezepte: {
+        Row: {
+          freigegeben: number | null
+          rezepte: number | null
+          saison_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leitstand_wellen: {
         Row: {
           aufgaben: number | null
@@ -3399,6 +3415,7 @@ export type Database = {
           geraet_id: string | null
           geraet_min: number | null
           komponenten: number | null
+          komponenten_nicht_freigegeben: number | null
           saison_id: string | null
           sortierung: number | null
         }
@@ -3430,6 +3447,7 @@ export type Database = {
           rezept: string | null
           rezept_id: string | null
           rezept_slug: string | null
+          rezept_status: string | null
           saison_id: string | null
           schritte: number | null
           sortierung: number | null
@@ -3466,6 +3484,7 @@ export type Database = {
           bezug: string | null
           bezug_typ: string | null
           komponenten: number | null
+          komponenten_nicht_freigegeben: number | null
           rolle: string | null
           saison_id: string | null
           sortierung: number | null
@@ -3489,6 +3508,7 @@ export type Database = {
           menge: number | null
           pro_durchgang_g: number | null
           rezept_id: string | null
+          rezept_status: string | null
           rolle: string | null
           saison_id: string | null
           schritt: string | null
@@ -3527,6 +3547,7 @@ export type Database = {
           rezept: string | null
           rezept_id: string | null
           rezept_slug: string | null
+          rezept_status: string | null
           saison_id: string | null
           service: string | null
           service_id: string | null
@@ -4362,6 +4383,10 @@ export type Database = {
       rezept_slug: { Args: { p_name: string }; Returns: string }
       rezept_speichern: {
         Args: { p_daten: Json; p_geaendert_am: string; p_rezept: string }
+        Returns: Json
+      }
+      rezept_status_setzen: {
+        Args: { p_geaendert_am: string; p_rezept: string; p_status: string }
         Returns: Json
       }
       rezept_zutaten_skaliert: {

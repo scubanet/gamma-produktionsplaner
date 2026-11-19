@@ -11,7 +11,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 **Für jede Aufgabe gilt:**
 
 - Dieser Plan beschreibt Umfang, Dateien und Abnahme, nicht den Code. Vor dem Bauen die Schritte der Aufgabe ausarbeiten und die betroffenen Views lesen.
-- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 32), Views mit `security_invoker = true`, danach `cd app && npm run types`.
+- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 33), Views mit `security_invoker = true`, danach `cd app && npm run types`.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Jede neue Zahl bekommt eine Spalte «Herleitung».
 - Tests und Typprüfung vor jedem Commit: `cd app && npm test && npm run typecheck`. Ein Commit pro Aufgabe, Nachricht auf Deutsch.
 - Fragen an Dominik (mit **Frage** markiert) vor dem Bauen klären, nicht raten.
@@ -37,7 +37,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 | Nr. | Aufgabe | Schwere | Braucht |
 | --- | --- | --- | --- |
 | D | Daten erfassen (Dominik, kein Code) | kritisch | – |
-| 1 | Rezept-Freigabe und Kennzeichnung «aus Entwurf» | kritisch | – |
+| 1 | Rezept-Freigabe und Kennzeichnung «aus Entwurf» (gebaut 19.11.2026) | kritisch | – |
 | 2 | Zutaten mit Artikeln verknüpfen | kritisch | – |
 | 3 | Einkauf aus dem Rezept | kritisch | 2 |
 | 4 | Warenkosten aus dem Rezept | kritisch | 2 |
@@ -64,6 +64,8 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 - [ ] **D6** Wellenplan der Saison übernehmen, sobald D3 steht.
 
 ### Aufgabe 1: Rezept-Freigabe und Kennzeichnung «aus Entwurf»
+
+**Stand 19.11.2026: gebaut** (Migration 32, noch einzuspielen). Entscheide Dominik: «Geprüft» dürfen alle Angemeldeten setzen; freigeben und eine Freigabe zurücknehmen nur Admins. Ein freigegebenes Rezept bleibt beim Speichern freigegeben. Zusätzlich zum Umfang: Knopf «Zurück auf Entwurf». Abweichung: Der Küchenpass zeigt heute keine Werte aus Rezepten und bleibt unverändert; in der Produktionsliste ist der Rezept-Link gekennzeichnet.
 
 **Befund:** `rezept.status` kennt `entwurf`, `geprueft`, `freigegeben`, aber die App zeigt den Status nur an (`rezepte/bearbeiten/page.tsx`, Karte «Rezept»). Die Views `planung_*` (Migration 24) rechnen mit jedem Rezept.
 

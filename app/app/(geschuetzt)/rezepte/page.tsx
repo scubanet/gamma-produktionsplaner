@@ -2,13 +2,14 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, TextField } from "@/lib/planer";
+import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { suchen } from "@/lib/suche";
 import { PlanungKarte } from "@/components/rezepte/PlanungKarte";
+import { RezeptStatus } from "@/components/rezepte/RezeptStatus";
 import { formatGramm, formatMinuten, formatZahl } from "@/lib/format";
 import {
-  basisZutat, besonderesZeilen, ergibtText, geraete, gruppenAnzeige, istGericht, listenSub, voreinstellungen, wertAusEingabe,
+  basisZutat, besonderesZeilen, ergibtText, geraete, gruppenAnzeige, istGericht, listenSub, nachStatus, STATUS_ALLE, STATUS_FILTER, voreinstellungen, wertAusEingabe,
   type Faktor, type Gruppe, type KomponenteSkaliert, type Punkt, type Rezept, type Schritt, type Zutat,
 } from "@/lib/rezepte";
 
@@ -71,6 +72,9 @@ function Rezeptbibliothek() {
   const [rezepte, setRezepte] = useState<Rezept[] | null>(null);
   const [listenFehler, setListenFehler] = useState<string | null>(null);
   const [suche, setSuche] = useState("");
+  const [statusFilter, setStatusFilter] = useState(STATUS_ALLE);
+  // Nur Admins dürfen freigeben; die Datenbank prüft das beim Setzen nochmals.
+  const [admin, setAdmin] = useState(false);
   // Skalierung pro Rezept: gehört der Stand nicht zum gewählten Rezept, gilt die erste Voreinstellung.
   const [wahl, setWahl] = useState<{ rezeptId: string; wert: number | null; eingabe: string } | null>(null);
   const [details, setDetails] = useState<Geladen<Details> | null>(null);
@@ -78,10 +82,11 @@ function Rezeptbibliothek() {
 
   useEffect(() => {
     rezepteLaden().then(setRezepte, (e: Error) => setListenFehler(e.message));
+    supabase.rpc("ist_admin").then((r) => setAdmin(r.data === true));
   }, []);
 
   const rezept = useMemo(() => rezepte?.find((r) => r.slug === slug) ?? rezepte?.[0] ?? null, [rezepte, slug]);
-  const gefunden = useMemo(() => suchen(rezepte ?? [], suche, (r) => [r.name, r.kategorie]), [rezepte, suche]);
+  const gefunden = useMemo(() => suchen(nachStatus(rezepte ?? [], statusFilter), suche, (r) => [r.name, r.kategorie]), [rezepte, suche, statusFilter]);
   const presets = useMemo(() => (rezept ? voreinstellungen(rezept) : []), [rezept]);
   const aktuell = wahl && rezept && wahl.rezeptId === rezept.id ? wahl : { rezeptId: rezept?.id ?? "", wert: presets[0]?.wert ?? null, eingabe: "" };
   const wert = aktuell.wert;
@@ -190,6 +195,7 @@ function Rezeptbibliothek() {
                 value={suche}
                 onChange={(e) => setSuche((e as { target: HTMLInputElement }).target.value)}
               />
+              <Select id="rezept-status" label="Status" value={statusFilter} onChange={setStatusFilter} options={STATUS_FILTER} />
               {gefunden.length ? (
                 <ItemList
                   label="Rezepte"
@@ -203,7 +209,7 @@ function Rezeptbibliothek() {
                     .filter((g) => g.items.length)}
                 />
               ) : (
-                <p className="pl-muted" role="status">Nichts gefunden für «{suche.trim()}».</p>
+                <p className="pl-muted" role="status">{suche.trim() ? `Nichts gefunden für «${suche.trim()}».` : "Kein Rezept mit diesem Status."}</p>
               )}
             </>
           ) : (
@@ -215,8 +221,17 @@ function Rezeptbibliothek() {
           {rezept ? (
             <Card
               title={[gericht ? "Gericht" : "Komponente", rezept.kategorie].filter(Boolean).join(" · ")}
-              meta={`Status ${rezept.status ?? "[Status]"}`}
-              actions={<Button href={`/rezepte/bearbeiten/?r=${encodeURIComponent(rezept.slug)}`}>Bearbeiten</Button>}
+              actions={
+                <>
+                  <RezeptStatus
+                    key={rezept.id}
+                    rezept={rezept}
+                    admin={admin}
+                    onGesetzt={(status, geaendert_am) => setRezepte((alle) => alle?.map((r) => (r.id === rezept.id ? { ...r, status, geaendert_am } : r)) ?? null)}
+                  />
+                  <Button href={`/rezepte/bearbeiten/?r=${encodeURIComponent(rezept.slug)}`}>Bearbeiten</Button>
+                </>
+              }
             >
               <div className="pl-grid-3">
                 <div>

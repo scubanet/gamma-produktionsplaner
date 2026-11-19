@@ -2,6 +2,7 @@
 // Alle Zahlen kommen aus den Views planung_*; die App gruppiert und zeigt an.
 import type { Database } from "./database.types";
 import { formatMenge, formatMinuten, formatZahl } from "./format";
+import { nichtFreigegeben } from "./rezepte";
 
 type V = Database["public"]["Views"];
 export type ProduktionZeile = V["planung_produktion_komponente"]["Row"];
@@ -32,6 +33,12 @@ export const nachKategorie = (a: { kategorie: string | null; komponente: string 
 export function abdeckung(zeilen: { status: string | null }[]): { gerechnet: number; alle: number; text: string } {
   const gerechnet = zeilen.filter((z) => z.status === GERECHNET).length;
   return { gerechnet, alle: zeilen.length, text: `gerechnet für ${formatZahl(gerechnet)} von ${formatZahl(zeilen.length)} Komponenten` };
+}
+
+/** Wie viele gerechnete Zeilen aus einem nicht freigegebenen Rezept stammen; der Text hängt an «gerechnet für …», leer bei 0. */
+export function ausEntwurf(zeilen: { status: string | null; rezept_status: string | null }[]): { anzahl: number; text: string } {
+  const n = zeilen.filter((z) => z.status === GERECHNET && nichtFreigegeben(z.rezept_status)).length;
+  return { anzahl: n, text: n ? ` · davon ${formatZahl(n)} aus nicht freigegebenem Rezept` : "" };
 }
 
 /** Summe über die Zeilen mit Wert; null, wenn keine Zeile einen Wert hat. */

@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { formatGramm, formatMinuten, formatProzent } from "../lib/format";
 import {
-  basisZutat, besonderesZeilen, ergibtText, geraete, gruppenAnzeige, listenSub, schrittChips, voreinstellungen, wertAusEingabe,
+  basisZutat, besonderesZeilen, ergibtText, geraete, gruppenAnzeige, listenSub, nachStatus, nichtFreigegeben, schrittChips, STATUS_ALLE, statusPill, statusSchritte, statusText,
+  voreinstellungen, wertAusEingabe,
   type Rezept, type Schritt, type Zutat,
 } from "../lib/rezepte";
 import { gruppieren, mengeText, suchen, warenkostenText, type Gericht } from "../lib/katalog";
@@ -126,5 +127,34 @@ describe("Besonders zu beachten", () => {
   it("eine Zeile pro Absatz", () => {
     expect(besonderesZeilen("Erste Zeile\n\n Zweite Zeile ")).toEqual(["Erste Zeile", "Zweite Zeile"]);
     expect(besonderesZeilen(null)).toEqual([]);
+  });
+});
+
+describe("Freigabe", () => {
+  const labels = (status: string | null, admin: boolean) => statusSchritte(status, admin).map((s) => s.label);
+
+  it("Text und Pill pro Status; unbekannt als Platzhalter", () => {
+    expect([statusText("entwurf"), statusText("geprueft"), statusText("freigegeben"), statusText(null)]).toEqual(["Entwurf", "Geprüft", "Freigegeben", "[Status]"]);
+    expect([statusPill("entwurf"), statusPill("geprueft"), statusPill("freigegeben")]).toEqual(["warn", "info", "ok"]);
+  });
+
+  it("«Geprüft» für alle, freigeben und Freigabe zurücknehmen nur für Admins", () => {
+    expect(labels("entwurf", false)).toEqual(["Geprüft"]);
+    expect(labels("entwurf", true)).toEqual(["Geprüft", "Freigeben"]);
+    expect(labels("geprueft", false)).toEqual(["Zurück auf Entwurf"]);
+    expect(labels("geprueft", true)).toEqual(["Freigeben", "Zurück auf Entwurf"]);
+    expect(labels("freigegeben", false)).toEqual([]);
+    expect(labels("freigegeben", true)).toEqual(["Zurück auf Entwurf"]);
+  });
+
+  it("nicht freigegeben: Entwurf und geprüft, aber nicht «kein Rezept»", () => {
+    expect([nichtFreigegeben("entwurf"), nichtFreigegeben("geprueft"), nichtFreigegeben("freigegeben"), nichtFreigegeben(null)]).toEqual([true, true, false, false]);
+  });
+
+  it("filtert die Liste nach Status", () => {
+    const alle = [gericht, { ...sugo, status: "freigegeben" }];
+    expect(nachStatus(alle, STATUS_ALLE)).toHaveLength(2);
+    expect(nachStatus(alle, "freigegeben").map((r) => r.slug)).toEqual(["sugo"]);
+    expect(nachStatus(alle, "geprueft")).toEqual([]);
   });
 });

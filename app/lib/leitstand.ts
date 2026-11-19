@@ -1,4 +1,4 @@
-// Leitstand: kleine Hilfen für die Anzeige. Gezählt wird in der Datenbank (View leitstand_wellen).
+// Leitstand: kleine Hilfen für die Anzeige. Gezählt wird in der Datenbank (Views leitstand_wellen, leitstand_rezepte).
 
 export type LeitAnlass = { id: string; name: string; datum: string | null; datum_bis: string | null; saison_id: string | null };
 
@@ -35,4 +35,10 @@ export const wellenName = (nr: number): string => (nr === 0 ? "Ohne Welle" : `We
 
 export function summe(z: { aufgaben: number | null; erledigt: number | null }[]): { aufgaben: number; erledigt: number } {
   return z.reduce<{ aufgaben: number; erledigt: number }>((s, x) => ({ aufgaben: s.aufgaben + (x.aufgaben ?? 0), erledigt: s.erledigt + (x.erledigt ?? 0) }), { aufgaben: 0, erledigt: 0 });
+}
+
+/** «12 / 180» freigegebene Rezepte der Saison; ohne Saison oder ohne verknüpfte Rezepte «0 / 0». */
+export function rezepteStand(zeilen: { saison_id: string | null; rezepte: number | null; freigegeben: number | null }[], saisonId: string | null): { rezepte: number; freigegeben: number } {
+  const z = saisonId === null ? undefined : zeilen.find((x) => x.saison_id === saisonId);
+  return { rezepte: z?.rezepte ?? 0, freigegeben: z?.freigegeben ?? 0 };
 }

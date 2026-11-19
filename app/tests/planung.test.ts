@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { abdeckung, anzahl, fehlend, gewichtText, minuten, nachBezug, nachKategorie, services, statusPill, summe, volumenText, type ProduktionZeile, type ServiceZeile } from "../lib/planung";
+import { abdeckung, anzahl, ausEntwurf, fehlend, gewichtText, minuten, nachBezug, nachKategorie, services, statusPill, summe, volumenText, type ProduktionZeile, type ServiceZeile } from "../lib/planung";
 
 const p = (x: Partial<ProduktionZeile>): ProduktionZeile => ({
   saison_id: "s", bezug_typ: "welle", bezug: "Welle 1", sortierung: 1, bedarf_am: "2026-12-22", komponente_id: "k1", komponente: "Kartoffelgratin", kategorie: "Beilage",
   einheit: "kg", menge: 33, liter_annahme: false, rezept_id: "r1", rezept: "Kartoffelgratin", rezept_slug: "kartoffelgratin", schritte: 3, durchgaenge: 3,
-  aktiv_min: 135, geraet_min: 420, status: "gerechnet", herleitung: "33 kg ÷ 12 kg = 3 Durchgänge", ...x,
+  aktiv_min: 135, geraet_min: 420, status: "gerechnet", herleitung: "33 kg ÷ 12 kg = 3 Durchgänge", rezept_status: "freigegeben", ...x,
 });
 const s = (x: Partial<ServiceZeile>): ServiceZeile => ({
   service_id: "sv1", anlass_id: "a", saison_id: "s", service: "Spiel 1", reihenfolge: 1, datum: "2026-12-26", komponente_id: "k1", komponente: "Kartoffelgratin", kategorie: "Beilage",
   einheit: "kg", menge: 33, liter_annahme: false, portionen: 330, rezept_id: "r1", rezept: "Kartoffelgratin", rezept_slug: "kartoffelgratin", gebinde: "IFCO-Box",
   fuellmenge_g: 12000, gebinde_anzahl: 3, gewicht_kg: null, volumen_l: null, vorort_schritte: 1, vorort_aktiv_min: 15, vorort_geraet_min: 75, ausgabe_min: 49.5,
-  service_rolle: "Koch", status: "gerechnet", herleitung: "33 kg ÷ 12 kg = 3 IFCO-Box", ...x,
+  service_rolle: "Koch", status: "gerechnet", herleitung: "33 kg ÷ 12 kg = 3 IFCO-Box", rezept_status: "freigegeben", ...x,
 });
 
 describe("Planung aus dem Rezept", () => {
@@ -49,5 +49,16 @@ describe("Planung aus dem Rezept", () => {
     expect(services([s({ service_id: "b", service: "Spiel 2", reihenfolge: 2 }), s({}), s({ komponente_id: "k9" })])).toEqual([
       { value: "sv1", label: "Spiel 1" }, { value: "b", label: "Spiel 2" },
     ]);
+  });
+
+  it("zählt gerechnete Zeilen aus nicht freigegebenen Rezepten; ohne Rezept oder nicht gerechnet zählt nicht", () => {
+    expect(ausEntwurf([p({}), s({})])).toEqual({ anzahl: 0, text: "" });
+    expect(ausEntwurf([
+      p({}),
+      p({ rezept_status: "entwurf" }),
+      p({ rezept_status: "geprueft" }),
+      p({ rezept_status: "entwurf", status: "Durchgang fehlt" }),
+      p({ rezept_status: null, status: "kein Rezept" }),
+    ])).toEqual({ anzahl: 2, text: " · davon 2 aus nicht freigegebenem Rezept" });
   });
 });

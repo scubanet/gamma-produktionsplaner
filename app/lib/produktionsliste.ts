@@ -52,6 +52,8 @@ export type Zeile = {
   produktion: string[];
   lagerung: string | null;
   rezeptSlug: string | null;
+  /** Status des verknüpften Rezepts (entwurf, geprueft, freigegeben); ohne Rezept null. */
+  rezeptStatus: string | null;
 };
 
 export type ZuteilungKurz = { id: string | null; produktion: string[] | null; lager_0_2: boolean | null; lager_tk: boolean | null; lager_trocken: boolean | null; rezept_id: string | null };
@@ -67,11 +69,12 @@ export function konservierungText(z: Pick<Zeile, "produktion" | "lagerung">): st
 }
 
 /** Produktionssystem, Lagerart und Rezept aus der Systemzuteilung in die Zeilen übernehmen. */
-export function mitZuteilung(zeilen: Zeile[], zuteilung: ZuteilungKurz[], rezeptSlug: Map<string, string>): Zeile[] {
+export function mitZuteilung(zeilen: Zeile[], zuteilung: ZuteilungKurz[], rezepte: Map<string, { slug: string; status: string }>): Zeile[] {
   const m = new Map(zuteilung.map((z) => [z.id, z]));
   return zeilen.map((z) => {
     const k = z.komponenteId ? m.get(z.komponenteId) : undefined;
-    return k ? { ...z, produktion: k.produktion ?? [], lagerung: lagerart(k), rezeptSlug: (k.rezept_id && rezeptSlug.get(k.rezept_id)) || null } : z;
+    const r = k?.rezept_id ? rezepte.get(k.rezept_id) : undefined;
+    return k ? { ...z, produktion: k.produktion ?? [], lagerung: lagerart(k), rezeptSlug: r?.slug ?? null, rezeptStatus: r?.status ?? null } : z;
   });
 }
 
@@ -119,6 +122,7 @@ export function saisonZeilen(liste: ListeZeile[], bedarf: BedarfZeile[]): Zeile[
       produktion: [],
       lagerung: null,
       rezeptSlug: null,
+      rezeptStatus: null,
     };
   });
 }
@@ -153,6 +157,7 @@ export function linienZeilen(bedarf: BedarfZeile[], liste: ListeZeile[], menueli
         produktion: [],
         lagerung: null,
         rezeptSlug: null,
+        rezeptStatus: null,
       };
     });
 }

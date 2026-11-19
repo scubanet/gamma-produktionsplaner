@@ -4,23 +4,25 @@ import { useEffect, useState } from "react";
 import { Notice, StatusPill } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
-import { naechsterAnlass, summe, wannText, wellenName, type LeitAnlass } from "@/lib/leitstand";
+import { naechsterAnlass, rezepteStand, summe, wannText, wellenName, type LeitAnlass } from "@/lib/leitstand";
 
 type Anlass = LeitAnlass & { saison: { name: string } | null };
 type Welle = { saison_id: string | null; welle_nr: number | null; aufgaben: number | null; erledigt: number | null };
-type Daten = { ok: number; offen: number; zukauf: number; hinweise: number; anlaesse: Anlass[]; wellen: Welle[] };
+type Rezepte = { saison_id: string | null; rezepte: number | null; freigegeben: number | null };
+type Daten = { ok: number; offen: number; zukauf: number; hinweise: number; anlaesse: Anlass[]; wellen: Welle[]; rezepte: Rezepte[] };
 
 async function laden(): Promise<Daten> {
   const zaehlen = (status: string) => supabase.from("komponente_zuteilung").select("id", { count: "exact", head: true }).eq("status", status);
-  const [ok, offen, zukauf, hinweise, anlaesse, wellen] = await Promise.all([
+  const [ok, offen, zukauf, hinweise, anlaesse, wellen, rezepte] = await Promise.all([
     zaehlen("ok"),
     zaehlen("offen"),
     zaehlen("Zukauf"),
     supabase.from("komponente_pruefhinweis").select("komponente_id", { count: "exact", head: true }),
     supabase.from("anlass").select("id, name, datum, datum_bis, saison_id, saison(name)").order("datum"),
     supabase.from("leitstand_wellen").select("*").order("welle_nr"),
+    supabase.from("leitstand_rezepte").select("*"),
   ]);
-  for (const r of [ok, offen, zukauf, hinweise, anlaesse, wellen]) if (r.error) throw r.error;
+  for (const r of [ok, offen, zukauf, hinweise, anlaesse, wellen, rezepte]) if (r.error) throw r.error;
   return {
     ok: ok.count ?? 0,
     offen: offen.count ?? 0,
@@ -28,6 +30,7 @@ async function laden(): Promise<Daten> {
     hinweise: hinweise.count ?? 0,
     anlaesse: (anlaesse.data ?? []) as unknown as Anlass[],
     wellen: wellen.data ?? [],
+    rezepte: rezepte.data ?? [],
   };
 }
 
@@ -45,6 +48,7 @@ export default function Leitstand() {
   const saisonId = naechster?.saison_id ?? null;
   const wellen = d ? d.wellen.filter((w) => saisonId !== null && w.saison_id === saisonId) : [];
   const stand = summe(wellen);
+  const rez = rezepteStand(d?.rezepte ?? [], saisonId);
   const saisonAnlaesse = d ? d.anlaesse.filter((a) => (saisonId ? a.saison_id === saisonId : true)) : [];
   const zahl = (n: number | undefined) => (d ? formatZahl(n ?? 0) : fehler ? "–" : "…");
   const zuteilung = d ? d.ok + d.offen + d.zukauf : 0;
@@ -53,6 +57,7 @@ export default function Leitstand() {
     { zahl: zahl(d?.offen), titel: "Komponenten ohne Systemzuteilung", text: "Ohne Zuteilung keine Haltbarkeit, keine Welle, kein Startdatum", href: "/systemzuteilung/", ziel: "Zuteilen", herleitung: "Komponenten mit Status offen" },
     { zahl: zahl(d?.hinweise), titel: "Prüfhinweise", text: "Plausibilitätsregeln rot oder gelb, sperren nichts", href: "/systemzuteilung/", ziel: "Prüfen", herleitung: "Alle Prüfhinweise der Systemzuteilung" },
     { zahl: d ? `${formatZahl(stand.erledigt)} / ${formatZahl(stand.aufgaben)}` : zahl(undefined), titel: "Aufgaben in der Checkliste erledigt", text: "Eine Aufgabe pro Komponente und Welle", href: "/produktion/", ziel: "Produktion", herleitung: "Checkliste der Saison des nächsten Anlasses" },
+    { zahl: d ? `${formatZahl(rez.freigegeben)} / ${formatZahl(rez.rezepte)}` : zahl(undefined), titel: "Rezepte der Saison freigegeben", text: "Werte aus nicht freigegebenen Rezepten sind gestrichelt wie Annahmen", href: "/rezepte/", ziel: "Rezepte", herleitung: "Rezepte der Komponenten im Bedarf der Saison des nächsten Anlasses" },
     { zahl: zahl(d?.zukauf), titel: "Komponenten im Zukauf", text: "CF-Stufe 4 oder 5, gehen in den Einkauf", href: "/einkauf/", ziel: "Einkauf", herleitung: "Komponenten mit Status Zukauf" },
   ];
 

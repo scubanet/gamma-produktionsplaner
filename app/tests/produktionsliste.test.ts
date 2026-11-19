@@ -188,16 +188,16 @@ describe("Sortierung per Spaltenkopf", () => {
 });
 
 describe("Konservierung und Rezept aus der Systemzuteilung", () => {
-  const leer = { id: "x", komponenteId: "k1", komponente: "Rindsragout", kategorie: "Fleisch", status: "ok", menge: 1, einheit: "kg", haltbarkeitTage: 180, wellen: 1, startAb: null, menuelinie: null, gericht: null, gang: null, herleitung: "", zustaendig: null, zustaendige: [], erledigtAm: null, wellenNr: [], wellenErledigt: 0, produktion: [], lagerung: null, rezeptSlug: null };
+  const leer = { id: "x", komponenteId: "k1", komponente: "Rindsragout", kategorie: "Fleisch", status: "ok", menge: 1, einheit: "kg", haltbarkeitTage: 180, wellen: 1, startAb: null, menuelinie: null, gericht: null, gang: null, herleitung: "", zustaendig: null, zustaendige: [], erledigtAm: null, wellenNr: [], wellenErledigt: 0, produktion: [], lagerung: null, rezeptSlug: null, rezeptStatus: null };
   it("übernimmt Produktionssystem, Lagerart und Slug; unbekannte Komponente bleibt leer", () => {
     const z = mitZuteilung(
       [leer, { ...leer, id: "y", komponenteId: "k2" }],
       [{ id: "k1", produktion: ["SF", "SV"], lager_0_2: false, lager_tk: true, lager_trocken: false, rezept_id: "r1" }],
-      new Map([["r1", "rindsragout"]]),
+      new Map([["r1", { slug: "rindsragout", status: "entwurf" }]]),
     );
-    expect(z[0]).toMatchObject({ produktion: ["SF", "SV"], lagerung: "TK", rezeptSlug: "rindsragout" });
+    expect(z[0]).toMatchObject({ produktion: ["SF", "SV"], lagerung: "TK", rezeptSlug: "rindsragout", rezeptStatus: "entwurf" });
     expect(konservierungText(z[0])).toBe("SF · SV · TK");
-    expect(z[1]).toMatchObject({ produktion: [], lagerung: null, rezeptSlug: null });
+    expect(z[1]).toMatchObject({ produktion: [], lagerung: null, rezeptSlug: null, rezeptStatus: null });
     expect(konservierungText(z[1])).toBeNull();
     expect(konservierungText({ produktion: ["SV", "TK"], lagerung: "TK" })).toBe("SV · TK");
   });

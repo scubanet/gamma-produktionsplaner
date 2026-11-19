@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { naechsterAnlass, summe, tageBis, wannText, wellenName, type LeitAnlass } from "../lib/leitstand";
+import { naechsterAnlass, rezepteStand, summe, tageBis, wannText, wellenName, type LeitAnlass } from "../lib/leitstand";
 
 const a = (id: string, datum: string | null, datum_bis: string | null = null): LeitAnlass => ({ id, name: id, datum, datum_bis, saison_id: "s" });
 const heute = new Date(2026, 10, 15, 9, 0);
@@ -37,5 +37,12 @@ describe("Leitstand", () => {
 
   it("summiert Aufgaben und Erledigte", () => {
     expect(summe([{ aufgaben: 172, erledigt: 0 }, { aufgaben: 77, erledigt: 5 }, { aufgaben: null, erledigt: null }])).toEqual({ aufgaben: 249, erledigt: 5 });
+  });
+
+  it("nimmt die Rezepte der Saison; ohne Saison oder ohne Zeile 0 von 0", () => {
+    const z = [{ saison_id: "s1", rezepte: 180, freigegeben: 10 }, { saison_id: "s2", rezepte: 4, freigegeben: 4 }];
+    expect(rezepteStand(z, "s1")).toEqual({ rezepte: 180, freigegeben: 10 });
+    expect(rezepteStand(z, "s3")).toEqual({ rezepte: 0, freigegeben: 0 });
+    expect(rezepteStand(z, null)).toEqual({ rezepte: 0, freigegeben: 0 });
   });
 });

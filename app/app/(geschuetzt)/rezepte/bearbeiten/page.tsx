@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Checkbox, Dialog, Notice, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { istGeaendert, useUngespeichert } from "@/lib/ungespeichert";
+import { RezeptStatus } from "@/components/rezepte/RezeptStatus";
 import type { Gruppe, Punkt, Rezept, ZutatRoh } from "@/lib/rezepte";
 import {
   basisOptionen, neueGruppe, neueZutat, neuerSchritt, ORTE, rezeptDaten, rezeptFormular,
@@ -44,7 +45,7 @@ async function laden(slug: string): Promise<{ rezept: Rezept | null; offen: Punk
     supabase.from("zutat").select("id, gruppe_id, bezeichnung, menge_g, annahme, notiz, ist_basis, reihenfolge").in("gruppe_id", ids),
     supabase.from("schritt").select("id, gruppe_id, text, reihenfolge, geraet_id, temperatur_c, aktiv_min, unbeaufsichtigt_min, haccp, annahme, ort, rolle, ruest_min, menge_pro_durchgang_g").in("gruppe_id", ids),
     supabase.from("offener_punkt").select("id, text").eq("rezept_id", r.data.id).eq("erledigt", false),
-    // Nur Admins dürfen löschen; die Datenbank prüft das beim Löschen nochmals.
+    // Nur Admins dürfen löschen und freigeben; die Datenbank prüft das nochmals.
     supabase.rpc("ist_admin"),
   ]);
   for (const x of [z, s, o, ad]) if (x.error) throw x.error;
@@ -172,7 +173,20 @@ function RezeptBearbeiten() {
 
       {fehler ? <Notice role="alert" title="Nicht gespeichert">{fehler}</Notice> : null}
 
-      <Card title="Rezept" meta={rezept ? `Status ${rezept.status}` : "wird als Entwurf angelegt"}>
+      <Card
+        title="Rezept"
+        meta={rezept ? "Der Status bleibt beim Speichern, wie er ist" : "wird als Entwurf angelegt"}
+        actions={
+          rezept ? (
+            <RezeptStatus
+              rezept={rezept}
+              admin={admin}
+              // Der neue Stand gilt auch für das nächste Speichern; das Formular bleibt, wie es ist.
+              onGesetzt={(status, geaendert_am) => setGeladen({ ...stand, rezept: { ...rezept, status, geaendert_am } })}
+            />
+          ) : undefined
+        }
+      >
         <div className="pl-stack">
           <div className="pl-grid-2">
             <TextField id="rezept-name" label="Name" required value={f.name} onChange={(e) => set({ name: wert(e) })} hint={rezept ? "Die Adresse des Rezepts (Link) bleibt gleich" : undefined} />

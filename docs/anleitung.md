@@ -1,6 +1,6 @@
 # Anleitung Produktionsplaner
 
-Stand: 15.11.2026. Kurze Bedienungsanleitung pro Modul.
+Stand: 19.11.2026. Kurze Bedienungsanleitung pro Modul.
 
 ## Navigation
 
@@ -51,7 +51,7 @@ E-Mail-Adresse eingeben. In der E-Mail den Link öffnen und auf «Jetzt anmelden
 Zeigt, was ansteht. Jede Zeile führt mit einem Klick zur richtigen Seite.
 
 - **Nächster Anlass** oben rechts, mit den Tagen bis zum Beginn.
-- **Zu erledigen:** Komponenten ohne Systemzuteilung, Prüfhinweise, Stand der Checkliste (erledigt / alle Aufgaben), Komponenten im Zukauf.
+- **Zu erledigen:** Komponenten ohne Systemzuteilung, Prüfhinweise, Stand der Checkliste (erledigt / alle Aufgaben), freigegebene Rezepte der Saison (freigegeben / alle Rezepte der Komponenten im Bedarf), Komponenten im Zukauf.
 - **Produktionswellen:** Fortschritt pro Welle der Saison des nächsten Anlasses. «Ohne Welle» sind Komponenten im Zukauf, ohne Zuteilung oder nur vor Ort.
 - **Anlässe der Saison** mit Datum; ein Klick öffnet den Anlass.
 - **Zuteilung der Komponenten:** Anteile ok, offen, Zukauf.
@@ -91,12 +91,14 @@ Ersetzt das Blatt «Spengler Cup» der Excel.
 - Export als Excel (exportiert, was gerade angezeigt wird, also auch ein Suchergebnis), Drucken als PDF.
 - **Erledigt:** Hat eine Komponente eine Welle oder keine (Zukauf, nur vor Ort), wird hier abgehakt. Bei mehreren Wellen steht der Stand («2 von 3 Wellen»); abgehakt wird dann im Wellenplan.
 - **Zuständig** gilt hier für alle Wellen der Komponente.
+- Steht neben dem Namen «Rezept Entwurf» oder «Rezept Geprüft», ist das verknüpfte Rezept noch nicht freigegeben.
 
 **Aufwand aus Rezepten** (Reiter «Aufwand aus Rezepten»)
 
 - Rechnet aus den verknüpften Rezepten: pro Welle die Durchgänge, die aktive Zeit, die Stunden pro Rolle und die Belegung der Geräte; pro Spiel die Gebinde, Gewicht und Volumen, die Zeit vor Ort und die Ausgabe.
 - Der Status jeder Zeile sagt, was fehlt: kein Rezept, Menge fehlt, Füllmenge fehlt. Summen gelten nur für die gerechneten Komponenten.
 - Gestrichelte Mengen sind Liter, als Kilogramm gerechnet (Annahme).
+- Gestrichelte Zeiten, Durchgänge und Gebinde stammen aus einem Rezept, das noch nicht freigegeben ist. Summen mit solchen Werten sind ebenfalls gestrichelt und nennen die Anzahl («davon 3 aus nicht freigegebenem Rezept»). Die Tabellen «Stunden pro Rolle» und «Belegung der Geräte» zeigen sie in der Spalte «nicht freigegeben».
 
 **Produktionswellen** (Reiter «Wellen»)
 
@@ -136,7 +138,8 @@ Die Gerichte der Winter Collection mit ihren Komponenten.
 
 ## Rezepte
 
-- **Liste links:** Gerichte und Komponenten, mit Suchfeld nach Name oder Kategorie. «+ Rezept» legt ein neues an.
+- **Liste links:** Gerichte und Komponenten, mit Suchfeld nach Name oder Kategorie und Filter nach Status. «+ Rezept» legt ein neues an.
+- **Status und Freigabe:** Jedes Rezept ist Entwurf, Geprüft oder Freigegeben. Der Status steht auf der Rezeptkarte und auf der Pflegeseite, daneben die Knöpfe. «Geprüft» darf jede angemeldete Person setzen, wenn Mengen, Zeiten und Rollen in der Küche geprüft sind. «Freigeben» und eine Freigabe zurücknehmen («Zurück auf Entwurf») dürfen nur Administratoren. Beim Speichern bleibt der Status, wie er ist. Solange ein Rezept nicht freigegeben ist, sind seine Werte im Aufwand gestrichelt wie Annahmen.
 - **Rezeptkarte:** Zutaten und Zubereitung, Zeiten, Geräte, «Besonders zu beachten», offene Punkte.
 - **Skalieren:** oben eine Voreinstellung wählen oder eine eigene Zahl eingeben. Ein Gericht skaliert nach Portionen, eine Komponente nach Chargen. Zeiten werden nicht skaliert.
 - **Bearbeiten** öffnet die Pflegeseite:

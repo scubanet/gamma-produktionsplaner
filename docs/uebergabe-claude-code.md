@@ -8,7 +8,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | --- | --- | --- |
 | Konzept | Dokument «Plattform, Datenbank und Einbau der GAMMA-Excel» (Link im README), `docs/Loesungsvorschlag_Produktionsplanung_GAMMA.pdf` | freigegeben für den Pilot |
 | Datenbank | Supabase «Gamma» (`oqmtocxemtcsvtzmswwx`, Zürich), `supabase/migrations/` | 26 Migrationen (26 noch einzuspielen), siehe `docs/supabase.md` |
-| App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 146 Tests, Auslieferung über GitHub Actions |
+| App | `app/` (Next.js, statischer Export), Ziel `gamma.atoll-os.com` | alle Screens gebaut, 161 Tests, Auslieferung über GitHub Actions |
 | Design System | `design-system/` (Tokens, Komponenten, Brand Book), Version 0.14 (Look nach gammacatering.com, Navigation oben, Detailspalte, Küchenpass) | verbindlich für jede UI, Änderungen in `CHANGELOG.md` |
 | UI/UX | `docs/plan-ui-ux-look-d.md` | Plan vom 15.11.2026: elf Aufgaben aus der UI/UX-Prüfung, Struktur der Variante D; Aufgaben 1 bis 9 und 11 gebaut, 10 zurückgestellt |
 | Mockups | `mockups/*.dc.html` | Vorlage, die App ist massgebend |
@@ -27,7 +27,7 @@ Stand: 14.11.2026. Die acht Aufgaben der ersten Übergabe sind gebaut; dazu Chec
 | `/produktion/wellen` | Wellen-Vorschlag, übernehmen, Datum ändern, Prüfhinweise; Erledigt und Zuständig pro Komponente und Welle | 7 |
 | `/systemzuteilung` | Komponenten mit Status und Prüfhinweisen, Zuteilung bearbeiten | 3 |
 | `/katalog` | Gerichte mit Komponenten, Verknüpfung zu Rezepten | 4 |
-| `/rezepte`, `/rezepte/bearbeiten` | Rezeptkarte mit Skalierung nach Portionen oder Chargen; Pflegeseite für Kopf, Gruppen, Zutaten, Schritte und offene Punkte (ändern, hinzufügen, löschen), neues Rezept anlegen, Rezept löschen (nur Admin) | 4 |
+| `/rezepte`, `/rezepte/bearbeiten` | Rezeptkarte mit Skalierung nach Portionen oder Chargen; Pflegeseite für Kopf, Gruppen, Zutaten, Schritte und offene Punkte (ändern, hinzufügen, löschen), neues Rezept anlegen, Rezept löschen (nur Admin); Status Entwurf, Geprüft, Freigegeben mit Filter in der Liste, freigeben nur Admin | 4 |
 | `/offerten`, `/offerten/bearbeiten`, `/offerten/druck` | Offerte mit Preis pro Gast, Deckungsbeitrag, Druckansicht | 5 |
 | `/anlaesse`, `/anlaesse/bearbeiten`, `/anlaesse/karte` | Anlass mit Services, Menülinien, Getränke- und Barkarten | 6 |
 | `/einkauf`, `/einkauf/lieferanten`, `/einkauf/zuordnen` | Einkaufsliste nach Lieferant und Artikel mit Bestellschluss, Lieferanten pflegen, Hauptartikel mit Vorschlägen zuordnen | 7 |
@@ -141,4 +141,12 @@ Ohne diese Werte zeigt die App Platzhalter statt Zahlen:
 
 ## Nachtrag 19.11.2026: Plan Datenkette
 
-Kritische Durchsicht von Repo und Datenbank: `docs/plan-datenkette.md`. Zwölf Aufgaben und die Datenerfassung durch Dominik; Ziel ist der Durchstich von Spiel 1 mit echten Zahlen. Noch nichts gebaut. Die Etiketten folgen danach.
+Kritische Durchsicht von Repo und Datenbank: `docs/plan-datenkette.md`. Zwölf Aufgaben und die Datenerfassung durch Dominik; Ziel ist der Durchstich von Spiel 1 mit echten Zahlen. Die Etiketten folgen danach.
+
+**Aufgabe 1 gebaut (Migration 32, `rezept_freigabe`), committet, noch nicht ausgeliefert:**
+
+- Status eines Rezepts setzen: Funktion `rezept_status_setzen`, Knöpfe «Geprüft», «Freigeben», «Zurück auf Entwurf» auf Rezeptkarte und Pflegeseite (`app/components/rezepte/RezeptStatus.tsx`), Filter nach Status in der Rezeptliste.
+- Entscheide Dominik: «Geprüft» dürfen alle Angemeldeten setzen; freigeben und eine Freigabe zurücknehmen nur Admins (Trigger `rezept_status_pruefen`, gilt auch für direkte Änderungen über die API). Ein freigegebenes Rezept bleibt beim Speichern freigegeben.
+- Aufwand: Werte und Summen aus nicht freigegebenen Rezepten sind gestrichelt wie Annahmen. Produktionsliste: der Rezept-Link trägt «Rezept Entwurf» oder «Rezept Geprüft». Leitstand: «x / y Rezepte der Saison freigegeben» (View `leitstand_rezepte`). Der Küchenpass zeigt keine Werte aus Rezepten und ist unverändert.
+- **Reihenfolge beim Ausliefern:** zuerst `supabase db push --remote` (Migration 32), dann `cd app && npm run types` (die Typen sind von Hand nachgeführt und sollen gleich herauskommen), erst dann `git push`. Ohne die Migration lädt der Leitstand nicht (View `leitstand_rezepte` fehlt) und die Knöpfe zum Status melden einen Fehler.
+- Nicht geprüft: Die Migration lief in keiner Datenbank (lokal kein Postgres-Server, Docker nicht gestartet). Vor dem Einspielen `supabase db push --remote --dry-run`. Nach dem Einspielen prüfen: als Nicht-Admin lehnt «Freigeben» ab; Kontrollwerte im Aufwand unverändert.
