@@ -7,3 +7,4 @@ Detail der gewählten Zeile rechts neben einer Liste (Layout `pl-split`: `pl-spl
 - `actions` kleben unten an der Spalte, damit Speichern bei langen Formularen sichtbar bleibt.
 - Die gewählte Zeile in der Tabelle markiert `DataTable` über `isSelected` (Fläche `surface-sunken`, Strich in `accent`).
 - Wird nicht gedruckt.
+- Wechselt die Zeile, blendet der Inhalt kurz über (`motion-base`), ohne das Formular neu aufzubauen. Massgebend ist `itemKey`, sonst der Titel, wenn er Text ist.

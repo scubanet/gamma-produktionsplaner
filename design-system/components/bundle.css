@@ -293,6 +293,25 @@
   .pl-tabs { padding: 0 var(--space-4); flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; }
 }
 
+/* Bewegung: kurze Übergänge für Zustände, Einblenden für Dialog und Detailspalte. Dauern nur aus den Tokens. */
+.pl-btn, .pl-brand, .pl-top__item, .pl-top__toggle, .pl-tabs__item, .pl-nav__item, .pl-items__item, .pl-todo, .pl-list-row, .pl-seg__opt, .pl-field__input, .pl-table tbody td, .pl-table__sort, .pl-panel__close {
+  transition: color var(--motion-fast) var(--ease-standard), background-color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard), filter var(--motion-fast) var(--ease-standard);
+}
+.pl-btn:active:not([disabled]) { filter: brightness(0.9); }
+.pl-dialog[open] { opacity: 1; transform: none; transition: opacity var(--motion-base) var(--ease-standard), transform var(--motion-base) var(--ease-standard); }
+.pl-dialog[open]::backdrop { transition: background-color var(--motion-base) var(--ease-standard); }
+@starting-style {
+  .pl-dialog[open] { opacity: 0; transform: translateY(8px); }
+  .pl-dialog[open]::backdrop { background-color: transparent; }
+}
+@keyframes pl-einblenden-a { from { opacity: 0; } }
+@keyframes pl-einblenden-b { from { opacity: 0; } }
+@keyframes pl-wachsen { from { transform: scaleX(0); } }
+.pl-panel > .pl-panel__head, .pl-panel > .pl-panel__body { animation: pl-einblenden-a var(--motion-base) var(--ease-standard); }
+.pl-panel--b > .pl-panel__head, .pl-panel--b > .pl-panel__body { animation: pl-einblenden-b var(--motion-base) var(--ease-standard); }
+.pl-progress__bar, .pl-anteil__teil { transform-origin: left; animation: pl-wachsen var(--motion-base) var(--ease-standard); }
+@media (prefers-reduced-motion: reduce) { :root { --motion-fast: 0ms; --motion-base: 0ms; } }
+
 @media print {
   .pl-nav, .pl-top, .pl-tabs, .pl-print-hide { display: none !important; }
   .pl-app { display: block; background: var(--surface); }

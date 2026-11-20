@@ -15,7 +15,7 @@ export function tokensCss(t) {
   const rest = [
     `  --font-sans: ${t.type.families.sans};`,
     `  --font-mono: ${t.type.families.mono};`,
-    ...['spacing', 'radius', 'shadow', 'size'].flatMap((g) => t[g].tokens.map((x) => `  --${x.name}: ${x.value};`)),
+    ...['spacing', 'radius', 'shadow', 'motion', 'size'].flatMap((g) => t[g].tokens.map((x) => `  --${x.name}: ${x.value};`)),
   ];
   return [
     '/* Generiert aus design-system/tokens.json durch scripts/tokens.mjs. Nicht von Hand ändern. */',

@@ -55,6 +55,10 @@ Inter Tight für alles Lesbare, IBM Plex Mono für Zahlen (tabellarische Ziffern
 - Zum Abhaken am Posten (Küchenpass) dienen Zeilen `pl-pass`: ganze Zeile klickbar, Häkchen 32 px.
 - Alles bricht um: Navigation stapelt sich über dem Inhalt, Kartenreihen werden einspaltig, Tabellen und Zeitpläne scrollen in ihrem Container.
 
+## Bewegung
+
+Bewegung zeigt einen Zustand, sie schmückt nicht. Zwei Dauern: `motion-fast` (120 ms) für Hover, Fokus und Auswahl, `motion-base` (200 ms) für das Einblenden von Dialog und Detailspalte und das Wachsen von Fortschrittsbalken; Verlauf `ease-standard`. Keine festen Millisekunden in Screens. Bei `prefers-reduced-motion: reduce` sind beide Dauern 0.
+
 ## Ikonografie
 
 Linien-Icons, 18 px, Strichstärke 1.8, `currentColor`, abgerundete Enden. Keine Emoji. Icons stehen nur neben Text (Navigation, Buttons); reine Icon-Buttons brauchen ein `aria-label`.

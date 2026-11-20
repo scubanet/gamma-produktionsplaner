@@ -27,7 +27,7 @@ export interface NavLink { label: string; href: string; current?: boolean; }
 export interface BrandProps { size?: 'sm' | 'lg'; src?: string; href?: string; company?: string; product?: string | null; }
 export interface TopNavProps { company?: string; brandSrc?: string; items: NavLink[]; actions?: ReactNode; }
 export interface TabsProps { label: string; items: NavLink[]; tone?: 'default' | 'sunken'; }
-export interface DetailPanelProps { title: ReactNode; meta?: ReactNode; label?: string; actions?: ReactNode; onClose?: () => void; children?: ReactNode; }
+export interface DetailPanelProps { title: ReactNode; itemKey?: string; meta?: ReactNode; label?: string; actions?: ReactNode; onClose?: () => void; children?: ReactNode; }
 export interface NoticeProps { title?: ReactNode; role?: 'alert' | 'status'; items?: ReactNode[]; children?: ReactNode; }
 
 export declare const Button: (p: ButtonProps) => JSX.Element;

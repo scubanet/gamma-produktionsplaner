@@ -78,14 +78,14 @@ Für Kopfzeile und Favicon reicht das, für die App-Icons (192 und 512 px) nicht
 
 **Dateien:** `design-system/tokens.json`, `design-system/components/bundle.css`, `DetailPanel`, `Dialog`.
 
-- [ ] Tokens: `motion-fast` 120 ms, `motion-base` 200 ms, `ease-standard` `cubic-bezier(0.2, 0, 0, 1)`.
-- [ ] Übergänge auf Farbe, Hintergrund, Rahmen und Schatten für: `pl-btn`, `pl-top__item`, `pl-tabs__item`, `pl-nav__item`, `pl-items__item`, `pl-todo`, `pl-list-row`, `pl-seg__opt`, `pl-field__input`, Tabellenzeilen, `pl-table__sort`.
-- [ ] Knopf gedrückt: kurzer Zustand `:active` (dunkler, kein Springen).
-- [ ] `Dialog`: einblenden mit Deckkraft und 8 px Versatz, Hintergrund blendet mit (`@starting-style`, mit Rückfall ohne Bewegung).
-- [ ] `DetailPanel`: Inhalt blendet beim Wechsel der Zeile kurz über, statt hart zu tauschen.
-- [ ] `pl-progress__bar` und `pl-anteil__teil`: Breite wächst beim ersten Anzeigen.
-- [ ] `@media (prefers-reduced-motion: reduce)`: alle Dauern auf 0.
-- [ ] Commit `Bewegung: Tokens und Übergänge im Design System`
+- [x] Tokens: `motion-fast` 120 ms, `motion-base` 200 ms, `ease-standard` `cubic-bezier(0.2, 0, 0, 1)`.
+- [x] Übergänge auf Farbe, Hintergrund, Rahmen und Schatten für: `pl-btn`, `pl-top__item`, `pl-tabs__item`, `pl-nav__item`, `pl-items__item`, `pl-todo`, `pl-list-row`, `pl-seg__opt`, `pl-field__input`, Tabellenzeilen, `pl-table__sort`.
+- [x] Knopf gedrückt: kurzer Zustand `:active` (dunkler, kein Springen).
+- [x] `Dialog`: einblenden mit Deckkraft und 8 px Versatz, Hintergrund blendet mit (`@starting-style`, mit Rückfall ohne Bewegung).
+- [x] `DetailPanel`: Inhalt blendet beim Wechsel der Zeile kurz über, statt hart zu tauschen.
+- [x] `pl-progress__bar` und `pl-anteil__teil`: Breite wächst beim ersten Anzeigen.
+- [x] `@media (prefers-reduced-motion: reduce)`: alle Dauern auf 0.
+- [x] Commit `Bewegung: Tokens und Übergänge im Design System`
 
 ### Aufgabe 4: Ladezustände
 

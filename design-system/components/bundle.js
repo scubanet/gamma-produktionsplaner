@@ -117,7 +117,12 @@
   }
 
   function DetailPanel(p) {
-    return h('section', { className: 'pl-panel', 'aria-label': p.label || 'Detail' },
+    // Wechselt die Zeile (itemKey, sonst der Titel als Text), blendet der Inhalt kurz über. Zwei gleiche Animationen im Wechsel,
+    // damit sie neu startet, ohne den Inhalt neu aufzubauen (Eingaben im Formular bleiben).
+    var k = p.itemKey != null ? p.itemKey : (typeof p.title === 'string' ? p.title : '');
+    var z = React.useRef({ k: k, n: 0 });
+    if (z.current.k !== k) z.current = { k: k, n: z.current.n + 1 };
+    return h('section', { className: cx('pl-panel', z.current.n % 2 === 1 && 'pl-panel--b'), 'aria-label': p.label || 'Detail' },
       h('div', { className: 'pl-panel__head' },
         h('div', null,
           p.meta ? h('div', { className: 'pl-crumb' }, p.meta) : null,
