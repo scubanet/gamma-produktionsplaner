@@ -67,7 +67,7 @@ Linien-Icons, 18 px, Strichstärke 1.8, `currentColor`, abgerundete Enden. Keine
 
 ## Logo
 
-Die Marke steht als Komponente Brand in der Kopfzeile und auf der Anmeldeseite. Die Bildmarke ist eine einzige Datei, `assets/bildmarke.svg`; daraus erzeugt `app/scripts/icons.mjs` Favicon und App-Icons. Noch liegt dort ein Platzhalter (bordeauxrotes Quadrat in `accent`), bis GAMMA die Bildmarke («G» im Kreisring) als Vektordatei liefert. Das Logo wird nicht verändert: nur Schwarz oder Weiss oder nach Vorgabe von GAMMA, Schutzraum einhalten.
+Die Marke steht als Komponente Brand in der Kopfzeile und auf der Anmeldeseite. Die Bildmarke ist eine einzige Datei, `assets/bildmarke.svg`; daraus erzeugt `app/scripts/icons.mjs` Favicon und App-Icons. Noch liegt dort ein Platzhalter (bordeauxrotes Quadrat in `accent`), bis GAMMA die Bildmarke («G» im Kreisring) als Vektordatei liefert. Kopfzeile und Anmeldung zeigen bis dahin das Rasterbild der Website (`assets/bildmarke-web.png`, 74 px); Favicon und App-Icons bleiben beim Platzhalter. Das Logo wird nicht verändert: nur Schwarz oder Weiss oder nach Vorgabe von GAMMA, Schutzraum einhalten.
 
 ## Komponenten
 

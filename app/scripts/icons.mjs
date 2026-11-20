@@ -37,6 +37,8 @@ function ico(bilder) {
 
 const klar = { r: 0, g: 0, b: 0, alpha: 0 };
 copyFileSync(quelle, pfad('../public/brand/bildmarke.svg'));
+// Bildmarke von der GAMMA-Website (74 px, einfarbig dunkel): reicht für Kopfzeile und Anmeldung, nicht für die App-Icons.
+copyFileSync(pfad('../../design-system/assets/bildmarke-web.png'), pfad('../public/brand/bildmarke-web.png'));
 copyFileSync(quelle, pfad('../app/icon.svg'));
 writeFileSync(pfad('../app/favicon.ico'), ico([{ groesse: 32, png: await icon(32, 1, klar) }, { groesse: 48, png: await icon(48, 1, klar) }]));
 writeFileSync(pfad('../app/apple-icon.png'), await icon(180, 0.64, grund));

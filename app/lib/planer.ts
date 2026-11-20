@@ -13,5 +13,9 @@ export const Notice = (p: PlanerTypen.NoticeProps) =>
 
 export type { SideNavItem, DataTableColumn, ItemListItem, NavLink } from "../../design-system/components/index";
 
-/** Bildmarke in der App: Kopie von design-system/assets/bildmarke.svg, erzeugt durch scripts/icons.mjs. */
-export const BILDMARKE = "/brand/bildmarke.svg";
+/**
+ * Bildmarke in der App: Kopie aus design-system/assets/, erzeugt durch scripts/icons.mjs. Bis GAMMA die Vektordatei liefert,
+ * das Rasterbild der Website (einfarbig, darum mono). Danach hier auf "/brand/bildmarke.svg" stellen und mono weglassen.
+ */
+export const BILDMARKE = "/brand/bildmarke-web.png";
+export const BILDMARKE_MONO = true;

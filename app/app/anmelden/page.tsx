@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { BILDMARKE, Brand, Button, Card, Notice, TextField } from "@/lib/planer";
+import { BILDMARKE, BILDMARKE_MONO, Brand, Button, Card, Notice, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { ANMELDEN, sichererPfad } from "@/lib/navigation";
 import { ABGELAUFEN, ankunft, fehlertext, nurZiffern } from "@/lib/anmeldung";
@@ -154,7 +154,7 @@ export default function Anmelden() {
     <div className="pl-app pl-auth">
       <main className="pl-auth__main">
         <div className="pl-auth__kopf">
-          <Brand size="lg" src={BILDMARKE} product={null} />
+          <Brand size="lg" src={BILDMARKE} mono={BILDMARKE_MONO} product={null} />
           <h1 className="pl-auth__titel">Produktionsplaner</h1>
         </div>
         <Suspense>

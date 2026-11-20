@@ -273,6 +273,8 @@
 /* Brand: Bildmarke, Wortmarke und Produktname. Klein in der TopNav, gross und gestapelt auf der Anmeldeseite. */
 .pl-brand { display: inline-flex; align-items: center; gap: 10px; min-height: var(--control-height); color: var(--ink); text-decoration: none; }
 .pl-brand__mark { flex: none; display: block; width: 28px; height: 28px; }
+/* Einfarbig dunkle Bildmarke (Rasterbild): im Dunkel-Thema hell, wie GAMMA sie auf Schwarz zeigt. */
+@media screen and (prefers-color-scheme: dark) { .pl-brand__mark--mono { filter: invert(1); } }
 .pl-brand__mark--platzhalter { border-radius: var(--radius-sm); background: var(--accent); }
 .pl-brand__text { display: flex; flex-direction: column; line-height: 1.2; }
 .pl-brand__name { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }

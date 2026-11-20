@@ -74,6 +74,8 @@ Für Kopfzeile und Favicon reicht das, für die App-Icons (192 und 512 px) nicht
 - [x] Mailvorlage `supabase/templates/anmeldelink.html` im gleichen Auftritt (Marke oben, Knopf in `accent`). Hinweis in `docs/supabase.md`: Vorlage muss danach von Hand im Dashboard eingetragen werden.
 - [x] Commit `Marke als Komponente, App-Icons und Favicon`
 
+Stand 20.11.2026: Kopfzeile und Anmeldung zeigen die Bildmarke von gammagruppe.ch (`GAMMA_nav@2x.png`, auf 74 × 74 px zugeschnitten, nur der leere Rand rechts entfernt; im Dunkel-Thema hell). Favicon, Apple-Icon, App-Icons und das Bild in der Mailvorlage bleiben beim Platzhalter, bis die Vektordatei da ist.
+
 ### Aufgabe 3: Bewegung
 
 **Dateien:** `design-system/tokens.json`, `design-system/components/bundle.css`, `DetailPanel`, `Dialog`.

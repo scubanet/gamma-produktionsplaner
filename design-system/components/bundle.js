@@ -297,7 +297,7 @@
   function Brand(p) {
     var gross = p.size === 'lg';
     var inhalt = [
-      p.src ? h('img', { key: 'm', className: 'pl-brand__mark', src: p.src, alt: '', width: gross ? 56 : 28, height: gross ? 56 : 28 })
+      p.src ? h('img', { key: 'm', className: cx('pl-brand__mark', p.mono && 'pl-brand__mark--mono'), src: p.src, alt: '', width: gross ? 56 : 28, height: gross ? 56 : 28 })
         : h('span', { key: 'm', className: 'pl-brand__mark pl-brand__mark--platzhalter', 'aria-hidden': 'true' }),
       h('span', { key: 't', className: 'pl-brand__text' },
         h('span', { className: 'pl-brand__name' }, p.company || 'GAMMA Catering'),
@@ -310,7 +310,7 @@
   function TopNav(p) {
     var st = React.useState(false), offen = st[0], setOffen = st[1];
     return h('header', { className: 'pl-top' },
-      h(Brand, { href: '/', src: p.brandSrc, company: p.company }),
+      h(Brand, { href: '/', src: p.brandSrc, mono: p.brandMono, company: p.company }),
       h('button', { type: 'button', className: 'pl-top__toggle', 'aria-expanded': offen, 'aria-controls': 'pl-top-menu', onClick: function () { setOffen(!offen); } }, 'Menü'),
       h('nav', { id: 'pl-top-menu', className: cx('pl-top__nav', offen && 'pl-top__nav--offen'), 'aria-label': 'Hauptnavigation' },
         p.items.map(function (it) {
