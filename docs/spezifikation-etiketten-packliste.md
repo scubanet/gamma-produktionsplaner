@@ -24,6 +24,8 @@ Stand: 20.11.2026, Fassung 2 (nach interner Durchsicht gegen das Datenmodell erg
 | 20.11.2026 | Beim Packen wird jeder Beutel in die Kiste gescannt. |
 | 20.11.2026 | MHD rechnet ab Produktionsdatum. |
 | 20.11.2026 | Ware bleibt über den Wechsel der Kollektion im Lager. Es gibt darum einen eigenen Stammsatz «Produkt». |
+| 20.11.2026 | Beutelzahl: pro Spiel aufrunden, alle Beutel gleich gross; die Mehrmenge steht in der Herleitung. |
+| 20.11.2026 | Allergene: nur drucken, wenn das Rezept vollständig mit Artikeln verknüpft ist; sonst «siehe Rezept». |
 | 20.11.2026 | Die neue Stufe «Küche» darf Etiketten drucken und Lager und Kisten scannen (eigene Arbeit, siehe «Rechte»). |
 
 ## Umfang
@@ -69,7 +71,7 @@ Nicht im Umfang:
 
 ## Stückzahlen
 
-- Beutel werden ganz einem Spiel zugeteilt. Deckt eine Welle mehrere Spiele, rechnet der Vorschlag darum pro Spiel und summiert: Beutel = Summe über die Spiele der Welle von (Bedarf des Spiels ÷ Füllmenge pro Beutel, aufgerundet). Das sind bis zu (Spiele − 1) Beutel mehr als Wellenmenge ÷ Füllmenge. Die Herleitung nennt die Spiele einzeln («Spiel 1: 3.33 kg ÷ 2 kg = 2 Beutel + …»). Siehe offene Punkte.
+- Beutel werden ganz einem Spiel zugeteilt. Deckt eine Welle mehrere Spiele, rechnet der Vorschlag darum pro Spiel und summiert: Beutel = Summe über die Spiele der Welle von (Bedarf des Spiels ÷ Füllmenge pro Beutel, aufgerundet). Das sind bis zu (Spiele − 1) Beutel mehr als Wellenmenge ÷ Füllmenge. Die Herleitung nennt die Spiele einzeln («Spiel 1: 3.33 kg ÷ 2 kg = 2 Beutel + …»).
 - Einheiten: Bedarf in kg ÷ Füllmenge in Gramm. Bedarf in Liter: 1 l = 1 kg, als Annahme gekennzeichnet (wie heute in der Planung). Bedarf in Stück: kein Vorschlag, Anzahl Beutel und Stück pro Beutel von Hand.
 - Neu nötig: Feld `rezept.beutel_g` (Füllmenge pro Beutel in Gramm), zu pflegen in der Karte «Planung: Gebinde und Service». Fehlt der Wert, schlägt die App nichts vor und verlangt Anzahl und Menge pro Beutel von Hand.
 - Kisten werden nicht mehr vorgeschlagen. Sie entstehen beim Packen. Die Packliste zeigt als Anhalt «rund n Kisten» aus `rezept.fuellmenge_g`.
@@ -258,8 +260,8 @@ Die Stufe «Küche» läuft unabhängig davon und sollte vor Etappe 4 stehen.
 Vor Etappe 1:
 
 1. ~~Produkt über Kollektionen hinweg~~ Entschieden am 20.11.2026: Ware bleibt im Lager, eigener Stammsatz «Produkt».
-2. **Beutel pro Spiel:** Der Vorschlag rundet pro Spiel auf und produziert damit bis zu einem Beutel pro Spiel mehr. Ist das recht, oder sollen Restbeutel mit kleinerer Menge abgefüllt werden?
-3. **Allergene:** Sie liegen heute am Artikel. Verlässlich sind sie nur, wenn alle Zutaten des Rezepts einem Artikel zugeordnet sind (heute 480 von 1099). Vorschlag: sonst «Allergene: siehe Rezept» drucken, nie eine unvollständige Liste.
+2. ~~Beutel pro Spiel~~ Entschieden am 20.11.2026: pro Spiel aufrunden.
+3. ~~Allergene~~ Entschieden am 20.11.2026: «siehe Rezept», solange das Rezept nicht vollständig verknüpft ist.
 
 Vor Etappe 3:
 
