@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Button, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn, Skeleton, EmptyState } from "@/lib/planer";
+import { Button, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { alleSeiten } from "@/lib/seiten";
 import { useSchmal } from "@/lib/schmal";
 import { formatZahl } from "@/lib/format";
 import {
-  filtern, haltbarkeitText, hinweiseNachKomponente, lagerungText, leerAnzeige, sortieren,
+  filterAusAdresse, filtern, haltbarkeitText, hinweiseNachKomponente, lagerungText, leerAnzeige, sortieren,
   type Filter, type Hinweis, type Regeneration, type System, type Zuteilung,
 } from "@/lib/systemzuteilung";
 import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
@@ -37,10 +38,23 @@ async function laden(): Promise<Daten> {
   };
 }
 
+/** Komponenten in der Produktionsliste der jüngsten Saison, für den Filter «im Bedarf». */
+async function bedarfLaden(): Promise<{ saison: string; ids: Set<string> } | null> {
+  const s = await supabase.from("saison").select("id, name").order("name", { ascending: false }).limit(1).maybeSingle();
+  if (s.error) throw s.error;
+  if (!s.data) return null;
+  const saisonId = s.data.id;
+  const p = await alleSeiten<{ komponente_id: string | null }>((von, bis) => supabase.from("produktionsliste").select("komponente_id").eq("saison_id", saisonId).order("komponente_id").range(von, bis));
+  return { saison: s.data.name, ids: new Set(p.flatMap((x) => (x.komponente_id ? [x.komponente_id] : []))) };
+}
+
 export default function Systemzuteilung() {
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
-  const [filter, setFilter] = useState<Filter>({ kategorie: "", status: "", hinweis: "", suche: "" });
+  // Der Leitstand verlinkt mit Filter in der Adresse (?status=offen, ?hinweis=mit, ?bedarf=1).
+  const [filter, setFilter] = useState<Filter>(() => ({ kategorie: "", status: "", hinweis: "", suche: "", ...(typeof window === "undefined" ? {} : filterAusAdresse(window.location.search)) }));
+  // Komponenten im Bedarf der jüngsten Saison (Produktionsliste); null = nicht geladen, dann filtert «im Bedarf» nicht.
+  const [imBedarf, setImBedarf] = useState<{ saison: string; ids: Set<string> } | null>(null);
   const [bearbeiten, setBearbeiten] = useState<Zuteilung | null>(null);
   const [meldung, setMeldung] = useState("");
   const schmal = useSchmal();
@@ -49,11 +63,12 @@ export default function Systemzuteilung() {
   const neuLaden = () => laden().then(setDaten, (e: Error) => setFehler(fehlerText(e)));
   useEffect(() => {
     neuLaden();
+    bedarfLaden().then(setImBedarf, () => undefined);
   }, []);
 
   const hinweise = useMemo(() => hinweiseNachKomponente(daten?.hinweise ?? []), [daten]);
   const alle = useMemo(() => (daten ? sortieren(daten.zeilen, daten.kategorien) : []), [daten]);
-  const zeilen = useMemo(() => filtern(alle, hinweise, filter), [alle, hinweise, filter]);
+  const zeilen = useMemo(() => filtern(alle, hinweise, filter, imBedarf?.ids), [alle, hinweise, filter, imBedarf]);
   const anzahl = (pred: (z: Zuteilung) => boolean) => (daten ? formatZahl(alle.filter(pred).length) : fehler ? "–" : <Skeleton variant="zahl" />);
   const hinweisAnzahl = (farbe: string) => (daten ? daten.hinweise.filter((h) => h.farbe === farbe).length : 0);
   const set = (teil: Partial<Filter>) => setFilter((f) => ({ ...f, ...teil }));
@@ -159,6 +174,7 @@ export default function Systemzuteilung() {
           onChange={(v) => set({ hinweis: v as Filter["hinweis"] })}
           options={[
             { value: "", label: "Alle Komponenten" },
+            { value: "mit", label: "mit Hinweis (rot oder gelb)" },
             { value: "rot", label: "mit rotem Hinweis" },
             { value: "gelb", label: "mit gelbem Hinweis" },
             { value: "ohne", label: "ohne Hinweis" },
@@ -174,6 +190,14 @@ export default function Systemzuteilung() {
           options={[{ value: "", label: "Alle" }, { value: "ok", label: "ok" }, { value: "offen", label: "offen" }, { value: "Zukauf", label: "Zukauf" }]}
         />
       </div>
+
+      {imBedarf ? (
+        <Checkbox
+          label={`nur Komponenten im Bedarf der Saison ${imBedarf.saison} (${formatZahl(imBedarf.ids.size)})`}
+          checked={!!filter.bedarf}
+          onChange={(e) => set({ bedarf: (e as { target: HTMLInputElement }).target.checked })}
+        />
+      ) : null}
 
       <p className="pl-small" role="status" tabIndex={-1} ref={meldungRef}>{meldung}</p>
 

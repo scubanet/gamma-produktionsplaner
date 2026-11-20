@@ -88,15 +88,30 @@ export function lagerungText(z: Pick<Zuteilung, "lager_0_2" | "lager_tk" | "lage
   return teile.length ? teile.join(", ") : "–";
 }
 
-export type Filter = { kategorie: string; status: string; hinweis: "" | "rot" | "gelb" | "ohne"; suche: string };
+export type Filter = { kategorie: string; status: string; hinweis: "" | "mit" | "rot" | "gelb" | "ohne"; suche: string; bedarf?: boolean };
 
-export function filtern(zeilen: Zuteilung[], hinweise: Map<string, Hinweis[]>, f: Filter): Zuteilung[] {
+/** Filter aus der Adresse, z.B. vom Leitstand: /systemzuteilung/?status=offen, ?hinweis=mit, ?bedarf=1. Unbekannte Werte fallen weg. */
+export function filterAusAdresse(search: string): Partial<Filter> {
+  const p = new URLSearchParams(search);
+  const status = p.get("status");
+  const hinweis = p.get("hinweis");
+  return {
+    ...(status && ["ok", "offen", "Zukauf"].includes(status) ? { status } : {}),
+    ...(hinweis && ["mit", "rot", "gelb", "ohne"].includes(hinweis) ? { hinweis: hinweis as Filter["hinweis"] } : {}),
+    ...(p.get("bedarf") === "1" ? { bedarf: true } : {}),
+  };
+}
+
+/** imBedarf: Komponenten in der Produktionsliste der Saison; fehlt die Menge (nicht geladen), filtert «bedarf» nicht. */
+export function filtern(zeilen: Zuteilung[], hinweise: Map<string, Hinweis[]>, f: Filter, imBedarf?: Set<string> | null): Zuteilung[] {
   const suche = f.suche.trim().toLocaleLowerCase("de-CH");
   return zeilen.filter((z) => {
     const h = hinweise.get(z.id ?? "") ?? [];
     if (f.kategorie && z.kategorie !== f.kategorie) return false;
     if (f.status && z.status !== f.status) return false;
+    if (f.bedarf && imBedarf && !imBedarf.has(z.id ?? "")) return false;
     if (f.hinweis === "ohne" && h.length) return false;
+    if (f.hinweis === "mit" && !h.length) return false;
     if ((f.hinweis === "rot" || f.hinweis === "gelb") && !h.some((x) => x.farbe === f.hinweis)) return false;
     if (suche && !(z.name ?? "").toLocaleLowerCase("de-CH").includes(suche)) return false;
     return true;

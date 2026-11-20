@@ -76,7 +76,8 @@ function Rezeptbibliothek() {
   const [rezepte, setRezepte] = useState<Rezept[] | null>(null);
   const [listenFehler, setListenFehler] = useState<string | null>(null);
   const [suche, setSuche] = useState("");
-  const [statusFilter, setStatusFilter] = useState(STATUS_ALLE);
+  // Der Leitstand verlinkt mit ?status=entwurf.
+  const [statusFilter, setStatusFilter] = useState(() => (STATUS_FILTER.some((s) => s.value === parameter.get("status")) ? (parameter.get("status") as string) : STATUS_ALLE));
   // Nur Admins dürfen freigeben; die Datenbank prüft das beim Setzen nochmals.
   const [admin, setAdmin] = useState(false);
   // Skalierung pro Rezept: gehört der Stand nicht zum gewählten Rezept, gilt die erste Voreinstellung.

@@ -11,6 +11,23 @@ type Anlass = LeitAnlass & { saison: { name: string } | null };
 type Welle = { saison_id: string | null; welle_nr: number | null; aufgaben: number | null; erledigt: number | null };
 type Rezepte = { saison_id: string | null; rezepte: number | null; freigegeben: number | null };
 type Daten = { ok: number; offen: number; zukauf: number; hinweise: number; anlaesse: Anlass[]; wellen: Welle[]; rezepte: Rezepte[] };
+/** Zusätze, die einzeln geladen werden: scheitert einer, bleibt der Leitstand stehen und zeigt dort einen Platzhalter. */
+type Zusatz = { services: Map<string, number> | null; linien: Map<string, number> | null; zutaten: { saison_id: string | null; zutaten: number | null; verknuepft: number | null }[] | null };
+
+const zaehlenNach = (zeilen: { anlass_id: string }[]) => {
+  const m = new Map<string, number>();
+  for (const z of zeilen) m.set(z.anlass_id, (m.get(z.anlass_id) ?? 0) + 1);
+  return m;
+};
+
+async function zusatzLaden(): Promise<Zusatz> {
+  const [s, l, z] = await Promise.all([
+    supabase.from("service").select("anlass_id"),
+    supabase.from("menuelinie").select("anlass_id"),
+    supabase.from("einkauf_zutaten_stand").select("saison_id, zutaten, verknuepft"),
+  ]);
+  return { services: s.error ? null : zaehlenNach(s.data ?? []), linien: l.error ? null : zaehlenNach(l.data ?? []), zutaten: z.error ? null : z.data ?? [] };
+}
 
 async function laden(): Promise<Daten> {
   const zaehlen = (status: string) => supabase.from("komponente_zuteilung").select("id", { count: "exact", head: true }).eq("status", status);
@@ -40,9 +57,11 @@ const zeitraum = (a: LeitAnlass) => (a.datum_bis && a.datum_bis !== a.datum ? `$
 export default function Leitstand() {
   const [d, setD] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
+  const [zusatz, setZusatz] = useState<Zusatz | null>(null);
 
   useEffect(() => {
     laden().then(setD, (e: Error) => setFehler(fehlerText(e)));
+    zusatzLaden().then(setZusatz, () => setZusatz({ services: null, linien: null, zutaten: null }));
   }, []);
 
   const naechster = d ? naechsterAnlass(d.anlaesse) : null;
@@ -53,12 +72,30 @@ export default function Leitstand() {
   const saisonAnlaesse = d ? d.anlaesse.filter((a) => (saisonId ? a.saison_id === saisonId : true)) : [];
   const zahl = (n: number | undefined) => (d ? formatZahl(n ?? 0) : fehler ? "–" : <Skeleton variant="zahl" />);
   const zuteilung = d ? d.ok + d.offen + d.zukauf : 0;
+  const zutatenStand = zusatz?.zutaten?.find((z) => z.saison_id === saisonId) ?? null;
+  const zutatenOffen = zutatenStand && zutatenStand.zutaten !== null && zutatenStand.verknuepft !== null ? zutatenStand.zutaten - zutatenStand.verknuepft : null;
+  /** «11 Services · 6 Menülinien»; ohne Services oder Menülinien der Platzhalter, damit man sieht, was am Anlass fehlt. */
+  const anlassStand = (id: string) => {
+    if (!zusatz) return null;
+    const s = zusatz.services?.get(id) ?? 0;
+    const l = zusatz.linien?.get(id) ?? 0;
+    const teil = (n: number, eins: string, viele: string, leer: string, da: boolean) => (!da ? leer : n ? `${formatZahl(n)} ${n === 1 ? eins : viele}` : leer);
+    return `${teil(s, "Service", "Services", "[Services]", !!zusatz.services)} · ${teil(l, "Menülinie", "Menülinien", "[Menülinien]", !!zusatz.linien)}`;
+  };
 
   const aufgaben = [
-    { zahl: zahl(d?.offen), titel: "Komponenten ohne Systemzuteilung", text: "Ohne Zuteilung keine Haltbarkeit, keine Welle, kein Startdatum", href: "/systemzuteilung/", ziel: "Zuteilen", herleitung: "Komponenten mit Status offen" },
-    { zahl: zahl(d?.hinweise), titel: "Prüfhinweise", text: "Plausibilitätsregeln rot oder gelb, sperren nichts", href: "/systemzuteilung/", ziel: "Prüfen", herleitung: "Alle Prüfhinweise der Systemzuteilung" },
+    { zahl: zahl(d?.offen), titel: "Komponenten ohne Systemzuteilung", text: "Ohne Zuteilung keine Haltbarkeit, keine Welle, kein Startdatum", href: "/systemzuteilung/?status=offen", ziel: "Zuteilen", herleitung: "Komponenten mit Status offen" },
+    { zahl: zahl(d?.hinweise), titel: "Prüfhinweise", text: "Plausibilitätsregeln rot oder gelb, sperren nichts", href: "/systemzuteilung/?hinweis=mit", ziel: "Prüfen", herleitung: "Alle Prüfhinweise der Systemzuteilung" },
     { zahl: d ? `${formatZahl(stand.erledigt)} / ${formatZahl(stand.aufgaben)}` : zahl(undefined), titel: "Aufgaben in der Checkliste erledigt", text: "Eine Aufgabe pro Komponente und Welle", href: "/produktion/", ziel: "Produktion", herleitung: "Checkliste der Saison des nächsten Anlasses" },
-    { zahl: d ? `${formatZahl(rez.freigegeben)} / ${formatZahl(rez.rezepte)}` : zahl(undefined), titel: "Rezepte der Saison freigegeben", text: "Werte aus nicht freigegebenen Rezepten sind gestrichelt wie Annahmen", href: "/rezepte/", ziel: "Rezepte", herleitung: "Rezepte der Komponenten im Bedarf der Saison des nächsten Anlasses" },
+    { zahl: d ? `${formatZahl(rez.freigegeben)} / ${formatZahl(rez.rezepte)}` : zahl(undefined), titel: "Rezepte der Saison freigegeben", text: "Werte aus nicht freigegebenen Rezepten sind gestrichelt wie Annahmen", href: "/rezepte/?status=entwurf", ziel: "Rezepte", herleitung: "Rezepte der Komponenten im Bedarf der Saison des nächsten Anlasses" },
+    {
+      zahl: zusatz ? (zutatenOffen === null ? "–" : formatZahl(zutatenOffen)) : <Skeleton variant="zahl" />,
+      titel: "Zutaten ohne Artikel",
+      text: "Ohne Artikel keine Menge im Einkauf und keine Warenkosten aus dem Rezept",
+      href: "/einkauf/zutaten/",
+      ziel: "Zuordnen",
+      herleitung: "Zutaten in den Rezepten der Saison minus verknüpfte (ohne Unterrezepte)",
+    },
     { zahl: zahl(d?.zukauf), titel: "Komponenten im Zukauf", text: "CF-Stufe 4 oder 5, gehen in den Einkauf", href: "/einkauf/", ziel: "Einkauf", herleitung: "Komponenten mit Status Zukauf" },
   ];
 
@@ -96,7 +133,7 @@ export default function Leitstand() {
           </section>
 
           <section>
-            <h2 className="pl-section-title">Produktionswellen{naechster ? ` ${naechster.name}` : ""}</h2>
+            <h2 className="pl-section-title">Produktionswellen{naechster?.saison ? ` ${naechster.saison.name}` : ""}</h2>
             {wellen.length ? (
               wellen.map((w) => (
                 <div key={w.welle_nr} className="pl-list-row">
@@ -127,7 +164,11 @@ export default function Leitstand() {
             {saisonAnlaesse.length ? (
               saisonAnlaesse.map((a) => (
                 <a key={a.id} className="pl-list-row" href={`/anlaesse/bearbeiten/?id=${a.id}`} aria-current={a.id === naechster?.id ? "true" : undefined}>
-                  <span className="pl-list-row__titel">{a.name}</span>
+                  <span className="pl-list-row__titel">
+                    {a.name}
+                    <br />
+                    <span className="pl-small">{anlassStand(a.id) ?? <Skeleton variant="zahl" />}</span>
+                  </span>
                   <span className="pl-mono">{zeitraum(a)}</span>
                 </a>
               ))

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  fehlertext, filtern, formularAus, haltbarkeitText, lagerartSetzen, hinweiseNachKomponente, lagerungText, leerAnzeige, sortieren, sperreAus, umschalten, updateAus,
+  fehlertext, filterAusAdresse, filtern, formularAus, haltbarkeitText, lagerartSetzen, hinweiseNachKomponente, lagerungText, leerAnzeige, sortieren, sperreAus, umschalten, updateAus,
   type Hinweis, type Zuteilung,
 } from "../lib/systemzuteilung";
 
@@ -72,6 +72,11 @@ describe("Filter und Sortierung", () => {
     expect(filtern(zeilen, hw, { ...leer, hinweis: "rot" }).map((x) => x.id)).toEqual(["a"]);
     expect(filtern(zeilen, hw, { ...leer, hinweis: "gelb" }).map((x) => x.id)).toEqual(["c"]);
     expect(filtern(zeilen, hw, { ...leer, hinweis: "ohne" }).map((x) => x.id)).toEqual(["b"]);
+    expect(filtern(zeilen, hw, { ...leer, hinweis: "mit" }).map((x) => x.id).sort()).toEqual(["a", "c"]);
+    expect(filtern(zeilen, hw, { ...leer, bedarf: true }, new Set(["c"])).map((x) => x.id)).toEqual(["c"]);
+    expect(filtern(zeilen, hw, { ...leer, bedarf: true }, null)).toHaveLength(3);
+    expect(filterAusAdresse("?status=offen&hinweis=mit&bedarf=1")).toEqual({ status: "offen", hinweis: "mit", bedarf: true });
+    expect(filterAusAdresse("?status=kaputt&hinweis=x")).toEqual({});
     expect(filtern(zeilen, hw, { ...leer, status: "Zukauf" }).map((x) => x.id)).toEqual(["b"]);
     expect(filtern(zeilen, hw, { ...leer, suche: "APFEL" }).map((x) => x.id)).toEqual(["b"]);
     expect(filtern(zeilen, hw, { ...leer, kategorie: "Fisch" }).map((x) => x.id)).toEqual(["a"]);
