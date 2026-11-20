@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.26 | 20.11.2026 | `pl-row--haupt-zuerst`: sobald die Zeile umbricht (Handy, Tablet), steht die Hauptspalte vor der Seitenspalte; `pl-row__zur-liste` zeigt dann einen Link zur Auswahlliste. KpiTile: lange Werte ohne Leerzeichen (z.B. `[Bestelltermin]`) brechen um statt abgeschnitten zu werden. |
 | 0.25 | 20.11.2026 | Schmale Bildschirme: `pl-scroll` und `pl-table-wrap` mit `position: relative`, damit versteckte Texte (`pl-sr`) in breiten Tabellen die Seite nicht mehr verbreitern; `pl-h1` trennt lange Wörter (320 px). Dialog: `pl-dialog__links` setzt eine Aktion (z.B. «Löschen») nach links, getrennt von Speichern und Abbrechen. |
 | 0.24 | 20.11.2026 | Korrekturen aus der Durchsicht: Breadcrumb-Links wieder in `ink-muted`; DataTable mit `rowHref` navigiert nicht mehr beim Markieren von Text und öffnet mit Zusatztaste einen neuen Tab; UserMenu setzt den Fokus bei Escape zurück auf den Knopf. |
 | 0.23 | 20.11.2026 | `pl-actions--unten`: Feld mit Label und Button daneben stehen auf der unteren Linie (Skalierung im Rezept). |

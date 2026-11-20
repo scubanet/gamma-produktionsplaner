@@ -25,6 +25,14 @@
 .pl-row--stretch { align-items: stretch; }
 .pl-col-main { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
 .pl-col-side { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
+/* Hauptspalte zuerst, sobald die Zeile umbricht (unter 520 + 300 + 24 px): auf Handy und Tablet steht der Inhalt vor der Auswahlliste. */
+.pl-row--haupt-zuerst { container-type: inline-size; }
+.pl-row__zur-liste { display: none; }
+.pl-row--haupt-zuerst > .pl-col-side { scroll-margin-top: calc(var(--topnav-height) + var(--space-4)); }
+@container (max-width: 843px) {
+  .pl-row--haupt-zuerst > .pl-col-main { order: -1; }
+  .pl-row--haupt-zuerst .pl-row__zur-liste { display: inline-flex; align-items: center; min-height: var(--control-height); }
+}
 .pl-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
 .pl-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
 .pl-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
@@ -75,7 +83,7 @@
 .pl-kpi--panel { background: var(--panel); color: var(--panel-ink); border-color: var(--panel); }
 .pl-kpi__label { font-size: 12px; color: var(--ink-muted); }
 .pl-kpi--panel .pl-kpi__label, .pl-kpi--panel .pl-kpi__detail { color: var(--panel-muted); }
-.pl-kpi__value { font-family: var(--font-mono); font-size: 30px; line-height: 36px; font-weight: 500; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.pl-kpi__value { font-family: var(--font-mono); font-size: 30px; line-height: 36px; font-weight: 500; margin-top: 6px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .pl-kpi__detail { font-size: 12px; color: var(--ink-muted); }
 
 /* Status pill */

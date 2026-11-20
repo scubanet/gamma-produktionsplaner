@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, Select, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
@@ -125,7 +125,26 @@ function Rezeptbibliothek() {
   const fehler = listenFehler ?? d?.fehler ?? s?.fehler ?? null;
   const laedt = (x: unknown) => (x ? null : fehler ? "Keine Daten, siehe Hinweis oben." : <Skeleton variant="zahl" />);
 
-  const waehlen = (neu: string) => router.replace(`/rezepte/?r=${encodeURIComponent(neu)}`);
+  // Nach der Wahl aus der Liste zum Seitenkopf springen, wenn er nicht im Bild ist (Handy: die Liste steht unter der Karte).
+  const kopfRef = useRef<HTMLElement>(null);
+  const gewaehlt = useRef(false);
+  const zumKopf = () => {
+    const kopf = kopfRef.current;
+    if (kopf && (kopf.getBoundingClientRect().top < 0 || kopf.getBoundingClientRect().top > window.innerHeight)) window.scrollTo({ top: 0 });
+  };
+  const waehlen = (neu: string) => {
+    // Dasselbe Rezept nochmals: die Adresse ändert sich nicht, also gleich springen.
+    if (neu === rezept?.slug) return zumKopf();
+    gewaehlt.current = true;
+    router.replace(`/rezepte/?r=${encodeURIComponent(neu)}`);
+  };
+  const zumKopfRef = useRef(zumKopf);
+  const rezeptId = rezept?.id;
+  useEffect(() => {
+    if (!gewaehlt.current || !rezeptId) return;
+    gewaehlt.current = false;
+    zumKopfRef.current();
+  }, [rezeptId]);
   const besonderes = besonderesZeilen(rezept?.besonderes ?? null);
   const setze = (teil: Partial<{ wert: number | null; eingabe: string }>) => rezept && setWahl({ ...aktuell, ...teil, rezeptId: rezept.id });
   const gericht = rezept ? istGericht(rezept) : false;
@@ -139,7 +158,7 @@ function Rezeptbibliothek() {
 
   return (
     <>
-      <header className="pl-head">
+      <header className="pl-head" ref={kopfRef}>
         <div>
           <div className="pl-crumb">Rezepte · {rezepte ? `${rezepte.length} Rezepte` : <Skeleton variant="zahl" />}</div>
           <h1 className={rezept ? "pl-h1 pl-h1--name" : "pl-h1"}>{rezept?.name ?? "Rezeptbibliothek"}</h1>
@@ -181,8 +200,8 @@ function Rezeptbibliothek() {
       {fehler ? <Notice role="alert" title="Rezept nicht geladen">{fehler}</Notice> : null}
       <p className="pl-small" role="status">{gespeichert && rezept ? `Rezept «${rezept.name}» gespeichert.` : ""}</p>
 
-      <div className="pl-row">
-        <div className="pl-col-side">
+      <div className={rezept ? "pl-row pl-row--haupt-zuerst" : "pl-row"}>
+        <div className="pl-col-side" id="rezept-liste">
           <div>
             <Button icon="plus" variant="dashed" href="/rezepte/bearbeiten/">Rezept</Button>
           </div>
@@ -219,6 +238,7 @@ function Rezeptbibliothek() {
         </div>
 
         <div className="pl-col-main">
+          <a className="pl-link pl-row__zur-liste pl-print-hide" href="#rezept-liste">Anderes Rezept wählen</a>
           {rezept ? (
             <Card
               title={[gericht ? "Gericht" : "Komponente", rezept.kategorie].filter(Boolean).join(" · ")}
