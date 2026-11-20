@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { standText, standUebernehmen } from "../lib/kueche";
+import { passLagerText, passRezeptHref, standText, standUebernehmen } from "../lib/kueche";
 
 describe("Küchenpass: Stand nachladen", () => {
   it("nennt die Uhrzeit des letzten Ladens", () => {
@@ -33,5 +33,19 @@ describe("Küchenpass: Nachladen, das vor dem Speichern gelesen hat", () => {
     const jetzt = new Map([["a", "erledigt"]]);
     const geschuetzt = new Set([...new Map<string, number>().keys(), ...new Set(["a"])]);
     expect([...standUebernehmen(geladen, jetzt, geschuetzt)]).toEqual([["a", "erledigt"], ["b", "erledigt"]]);
+  });
+});
+
+describe("Küchenpass: Zeile fürs Etikett", () => {
+  const z = { id: "k", produktion: ["SF", "SV"], lager_0_2: true, lager_tk: false, lager_trocken: false, rezept_id: null };
+  it("nennt Konservierung, Lagerart und «haltbar bis»", () => {
+    expect(passLagerText(z, "2026-12-24")).toBe("SF · SV · 0–2 °C · haltbar bis spätestens 24.12.2026");
+  });
+  it("zeigt Platzhalter, wo etwas fehlt", () => {
+    expect(passLagerText(undefined, null)).toBe("[Lagerung] · haltbar bis spätestens [Datum]");
+    expect(passLagerText({ ...z, produktion: [], lager_0_2: false }, "2026-12-24")).toBe("[Lagerung] · haltbar bis spätestens 24.12.2026");
+  });
+  it("führt zur Rezeptkarte mit Rückweg zur Welle", () => {
+    expect(passRezeptHref("rinds ragù", 2)).toBe("/rezepte/?r=rinds%20rag%C3%B9&von=kueche&welle=2");
   });
 });

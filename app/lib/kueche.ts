@@ -2,8 +2,10 @@
 // (View wellen_vorschlag), der Stand aus der Checkliste; hier wird nur gruppiert und gefiltert.
 import { schluessel, type Aufgabe } from "./checkliste";
 import type { Vorschlag } from "./wellen";
+import { formatDatum } from "./format";
+import { konservierungText, lagerart, type ZuteilungKurz } from "./produktionsliste";
 
-export type PassZeile = { komponenteId: string; komponente: string; kategorie: string; menge: number | null; einheit: string | null; nr: number };
+export type PassZeile = { komponenteId: string; komponente: string; kategorie: string; menge: number | null; einheit: string | null; nr: number; haltbarBis: string | null };
 export type PassWelle = { nr: number; datum: string | null; zeilen: PassZeile[] };
 export type PassFilter = "offen" | "erledigt" | "alle";
 
@@ -14,7 +16,7 @@ export function passWellen(vorschlag: Vorschlag[]): PassWelle[] {
     if (!v.komponente_id || v.nr === null) continue;
     const w = m.get(v.nr) ?? { nr: v.nr, datum: null, zeilen: [] };
     if (v.produktion_am && (w.datum === null || v.produktion_am < w.datum)) w.datum = v.produktion_am;
-    w.zeilen.push({ komponenteId: v.komponente_id, komponente: v.komponente ?? "[Komponente]", kategorie: v.kategorie ?? "[Kategorie]", menge: v.menge, einheit: v.einheit_total, nr: v.nr });
+    w.zeilen.push({ komponenteId: v.komponente_id, komponente: v.komponente ?? "[Komponente]", kategorie: v.kategorie ?? "[Kategorie]", menge: v.menge, einheit: v.einheit_total, nr: v.nr, haltbarBis: v.haltbar_bis });
     m.set(v.nr, w);
   }
   return [...m.values()]
@@ -45,6 +47,25 @@ export function nachKategorie(zeilen: PassZeile[]): { kategorie: string; zeilen:
   const m = new Map<string, PassZeile[]>();
   for (const z of zeilen) m.set(z.kategorie, [...(m.get(z.kategorie) ?? []), z]);
   return [...m.entries()].map(([kategorie, zeilen]) => ({ kategorie, zeilen }));
+}
+
+/**
+ * Zweite Zeile im Pass, fürs Etikett: «SF · 0–2 °C · haltbar bis 24.12.2026». Konservierung aus der Systemzuteilung,
+ * «haltbar bis spätestens» aus dem Wellen-Vorschlag (spätester Produktionstag + Haltbarkeit); was fehlt, steht als Platzhalter.
+ */
+export function passLager(zuteilung: ZuteilungKurz | undefined, haltbarBis: string | null): { konservierung: string; haltbar: string } {
+  const konservierung = zuteilung ? konservierungText({ produktion: zuteilung.produktion ?? [], lagerung: lagerart(zuteilung) }) : null;
+  return { konservierung: konservierung ?? "[Lagerung]", haltbar: `haltbar bis spätestens ${haltbarBis ? formatDatum(haltbarBis) : "[Datum]"}` };
+}
+
+export function passLagerText(zuteilung: ZuteilungKurz | undefined, haltbarBis: string | null): string {
+  const l = passLager(zuteilung, haltbarBis);
+  return `${l.konservierung} · ${l.haltbar}`;
+}
+
+/** Sprung zur Rezeptkarte im selben Fenster, mit Rückweg zur Welle (die Home-Bildschirm-App hat keine Tabs). */
+export function passRezeptHref(slug: string, welle: number): string {
+  return `/rezepte/?r=${encodeURIComponent(slug)}&von=kueche&welle=${welle}`;
 }
 
 /** «Stand 14:32»: wann der Pass zuletzt aus der Datenbank geladen wurde. */

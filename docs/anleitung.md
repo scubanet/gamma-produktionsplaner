@@ -115,7 +115,9 @@ Für das Handy oder Tablet am Posten: eine Welle zum Abhaken.
 - Beim Öffnen steht die erste Welle, in der noch etwas offen ist. Gibt es mehrere Wellen, lässt sich oben wechseln.
 - Die ganze Zeile ist antippbar. Ein Häkchen gilt für diese Komponente in dieser Welle und erscheint auch im Wellenplan und in der Produktionsliste.
 - Oben steht der Fortschritt (erledigt / alle). «Noch offen», «Erledigt» und «Alle» filtern die Liste.
-- Klappt das Speichern nicht (z.B. kein Netz), geht das Häkchen zurück und ein Hinweis erscheint. Dann nochmals abhaken.
+- Nach dem Abhaken erscheint unten am Bildschirm eine Meldung mit «Rückgängig» (einige Sekunden).
+- Klappt das Speichern nicht (z.B. kein Netz), geht das Häkchen zurück und unten steht «nicht gespeichert» mit «Nochmals versuchen». Die Meldung bleibt, bis sie geschlossen oder wiederholt wird.
+- Unter dem Namen stehen Konservierung, Lagerart und «haltbar bis spätestens» (gerechnet ab dem spätesten Produktionstag der Welle). «Rezept» öffnet die Rezeptkarte; von dort führt «Zurück zum Küchenpass» zur selben Welle.
 - Die Liste lädt jede Minute nach und immer, wenn die App wieder in den Vordergrund kommt. Oben steht «Stand» mit der Uhrzeit; «Aktualisieren» lädt sofort. So sieht man, was andere inzwischen abgehakt haben.
 - Zuständig und Termine werden im Wellenplan geändert.
 - **Auf den Home-Bildschirm:** In Safari «Teilen» → «Zum Home-Bildschirm». Die App startet dann direkt im Küchenpass.

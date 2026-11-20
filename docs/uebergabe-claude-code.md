@@ -234,3 +234,11 @@ Ladezeit Einkauf: siehe Nachtrag «Migration 39». Die zuerst notierten «rund 2
 Geprüft: Typen, Lint, Tests, Build; im Browser lesend (Rückfrage geöffnet und abgebrochen). Nicht geprüft, weil es schreibt: Verknüpfen mit Rückfrage und «Rückgängig» selbst.
 
 Offen aus der UX-Liste: 8 bis 12 (Melde-Baustein im Küchenpass, Küchenpass-Zeile mit Rezept und Lagerung, Verlustschutz in der Detailspalte, Herleitung gekürzt, Leitstand-Links), 16 bis 33.
+
+## Nachtrag 20.11.2026: Küchenpass, Ränge 8 und 9
+
+- **Meldezeile (Rang 8):** neuer Baustein im Design System (0.27), fest am unteren Bildschirmrand. Im Küchenpass: «… erledigt · Rückgängig» für 6 s; ein Speicherfehler bleibt stehen mit «Nochmals versuchen» und wird von der Bestätigung einer anderen Zeile nicht ersetzt. Die bisherige Notice «Nicht gespeichert» und die Statuszeile über der Liste entfallen.
+- **Zeile (Rang 9):** unter dem Namen Konservierung und Lagerart (Systemzuteilung) und «haltbar bis spätestens» (`wellen_vorschlag.haltbar_bis`). Knopf «Rezept» (ausserhalb der Abhak-Fläche) öffnet die Rezeptkarte im selben Fenster mit `?von=kueche&welle=N`; dort «Zurück zum Küchenpass». `/kueche/?welle=N` öffnet diese Welle; die Adresse folgt der Wahl.
+- **Offene Fachfrage:** «haltbar bis» rechnet ab dem spätesten Produktionstag des Vorschlags, nicht ab dem geplanten oder echten Produktionstag. Darum heisst es «spätestens». Fürs Etikett bräuchte es das Datum ab dem Tag, an dem wirklich produziert wurde (Entscheid Dominik, Rechnung gehört in die Datenbank).
+- Nicht gebaut aus den Vorschlägen: Kennzeichnung «wird gespeichert» an der Zeile; Rückkehr vom Rezept zur selben Zeile (landet am Anfang der Welle).
+- Geprüft: Typen, Lint, 203 Tests, Build; im Browser Anzeige, Rezept-Link, Rückweg, Wellenwechsel. **Versehen beim Prüfen:** Ein Test hat «Geräucherter Saibling», Welle 1, kurz als erledigt gespeichert (das Abfangen der Anfrage griff nicht); sofort mit «Rückgängig» zurückgenommen, in der Datenbank kontrolliert (`erledigt_am` leer). Der Fehlerfall («Nochmals versuchen») ist im Browser nicht geprüft.

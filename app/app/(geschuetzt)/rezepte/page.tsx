@@ -70,6 +70,9 @@ function Rezeptbibliothek() {
   const slug = parameter.get("r");
   // Nach dem Speichern leitet die Pflegeseite mit gespeichert=1 hierher; beim nächsten Wechsel des Rezepts ist der Hinweis weg.
   const gespeichert = parameter.get("gespeichert") === "1";
+  // Aus dem Küchenpass geöffnet (gleiches Fenster): Rückweg zur selben Welle.
+  const welleZurueck = parameter.get("von") === "kueche" ? Number(parameter.get("welle")) : NaN;
+  const zurueckHref = Number.isInteger(welleZurueck) && welleZurueck > 0 ? `/kueche/?welle=${welleZurueck}` : null;
   const [rezepte, setRezepte] = useState<Rezept[] | null>(null);
   const [listenFehler, setListenFehler] = useState<string | null>(null);
   const [suche, setSuche] = useState("");
@@ -136,7 +139,7 @@ function Rezeptbibliothek() {
     // Dasselbe Rezept nochmals: die Adresse ändert sich nicht, also gleich springen.
     if (neu === rezept?.slug) return zumKopf();
     gewaehlt.current = true;
-    router.replace(`/rezepte/?r=${encodeURIComponent(neu)}`);
+    router.replace(`/rezepte/?r=${encodeURIComponent(neu)}${zurueckHref ? `&von=kueche&welle=${welleZurueck}` : ""}`);
   };
   const zumKopfRef = useRef(zumKopf);
   const rezeptId = rezept?.id;
@@ -160,6 +163,11 @@ function Rezeptbibliothek() {
     <>
       <header className="pl-head" ref={kopfRef}>
         <div>
+          {zurueckHref ? (
+            <div className="pl-actions pl-print-hide">
+              <Button href={zurueckHref}>← Zurück zum Küchenpass</Button>
+            </div>
+          ) : null}
           <div className="pl-crumb">Rezepte · {rezepte ? `${rezepte.length} Rezepte` : <Skeleton variant="zahl" />}</div>
           <h1 className={rezept ? "pl-h1 pl-h1--name" : "pl-h1"}>{rezept?.name ?? "Rezeptbibliothek"}</h1>
           {rezept?.untertitel ? <div className="pl-sub">{rezept.untertitel}</div> : null}

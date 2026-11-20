@@ -1,14 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button, Notice, SegmentedControl, Skeleton } from "@/lib/planer";
+import { Button, Meldezeile, Notice, SegmentedControl, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import { aufgabenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/lib/checkliste";
 import { checklisteSpeichern } from "@/lib/checkliste-speichern";
-import { ersteOffeneWelle, istErledigt, nachKategorie, passFiltern, passStand, passWellen, standText, standUebernehmen, type PassFilter, type PassZeile } from "@/lib/kueche";
+import { ersteOffeneWelle, istErledigt, nachKategorie, passFiltern, passLager, passRezeptHref, passStand, passWellen, standText, standUebernehmen, type PassFilter, type PassZeile } from "@/lib/kueche";
 import type { Vorschlag } from "@/lib/wellen";
+import type { ZuteilungKurz } from "@/lib/produktionsliste";
 import { fehlerText } from "@/lib/fehler";
 
 type Daten = { saisonId: string; saison: string; vorschlag: Vorschlag[]; checkliste: ChecklisteZeile[] };
@@ -26,14 +27,37 @@ async function laden(): Promise<Daten | null> {
   return { saisonId: s, saison: u.data.saison ?? "[Saison]", vorschlag, checkliste };
 }
 
+type Stamm = { zuteilung: Map<string, ZuteilungKurz>; slug: Map<string, string> };
+
+/** Konservierung, Lagerart und Rezept je Komponente: ändert sich selten, darum nur einmal geladen (nicht jede Minute). */
+async function stammLaden(): Promise<Stamm> {
+  const [zuteilung, rezepte] = await Promise.all([
+    alleSeiten<ZuteilungKurz>((von, bis) => supabase.from("komponente_zuteilung").select("id, produktion, lager_0_2, lager_tk, lager_trocken, rezept_id").order("id").range(von, bis)),
+    alleSeiten<{ id: string; slug: string }>((von, bis) => supabase.from("rezept").select("id, slug").order("id").range(von, bis)),
+  ]);
+  return { zuteilung: new Map(zuteilung.flatMap((z) => (z.id ? [[z.id, z] as const] : []))), slug: new Map(rezepte.map((r) => [r.id, r.slug])) };
+}
+
+/** Meldung am unteren Rand: nach dem Abhaken mit «Rückgängig», nach einem Fehler mit «Nochmals versuchen». */
+type Melde = { art: "ok" | "fehler"; text: string; z: PassZeile; an: boolean };
+const MELDE_DAUER = 6000;
+
 export default function Kuechenpass() {
   const [daten, setDaten] = useState<Daten | null | undefined>(undefined);
   const [fehler, setFehler] = useState<string | null>(null);
   const [aufgaben, setAufgaben] = useState<Map<string, Aufgabe>>(new Map());
-  const [wahl, setWahl] = useState<number | null>(null);
+  // Rückweg von der Rezeptkarte: /kueche/?welle=2 öffnet wieder dieselbe Welle.
+  const [wahl, setWahl] = useState<number | null>(() => {
+    if (typeof window === "undefined") return null;
+    const welle = Number(new URLSearchParams(window.location.search).get("welle"));
+    return Number.isInteger(welle) && welle > 0 ? welle : null;
+  });
   const [filter, setFilter] = useState<PassFilter>("offen");
-  const [meldung, setMeldung] = useState("");
-  const [speicherFehler, setSpeicherFehler] = useState<string | null>(null);
+  const [melde, setMelde] = useState<Melde | null>(null);
+  const meldeZeit = useRef<number | undefined>(undefined);
+  const meldeJetzt = useRef<Melde | null>(null);
+  const stammDa = useRef(false);
+  const [stamm, setStamm] = useState<Stamm | null>(null);
   const [stand0, setStand0] = useState<Date | null>(null);
   const [laedtNach, setLaedtNach] = useState(false);
   // Zeilen, die gerade gespeichert werden (mit Laufnummer des jüngsten Speicherns): ihr Häkchen darf ein Nachladen nicht überschreiben.
@@ -47,6 +71,15 @@ export default function Kuechenpass() {
     if (laedt.current) return;
     laedt.current = true;
     setLaedtNach(true);
+    // Zuteilung und Rezepte einmal holen; scheitert das, beim nächsten Nachladen nochmals. Der Pass selbst läuft auch ohne.
+    if (!stammDa.current)
+      stammLaden().then(
+        (s) => {
+          stammDa.current = true;
+          setStamm(s);
+        },
+        () => undefined,
+      );
     beruehrt.current = new Set(lauf.current.keys());
     laden()
       .then(
@@ -64,6 +97,22 @@ export default function Kuechenpass() {
         setLaedtNach(false);
       });
   }, []);
+
+  /** Eine Bestätigung verschwindet nach einigen Sekunden von selbst; ein Fehler bleibt, bis er geschlossen oder wiederholt wird. */
+  const melden = useCallback((m: Melde | null) => {
+    // Eine Bestätigung (auch die einer anderen Zeile) ersetzt keinen stehenden Fehler: sonst ginge «Nochmals versuchen» verloren.
+    if (m?.art === "ok" && meldeJetzt.current?.art === "fehler") return;
+    window.clearTimeout(meldeZeit.current);
+    meldeJetzt.current = m;
+    setMelde(m);
+    if (m?.art === "ok")
+      meldeZeit.current = window.setTimeout(() => {
+        if (meldeJetzt.current !== m) return;
+        meldeJetzt.current = null;
+        setMelde(null);
+      }, MELDE_DAUER);
+  }, []);
+  useEffect(() => () => window.clearTimeout(meldeZeit.current), []);
 
   useEffect(() => {
     nachladen(true);
@@ -92,7 +141,8 @@ export default function Kuechenpass() {
   /** Abhaken für genau diese Welle; die Datenbank setzt Zeitpunkt und Person. Bei einem Fehler geht das Häkchen zurück. */
   async function abhaken(z: PassZeile, an: boolean) {
     if (!daten) return;
-    setSpeicherFehler(null);
+    // Nur die Meldung dieser Zeile räumen (z.B. beim Wiederholen); der Fehler einer anderen Zeile bleibt stehen.
+    if (meldeJetzt.current?.art !== "fehler" || meldeJetzt.current.z === z) melden(null);
     const k = schluessel(z.komponenteId, z.nr);
     const vorher = aufgaben.get(k);
     const n = (lauf.current.get(k) ?? 0) + 1;
@@ -111,15 +161,14 @@ export default function Kuechenpass() {
         else neu.delete(k);
         return neu;
       });
-      setMeldung("");
-      return setSpeicherFehler(`${z.komponente}: ${r.fehler}. Bitte nochmals abhaken.`);
+      return melden({ art: "fehler", text: `${z.komponente} nicht gespeichert: ${r.fehler}`, z, an });
     }
     setAufgaben((m) => {
       const neu = new Map(m);
       for (const a of r.zeilen) neu.set(schluessel(a.komponente_id, a.welle_nr), a);
       return neu;
     });
-    setMeldung(an ? `${z.komponente} erledigt.` : `${z.komponente} wieder offen.`);
+    melden({ art: "ok", text: an ? `${z.komponente} erledigt.` : `${z.komponente} wieder offen.`, z, an });
   }
 
   return (
@@ -133,7 +182,6 @@ export default function Kuechenpass() {
       </header>
 
       {fehler ? <Notice role="alert" title="Küchenpass nicht geladen">{fehler}</Notice> : null}
-      {speicherFehler ? <Notice role="alert" title="Nicht gespeichert">{speicherFehler}</Notice> : null}
       {daten === null ? <Notice title="Keine Saison">Es gibt noch keine Saison mit Anlässen.</Notice> : null}
       {daten && !wellen.length ? (
         <Notice title="Noch keine Wellen">
@@ -148,7 +196,11 @@ export default function Kuechenpass() {
             <SegmentedControl
               label="Welle"
               value={String(welle.nr)}
-              onChange={(v) => setWahl(Number(v))}
+              onChange={(v) => {
+                setWahl(Number(v));
+                // Die Adresse folgt der Wahl, damit ein Neuladen bei derselben Welle bleibt.
+                window.history.replaceState(null, "", `/kueche/?welle=${v}`);
+              }}
               options={wellen.map((w) => ({ value: String(w.nr), label: `Welle ${w.nr} · ${w.datum ? formatDatum(w.datum).slice(0, 6) : "[Datum]"}` }))}
             />
           ) : null}
@@ -171,8 +223,6 @@ export default function Kuechenpass() {
             options={[{ value: "offen", label: "Noch offen" }, { value: "erledigt", label: "Erledigt" }, { value: "alle", label: "Alle" }]}
           />
 
-          <p className="pl-small" role="status">{meldung}</p>
-
           {gruppen.length ? (
             gruppen.map((g) => (
               <section key={g.kategorie}>
@@ -180,15 +230,33 @@ export default function Kuechenpass() {
                 {g.zeilen.map((z) => {
                   const fertig = istErledigt(z, aufgaben);
                   const zustaendig = aufgaben.get(schluessel(z.komponenteId, z.nr))?.zustaendig;
+                  const zuteilung = stamm?.zuteilung.get(z.komponenteId);
+                  const lager = passLager(zuteilung, z.haltbarBis);
+                  const slug = zuteilung?.rezept_id ? stamm?.slug.get(zuteilung.rezept_id) : undefined;
                   return (
-                    <label key={z.komponenteId} className={fertig ? "pl-pass pl-pass--erledigt" : "pl-pass"}>
-                      <input type="checkbox" checked={fertig} onChange={(e) => abhaken(z, e.target.checked)} />
-                      <span className="pl-pass__text">
-                        <span className="pl-pass__name">{z.komponente}</span>
-                        {zustaendig ? <span className="pl-small">{zustaendig}</span> : null}
-                      </span>
-                      <span className="pl-pass__menge">{formatMenge(z.menge, z.einheit)}</span>
-                    </label>
+                    <div key={z.komponenteId} className={fertig ? "pl-pass pl-pass--erledigt" : "pl-pass"}>
+                      <label className="pl-pass__haken">
+                        <input type="checkbox" checked={fertig} onChange={(e) => abhaken(z, e.target.checked)} />
+                        <span className="pl-pass__text">
+                          <span className="pl-pass__name">{z.komponente}</span>
+                          <span className="pl-pass__lager">
+                            {stamm ? (
+                              <>
+                                <span>{lager.konservierung}</span>
+                                <span>{lager.haltbar}</span>
+                              </>
+                            ) : (
+                              <Skeleton variant="zahl" />
+                            )}
+                          </span>
+                          {zustaendig ? <span className="pl-small">{zustaendig}</span> : null}
+                        </span>
+                        <span className="pl-pass__menge">{formatMenge(z.menge, z.einheit)}</span>
+                      </label>
+                      {slug ? (
+                        <a className="pl-pass__rezept" href={passRezeptHref(slug, z.nr)} aria-label={`Rezept ${z.komponente}`}>Rezept</a>
+                      ) : null}
+                    </div>
                   );
                 })}
               </section>
@@ -200,10 +268,19 @@ export default function Kuechenpass() {
           )}
 
           <p className="pl-small">
-            Menge aus dem Wellen-Vorschlag. Zuständig und Termine ändern im <a href="/produktion/wellen/">Wellenplan</a>.
+            Menge aus dem Wellen-Vorschlag. «Haltbar bis spätestens» rechnet ab dem spätesten Produktionstag der Welle; wird früher produziert, endet die Haltbarkeit früher. Zuständig und Termine ändern im <a href="/produktion/wellen/">Wellenplan</a>.
           </p>
         </>
       ) : null}
+
+      <Meldezeile
+        tone={melde?.art === "fehler" ? "fehler" : "status"}
+        actionLabel={melde ? (melde.art === "fehler" ? "Nochmals versuchen" : "Rückgängig") : undefined}
+        onAction={() => melde && abhaken(melde.z, melde.art === "fehler" ? melde.an : !melde.an)}
+        onClose={() => melden(null)}
+      >
+        {melde?.text}
+      </Meldezeile>
     </>
   );
 }
