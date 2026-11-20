@@ -23,6 +23,7 @@ Stand: 20.11.2026, Fassung 2 (nach interner Durchsicht gegen das Datenmodell erg
 | 20.11.2026 | Lager aller Produkte mit Seriennummer im QR-Code. |
 | 20.11.2026 | Beim Packen wird jeder Beutel in die Kiste gescannt. |
 | 20.11.2026 | MHD rechnet ab Produktionsdatum. |
+| 20.11.2026 | Ware bleibt über den Wechsel der Kollektion im Lager. Es gibt darum einen eigenen Stammsatz «Produkt». |
 | 20.11.2026 | Die neue Stufe «Küche» darf Etiketten drucken und Lager und Kisten scannen (eigene Arbeit, siehe «Rechte»). |
 
 ## Umfang
@@ -43,7 +44,7 @@ Nicht im Umfang:
 
 ## Begriffe
 
-- **Produkt:** eine Komponente, die etikettiert ins Lager geht. Jedes Produkt bekommt eine feste Produktnummer (z.B. `P0123`).
+- **Produkt:** das, was etikettiert im Lager liegt, unabhängig von der Kollektion. Hat eine feste Produktnummer (z.B. `P0123`), Name und Kategorie. Die Komponenten jeder Kollektion zeigen auf ihr Produkt; so behält der Portweinjus seine Nummer, wenn die Kollektion wechselt, und Bestand aus der alten Kollektion zählt für den Bedarf der neuen.
 - **Charge:** ein Produkt aus einer Zeile der Checkliste (Saison, Welle) an einem Produktionstag. Trägt Produktionsdatum, Haltbarkeit und Verbrauchsdatum. Eine Charge gehört zu keinem Anlass; Saison und Welle sind nur die Herkunft und stehen nicht auf dem Etikett. Ein weiterer Druck für dieselbe Zeile am selben Tag hängt Beutel an diese Charge an, die Laufnummern laufen weiter.
 - **Lagereinheit (Beutel):** ein etikettierter Beutel einer Charge mit eigener Seriennummer. Hat einen Zustand: im Lager, in Kiste, verbraucht, entsorgt.
 - **Kiste:** eine IFCO-Kiste für ein Spiel (Service) eines Anlasses. Enthält gescannte Beutel. Hat einen eigenen Code.
@@ -145,9 +146,9 @@ Hinweise zum Kisten-Etikett:
 
 Neue Tabellen, alle mit Row Level Security, Index auf jedem Fremdschlüssel:
 
-- `komponente.produkt_nr`: feste, fortlaufende Produktnummer (neue Spalte).
+- `produkt`: Produktnummer (fest, fortlaufend), Name, Kategorie. `komponente.produkt_id` zeigt auf das Produkt (neue Spalte). Beim Einrichten bekommt jede Komponente der heutigen Kollektion ein Produkt. Bei einer neuen Kollektion schlägt die App für gleichnamige Komponenten das bestehende Produkt vor; zugeordnet wird von Hand.
 - `rezept.beutel_g`: Füllmenge pro Beutel (neue Spalte).
-- `charge`: Komponente, produziert am, Haltbarkeit in Tagen, verbrauchen bis, Annahme-Kennzeichen, Herkunft als Saison und Wellennummer (eine Zahl wie in `produktion_aufgabe`, kein Fremdschlüssel auf die Welle, weil der Wellenplan beim Übernehmen neu angelegt wird; beide dürfen leer sein), erstellt von. Eindeutig über Komponente, Saison, Wellennummer und Produktionsdatum.
+- `charge`: Produkt, Komponente (aus der produziert wurde; liefert Lagerung und Regeneration fürs Etikett), produziert am, Haltbarkeit in Tagen, verbrauchen bis, Annahme-Kennzeichen, Herkunft als Saison und Wellennummer (eine Zahl wie in `produktion_aufgabe`, kein Fremdschlüssel auf die Welle, weil der Wellenplan beim Übernehmen neu angelegt wird; beide dürfen leer sein), erstellt von. Eindeutig über Komponente, Saison, Wellennummer und Produktionsdatum. Bestand, Packliste und der Vergleich mit dem Bedarf laufen über das Produkt.
 - `lagereinheit`: Charge, Seriennummer (eindeutig), Laufnummer in der Charge, Menge, Einheit (kg, l oder Stück), Zustand, Kiste. Die Kiste bleibt nach «verbraucht» stehen, damit sichtbar ist, in welchem Spiel der Beutel verbraucht wurde.
 - `kiste`: Service, Code (eindeutig), Laufnummer im Spiel, Tara, Zustand (offen, verladen, angekommen, abgeschlossen).
 - `lagerbewegung`: Lagereinheit, Art (Eingang, eingepackt, ausgepackt, verbraucht, entsorgt, Korrektur), Kiste, Grund, Zeitpunkt, Benutzer.
@@ -157,7 +158,7 @@ Neue Tabellen, alle mit Row Level Security, Index auf jedem Fremdschlüssel:
 
 Regeln für diese Tabellen:
 
-- **Nichts vom Lager wird mitgelöscht.** Die Fremdschlüssel von Charge, Lagereinheit, Kiste und Lagerbewegung sind «restrict», nie «cascade». Eine Komponente mit Chargen und ein Service oder Anlass mit Kisten lassen sich nicht löschen; die App meldet «hat Lagerbestand» bzw. «zuerst Kisten auflösen».
+- **Nichts vom Lager wird mitgelöscht.** Die Fremdschlüssel von Charge, Lagereinheit, Kiste und Lagerbewegung sind «restrict», nie «cascade». Ein Produkt oder eine Komponente mit Chargen und ein Service oder Anlass mit Kisten lassen sich nicht löschen; die App meldet «hat Lagerbestand» bzw. «zuerst Kisten auflösen».
 - **Massgebend sind der Zustand der Lagereinheit und der Zustand der Kiste.** Geschrieben werden sie, die Lagerbewegungen und die Scans nur von den Funktionen unten; angemeldete Benutzer dürfen diese Tabellen nur lesen. Jede Funktion schreibt Zustand und Bewegung in derselben Transaktion.
 
 Views und Funktionen:
@@ -256,7 +257,7 @@ Die Stufe «Küche» läuft unabhängig davon und sollte vor Etappe 4 stehen.
 
 Vor Etappe 1:
 
-1. **Produkt über Kollektionen hinweg:** Komponenten gelten heute pro Kollektion. Bleibt Ware (z.B. Portweinjus TK) über den Wechsel der Kollektion im Lager? Wenn ja, braucht es einen eigenen Stammsatz «Produkt» (Produktnummer, Name, Kategorie), auf den die Komponenten jeder Kollektion zeigen. Sonst bekäme dasselbe Produkt in der nächsten Kollektion eine neue Nummer.
+1. ~~Produkt über Kollektionen hinweg~~ Entschieden am 20.11.2026: Ware bleibt im Lager, eigener Stammsatz «Produkt».
 2. **Beutel pro Spiel:** Der Vorschlag rundet pro Spiel auf und produziert damit bis zu einem Beutel pro Spiel mehr. Ist das recht, oder sollen Restbeutel mit kleinerer Menge abgefüllt werden?
 3. **Allergene:** Sie liegen heute am Artikel. Verlässlich sind sie nur, wenn alle Zutaten des Rezepts einem Artikel zugeordnet sind (heute 480 von 1099). Vorschlag: sonst «Allergene: siehe Rezept» drucken, nie eine unvollständige Liste.
 
