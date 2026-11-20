@@ -38,6 +38,9 @@
 .pl-app a:not([class]), .pl-link { color: var(--accent); text-underline-offset: 3px; transition: color var(--motion-fast) var(--ease-standard); }
 .pl-app a:not([class]):hover, .pl-link:hover { color: var(--accent-strong); }
 .pl-app a:not([class]):focus-visible, .pl-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Breadcrumb-Links bleiben in ink-muted wie die Zeile (die Link-Regel oben ist spezifischer als .pl-crumb a). */
+.pl-app .pl-crumb a:not([class]) { color: var(--ink-muted); }
+.pl-app .pl-crumb a:not([class]):hover { color: var(--ink); }
 .pl-link { font-weight: 500; }
 .pl-table .pl-link { white-space: nowrap; }
 /* Leere Meldezeile (role=status) zwischen Seitenkopf und Inhalt nimmt keinen Platz ein, bleibt aber für Screenreader im Dokument. */

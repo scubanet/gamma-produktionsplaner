@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.24 | 20.11.2026 | Korrekturen aus der Durchsicht: Breadcrumb-Links wieder in `ink-muted`; DataTable mit `rowHref` navigiert nicht mehr beim Markieren von Text und öffnet mit Zusatztaste einen neuen Tab; UserMenu setzt den Fokus bei Escape zurück auf den Knopf. |
 | 0.23 | 20.11.2026 | `pl-actions--unten`: Feld mit Label und Button daneben stehen auf der unteren Linie (Skalierung im Rezept). |
 | 0.22 | 20.11.2026 | Bildmarke von gammagruppe.ch als Rasterbild (`assets/bildmarke-web.png`) in Kopfzeile und Anmeldung; Brand mit `mono` (im Dunkel-Thema hell), TopNav mit `brandMono`. Favicon und App-Icons bleiben beim Platzhalter. |
 | 0.21 | 20.11.2026 | Neue Komponente EmptyState (Titel, ein Satz, eine Aktion) für «noch nichts erfasst» und «Filter ohne Treffer». DataTable mit `empty`. |

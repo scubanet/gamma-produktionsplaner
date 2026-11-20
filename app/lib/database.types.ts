@@ -3219,6 +3219,7 @@ export type Database = {
           bedarf_am: string | null
           bestellen_bis: string | null
           bezug: string | null
+          bezug_id: string | null
           bezug_typ: string | null
           herleitung: string | null
           komponenten: number | null
@@ -3242,6 +3243,7 @@ export type Database = {
         Row: {
           bedarf_am: string | null
           bezug: string | null
+          bezug_id: string | null
           bezug_typ: string | null
           einheit: string | null
           komponente_id: string | null
@@ -3263,6 +3265,7 @@ export type Database = {
           bedarf_am: string | null
           bestellen_bis: string | null
           bezug: string | null
+          bezug_id: string | null
           bezug_typ: string | null
           einheit: string | null
           herleitung: string | null
@@ -3330,6 +3333,7 @@ export type Database = {
           artikelnummer: string | null
           bedarf_am: string | null
           bezug: string | null
+          bezug_id: string | null
           bezug_typ: string | null
           einheit: string | null
           herleitung: string | null

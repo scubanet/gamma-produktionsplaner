@@ -110,7 +110,12 @@ export default function Produktionsliste() {
     laden().then((d) => {
       setDaten(d);
       setAufgaben(aufgabenAus(d.checkliste));
-      if (d.listeAnlass) setAnlassWahl(gueltigeWahl(wahlLesen(), d.anlaesse));
+      // Die aktuelle Wahl bleibt; nur wenn es den Anlass nicht mehr gibt, zurück auf alle (dann auch ohne Spiel).
+      if (d.listeAnlass && anlassWahl && !gueltigeWahl(anlassWahl, d.anlaesse)) {
+        setAnlassWahl("");
+        setLinie("");
+        wahlMerken("");
+      }
     }, (e: Error) => setFehler(fehlerText(e)));
   }
 
@@ -138,6 +143,8 @@ export default function Produktionsliste() {
     laden().then((d) => {
       setDaten(d);
       setAufgaben(aufgabenAus(d.checkliste));
+      // Gemerkte Wahl des Anlasses beim ersten Laden übernehmen.
+      if (d.listeAnlass) setAnlassWahl(gueltigeWahl(wahlLesen(), d.anlaesse));
     }, (e: Error) => setFehler(fehlerText(e)));
   }, []);
 
@@ -409,7 +416,7 @@ export default function Produktionsliste() {
             <KpiTile label="Frühester Start" value={daten ? formatDatum(fruehesterStart) : warten} detail="Start ab aus Haltbarkeit und Anlassdaten" />
           </div>
 
-          <Card title="Komponenten" meta={`${spiel ? `Menge für ${spiel.name}: ${spiel.gaeste === null ? "[Gäste]" : formatZahl(spiel.gaeste)} Gäste, Spiel am ${spiel.datum ? formatDatum(spiel.datum) : "[Datum]"}, Anlieferung ${spiel.anlieferung ? formatDatum(spiel.anlieferung) : "[Datum]"}; Haltbarkeit, Wellen und Start gelten für die Saison` : "Menge über alle Spiele der Saison"}. Abgehakt wird pro Welle: bei einer Welle direkt hier, bei mehreren im Wellenplan. Zuständig gilt hier für alle Wellen der Komponente.`}>
+          <Card title="Komponenten" meta={`${spiel ? `Menge für ${spiel.name}: ${spiel.gaeste === null ? "[Gäste]" : formatZahl(spiel.gaeste)} Gäste, Spiel am ${spiel.datum ? formatDatum(spiel.datum) : "[Datum]"}, Anlieferung ${spiel.anlieferung ? formatDatum(spiel.anlieferung) : "[Datum]"}; Haltbarkeit, Wellen und Start gelten für die Saison` : gewaehlterAnlass ? `Menge über alle Spiele von ${gewaehlterAnlass.name}; Haltbarkeit, Wellen und Start gelten für die Saison` : "Menge über alle Spiele der Saison"}. Abgehakt wird pro Welle: bei einer Welle direkt hier, bei mehreren im Wellenplan. Zuständig gilt hier für alle Wellen der Komponente.`}>
             {daten ? (
               zeilen.length ? (
                 <DataTable

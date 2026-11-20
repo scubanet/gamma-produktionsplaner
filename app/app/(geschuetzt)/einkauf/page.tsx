@@ -97,7 +97,7 @@ export default function Einkauf() {
   ];
   const ohneArtikelZeilen = (liste: Position[]) =>
     liste.map((p) => ({
-      id: `${p.bezug}-${p.komponente_id}-${p.einheit}`,
+      id: `${p.bezug_id ?? p.bezug}-${p.komponente_id}-${p.einheit}`,
       p,
       komponente: p.komponente,
       kategorie: `${p.kategorie}${p.nur_vor_ort ? " · nur vor Ort" : ""}`,
@@ -173,7 +173,7 @@ export default function Einkauf() {
                   { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                 ]}
                 rows={g.zeilen.map((z) => ({
-                  id: `${z.bezug}-${z.artikel_id}`,
+                  id: `${z.bezug_id ?? z.bezug}-${z.lieferant_id}-${z.artikel_id}`,
                   artikel: z.artikel,
                   unterzeile: `${z.artikelnummer ?? "[Artikelnummer]"} · für ${z.komponenten_namen} · ${herkunftText(z)}`,
                   annahme: istAnnahme(z),
@@ -232,7 +232,7 @@ export default function Einkauf() {
                   { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                 ]}
                 rows={rezeptOffen.map((p) => ({
-                  id: `${p.bezug}-${p.komponente_id}-${p.einheit}`,
+                  id: `${p.bezug_id ?? p.bezug}-${p.komponente_id}-${p.einheit}`,
                   komponente: p.komponente,
                   kategorie: p.kategorie,
                   rezept: p.rezept ?? "[Rezept]",

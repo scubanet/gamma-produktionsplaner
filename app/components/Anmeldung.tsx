@@ -21,8 +21,18 @@ export function Anmeldung({ children }: { children: ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSitzung(data.session));
     const { data } = supabase.auth.onAuthStateChange((_e, s) => setSitzung(s));
-    // Meldet die Datenbank «Sitzung abgelaufen», lokal abmelden: der nächste Effekt leitet zur Anmeldung und merkt sich die Seite.
-    beiSitzungsende(() => void supabase.auth.signOut({ scope: "local" }));
+    // Meldet die Datenbank «Sitzung abgelaufen»: zuerst das Token erneuern (oft genügt das, z.B. wenn die Uhr des Geräts nachgeht);
+    // die Seite und ungespeicherte Eingaben bleiben dann stehen. Erst wenn das scheitert, lokal abmelden: der nächste Effekt
+    // leitet zur Anmeldung und merkt sich die Seite.
+    let erneuert = false;
+    beiSitzungsende(() => {
+      if (erneuert) return;
+      erneuert = true;
+      void supabase.auth.refreshSession().then(({ error }) => {
+        erneuert = false;
+        if (error) void supabase.auth.signOut({ scope: "local" });
+      });
+    });
     return () => {
       beiSitzungsende(null);
       data.subscription.unsubscribe();

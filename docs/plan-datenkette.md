@@ -11,7 +11,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 **Für jede Aufgabe gilt:**
 
 - Dieser Plan beschreibt Umfang, Dateien und Abnahme, nicht den Code. Vor dem Bauen die Schritte der Aufgabe ausarbeiten und die betroffenen Views lesen.
-- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 38), Views mit `security_invoker = true`, danach `cd app && npm run types`.
+- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 39), Views mit `security_invoker = true`, danach `cd app && npm run types`.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Jede neue Zahl bekommt eine Spalte «Herleitung».
 - Tests und Typprüfung vor jedem Commit: `cd app && npm test && npm run typecheck`. Ein Commit pro Aufgabe, Nachricht auf Deutsch.
 - Fragen an Dominik (mit **Frage** markiert) vor dem Bauen klären, nicht raten.
@@ -162,6 +162,28 @@ Migrationen 32 bis 36 liefen ohne Fehler. Danach lesend geprüft und in der App 
 - Kontrollwerte unverändert: Bündner Trockenfleisch 181.5 kg; Status 311 / 129 / 53.
 - `anon` hat auf keiner neuen View Rechte. `npm run types` aus der Datenbank: Spalten und Funktionen gleich wie von Hand nachgeführt, nur die Beziehungen (`Relationships`) kamen dazu.
 - Nicht geprüft: die schreibenden Funktionen `zutat_artikel_zuordnen` und `zutat_artikel_loesen` (sie ändern echte Daten; der erste Klick von Dominik ist der Test) und `rezept_status_setzen`.
+
+### Durchsicht vom 20.11.2026
+
+Unabhängige Durchsicht der Arbeit vom 20.11.2026 (Migrationen 33 bis 37, App, Design System): fünf Prüfer, je ein Gegenprüfer, alle nur lesend. 17 Befunde, 10 bestätigt, 5 plausibel, 2 widerlegt. In den Pilotdaten war kein Betrag falsch; mehrere Befunde hätten mit neuen Daten falsch gerechnet. Die Handrechnung der Prüfer über alle 1105 Zutatenzeilen der ersten Stufe ergab keine Abweichung.
+
+Behoben (Migration 38, noch einzuspielen, und App):
+
+- Einkauf: Schlüssel eines Bedarfs war der Name von Welle oder Anlass. Zwei gleichnamige Anlässe in einer Saison hätten Zutaten, Kosten und Artikelmengen vervielfacht. Neu `bezug_id`.
+- Einkauf: Herleitung bei Unterrezepten ging nicht auf (Mengen stimmten). Neu steht der Bedarf des Unterrezepts in Gramm.
+- Einkauf und Warenkosten: Ein Unterrezept ohne Zutaten fiel weg, Position und Rezept galten als vollständig. Neu offene Zutat ohne Kosten.
+- Warenkosten des Anlasses: Services ohne Menülinie und Gerichte ohne Komponenten fehlten unbemerkt, das Teil-Total hätte die Offerte ersetzt. Neu kein Total.
+- Produktionsliste: Die gemerkte Wahl des Anlasses wurde beim ersten Laden nicht gelesen und sprang nach dem Speichern einer Komponente um. Untertitel der Karte nennt jetzt den Anlass.
+- Fehlertexte: Englische Meldungen von Postgres mit Code blieben roh stehen, wenn kein Stichwort passte («numeric field overflow»). Neu gilt als eigener Text nur, was ohne Code kommt oder einen Code trägt, den die Funktionen der Datenbank setzen.
+- Sitzung abgelaufen: Die App meldete sofort ab und verwarf ungespeicherte Eingaben. Neu erneuert sie zuerst das Token und meldet nur ab, wenn das scheitert.
+- Design System 0.24: Breadcrumb-Links wieder in `ink-muted`; klickbare Tabellenzeile navigiert nicht mehr beim Markieren von Text; Benutzer-Menü setzt den Fokus bei Escape zurück.
+
+Offen, nicht behoben:
+
+- **Frage:** Wird eine verknüpfte Zutat im Rezept umbenannt («Vollmilch» zu «Vollrahm»), behält sie den alten Artikel; `rezept_speichern` fasst `artikel_id` nicht an. Soll das Umbenennen die Verknüpfung lösen?
+- Die Kalkulation schreibt «Umsatz und Waren der Offerte rechnen mit N Gästen», auch wenn die Waren aus den Menülinien kommen (nur Text, heute kein Fall).
+- Technische Angaben hängen am Satz, nicht am Fehler: Zwei Hinweise mit demselben Satz auf einer Seite zeigen beide das Detail des letzten Fehlers (Grenze in `app/lib/fehler.ts` vermerkt).
+- «Sitzung abgelaufen» ist weiterhin nur im Test geprüft, nicht im Browser.
 
 ### Aufgabe 5: Aufwand in Ressourcen und Rentabilität übernehmen
 

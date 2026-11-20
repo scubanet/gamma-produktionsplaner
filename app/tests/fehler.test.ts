@@ -62,6 +62,19 @@ describe("Fehlermeldungen in klarer Sprache", () => {
     expect(fehlerDetail(undefined)).toBeUndefined();
   });
 
+  it("englische Meldungen von Postgres mit Code bleiben nie roh stehen, auch ohne bekanntes Stichwort", () => {
+    expect(fehlerText({ code: "22003", message: "numeric field overflow" })).toBe(ALLGEMEIN);
+    expect(fehlerText({ code: "22001", message: "value too long for type character varying(40)" })).toBe(ALLGEMEIN);
+    expect(fehlerText({ code: "57014", message: "canceling statement due to statement timeout" })).toBe(ALLGEMEIN);
+    expect(fehlerDetail(fehlerText({ code: "22003", message: "numeric field overflow" }))).toBe("22003: numeric field overflow");
+  });
+
+  it("deutsche Meldungen bleiben bei allen Codes, die die Funktionen der Datenbank setzen", () => {
+    for (const code of ["P0001", "P0002", "23514", "23503", "42501", "40001", "22023"]) {
+      expect(fehlerText({ code, message: "Das Rezept wurde inzwischen geändert. Bitte neu laden." })).toBe("Das Rezept wurde inzwischen geändert. Bitte neu laden.");
+    }
+  });
+
   it("meldet das Ende der Sitzung genau dann, wenn sie abgelaufen ist", () => {
     const ende = vi.fn();
     beiSitzungsende(ende);

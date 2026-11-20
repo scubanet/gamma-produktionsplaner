@@ -252,7 +252,13 @@
           // rowHref: die ganze Zeile führt zum Ziel. Der Link in der Zeile bleibt für Tastatur und Screenreader; Klicks auf Bedienelemente zählen nicht.
           var ziel = p.rowHref ? p.rowHref(r) : null;
           return h('tr', { key: r.id || i, className: cx(p.isSelected && p.isSelected(r) && 'pl-table__row--selected', ziel && 'pl-table__row--link') || undefined,
-            onClick: ziel ? function (e) { if (!e.target.closest('a, button, input, select, textarea, label')) root.location.assign(ziel); } : undefined }, p.columns.map(function (c) {
+            onClick: ziel ? function (e) {
+              if (e.target.closest('a, button, input, select, textarea, label')) return;
+              // Text markieren (zum Kopieren) ist kein Klick auf die Zeile; mit Zusatztaste öffnet der Link wie gewohnt in einem neuen Tab.
+              if (root.getSelection && String(root.getSelection())) return;
+              if (e.metaKey || e.ctrlKey || e.shiftKey) { root.open(ziel, '_blank', 'noopener'); return; }
+              root.location.assign(ziel);
+            } : undefined }, p.columns.map(function (c) {
             var v = c.render ? c.render(r) : r[c.key];
             return h('td', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined }, v,
               c.subKey && r[c.subKey] ? h('span', { className: 'pl-sub' }, r[c.subKey]) : null);
@@ -325,7 +331,13 @@
     var ref = React.useRef(null);
     React.useEffect(function () {
       if (!offen) return;
-      function weg(e) { if (e.type === 'keydown' ? e.key === 'Escape' : !ref.current.contains(e.target)) setOffen(false); }
+      function weg(e) {
+        if (e.type === 'keydown' ? e.key !== 'Escape' : (!ref.current || ref.current.contains(e.target))) return;
+        // Bei Escape zurück auf den Knopf, sonst fällt der Fokus mit dem ausgeblendeten Menü weg.
+        var knopf = e.type === 'keydown' && ref.current ? ref.current.querySelector('.pl-user__knopf') : null;
+        setOffen(false);
+        if (knopf) knopf.focus();
+      }
       document.addEventListener('pointerdown', weg);
       document.addEventListener('keydown', weg);
       return function () { document.removeEventListener('pointerdown', weg); document.removeEventListener('keydown', weg); };

@@ -193,3 +193,7 @@ Migration 36 (`anlass_warenkosten`): Warenkosten des Anlasses aus den Menülinie
 
 Produktionsliste pro Anlass: Migration 37 (`produktionsliste_anlass`) und Feld «Anlass» in der Produktionsliste, committet, noch nicht ausgeliefert. Reihenfolge: `supabase db push --remote`, `cd app && npm run types`, `git push`. Ohne Migration 37 zeigt die Seite kein Feld «Anlass» und läuft wie bisher. Nach dem Einspielen prüfen: «Spengler Cup» wählen ergibt 251 Zeilen wie «Alle Anlässe»; «White Turf 1» zeigt «hat noch keine Menülinie».
 
+## Nachtrag 20.11.2026: Durchsicht und Migration 38
+
+Unabhängige Durchsicht der Arbeit des Tages, Ergebnis und offene Punkte in `docs/plan-datenkette.md`, Abschnitt «Durchsicht vom 20.11.2026». Korrekturen committet: Migration 38 (`durchsicht_korrekturen`, noch einzuspielen) und App. Reihenfolge: `supabase db push --remote`, `cd app && npm run types`, `git push`. Die Abfragen von Migration 38 liefen lesend gegen die Datenbank und liefern dieselben Zahlen wie vorher (253 Positionen, 1205 Zutatenzeilen, 187 Artikelzeilen, Gemüsestreifen CHF 25.21). Die App läuft auch gegen die Datenbank ohne Migration 38.
+
