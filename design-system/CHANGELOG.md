@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.18 | 20.11.2026 | Tokens `shadow-overlay` und `shadow-card` in Hell und Dunkel, `topnav-height`. Dialog mit Schatten. Neue Komponenten Icon (sieben Linien-Icons, Button mit `icon`) und UserMenu (Kürzel im Kreis, Name, E-Mail, Abmelden). TopNav bleibt ab 761 px oben stehen. DataTable mit `rowHref` (klickbare Zeile) und Icon für die Sortierrichtung. Links in `accent` (`pl-link`), Button-Text bricht nicht um, leere Meldezeile unter dem Seitenkopf ohne Abstand. |
 | 0.17 | 20.11.2026 | Bewegung: Tokens `motion-fast`, `motion-base`, `ease-standard`. Übergänge für Buttons, Navigation, Tabs, Listen, Segmente, Felder und Tabellenzeilen; Button gedrückt dunkler. Dialog blendet ein (`@starting-style`), DetailPanel blendet beim Wechsel der Zeile über (`itemKey`), Fortschritt und Anteile wachsen. Bei reduzierter Bewegung alle Dauern 0. |
 | 0.16 | 20.11.2026 | Layout `pl-auth` für die Anmeldeseite (Marke, Karte höchstens 420 px und Fusszeile mittig auf `surface-sunken`). Token `shadow-card` für diese Karte. TextField mit `code` (sechsstelliger Code: Mono 20 px, zentriert, mit Abstand). |
 | 0.15 | 20.11.2026 | Neue Komponente Brand (Bildmarke, Wortmarke, Produktname; Grössen `sm` und `lg`). Bildmarke als eine Datei `assets/bildmarke.svg` (Platzhalter bis zum Logo von GAMMA), daraus Favicon und App-Icons. TopNav nutzt Brand statt Schriftzug (`brandSrc`), `pl-top__brand` entfällt. |

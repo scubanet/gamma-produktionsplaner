@@ -64,7 +64,7 @@ export function Stammtabelle({ tabelle, titel, meta, einzahl, felder, schluessel
   }
 
   return (
-    <Card title={titel} meta={meta} actions={<Button variant="dashed" onClick={() => oeffnen(null)}>+ {einzahl}</Button>}>
+    <Card title={titel} meta={meta} actions={<Button icon="plus" variant="dashed" onClick={() => oeffnen(null)}>{einzahl}</Button>}>
       {zeilen ? (
         zeilen.length ? (
           <DataTable

@@ -287,7 +287,7 @@ function RezeptBearbeiten() {
                 <p className="pl-muted">Noch keine Zutaten in dieser Gruppe.</p>
               )}
               <div>
-                <Button variant="dashed" onClick={() => setGruppe(g.key, (x) => ({ ...x, zutaten: [...x.zutaten, neueZutat(neuKey("z"))] }))}>+ Zutat</Button>
+                <Button icon="plus" variant="dashed" onClick={() => setGruppe(g.key, (x) => ({ ...x, zutaten: [...x.zutaten, neueZutat(neuKey("z"))] }))}>Zutat</Button>
               </div>
 
               {g.schritte.map((s, si) => (
@@ -323,7 +323,7 @@ function RezeptBearbeiten() {
                 </div>
               ))}
               <div>
-                <Button variant="dashed" onClick={() => setGruppe(g.key, (x) => ({ ...x, schritte: [...x.schritte, neuerSchritt(neuKey("s"))] }))}>+ Schritt</Button>
+                <Button icon="plus" variant="dashed" onClick={() => setGruppe(g.key, (x) => ({ ...x, schritte: [...x.schritte, neuerSchritt(neuKey("s"))] }))}>Schritt</Button>
               </div>
             </div>
           </Card>
@@ -331,7 +331,7 @@ function RezeptBearbeiten() {
       })}
 
       <div>
-        <Button variant="dashed" onClick={() => set({ gruppen: [...f.gruppen, neueGruppe(neuKey("g"))] })}>+ Gruppe</Button>
+        <Button icon="plus" variant="dashed" onClick={() => set({ gruppen: [...f.gruppen, neueGruppe(neuKey("g"))] })}>Gruppe</Button>
       </div>
 
       {offen.length ? (

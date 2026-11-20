@@ -15,8 +15,12 @@ export function tokensCss(t) {
   const rest = [
     `  --font-sans: ${t.type.families.sans};`,
     `  --font-mono: ${t.type.families.mono};`,
-    ...['spacing', 'radius', 'shadow', 'motion', 'size'].flatMap((g) => t[g].tokens.map((x) => `  --${x.name}: ${x.value};`)),
   ];
+  // Werte mit hell und dunkel (Schatten) gehen wie die Farben in beide Blöcke.
+  for (const x of ['spacing', 'radius', 'shadow', 'motion', 'size'].flatMap((g) => t[g].tokens)) {
+    if (typeof x.value === 'string') rest.push(`  --${x.name}: ${x.value};`);
+    else { hell.push(`  --${x.name}: ${x.value.light};`); dunkel.push(`  --${x.name}: ${x.value.dark};`); }
+  }
   return [
     '/* Generiert aus design-system/tokens.json durch scripts/tokens.mjs. Nicht von Hand ändern. */',
     ':root {', ...hell, ...rest, '  color-scheme: light dark;', '}',

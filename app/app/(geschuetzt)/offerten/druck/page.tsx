@@ -63,7 +63,7 @@ function Druck() {
         </div>
         <div className="pl-actions pl-print-hide">
           <Button href={`/offerten/bearbeiten/?id=${o.id}`}>Zurück zur Offerte</Button>
-          <Button variant="primary" onClick={() => window.print()}>Drucken / als PDF sichern</Button>
+          <Button icon="print" variant="primary" onClick={() => window.print()}>Drucken / als PDF sichern</Button>
         </div>
       </header>
 

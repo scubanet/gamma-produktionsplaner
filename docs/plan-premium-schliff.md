@@ -131,12 +131,14 @@ Für Kopfzeile und Favicon reicht das, für die App-Icons (192 und 512 px) nicht
 
 **Dateien:** `design-system/tokens.json`, `bundle.css`, `TopNav`, `app/components/Geruest.tsx`.
 
-- [ ] Tokens `shadow-overlay` (Dialog, Menü) und `shadow-card` (Anmeldekarte), hell und dunkel. `Dialog` bekommt `shadow-overlay`.
-- [ ] Benutzer-Menü rechts in der Kopfzeile: Kürzel im Kreis, beim Öffnen Name, E-Mail und «Abmelden». Ersetzt die lose E-Mail und den Knopf.
-- [ ] Kopfzeile bleibt beim Scrollen oben stehen (`position: sticky`), mit feiner Linie.
-- [ ] Linien-Icons nach `design-system/README.md` (18 px, Strich 1.8, `currentColor`) für wiederkehrende Aktionen: Suchen, Drucken, Hinzufügen, Bearbeiten, Schliessen, Sortierrichtung. Als SVG im Design System, immer neben Text.
-- [ ] Tabellenzeilen, die klickbar sind, zeigen das beim Überfahren (Hintergrund `surface-sunken`, Zeiger).
-- [ ] Commit `Kopfzeile mit Benutzer-Menü, Schatten-Tokens, Icons`
+- [x] Tokens `shadow-overlay` (Dialog, Menü) und `shadow-card` (Anmeldekarte), hell und dunkel. `Dialog` bekommt `shadow-overlay`.
+- [x] Benutzer-Menü rechts in der Kopfzeile: Kürzel im Kreis, beim Öffnen Name, E-Mail und «Abmelden». Ersetzt die lose E-Mail und den Knopf.
+- [x] Kopfzeile bleibt beim Scrollen oben stehen (`position: sticky`), mit feiner Linie.
+- [x] Linien-Icons nach `design-system/README.md` (18 px, Strich 1.8, `currentColor`) für wiederkehrende Aktionen: Suchen, Drucken, Hinzufügen, Bearbeiten, Schliessen, Sortierrichtung. Als SVG im Design System, immer neben Text.
+- [x] Tabellenzeilen, die klickbar sind, zeigen das beim Überfahren (Hintergrund `surface-sunken`, Zeiger).
+- [x] Commit `Kopfzeile mit Benutzer-Menü, Schatten-Tokens, Icons`
+
+Stand 20.11.2026: Icons stehen an «Drucken» und «Hinzufügen», am Schliessen der Detailspalte und an der Sortierrichtung. Offen: Icon an den «Bearbeiten»-Knöpfen in Tabellenzeilen und im Suchfeld (bewusst nicht gesetzt, in jeder Zeile wirkt es unruhig; Entscheid Dominik). Klickbare Zeilen: Anlässe und Offerten. Aus dem Nachtrag erledigt: N2, N3, N4, N5; offen: N9, N10.
 
 ### Aufgabe 9: Abnahme mit Bildern
 

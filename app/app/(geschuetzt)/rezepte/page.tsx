@@ -183,7 +183,7 @@ function Rezeptbibliothek() {
       <div className="pl-row">
         <div className="pl-col-side">
           <div>
-            <Button variant="dashed" href="/rezepte/bearbeiten/">+ Rezept</Button>
+            <Button icon="plus" variant="dashed" href="/rezepte/bearbeiten/">Rezept</Button>
           </div>
           {rezepte ? (
             <>

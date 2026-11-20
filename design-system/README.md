@@ -50,6 +50,8 @@ Inter Tight für alles Lesbare, IBM Plex Mono für Zahlen (tabellarische Ziffern
 - Hauptnavigation oben (TopNav) mit sechs Bereichen, darunter die Seiten des Bereichs als Tabs; Inhalt mit `space-8` oben und `space-10` seitlich. Die SideNav (links, `sidenav-width` 232 px) bleibt für die Mockups.
 - Kopfzeile: Breadcrumb (`caption`), Seitentitel, rechts die Aktionen (Sekundär vor Primär).
 - Die Anmeldeseite steht ohne Navigation in `pl-auth`: Marke, eine Karte mit `shadow-card`, Fusszeile, alles mittig.
+- Schatten nur für Flächen über dem Inhalt (`shadow-overlay`: Dialog, Benutzer-Menü) und die Karte der Anmeldeseite (`shadow-card`).
+- Links im Text und in Tabellen stehen in `accent` (`pl-link`), nie im Blau des Browsers. Führt eine Tabellenzeile zu einer Seite, ist die ganze Zeile klickbar.
 - Inhalt in Karten (`radius-lg`, Rahmen `border`, keine Schatten), Abstände `space-6`, KPI-Reihen `space-4`.
 - Abschnitte ohne Karte beginnen mit `pl-section-title` (Grossbuchstaben, Linie in `ink`); darunter Zeilen `pl-todo` oder `pl-list-row`. So ist der Leitstand gebaut.
 - Zum Abhaken am Posten (Küchenpass) dienen Zeilen `pl-pass`: ganze Zeile klickbar, Häkchen 32 px.
@@ -61,7 +63,7 @@ Bewegung zeigt einen Zustand, sie schmückt nicht. Zwei Dauern: `motion-fast` (1
 
 ## Ikonografie
 
-Linien-Icons, 18 px, Strichstärke 1.8, `currentColor`, abgerundete Enden. Keine Emoji. Icons stehen nur neben Text (Navigation, Buttons); reine Icon-Buttons brauchen ein `aria-label`.
+Linien-Icons, 18 px, Strichstärke 1.8, `currentColor`, abgerundete Enden. Keine Emoji. Sie liegen als Komponente Icon im System (Suchen, Drucken, Hinzufügen, Bearbeiten, Schliessen, Sortierrichtung). Icons stehen nur neben Text (Navigation, Buttons); reine Icon-Buttons brauchen ein `aria-label`.
 
 ## Logo
 
@@ -69,7 +71,7 @@ Die Marke steht als Komponente Brand in der Kopfzeile und auf der Anmeldeseite. 
 
 ## Komponenten
 
-Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel, Brand. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
+Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel, Brand, Icon, UserMenu. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
 
 ## Wie das System weiterwächst
 

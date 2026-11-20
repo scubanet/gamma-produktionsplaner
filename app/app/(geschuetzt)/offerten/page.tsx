@@ -65,7 +65,7 @@ export default function Offerten() {
           zeilen.length ? (
             <DataTable
               columns={[
-                { key: "nummer", label: "Nummer", render: (r) => <Button href={`/offerten/bearbeiten/?id=${r.id as string}`} ariaLabel={`Offerte ${r.nummer as string} öffnen`}>{(r.nummer as string) ?? "[Nummer]"}</Button> },
+                { key: "nummer", label: "Nummer", render: (r) => <a className="pl-link pl-mono" href={`/offerten/bearbeiten/?id=${r.id as string}`}>{(r.nummer as string) ?? "[Nummer]"}</a> },
                 { key: "name", label: "Anlass", subKey: "kundeText" },
                 { key: "datumText", label: "Datum", numeric: true },
                 { key: "gaesteText", label: "Gäste", numeric: true },

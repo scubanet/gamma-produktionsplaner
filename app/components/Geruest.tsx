@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { BILDMARKE, Button, Tabs, TopNav } from "@/lib/planer";
+import { BILDMARKE, Tabs, TopNav, UserMenu } from "@/lib/planer";
 import { hauptnav, seitenTabs, unternav } from "@/lib/navigation";
 import { supabase } from "@/lib/supabase";
 import { useSitzung } from "./Anmeldung";
@@ -17,10 +17,11 @@ export function Geruest({ children }: { children: ReactNode }) {
         brandSrc={BILDMARKE}
         items={hauptnav(pfad)}
         actions={
-          <>
-            <span className="pl-small">{sitzung?.user.email}</span>
-            <Button onClick={() => supabase.auth.signOut()}>Abmelden</Button>
-          </>
+          <UserMenu
+            name={(sitzung?.user.user_metadata?.name as string | undefined) || undefined}
+            email={sitzung?.user.email}
+            onSignOut={() => supabase.auth.signOut()}
+          />
         }
       />
       <Tabs label="Seiten des Bereichs" tone="sunken" items={unternav(pfad)} />

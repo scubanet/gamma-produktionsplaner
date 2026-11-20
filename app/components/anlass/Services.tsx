@@ -89,7 +89,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
     <Card title="Services" meta="je Spiel oder Tag mit Gästen und Menülinie" actions={
         <span className="pl-actions">
           {services.length > 1 ? <Button onClick={datenOeffnen}>{ohneDatum ? `Daten erfassen (${ohneDatum} fehlen)` : "Daten ändern"}</Button> : null}
-          <Button variant="dashed" onClick={() => oeffnen(null)}>+ Service</Button>
+          <Button icon="plus" variant="dashed" onClick={() => oeffnen(null)}>Service</Button>
         </span>
       }
     >

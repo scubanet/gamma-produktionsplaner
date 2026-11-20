@@ -7,3 +7,4 @@ Hauptnavigation oben mit den sechs Bereichen der App. Ersetzt in der App die Sid
 - Unter 760 px stehen nur Marke und Button «Menü» (`aria-expanded`); Bereiche und `actions` klappen darunter auf.
 - Bereiche: Leitstand, Verkauf, Produktion, Küche, Auswertung, Verwaltung (Quelle: `app/lib/navigation.ts`, `GRUPPEN`).
 - Wird nicht gedruckt.
+- Bleibt ab 761 px beim Scrollen oben stehen (`topnav-height`). In `actions` steht das UserMenu.

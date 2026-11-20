@@ -103,7 +103,7 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
       actions={
         <span className="pl-actions pl-print-hide">
           <Button onClick={standardUebernehmen} disabled={arbeitet || !daten}>Standard übernehmen</Button>
-          <Button variant="dashed" onClick={() => { setForm({ ...formAus(null, gaenge[0] ?? ""), fehler: null }); setOffen(true); }} disabled={!daten?.artikel.length}>+ Position</Button>
+          <Button icon="plus" variant="dashed" onClick={() => { setForm({ ...formAus(null, gaenge[0] ?? ""), fehler: null }); setOffen(true); }} disabled={!daten?.artikel.length}>Position</Button>
         </span>
       }
     >

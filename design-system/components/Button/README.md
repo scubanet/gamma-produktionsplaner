@@ -9,3 +9,4 @@ Löst eine Aktion aus; pro Bereich höchstens ein Primär-Button.
 - Beschriftung nennt, was passiert (Verb), nicht «OK» oder «Weiter».
 - Mit `href` wird ein Link im Button-Look gerendert (Navigation zwischen Screens).
 - `ariaLabel` nur, wenn die sichtbare Beschriftung allein nicht eindeutig ist, z.B. «Bearbeiten» in jeder Tabellenzeile → `ariaLabel="Fregola Sarda bearbeiten"`.
+- `icon` setzt ein Linien-Icon vor den Text (siehe Icon). Text bricht im Button nicht um.

@@ -170,7 +170,7 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
             <div className="pl-card__head" style={{ marginBottom: 0 }}>
               <h3 className="pl-card__title">Im Katalog verknüpft</h3>
               <span className="pl-print-hide">
-                <Button variant="dashed" onClick={() => { setSuche(rezept.name); setTreffer(null); setAktion({ laeuft: false, fehler: null }); setDialog(true); }}>+ Komponente verknüpfen</Button>
+                <Button icon="plus" variant="dashed" onClick={() => { setSuche(rezept.name); setTreffer(null); setAktion({ laeuft: false, fehler: null }); setDialog(true); }}>Komponente verknüpfen</Button>
               </span>
             </div>
             {komponenten.length ? (

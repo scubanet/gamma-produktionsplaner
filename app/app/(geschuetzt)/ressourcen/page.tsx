@@ -169,7 +169,7 @@ function Ressourcen() {
             }}
             options={(stamm?.anlaesse ?? []).map((a) => ({ value: a.anlass_id ?? "", label: `${a.name}${a.datum ? ` · ${formatDatum(a.datum)}` : ""}` }))}
           />
-          <Button onClick={() => window.print()} disabled={!d}>Drucken / PDF</Button>
+          <Button icon="print" onClick={() => window.print()} disabled={!d}>Drucken / PDF</Button>
         </div>
       </header>
 
@@ -213,7 +213,7 @@ function Ressourcen() {
             />
           ) : null}
 
-          <Card title="Personal" meta="Stunden × Lohnsatz der Rolle am Anlassdatum" actions={<span className="pl-print-hide"><Button variant="dashed" onClick={() => oeffnen({ art: "personal", form: { id: null, rolle: "", eigen: "", freelancer: "", stunden: "", einsatz: "", bemerkung: "" }, fehler: null })}>+ Personal</Button></span>}>
+          <Card title="Personal" meta="Stunden × Lohnsatz der Rolle am Anlassdatum" actions={<span className="pl-print-hide"><Button icon="plus" variant="dashed" onClick={() => oeffnen({ art: "personal", form: { id: null, rolle: "", eigen: "", freelancer: "", stunden: "", einsatz: "", bemerkung: "" }, fehler: null })}>Personal</Button></span>}>
             {d ? (
               d.personal.length ? (
                 <DataTable
@@ -262,7 +262,7 @@ function Ressourcen() {
             )}
           </Card>
 
-          <Card title="Geräte" meta="Bedarf gegen eigenen Bestand; gleichzeitige Anlässe berücksichtigt" actions={<span className="pl-print-hide"><Button variant="dashed" onClick={() => oeffnen({ art: "geraet", form: { id: null, geraetId: "", anzahl: "", bemerkung: "" }, fehler: null })}>+ Gerät</Button></span>}>
+          <Card title="Geräte" meta="Bedarf gegen eigenen Bestand; gleichzeitige Anlässe berücksichtigt" actions={<span className="pl-print-hide"><Button icon="plus" variant="dashed" onClick={() => oeffnen({ art: "geraet", form: { id: null, geraetId: "", anzahl: "", bemerkung: "" }, fehler: null })}>Gerät</Button></span>}>
             {d ? (
               d.geraete.length ? (
                 <DataTable

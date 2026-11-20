@@ -1,15 +1,31 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"},{"name":"Brand"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"},{"name":"Brand"},{"name":"Icon"},{"name":"UserMenu"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
   var h = React.createElement;
   function cx() { return Array.prototype.filter.call(arguments, Boolean).join(' '); }
 
+  // Linien-Icons: 18 px, Strich 1.8 (im 24er-Raster 2.4), currentColor, runde Enden. Immer neben Text oder mit aria-label am Button.
+  var ICONS = {
+    search: ['M11 4a7 7 0 1 0 0 14a7 7 0 0 0 0-14z', 'M16.5 16.5L21 21'],
+    print: ['M7 9V3h10v6', 'M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2', 'M7 14h10v7H7z'],
+    plus: ['M12 5v14', 'M5 12h14'],
+    edit: ['M4 20h4L19 9l-4-4L4 16v4z', 'M13.5 6.5l4 4'],
+    close: ['M6 6l12 12', 'M18 6L6 18'],
+    'sort-up': ['M12 19V5', 'M6 11l6-6l6 6'],
+    'sort-down': ['M12 5v14', 'M6 13l6 6l6-6']
+  };
+  function Icon(p) {
+    return h('svg', { className: 'pl-icon', width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true', focusable: 'false' },
+      (ICONS[p.name] || []).map(function (d, i) { return h('path', { key: i, d: d }); }));
+  }
+
   function Button(p) {
     var variant = p.variant || 'secondary';
     var cls = cx('pl-btn', 'pl-btn--' + variant, p.className);
-    if (p.href) return h('a', { className: cls, href: p.href, 'aria-label': p.ariaLabel }, p.children);
-    return h('button', { type: p.type || 'button', className: cls, disabled: p.disabled, onClick: p.onClick, 'aria-label': p.ariaLabel }, p.children);
+    var inhalt = p.icon ? [h(Icon, { key: 'i', name: p.icon }), h('span', { key: 't' }, p.children)] : p.children;
+    if (p.href) return h('a', { className: cls, href: p.href, 'aria-label': p.ariaLabel }, inhalt);
+    return h('button', { type: p.type || 'button', className: cls, disabled: p.disabled, onClick: p.onClick, 'aria-label': p.ariaLabel }, inhalt);
   }
 
   function Card(p) {
@@ -127,7 +143,7 @@
         h('div', null,
           p.meta ? h('div', { className: 'pl-crumb' }, p.meta) : null,
           h('h2', { className: 'pl-panel__title' }, p.title)),
-        p.onClose ? h('button', { type: 'button', className: 'pl-panel__close', 'aria-label': 'Detail schliessen', onClick: p.onClose }, '×') : null),
+        p.onClose ? h('button', { type: 'button', className: 'pl-panel__close', 'aria-label': 'Detail schliessen', onClick: p.onClose }, h(Icon, { name: 'close' })) : null),
       h('div', { className: 'pl-panel__body' }, p.children),
       p.actions ? h('div', { className: 'pl-panel__actions' }, p.actions) : null);
   }
@@ -208,10 +224,13 @@
           return h('th', { key: c.key, scope: 'col', className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined,
             'aria-sort': kann ? (ist ? (p.sort.dir === 'ab' ? 'descending' : 'ascending') : 'none') : undefined },
             kann ? h('button', { type: 'button', className: 'pl-table__sort', onClick: function () { p.onSort(c.key); } },
-              c.label, h('span', { 'aria-hidden': 'true' }, ist ? (p.sort.dir === 'ab' ? ' ↓' : ' ↑') : '')) : c.label);
+              c.label, ist ? h(Icon, { name: p.sort.dir === 'ab' ? 'sort-down' : 'sort-up' }) : null) : c.label);
         }))),
         h('tbody', null, p.rows.map(function (r, i) {
-          return h('tr', { key: r.id || i, className: p.isSelected && p.isSelected(r) ? 'pl-table__row--selected' : undefined }, p.columns.map(function (c) {
+          // rowHref: die ganze Zeile führt zum Ziel. Der Link in der Zeile bleibt für Tastatur und Screenreader; Klicks auf Bedienelemente zählen nicht.
+          var ziel = p.rowHref ? p.rowHref(r) : null;
+          return h('tr', { key: r.id || i, className: cx(p.isSelected && p.isSelected(r) && 'pl-table__row--selected', ziel && 'pl-table__row--link') || undefined,
+            onClick: ziel ? function (e) { if (!e.target.closest('a, button, input, select, textarea, label')) root.location.assign(ziel); } : undefined }, p.columns.map(function (c) {
             var v = c.render ? c.render(r) : r[c.key];
             return h('td', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined }, v,
               c.subKey && r[c.subKey] ? h('span', { className: 'pl-sub' }, r[c.subKey]) : null);
@@ -278,6 +297,28 @@
       p.actions ? h('div', { className: 'pl-top__actions' }, p.actions) : null);
   }
 
+  // Benutzer-Menü in der Kopfzeile: Kürzel im Kreis, geöffnet Name, E-Mail und «Abmelden». Unter 760 px steht der Inhalt offen im Menü der TopNav.
+  function UserMenu(p) {
+    var st = React.useState(false), offen = st[0], setOffen = st[1];
+    var ref = React.useRef(null);
+    React.useEffect(function () {
+      if (!offen) return;
+      function weg(e) { if (e.type === 'keydown' ? e.key === 'Escape' : !ref.current.contains(e.target)) setOffen(false); }
+      document.addEventListener('pointerdown', weg);
+      document.addEventListener('keydown', weg);
+      return function () { document.removeEventListener('pointerdown', weg); document.removeEventListener('keydown', weg); };
+    }, [offen]);
+    var kuerzel = ((p.name || p.email || '?').trim().charAt(0) || '?').toUpperCase();
+    return h('div', { className: 'pl-user', ref: ref },
+      h('button', { type: 'button', className: 'pl-user__knopf', 'aria-expanded': offen, 'aria-controls': 'pl-user-menu', 'aria-label': 'Benutzer-Menü', onClick: function () { setOffen(!offen); } },
+        h('span', { 'aria-hidden': 'true' }, kuerzel)),
+      h('div', { id: 'pl-user-menu', className: cx('pl-user__menu', offen && 'pl-user__menu--offen') },
+        h('div', { className: 'pl-user__wer' },
+          p.name ? h('span', { className: 'pl-user__name' }, p.name) : null,
+          p.email ? h('span', { className: 'pl-small' }, p.email) : null),
+        h(Button, { onClick: p.onSignOut }, p.signOutLabel || 'Abmelden')));
+  }
+
   function Tabs(p) {
     if (!p.items || !p.items.length) return null;
     return h('nav', { className: cx('pl-tabs', p.tone === 'sunken' && 'pl-tabs--sunken'), 'aria-label': p.label },
@@ -292,6 +333,6 @@
       p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

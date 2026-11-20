@@ -107,7 +107,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
     <Card
       title="Menülinien"
       meta="Menge pro Gast je Komponente; Bedarf = Gäste der Linie × Anteil × Menge (Produktionsliste). Klick auf den Namen öffnet das Rezept."
-      actions={<Button variant="dashed" onClick={() => oeffnen({ art: "linie", id: null, text: "", fehler: null })}>+ Menülinie</Button>}
+      actions={<Button icon="plus" variant="dashed" onClick={() => oeffnen({ art: "linie", id: null, text: "", fehler: null })}>Menülinie</Button>}
     >
       {linie ? (
         <>

@@ -117,8 +117,8 @@ function KarteBearbeiten() {
         </div>
         <div className="pl-actions pl-print-hide">
           <Button onClick={() => setName(k?.name ?? "")}>Umbenennen</Button>
-          <Button onClick={() => oeffnen(null)}>+ Position</Button>
-          <Button variant="primary" onClick={() => window.print()} disabled={!k}>Drucken / als PDF sichern</Button>
+          <Button icon="plus" onClick={() => oeffnen(null)}>Position</Button>
+          <Button icon="print" variant="primary" onClick={() => window.print()} disabled={!k}>Drucken / als PDF sichern</Button>
         </div>
       </header>
 

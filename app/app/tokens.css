@@ -41,6 +41,8 @@
   --notice-border: #E6CF93;
   --notice-ink: #4D3A08;
   --backdrop: rgba(36,36,36,0.45);
+  --shadow-card: 0 1px 2px rgba(36,36,36,0.06), 0 8px 24px rgba(36,36,36,0.08);
+  --shadow-overlay: 0 2px 6px rgba(36,36,36,0.08), 0 16px 40px rgba(36,36,36,0.16);
   --font-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --space-1: 4px;
@@ -56,11 +58,11 @@
   --radius-lg: 4px;
   --radius-pill: 999px;
   --shadow-raised: 0 1px 2px rgba(36,36,36,0.12);
-  --shadow-card: 0 1px 2px rgba(36,36,36,0.06), 0 8px 24px rgba(36,36,36,0.08);
   --motion-fast: 120ms;
   --motion-base: 200ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --control-height: 44px;
+  --topnav-height: 60px;
   --sidenav-width: 232px;
   color-scheme: light dark;
 }
@@ -107,5 +109,7 @@
     --notice-border: #5A4A20;
     --notice-ink: #F6DA99;
     --backdrop: rgba(0,0,0,0.6);
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
+    --shadow-overlay: 0 2px 6px rgba(0,0,0,0.5), 0 16px 40px rgba(0,0,0,0.5);
   }
 }

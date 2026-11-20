@@ -69,14 +69,15 @@ export default function Anlaesse() {
         {zeilen ? (
           sichtbar.length ? (
             <DataTable
+              rowHref={(r) => `/anlaesse/bearbeiten/?id=${r.id as string}`}
               columns={[
                 {
                   key: "name",
                   label: "Anlass",
                   render: (r) => (
-                    <Button href={`/anlaesse/bearbeiten/?id=${r.id as string}`} ariaLabel={`Anlass ${r.name as string} öffnen`}>
+                    <a className="pl-link" href={`/anlaesse/bearbeiten/?id=${r.id as string}`}>
                       {r.name as string}
-                    </Button>
+                    </a>
                   ),
                 },
                 { key: "nummerText", label: "Nummer" },

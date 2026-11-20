@@ -109,7 +109,7 @@ export default function Einkauf() {
           <h1 className="pl-h1">Einkaufsliste</h1>
         </div>
         <div className="pl-actions pl-print-hide">
-          <Button variant="primary" onClick={() => window.print()} disabled={!daten}>Drucken / PDF</Button>
+          <Button icon="print" variant="primary" onClick={() => window.print()} disabled={!daten}>Drucken / PDF</Button>
         </div>
       </header>
 
