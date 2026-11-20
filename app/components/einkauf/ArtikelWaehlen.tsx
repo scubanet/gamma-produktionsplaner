@@ -12,8 +12,10 @@ type Artikel = GewaehlterArtikel & { einheit: string | null; preis_pro_einheit: 
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
 
 /** Artikel in der Preisliste suchen und einen wählen. Gespeichert wird beim Aufrufer (onWahl). */
-export function ArtikelWaehlen({ titel, meta, offen, gesperrt, fehler, onClose, onWahl }: {
+export function ArtikelWaehlen({ titel, meta, vorgabe, offen, gesperrt, fehler, onClose, onWahl }: {
   titel: string;
+  /** Suchbegriff, mit dem der Dialog öffnet (z.B. die Bezeichnung der Zutat). */
+  vorgabe?: string;
   meta?: string;
   offen: boolean;
   gesperrt: boolean;
@@ -21,7 +23,7 @@ export function ArtikelWaehlen({ titel, meta, offen, gesperrt, fehler, onClose, 
   onClose: () => void;
   onWahl: (a: GewaehlterArtikel) => void;
 }) {
-  const [suche, setSuche] = useState("");
+  const [suche, setSuche] = useState(vorgabe ?? "");
   const [treffer, setTreffer] = useState<Artikel[] | null>(null);
   const [suchFehler, setSuchFehler] = useState<string | null>(null);
   const begriff = suche.trim();

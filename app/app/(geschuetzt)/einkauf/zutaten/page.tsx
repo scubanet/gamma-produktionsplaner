@@ -8,31 +8,39 @@ import { formatChf } from "@/lib/offerte";
 import { vorschlagDetail } from "@/lib/artikel-vorschlag";
 import { filtern, gruppieren, rezepteText, umfangText, type ZutatOffen, type ZutatVorschlagZeile } from "@/lib/zutat-vorschlag";
 import { ArtikelWaehlen } from "@/components/einkauf/ArtikelWaehlen";
+import { useBestaetigen } from "@/components/Bestaetigen";
 import { fehlerText } from "@/lib/fehler";
 
 type Verknuepft = { schluessel: string; bezeichnung: string; artikel_id: string; artikel: string; artikel_einheit: string | null; preis_pro_einheit: number | null; anzahl: number; rezepte_anzahl: number };
+/** Anker einer Zeile, damit der Fokus nach dem Verknüpfen auf die nächste Bezeichnung gehen kann. */
+const zeilenId = (schluessel: string) => `zutat-${encodeURIComponent(schluessel)}`;
+
 type Daten = { saisonId: string; saison: string; offen: ZutatOffen[]; verknuepft: Verknuepft[]; zutaten: number; mitArtikel: number };
 
-async function laden(): Promise<Daten | null> {
-  // Pilot: eine Saison. Gibt es mehrere, die jüngste (wie in der Einkaufsliste).
-  const s = await supabase.from("einkauf_summe").select("saison_id, saison").order("saison", { ascending: false }).limit(1).maybeSingle();
-  if (s.error) throw s.error;
-  if (!s.data?.saison_id) return null;
-  const saisonId = s.data.saison_id;
-  const [v, k, st] = await Promise.all([
-    supabase.rpc("zutat_artikel_vorschlag", { p_saison: saisonId }),
+/** Verknüpfte Zutaten und Zähler: zwei schnelle Abfragen, die nach jedem Verknüpfen oder Lösen neu geholt werden. */
+async function standLaden(saisonId: string): Promise<Pick<Daten, "verknuepft" | "zutaten" | "mitArtikel">> {
+  const [k, st] = await Promise.all([
     supabase.rpc("zutat_artikel_verknuepft", { p_saison: saisonId }),
     supabase.from("einkauf_zutaten_stand").select("zutaten, verknuepft").eq("saison_id", saisonId).maybeSingle(),
   ]);
-  for (const x of [v, k, st]) if (x.error) throw x.error;
+  for (const x of [k, st]) if (x.error) throw x.error;
   return {
-    saisonId,
-    saison: s.data.saison ?? "[Saison]",
-    offen: gruppieren((v.data ?? []) as ZutatVorschlagZeile[]),
     verknuepft: ((k.data ?? []) as Verknuepft[]).sort((a, b) => a.bezeichnung.localeCompare(b.bezeichnung, "de-CH") || a.artikel.localeCompare(b.artikel, "de-CH")),
     zutaten: st.data?.zutaten ?? 0,
     mitArtikel: st.data?.verknuepft ?? 0,
   };
+}
+
+async function laden(): Promise<Daten | null> {
+  // Pilot: eine Saison. Gibt es mehrere, die jüngste (wie in der Einkaufsliste). Direkt aus der Tabelle:
+  // die View einkauf_summe rechnet den ganzen Einkauf und braucht dafür Sekunden.
+  const s = await supabase.from("saison").select("id, name").order("name", { ascending: false }).limit(1).maybeSingle();
+  if (s.error) throw s.error;
+  if (!s.data?.id) return null;
+  const saisonId = s.data.id;
+  const [v, stand] = await Promise.all([supabase.rpc("zutat_artikel_vorschlag", { p_saison: saisonId }), standLaden(saisonId)]);
+  if (v.error) throw v.error;
+  return { saisonId, saison: s.data.name ?? "[Saison]", offen: gruppieren((v.data ?? []) as ZutatVorschlagZeile[]), ...stand };
 }
 
 export default function ZutatenZuordnenSeite() {
@@ -48,12 +56,14 @@ export default function ZutatenZuordnenSeite() {
   const [zielFehler, setZielFehler] = useState<string | null>(null);
   const [oeffnung, setOeffnung] = useState(0);
   const meldungRef = useRef<HTMLParagraphElement>(null);
+  const [fragen, rueckfrage] = useBestaetigen();
 
   const neuLaden = useCallback(
     () =>
       laden().then(
         (d) => {
           setDaten(d);
+          setFehler(null);
           return true;
         },
         (e: Error) => {
@@ -71,18 +81,41 @@ export default function ZutatenZuordnenSeite() {
   const melden = (text: string) => {
     setFehler(null);
     setMeldung(text);
-    requestAnimationFrame(() => meldungRef.current?.focus());
   };
 
+  // Fokus nach dem Verknüpfen im Dialog: undefined = nichts vorgemerkt, null = auf die Meldung.
+  const fokusNach = useRef<string | null | undefined>(undefined);
+  const fokusSetzen = (id: string | null) => (id ? document.getElementById(id) : meldungRef.current)?.focus();
+
+  /** Zähler und Liste der verknüpften Zutaten neu holen; die offene Liste bleibt, wie sie auf dem Bildschirm steht. */
+  async function standNeu(saisonId: string) {
+    try {
+      const stand = await standLaden(saisonId);
+      setDaten((d) => (d ? { ...d, ...stand } : d));
+    } catch {
+      // Gespeichert ist es; nur die Zahlen oben sind dann nicht aktuell.
+      setMeldung((m) => `${m} Der Zähler wurde nicht aktualisiert, bitte die Seite neu laden.`);
+    }
+  }
+
   /** Alle offenen Zutaten mit dieser Bezeichnung verknüpfen; gibt den Fehlertext zurück oder null. */
-  async function zuordnen(z: ZutatOffen, artikelId: string, artikel: string): Promise<string | null> {
+  async function zuordnen(z: ZutatOffen, artikelId: string, artikel: string, imDialog = false): Promise<string | null> {
     if (!daten || speichert) return null;
     setSpeichert(true);
     const r = await supabase.rpc("zutat_artikel_zuordnen", { p_saison: daten.saisonId, p_schluessel: z.schluessel, p_artikel: artikelId, p_weitere: weitere });
     setSpeichert(false);
     if (r.error) return fehlerText(r.error);
     if (!r.data) return "Keine offene Zutat mit dieser Bezeichnung gefunden. Seite neu laden.";
-    if (await neuLaden()) melden(`${z.bezeichnung}: ${formatZahl(r.data)} ${r.data === 1 ? "Zutat" : "Zutaten"} mit ${artikel} verknüpft. Lösen unten unter «Verknüpfte Zutaten».`);
+    // Die Zeile verschwindet sofort; die teure Abfrage der Vorschläge läuft nicht neu. Der Fokus geht auf die nächste Zeile.
+    // Im Dialog erst nach dessen Schliessen (vorher ist die Seite gesperrt); ohne Nachbarzeile auf die Meldung.
+    const i = liste.findIndex((x) => x.schluessel === z.schluessel);
+    const nachbar = (liste[i + 1] ?? liste[i - 1])?.schluessel;
+    const zielId = nachbar ? zeilenId(nachbar) : null;
+    setDaten((d) => (d ? { ...d, offen: d.offen.filter((x) => x.schluessel !== z.schluessel) } : d));
+    melden(`${z.bezeichnung}: ${formatZahl(r.data)} ${r.data === 1 ? "Zutat" : "Zutaten"} mit ${artikel} verknüpft. Lösen unten unter «Verknüpfte Zutaten».`);
+    if (imDialog) fokusNach.current = zielId;
+    else requestAnimationFrame(() => fokusSetzen(zielId));
+    await standNeu(daten.saisonId);
     return null;
   }
 
@@ -92,7 +125,10 @@ export default function ZutatenZuordnenSeite() {
     const r = await supabase.rpc("zutat_artikel_loesen", { p_schluessel: v.schluessel, p_artikel: v.artikel_id });
     setSpeichert(false);
     if (r.error) return setFehler({ titel: "Nicht gelöst", text: `${v.bezeichnung}: ${fehlerText(r.error)}` });
-    if (await neuLaden()) melden(`${v.bezeichnung}: Verknüpfung mit ${v.artikel} bei ${formatZahl(r.data ?? 0)} Zutaten gelöst.`);
+    // Nach dem Lösen erscheint die Bezeichnung wieder unter den offenen, samt Vorschlägen: dafür ganz neu laden.
+    const n = r.data ?? 0;
+    melden(`${v.bezeichnung}: Verknüpfung mit ${v.artikel} bei ${formatZahl(n)} ${n === 1 ? "Zutat" : "Zutaten"} gelöst.`);
+    await neuLaden();
   }
 
   const alle = useMemo(() => daten?.offen ?? [], [daten]);
@@ -147,7 +183,7 @@ export default function ZutatenZuordnenSeite() {
                       const z = r.z as ZutatOffen;
                       return (
                         <>
-                          <strong>{z.bezeichnung}</strong>
+                          <strong id={zeilenId(z.schluessel)} tabIndex={-1}>{z.bezeichnung}</strong>
                           <span className="pl-sub">{umfangText(z.anzahl, z.rezepteAnzahl)}{z.weitere ? `; ${formatZahl(z.weitere)} weitere ausserhalb der Saison` : ""}</span>
                           <span className="pl-sub">{rezepteText(z.rezepte, z.rezepteAnzahl)}</span>
                         </>
@@ -238,7 +274,18 @@ export default function ZutatenZuordnenSeite() {
                     render: (r) => {
                       const v = r.v as Verknuepft;
                       return (
-                        <Button disabled={speichert} ariaLabel={`Verknüpfung von ${v.bezeichnung} mit ${v.artikel} lösen`} onClick={() => loesen(v)}>
+                        <Button
+                          disabled={speichert}
+                          ariaLabel={`Verknüpfung von ${v.bezeichnung} mit ${v.artikel} lösen`}
+                          onClick={() =>
+                            fragen({
+                              titel: `${v.bezeichnung} von ${v.artikel} lösen?`,
+                              text: `Der Artikel wird bei allen Zutaten mit dieser Bezeichnung weggenommen (${umfangText(v.anzahl, v.rezepte_anzahl)} in der Saison), auch in Rezepten ausserhalb der Saison. Die Bezeichnung steht danach wieder unter den offenen.`,
+                              bestaetigen: "Lösen",
+                              aktion: () => loesen(v),
+                            })
+                          }
+                        >
                           Lösen
                         </Button>
                       );
@@ -264,17 +311,25 @@ export default function ZutatenZuordnenSeite() {
         fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Zutaten werden geladen" />
       ) : null}
 
+      {rueckfrage}
+
       <ArtikelWaehlen
         key={oeffnung}
+        vorgabe={ziel?.bezeichnung}
         titel={ziel ? `Artikel für ${ziel.bezeichnung}` : "Artikel"}
         meta={ziel ? umfangText(ziel.anzahl, ziel.rezepteAnzahl) : undefined}
         offen={zielOffen}
         gesperrt={speichert}
         fehler={zielFehler}
-        onClose={() => setZielOffen(false)}
+        onClose={() => {
+          setZielOffen(false);
+          const id = fokusNach.current;
+          fokusNach.current = undefined;
+          if (id !== undefined) requestAnimationFrame(() => fokusSetzen(id));
+        }}
         onWahl={async (a) => {
           if (!ziel) return;
-          const f = await zuordnen(ziel, a.id, a.name);
+          const f = await zuordnen(ziel, a.id, a.name, true);
           if (f) return setZielFehler(f);
           setZielOffen(false);
         }}
