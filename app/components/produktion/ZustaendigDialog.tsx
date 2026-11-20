@@ -58,7 +58,7 @@ export function ZustaendigDialog({ komponente, meta, wert, bekannte, hinweis, en
         </>
       }
     >
-      {fehler ? <Notice title="Nicht gespeichert">{fehler}</Notice> : null}
+      {fehler ? <Notice role="alert" title="Nicht gespeichert">{fehler}</Notice> : null}
       {bekannte.length ? (
         <Select
           id="zustaendig-liste"

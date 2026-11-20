@@ -111,7 +111,7 @@ function Formular() {
             value={code}
             onChange={(e) => setCode(wert(e))}
           />
-          {fehler ? <Notice title="Anmeldung nicht möglich">{fehler}</Notice> : null}
+          {fehler ? <Notice role="alert" title="Anmeldung nicht möglich">{fehler}</Notice> : null}
           <div className="pl-auth__aktionen">
             <Button variant="primary" type="submit" disabled={laeuft || nurZiffern(code).length < 6}>
               {laeuft ? "Wird angemeldet …" : "Mit Code anmelden"}
@@ -127,7 +127,7 @@ function Formular() {
   return (
     <Card title="Anmelden" meta="Link per E-Mail, ohne Passwort">
       <form onSubmit={senden} className="pl-stack">
-        {fehler ? <Notice title="Anmeldung nicht möglich">{fehler}</Notice> : null}
+        {fehler ? <Notice role="alert" title="Anmeldung nicht möglich">{fehler}</Notice> : null}
         <TextField
           id="email"
           label="E-Mail"

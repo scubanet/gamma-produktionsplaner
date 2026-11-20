@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.25 | 20.11.2026 | Schmale Bildschirme: `pl-scroll` und `pl-table-wrap` mit `position: relative`, damit versteckte Texte (`pl-sr`) in breiten Tabellen die Seite nicht mehr verbreitern; `pl-h1` trennt lange Wörter (320 px). Dialog: `pl-dialog__links` setzt eine Aktion (z.B. «Löschen») nach links, getrennt von Speichern und Abbrechen. |
 | 0.24 | 20.11.2026 | Korrekturen aus der Durchsicht: Breadcrumb-Links wieder in `ink-muted`; DataTable mit `rowHref` navigiert nicht mehr beim Markieren von Text und öffnet mit Zusatztaste einen neuen Tab; UserMenu setzt den Fokus bei Escape zurück auf den Knopf. |
 | 0.23 | 20.11.2026 | `pl-actions--unten`: Feld mit Label und Button daneben stehen auf der unteren Linie (Skalierung im Rezept). |
 | 0.22 | 20.11.2026 | Bildmarke von gammagruppe.ch als Rasterbild (`assets/bildmarke-web.png`) in Kopfzeile und Anmeldung; Brand mit `mono` (im Dunkel-Thema hell), TopNav mit `brandMono`. Favicon und App-Icons bleiben beim Platzhalter. |

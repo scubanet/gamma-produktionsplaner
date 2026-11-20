@@ -18,7 +18,7 @@ export default function Fehler({ error, retry }: { error: unknown; retry: () => 
           <h1 className="pl-h1">Produktionsplaner</h1>
         </div>
       </header>
-      <Notice title="Die Seite konnte nicht angezeigt werden">
+      <Notice role="alert" title="Die Seite konnte nicht angezeigt werden">
         Es ist ein unerwarteter Fehler aufgetreten. Gespeicherte Daten sind nicht betroffen. Bleibt der Fehler, bitte bei Dominik
         Weckherlin melden.
       </Notice>

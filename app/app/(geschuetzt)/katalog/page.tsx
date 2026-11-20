@@ -89,7 +89,7 @@ function Katalogansicht() {
         </div>
       </header>
 
-      {fehler ? <Notice title="Katalog nicht geladen">{fehler}</Notice> : null}
+      {fehler ? <Notice role="alert" title="Katalog nicht geladen">{fehler}</Notice> : null}
 
       <div className="pl-row">
         <div className="pl-col-side">
