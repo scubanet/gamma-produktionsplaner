@@ -8,6 +8,7 @@ import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import { formatChf } from "@/lib/offerte";
 import { bestellschlussText, nachLieferant, type ArtikelZeile, type Position, type Summe } from "@/lib/einkauf";
 import { ArtikelZuordnen, type Ziel } from "@/components/einkauf/ArtikelZuordnen";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { summe: Summe; artikel: ArtikelZeile[]; positionen: Position[] };
 
@@ -42,7 +43,7 @@ export default function Einkauf() {
         return true;
       },
       (e: Error) => {
-        if (nr === anfrage.current) setFehler(`Einkauf nicht geladen: ${e.message}`);
+        if (nr === anfrage.current) setFehler(`Einkauf nicht geladen: ${fehlerText(e)}`);
         return false;
       },
     );

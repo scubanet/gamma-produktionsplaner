@@ -6,6 +6,7 @@ import { Button, Card, DataTable, Notice } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { formatChf, heuteIso, nachGang, type Offerte, type Position, type Summe } from "@/lib/offerte";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { offerte: Offerte; positionen: Position[]; summe: Summe | null; angebotsform: string | null; mengentypen: string[] };
 
@@ -33,7 +34,7 @@ function Druck() {
   const [fehler, setFehler] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id) laden(id).then(setDaten, (e: Error) => setFehler(e.message));
+    if (id) laden(id).then(setDaten, (e: Error) => setFehler(fehlerText(e)));
   }, [id]);
 
   if (!id) return <Notice title="Keine Offerte gewählt">Bitte eine Offerte aus der Liste öffnen.</Notice>;

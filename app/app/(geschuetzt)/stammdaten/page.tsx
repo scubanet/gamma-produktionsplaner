@@ -7,6 +7,7 @@ import { formatDatum, formatZahl } from "@/lib/format";
 import { chf } from "@/lib/ressourcen";
 import { ANGEBOTSFORMEN, FELDER, FIXKOSTEN_KATEGORIEN, SERVICE_ARTEN, standardFelder, type Zeile } from "@/lib/stammdaten";
 import { Stammtabelle } from "@/components/stammdaten/Stammtabelle";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { lohnsatz: Zeile[]; energiepreis: Zeile[]; fixkosten: Zeile[]; geraet: Zeile[]; gebinde: Zeile[]; serviceArtikel: Zeile[]; standard: Zeile[] };
 
@@ -42,7 +43,7 @@ export default function Stammdaten() {
         return true;
       },
       (e: Error) => {
-        if (nr === anfrage.current) setFehler(`Stammdaten nicht geladen: ${e.message}`);
+        if (nr === anfrage.current) setFehler(`Stammdaten nicht geladen: ${fehlerText(e)}`);
         return false;
       },
     );

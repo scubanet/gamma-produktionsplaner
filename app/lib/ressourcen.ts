@@ -1,3 +1,4 @@
+import { fehlerText as allgemeinerText } from "./fehler";
 // Ressourcen und Kalkulation pro Anlass. Stunden, Kosten, Zusatzbedarf, Deckungsbeitrag und Fixkosten-Anteil
 // rechnen die Views anlass_personal_kosten, anlass_geraet_bedarf, anlass_kostenart und anlass_kalkulation.
 import type { Database } from "./database.types";
@@ -75,5 +76,5 @@ export function dbStatus(dbPct: number | null, ziel: number | null): { pill: "ok
 
 export function fehlerText(e: { message: string; code?: string }): string {
   if (e.code === "23505" && /anlass_geraet/.test(e.message)) return "Dieses Gerät ist für den Anlass schon erfasst. Bitte die bestehende Zeile ändern.";
-  return e.message;
+  return allgemeinerText(e);
 }

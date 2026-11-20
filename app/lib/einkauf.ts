@@ -1,3 +1,4 @@
+import { fehlerText as allgemeinerText } from "./fehler";
 // Einkauf: Positionen und Artikel-Liste aus den Views einkauf_position / einkauf_artikel,
 // Lieferanten mit Liefertagen, Bestellschluss und Vorlauf (Vorbild BestellApp).
 import type { Database } from "./database.types";
@@ -71,5 +72,5 @@ export function nachLieferant(zeilen: ArtikelZeile[]): Gruppe<ArtikelZeile>[] {
 export function fehlerText(e: { message: string; code?: string }): string {
   if (e.code === "23505" && /lieferant_name_key/.test(e.message)) return "Einen Lieferanten mit diesem Namen gibt es schon.";
   if (e.code === "23503" && /artikel_lieferant_id_fkey/.test(e.message)) return "Dem Lieferanten sind noch Artikel zugeordnet.";
-  return e.message;
+  return allgemeinerText(e);
 }

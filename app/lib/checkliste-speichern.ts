@@ -1,3 +1,4 @@
+import { fehlerText } from "./fehler";
 // Schreibt Zuständig oder Erledigt für eine oder mehrere Wellen einer Komponente.
 // Es werden nur die übergebenen Felder geschrieben; Zeitpunkt und Person des Häkchens setzt die Datenbank.
 import { supabase } from "./supabase";
@@ -13,5 +14,5 @@ export async function checklisteSpeichern(
     .from("produktion_aufgabe")
     .upsert(wellen.map((welle_nr) => ({ saison_id: saisonId, komponente_id: komponenteId, welle_nr, ...teil })))
     .select("komponente_id, welle_nr, zustaendig, erledigt_am");
-  return r.error ? { fehler: r.error.message } : { zeilen: r.data };
+  return r.error ? { fehler: fehlerText(r.error) } : { zeilen: r.data };
 }

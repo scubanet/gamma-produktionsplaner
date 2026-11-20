@@ -10,6 +10,7 @@ import { datumGueltig, hinweisPill, planNachWelle, vorschlagNachTag, type PlanWe
 import { aufgabenAus, fortschritt, personen as personenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/lib/checkliste";
 import { checklisteSpeichern } from "@/lib/checkliste-speichern";
 import { ZustaendigDialog } from "@/components/produktion/ZustaendigDialog";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { uebersicht: Uebersicht; vorschlag: Vorschlag[]; plan: PlanZeile[]; checkliste: ChecklisteZeile[] };
 /** Eine Komponente in einer Welle; nr ist die Welle der Komponente im Vorschlag (Schlüssel der Checkliste). */
@@ -59,7 +60,7 @@ export default function Wellen() {
         return true;
       },
       (e: Error) => {
-        if (nr === anfrage.current) setHinweis({ titel: "Wellen nicht geladen", text: e.message });
+        if (nr === anfrage.current) setHinweis({ titel: "Wellen nicht geladen", text: fehlerText(e) });
         return false;
       },
     );
@@ -87,7 +88,7 @@ export default function Wellen() {
     const r = await supabase.rpc("wellenplan_uebernehmen", { p_saison: u.saison_id });
     setUebernimmt(false);
     setUebernehmenOffen(false);
-    if (r.error) return setHinweis({ titel: "Vorschlag nicht übernommen", text: r.error.message });
+    if (r.error) return setHinweis({ titel: "Vorschlag nicht übernommen", text: fehlerText(r.error) });
     setAnsicht("plan");
     if (await neuLaden()) melden(`Wellenplan mit ${r.data} Welle(n) angelegt.`);
   }
@@ -98,7 +99,7 @@ export default function Wellen() {
     setSpeichert(true);
     const r = await supabase.from("produktionswelle").update({ datum: form.datum, bemerkung: form.bemerkung.trim() || null }).eq("id", form.welle.welleId);
     setSpeichert(false);
-    if (r.error) return setForm({ ...form, fehler: r.error.message });
+    if (r.error) return setForm({ ...form, fehler: fehlerText(r.error) });
     setFormOffen(false);
     if (await neuLaden()) melden(`Welle ${form.welle.nummer} gespeichert: ${formatDatum(form.datum)}. Prüfhinweise neu gerechnet.`);
   }

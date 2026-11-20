@@ -330,7 +330,8 @@
   function Notice(p) {
     return h('section', { className: 'pl-notice', role: p.role },
       p.title ? h('h3', { className: 'pl-notice__title' }, p.title) : null,
-      p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children);
+      p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children,
+      p.detail ? h('details', { className: 'pl-notice__detail' }, h('summary', null, 'Technische Angaben'), h('code', null, p.detail)) : null);
   }
 
   root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu };

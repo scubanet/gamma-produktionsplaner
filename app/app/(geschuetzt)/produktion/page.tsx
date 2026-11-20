@@ -21,6 +21,7 @@ import type { Hinweis, Regeneration, System, Zuteilung } from "@/lib/systemzutei
 type Bearbeiten = { zeile: Zuteilung; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[] };
 import { mengenKontrollen, statusKontrolle, STATUS_ERWARTET, wellenKontrolle, WELLEN_ERWARTET, type Kontrolle } from "@/lib/kontrollwerte";
 import { excelExport } from "@/lib/export";
+import { fehlerText } from "@/lib/fehler";
 
 type Anlass = { id: string; name: string; datum: string | null; datum_bis: string | null; saison_id: string | null; saison: { name: string } | null; menuelinie: { id: string; name: string }[] };
 type StatusZahl = Record<keyof typeof STATUS_ERWARTET, number | null>;
@@ -105,7 +106,7 @@ export default function Produktionsliste() {
     laden().then((d) => {
       setDaten(d);
       setAufgaben(aufgabenAus(d.checkliste));
-    }, (e: Error) => setFehler(e.message));
+    }, (e: Error) => setFehler(fehlerText(e)));
   }
 
   /** Komponente mit Zuteilung, Prüfhinweisen und Stammdaten laden und den Dialog der Systemzuteilung öffnen. */
@@ -121,7 +122,7 @@ export default function Produktionsliste() {
     ]);
     setOeffnet(null);
     const f = zu.error ?? hi.error ?? sy.error ?? re.error;
-    if (f) return setAktionsFehler(`${z.komponente}: ${f.message}`);
+    if (f) return setAktionsFehler(`${z.komponente}: ${fehlerText(f)}`);
     if (!zu.data) return setAktionsFehler(`${z.komponente}: Komponente nicht gefunden.`);
     const s = { systeme: sy.data ?? [], regenerationen: re.data ?? [] };
     setStamm(s);
@@ -132,7 +133,7 @@ export default function Produktionsliste() {
     laden().then((d) => {
       setDaten(d);
       setAufgaben(aufgabenAus(d.checkliste));
-    }, (e: Error) => setFehler(e.message));
+    }, (e: Error) => setFehler(fehlerText(e)));
   }, []);
 
   const alle = useMemo(() => {
@@ -292,7 +293,7 @@ export default function Produktionsliste() {
       const teil = linienName ? ` ${linienName}` : "";
       await excelExport(zeilen, `Produktionsliste ${daten.anlass.name}${teil}.xlsx`, !!linie);
     } catch (e) {
-      setExportFehler((e as Error).message);
+      setExportFehler(fehlerText(e));
     } finally {
       setExportLaeuft(false);
     }

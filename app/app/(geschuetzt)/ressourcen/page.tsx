@@ -72,7 +72,7 @@ function Ressourcen() {
           return true;
         },
         (e: Error) => {
-          if (nr === anfrage.current) setHinweis({ titel: "Ressourcen nicht geladen", text: e.message });
+          if (nr === anfrage.current) setHinweis({ titel: "Ressourcen nicht geladen", text: fehlerText(e) });
           return false;
         },
       );
@@ -128,7 +128,7 @@ function Ressourcen() {
       setSpeichert(true);
       const q = await supabase.rpc("anlass_kosten_setzen", { p_anlass: anlassId, p_art: b.form.art as Kostenart["art"] & string, p_plan: plan as number, p_ist: ist as number });
       setSpeichert(false);
-      if (q.error) return setB({ art: "kosten", form: { ...b.form, fehler: q.error.message } });
+      if (q.error) return setB({ art: "kosten", form: { ...b.form, fehler: fehlerText(q.error) } });
       return fertig(`${KOSTENART_LABEL[b.form.art]} gespeichert.`);
     }
     const u = betrag(b.text);
@@ -136,13 +136,13 @@ function Ressourcen() {
     setSpeichert(true);
     const q = await supabase.from("anlass").update({ umsatz_netto_chf: u }).eq("id", anlassId);
     setSpeichert(false);
-    if (q.error) return setB({ ...b, fehler: q.error.message });
+    if (q.error) return setB({ ...b, fehler: fehlerText(q.error) });
     return fertig("Umsatz gespeichert.");
   }
 
   async function entfernen(tabelle: "anlass_personal" | "anlass_geraet", id: string, name: string) {
     const q = await supabase.from(tabelle).delete().eq("id", id);
-    if (q.error) return setHinweis({ titel: `${name} nicht entfernt`, text: q.error.message });
+    if (q.error) return setHinweis({ titel: `${name} nicht entfernt`, text: fehlerText(q.error) });
     if (await neuLaden(anlassId)) melden(`${name} entfernt.`);
   }
 

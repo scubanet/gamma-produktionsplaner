@@ -80,14 +80,14 @@ function Bearbeiten() {
         if (nr === anfrage.current) setRechnung(r);
       },
       (e: Error) => {
-        if (nr === anfrage.current) setHinweis({ titel: "Preise nicht neu gerechnet", text: e.message });
+        if (nr === anfrage.current) setHinweis({ titel: "Preise nicht neu gerechnet", text: fehlerText(e) });
       },
     );
   }, [id]);
 
   useEffect(() => {
     if (!id) return;
-    const ladeFehler = (e: Error) => setHinweis({ titel: "Offerte nicht geladen", text: e.message });
+    const ladeFehler = (e: Error) => setHinweis({ titel: "Offerte nicht geladen", text: fehlerText(e) });
     stammLaden().then(setStamm, ladeFehler);
     offerteLaden(id).then((o) => {
       setOfferte(o);
@@ -170,7 +170,7 @@ function Bearbeiten() {
     const saison = bestaetigen.saison || stamm?.saisons[0]?.id || "";
     setBestaetigen({ ...bestaetigen, saison, laeuft: true, fehler: null });
     const r = await supabase.rpc("offerte_bestaetigen", { p_anlass: id, p_saison: saison });
-    if (r.error) return setBestaetigen({ saison, laeuft: false, fehler: r.error.message });
+    if (r.error) return setBestaetigen({ saison, laeuft: false, fehler: fehlerText(r.error) });
     router.push(`/anlaesse/bearbeiten/?id=${id}`);
   }
 

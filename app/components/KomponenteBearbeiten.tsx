@@ -7,6 +7,7 @@ import {
   fehlertext, formularAus, lagerartSetzen, sperreAus, umschalten, updateAus,
   type Formular, type Hinweis, type Regeneration, type System, type Zuteilung,
 } from "@/lib/systemzuteilung";
+import { fehlerText } from "@/lib/fehler";
 
 type Props = {
   zeile: Zuteilung;
@@ -32,7 +33,7 @@ async function nachladen(id: string) {
     supabase.from("komponente_zuteilung").select("*").eq("id", id).maybeSingle(),
     supabase.from("komponente_pruefhinweis").select("*").eq("komponente_id", id),
   ]);
-  if (z.error || h.error) return { fehler: (z.error ?? h.error)!.message };
+  if (z.error || h.error) return { fehler: fehlerText(z.error ?? h.error) };
   return { zeile: z.data, hinweise: h.data ?? [] };
 }
 

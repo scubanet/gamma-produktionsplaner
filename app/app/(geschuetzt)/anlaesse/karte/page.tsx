@@ -43,7 +43,7 @@ function KarteBearbeiten() {
         if (nr === anfrage.current) setDaten(d);
       },
       (e: Error) => {
-        if (nr === anfrage.current) setHinweis(`Karte nicht geladen: ${e.message}`);
+        if (nr === anfrage.current) setHinweis(`Karte nicht geladen: ${fehlerText(e)}`);
       },
     );
   }, [id]);

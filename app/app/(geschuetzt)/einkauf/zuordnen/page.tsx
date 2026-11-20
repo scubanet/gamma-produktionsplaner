@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import { filtern, gruppieren, vorschlagDetail, type ArtikelVorschlag, type KomponenteOffen, type VorschlagZeile } from "@/lib/artikel-vorschlag";
 import { ArtikelZuordnen, type Ziel } from "@/components/einkauf/ArtikelZuordnen";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { saison: string; liste: KomponenteOffen[] };
 
@@ -40,7 +41,7 @@ export default function ArtikelZuordnenSeite() {
           return true;
         },
         (e: Error) => {
-          setFehler({ titel: "Vorschläge nicht geladen", text: e.message });
+          setFehler({ titel: "Vorschläge nicht geladen", text: fehlerText(e) });
           return false;
         },
       ),
@@ -63,7 +64,7 @@ export default function ArtikelZuordnenSeite() {
     setSpeichert(k.komponenteId);
     const r = await supabase.from("komponente").update({ hauptartikel_id: v.artikelId }).eq("id", k.komponenteId).is("hauptartikel_id", null).select("id");
     setSpeichert(null);
-    if (r.error) return setFehler({ titel: "Nicht gespeichert", text: `${k.komponente}: ${r.error.message}` });
+    if (r.error) return setFehler({ titel: "Nicht gespeichert", text: `${k.komponente}: ${fehlerText(r.error)}` });
     if (!r.data?.length) return setFehler({ titel: "Nicht gespeichert", text: `${k.komponente}: hat inzwischen schon einen Hauptartikel oder ist nicht mehr vorhanden. Seite neu laden.` });
     setDaten((d) => (d ? { ...d, liste: d.liste.filter((x) => x.komponenteId !== k.komponenteId) } : d));
     setZugeordnet((n) => n + 1);

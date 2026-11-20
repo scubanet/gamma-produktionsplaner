@@ -5,6 +5,7 @@ import { Notice, StatusPill } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { naechsterAnlass, rezepteStand, summe, wannText, wellenName, type LeitAnlass } from "@/lib/leitstand";
+import { fehlerText } from "@/lib/fehler";
 
 type Anlass = LeitAnlass & { saison: { name: string } | null };
 type Welle = { saison_id: string | null; welle_nr: number | null; aufgaben: number | null; erledigt: number | null };
@@ -41,7 +42,7 @@ export default function Leitstand() {
   const [fehler, setFehler] = useState<string | null>(null);
 
   useEffect(() => {
-    laden().then(setD, (e: Error) => setFehler(e.message));
+    laden().then(setD, (e: Error) => setFehler(fehlerText(e)));
   }, []);
 
   const naechster = d ? naechsterAnlass(d.anlaesse) : null;

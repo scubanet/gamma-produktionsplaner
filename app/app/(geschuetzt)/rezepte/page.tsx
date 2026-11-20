@@ -12,6 +12,7 @@ import {
   basisZutat, besonderesZeilen, ergibtText, geraete, gruppenAnzeige, istGericht, listenSub, nachStatus, STATUS_ALLE, STATUS_FILTER, voreinstellungen, wertAusEingabe,
   type Faktor, type Gruppe, type KomponenteSkaliert, type Punkt, type Rezept, type Schritt, type Zutat,
 } from "@/lib/rezepte";
+import { fehlerText } from "@/lib/fehler";
 
 type Zeit = { aktiv_min: number | null; unbeaufsichtigt_min: number | null };
 type Details = { gruppen: Gruppe[]; schritte: Schritt[]; zeit: Zeit | null; offen: Punkt[] };
@@ -81,7 +82,7 @@ function Rezeptbibliothek() {
   const [skaliert, setSkaliert] = useState<Geladen<Skaliert> | null>(null);
 
   useEffect(() => {
-    rezepteLaden().then(setRezepte, (e: Error) => setListenFehler(e.message));
+    rezepteLaden().then(setRezepte, (e: Error) => setListenFehler(fehlerText(e)));
     supabase.rpc("ist_admin").then((r) => setAdmin(r.data === true));
   }, []);
 
@@ -99,7 +100,7 @@ function Rezeptbibliothek() {
     let gilt = true;
     detailsLaden(rezept.id).then(
       (daten) => gilt && setDetails({ schluessel: standSchluessel, daten }),
-      (e: Error) => gilt && setDetails({ schluessel: standSchluessel, fehler: e.message }),
+      (e: Error) => gilt && setDetails({ schluessel: standSchluessel, fehler: fehlerText(e) }),
     );
     return () => {
       gilt = false;
@@ -111,7 +112,7 @@ function Rezeptbibliothek() {
     let gilt = true;
     skalieren(rezept, wert).then(
       (daten) => gilt && setSkaliert({ schluessel: skalSchluessel, daten }),
-      (e: Error) => gilt && setSkaliert({ schluessel: skalSchluessel, fehler: e.message }),
+      (e: Error) => gilt && setSkaliert({ schluessel: skalSchluessel, fehler: fehlerText(e) }),
     );
     return () => {
       gilt = false;

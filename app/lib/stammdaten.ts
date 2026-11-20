@@ -1,3 +1,4 @@
+import { fehlerText as allgemeinerText } from "./fehler";
 // Stammdaten für Kosten: Lohnsätze, Strompreis, Fixkosten, Geräte. Eine Feldbeschreibung pro Tabelle,
 // damit Formular, Prüfung und Speichern für alle vier gleich laufen.
 
@@ -151,5 +152,5 @@ export function fehlerText(e: { message: string; code?: string }): string {
   if (e.code === "23505") return "Diesen Eintrag gibt es schon (gleiche Rolle und Datum, gleiches Datum oder gleicher Name).";
   if (e.code === "23503") return "Der Eintrag wird noch verwendet (z.B. Gerät in einem Rezept oder Anlass) und lässt sich nicht löschen.";
   if (e.code === "23514") return "Wert ausserhalb des erlaubten Bereichs (z.B. Betrag 0 oder «gültig bis» vor «gültig ab»).";
-  return e.message;
+  return allgemeinerText(e);
 }

@@ -1,3 +1,4 @@
+import { fehlerText as allgemeinerText } from "./fehler";
 // Offerte: Anlass mit Status «offerte» und Gerichten aus dem Katalog (Tabelle offerte_gericht).
 // Mengen, Warenkosten, Preise, MWST und Deckungsbeitrag rechnen die Views offerte_position und
 // offerte_summe. Die App zeigt an, prüft Eingaben und schreibt nur Kopf und Gerichte.
@@ -98,5 +99,5 @@ export function heuteIso(): string {
 export function fehlerText(e: { message: string; code?: string }): string {
   if (e.code === "23505" && /offerte_gericht/.test(e.message)) return "Dieses Gericht ist schon in der Offerte.";
   if (e.code === "23514" && /anteil/.test(e.message)) return "Anteil muss über 0 und höchstens 100 % sein.";
-  return e.message;
+  return allgemeinerText(e);
 }

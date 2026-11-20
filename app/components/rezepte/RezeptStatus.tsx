@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button, StatusPill } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { statusPill, statusSchritte, statusText, type Rezept } from "@/lib/rezepte";
+import { fehlerText } from "@/lib/fehler";
 
 /** Status des Rezepts als Pill mit den Knöpfen «Geprüft», «Freigeben», «Zurück auf Entwurf». Die Datenbank prüft Stand und Recht. */
 export function RezeptStatus({ rezept, admin, onGesetzt }: {
@@ -19,7 +20,7 @@ export function RezeptStatus({ rezept, admin, onGesetzt }: {
     setFehler(null);
     const q = await supabase.rpc("rezept_status_setzen", { p_rezept: rezept.id, p_status: status, p_geaendert_am: rezept.geaendert_am });
     setLaeuft(false);
-    if (q.error) return setFehler(q.error.message);
+    if (q.error) return setFehler(fehlerText(q.error));
     const neu = q.data as { status: string; geaendert_am: string };
     onGesetzt(neu.status, neu.geaendert_am);
   }

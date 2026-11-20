@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { ANMELDEN } from "@/lib/navigation";
+import { beiSitzungsende } from "@/lib/fehler";
 
 const SitzungKontext = createContext<Session | null>(null);
 export const useSitzung = () => useContext(SitzungKontext);
@@ -19,7 +20,12 @@ export function Anmeldung({ children }: { children: ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSitzung(data.session));
     const { data } = supabase.auth.onAuthStateChange((_e, s) => setSitzung(s));
-    return () => data.subscription.unsubscribe();
+    // Meldet die Datenbank «Sitzung abgelaufen», lokal abmelden: der nächste Effekt leitet zur Anmeldung und merkt sich die Seite.
+    beiSitzungsende(() => void supabase.auth.signOut({ scope: "local" }));
+    return () => {
+      beiSitzungsende(null);
+      data.subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {

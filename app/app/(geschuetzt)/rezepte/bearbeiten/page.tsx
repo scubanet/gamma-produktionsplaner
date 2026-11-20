@@ -11,6 +11,7 @@ import {
   basisOptionen, neueGruppe, neueZutat, neuerSchritt, ORTE, rezeptDaten, rezeptFormular,
   type GruppeForm, type RezeptFormular, type SchrittForm, type SchrittRoh, type ZutatForm,
 } from "@/lib/rezept-pflege";
+import { fehlerText } from "@/lib/fehler";
 
 type Geraet = { id: string; name: string };
 type Gebinde = { id: string; name: string };
@@ -76,7 +77,7 @@ function RezeptBearbeiten() {
         setAusgang(d.formular);
         setFehler(null);
       },
-      (e: Error) => gilt && setGeladen({ slug, fehler: e.message }),
+      (e: Error) => gilt && setGeladen({ slug, fehler: fehlerText(e) }),
     );
     return () => {
       gilt = false;
@@ -140,7 +141,7 @@ function RezeptBearbeiten() {
     });
     if (q.error) {
       setSpeichert(false);
-      return setFehler(q.error.message);
+      return setFehler(fehlerText(q.error));
     }
     const neu = (q.data as { slug?: string } | null)?.slug ?? slug;
     router.replace(`/rezepte/?r=${encodeURIComponent(neu)}&gespeichert=1`);
@@ -150,7 +151,7 @@ function RezeptBearbeiten() {
     if (!rezept) return;
     setLoeschen({ offen: true, laeuft: true, fehler: null });
     const q = await supabase.rpc("rezept_loeschen", { p_rezept: rezept.id });
-    if (q.error) return setLoeschen({ offen: true, laeuft: false, fehler: q.error.message });
+    if (q.error) return setLoeschen({ offen: true, laeuft: false, fehler: fehlerText(q.error) });
     router.replace("/rezepte/");
   }
 

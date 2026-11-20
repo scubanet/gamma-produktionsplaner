@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, Dialog, ItemList, Notice, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatChf } from "@/lib/offerte";
+import { fehlerText } from "@/lib/fehler";
 
 type Artikel = { id: string; name: string; einheit: string | null; preis_pro_einheit: number | null; artikelnummer: string | null };
 export type Ziel = { komponenteId: string; komponente: string; einheit: string | null; artikel: string | null };
@@ -37,7 +38,7 @@ export function ArtikelZuordnen({ ziel, offen, onClose, onGespeichert }: {
       .limit(30)
       .then((r) => {
         if (!gilt) return;
-        if (r.error) return setFehler({ titel: "Suche fehlgeschlagen", text: r.error.message });
+        if (r.error) return setFehler({ titel: "Suche fehlgeschlagen", text: fehlerText(r.error) });
         setFehler(null);
         setTreffer(r.data);
       });
@@ -54,7 +55,7 @@ export function ArtikelZuordnen({ ziel, offen, onClose, onGespeichert }: {
     setFehler(null);
     const r = await supabase.from("komponente").update({ hauptartikel_id: artikelId }).eq("id", ziel.komponenteId).select("id");
     setSpeichert(false);
-    if (r.error || !r.data?.length) return setFehler({ titel: "Nicht gespeichert", text: r.error?.message ?? "Komponente nicht gefunden oder keine Berechtigung." });
+    if (r.error || !r.data?.length) return setFehler({ titel: "Nicht gespeichert", text: (r.error ? fehlerText(r.error) : "Komponente nicht gefunden oder keine Berechtigung.") });
     onGespeichert(artikelId ? `${ziel.komponente}: Hauptartikel ${name} zugeordnet.` : `${ziel.komponente}: Zuordnung entfernt.`);
   }
 

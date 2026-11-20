@@ -1,3 +1,4 @@
+import { fehlerText } from "./fehler";
 // Systemzuteilung: Komponenten mit Produktion, Lagerung, Regeneration und CF-Stufe.
 // Status, Haltbarkeit und Prüfhinweise rechnet die Datenbank (Views komponente_zuteilung,
 // komponente_pruefhinweis). Die App liest, filtert und schreibt nur die Eingabefelder.
@@ -123,7 +124,7 @@ export function fehlertext(e: { message: string; code?: string }): string {
   if (e.code === "23514" && /lager_trocken_check/.test(e.message)) return "Economat (trocken, bis 18 °C) geht nicht zusammen mit 0–2 °C oder TK.";
   if (e.code === "22003") return "Zahl zu gross.";
   if (e.code === "23514" && /cf_stufe_check/.test(e.message)) return "CF-Stufe muss zwischen 0 und 5 liegen.";
-  return e.message;
+  return fehlerText(e);
 }
 
 type Anzeige = Pick<Zuteilung, "status" | "nur_vor_ort">;

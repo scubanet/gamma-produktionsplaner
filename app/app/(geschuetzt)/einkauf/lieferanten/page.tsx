@@ -63,7 +63,7 @@ export default function Lieferanten() {
         if (nr === anfrage.current) setDaten(d);
       },
       (e: Error) => {
-        if (nr === anfrage.current) setFehler(`Lieferanten nicht geladen: ${e.message}`);
+        if (nr === anfrage.current) setFehler(`Lieferanten nicht geladen: ${fehlerText(e)}`);
       },
     );
   }, []);
@@ -117,7 +117,7 @@ export default function Lieferanten() {
     // .neq("name", "") trifft jeden Artikel: ein Update ohne Bedingung lehnt die Datenbank ab («ganze Preisliste zuordnen»).
     const r = await artikelAbfrage(supabase.from("artikel").update({ lieferant_id: auswahl.lieferant }).neq("name", ""), auswahl).select("id");
     setOrdnetZu(false);
-    if (r.error) return setFehler(`Artikel nicht zugeordnet: ${r.error.message}`);
+    if (r.error) return setFehler(`Artikel nicht zugeordnet: ${fehlerText(r.error)}`);
     const name = daten?.lieferanten.find((l) => l.id === auswahl.lieferant)?.name ?? "";
     setVersion((n) => n + 1); // Trefferzahl neu zählen
     await neuLaden();

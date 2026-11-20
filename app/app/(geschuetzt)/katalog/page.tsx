@@ -10,6 +10,7 @@ import {
   gruppieren, mengeText, suchen, warenkostenText,
   type Gericht, type GerichtKomponente, type Quantum, type Warenkosten,
 } from "@/lib/katalog";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = {
   gerichte: Gericht[];
@@ -60,7 +61,7 @@ function Katalogansicht() {
   const [kategorie, setKategorie] = useState("");
 
   useEffect(() => {
-    laden().then(setDaten, (e: Error) => setFehler(e.message));
+    laden().then(setDaten, (e: Error) => setFehler(fehlerText(e)));
   }, []);
 
   const treffer = useMemo(() => (daten ? suchen(daten.gerichte, suche, kategorie) : []), [daten, suche, kategorie]);

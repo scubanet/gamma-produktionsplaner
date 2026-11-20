@@ -10,6 +10,7 @@ import {
   type Filter, type Hinweis, type Regeneration, type System, type Zuteilung,
 } from "@/lib/systemzuteilung";
 import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { zeilen: Zuteilung[]; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[]; kategorien: string[]; kollektion: string };
 
@@ -45,7 +46,7 @@ export default function Systemzuteilung() {
   const schmal = useSchmal();
   const meldungRef = useRef<HTMLParagraphElement>(null);
 
-  const neuLaden = () => laden().then(setDaten, (e: Error) => setFehler(e.message));
+  const neuLaden = () => laden().then(setDaten, (e: Error) => setFehler(fehlerText(e)));
   useEffect(() => {
     neuLaden();
   }, []);

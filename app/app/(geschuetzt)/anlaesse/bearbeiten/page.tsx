@@ -12,6 +12,7 @@ import { Services } from "@/components/anlass/Services";
 import { Geschirr } from "@/components/anlass/Geschirr";
 import { Menuelinien, type KatalogGericht, type LinieGaeste } from "@/components/anlass/Menuelinien";
 import { Karten, type Vorlage } from "@/components/anlass/Karten";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = {
   anlass: Anlass | null;
@@ -97,14 +98,14 @@ function Bearbeiten() {
         if (nr === anfrage.current) setDaten(d);
       },
       (e: Error) => {
-        if (nr === anfrage.current) setHinweis({ titel: "Anlass nicht geladen", text: e.message });
+        if (nr === anfrage.current) setHinweis({ titel: "Anlass nicht geladen", text: fehlerText(e) });
       },
     );
   }, [id]);
 
   useEffect(() => {
     if (!id) return;
-    stammLaden().then(setStamm, (e: Error) => setHinweis({ titel: "Stammdaten nicht geladen", text: e.message }));
+    stammLaden().then(setStamm, (e: Error) => setHinweis({ titel: "Stammdaten nicht geladen", text: fehlerText(e) }));
     neuLaden();
   }, [id, neuLaden]);
 

@@ -6,6 +6,7 @@ import { Button, Card, DataTable, Notice } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { formatChf, type Offerte, type Summe } from "@/lib/offerte";
+import { fehlerText } from "@/lib/fehler";
 
 type Zeile = Offerte & { summe: Summe | undefined };
 
@@ -31,7 +32,7 @@ export default function Offerten() {
   const [legtAn, setLegtAn] = useState(false);
 
   useEffect(() => {
-    laden().then(setZeilen, (e: Error) => setFehler(e.message));
+    laden().then(setZeilen, (e: Error) => setFehler(fehlerText(e)));
   }, []);
 
   async function neu() {
@@ -40,7 +41,7 @@ export default function Offerten() {
     // Ohne Saison: Offerten zählen nicht für Produktionswellen, bis sie bestätigt sind. Nummer setzt die Datenbank.
     const r = await supabase.from("anlass").insert({ name: "Neue Offerte", status: "offerte" }).select("id").single();
     setLegtAn(false);
-    if (r.error) return setFehler(`Offerte nicht angelegt: ${r.error.message}`);
+    if (r.error) return setFehler(`Offerte nicht angelegt: ${fehlerText(r.error)}`);
     router.push(`/offerten/bearbeiten/?id=${r.data.id}`);
   }
 

@@ -4,13 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Card, DataTable, Dialog, KpiTile, Notice, StatusPill, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { datumText, neuerZugang, sortieren, status, type Benutzer } from "@/lib/benutzer";
+import { fehlerText } from "@/lib/fehler";
 
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
 
 /** Edge Function aufrufen; sie antwortet mit Daten oder { fehler }. */
 async function rufen<T>(body: Record<string, unknown>): Promise<T> {
   const r = await supabase.functions.invoke("benutzer", { body });
-  if (r.error) throw new Error(`Benutzerverwaltung nicht erreichbar: ${r.error.message}`);
+  if (r.error) throw new Error(fehlerText(r.error));
   const d = r.data as { fehler?: string } & T;
   if (d?.fehler) throw new Error(d.fehler);
   return d;
@@ -33,7 +34,7 @@ export default function BenutzerSeite() {
           return true;
         },
         (e: Error) => {
-          setFehler({ titel: "Benutzer nicht geladen", text: e.message });
+          setFehler({ titel: "Benutzer nicht geladen", text: fehlerText(e) });
           return false;
         },
       ),
@@ -57,7 +58,7 @@ export default function BenutzerSeite() {
       await rufen({ ...body, id: b.id });
       if (await neuLaden()) melden(text);
     } catch (e) {
-      setFehler({ titel: "Nicht gespeichert", text: `${b.name || b.email}: ${(e as Error).message}` });
+      setFehler({ titel: "Nicht gespeichert", text: `${b.name || b.email}: ${fehlerText(e)}` });
     } finally {
       setArbeitet(null);
     }
@@ -73,7 +74,7 @@ export default function BenutzerSeite() {
       setOffen(false);
       if (await neuLaden()) melden(`Zugang für ${p.email} angelegt. Die Person öffnet gamma.atoll-os.com und lässt sich mit dieser Adresse einen Anmeldelink schicken.`);
     } catch (e) {
-      setForm({ ...form, fehler: (e as Error).message });
+      setForm({ ...form, fehler: fehlerText(e) });
     } finally {
       setArbeitet(null);
     }

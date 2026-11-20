@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { STATUS, statusLabel, statusPill, zeitraum } from "@/lib/anlass";
 import type { Database } from "@/lib/database.types";
+import { fehlerText } from "@/lib/fehler";
 
 type Zeile = Database["public"]["Views"]["anlass_uebersicht"]["Row"];
 
@@ -24,7 +25,7 @@ export default function Anlaesse() {
   const [legtAn, setLegtAn] = useState(false);
 
   useEffect(() => {
-    laden().then(setZeilen, (e: Error) => setFehler(`Anlässe nicht geladen: ${e.message}`));
+    laden().then(setZeilen, (e: Error) => setFehler(`Anlässe nicht geladen: ${fehlerText(e)}`));
   }, []);
 
   const sichtbar = useMemo(() => (zeilen ?? []).filter((z) => !status || z.status === status), [zeilen, status]);
@@ -34,7 +35,7 @@ export default function Anlaesse() {
     setFehler(null);
     const r = await supabase.from("anlass").insert({ name: "Neuer Anlass", status: "option" }).select("id").single();
     setLegtAn(false);
-    if (r.error) return setFehler(`Anlass nicht angelegt: ${r.error.message}`);
+    if (r.error) return setFehler(`Anlass nicht angelegt: ${fehlerText(r.error)}`);
     router.push(`/anlaesse/bearbeiten/?id=${r.data.id}`);
   }
 

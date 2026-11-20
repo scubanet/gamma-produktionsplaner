@@ -8,6 +8,7 @@ import {
   artText, formAus, gewicht, mengeProGast, mietkosten, nachGang, OHNE_GANG, positionDaten, stueck,
   type Bedarf, type PositionForm, type ServiceArtikel,
 } from "@/lib/geschirr";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { zeilen: Bedarf[]; artikel: ServiceArtikel[]; standard: number };
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
@@ -48,7 +49,7 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
           setDaten(d);
           setLadeFehler(null);
         },
-        (e: Error) => setLadeFehler(e.message),
+        (e: Error) => setLadeFehler(fehlerText(e)),
       ),
     [anlassId, angebotsform],
   );
@@ -61,7 +62,7 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
     setArbeitet(true);
     const r = await supabase.rpc("anlass_geschirr_vorschlagen", { p_anlass: anlassId });
     setArbeitet(false);
-    if (r.error) return onFehler("Standard nicht übernommen", r.error.message);
+    if (r.error) return onFehler("Standard nicht übernommen", fehlerText(r.error));
     await neuLaden();
     onMeldung(r.data ? `${r.data} Position(en) aus dem Standard übernommen. Bestehende Positionen bleiben unverändert.` : "Keine neue Position: Der Standard ist schon übernommen oder hat für diese Gänge keine Einträge.");
   }
@@ -76,7 +77,7 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
       ? await supabase.from("anlass_geschirr").update({ ...p.daten, aus_standard: false }).eq("id", form.id)
       : await supabase.from("anlass_geschirr").insert({ ...p.daten, anlass_id: anlassId, artikel_id: form.artikel_id });
     setArbeitet(false);
-    if (r.error) return setForm({ ...form, fehler: r.error.code === "23505" ? "Diesen Artikel gibt es in diesem Gang schon. Die bestehende Position bearbeiten." : r.error.message });
+    if (r.error) return setForm({ ...form, fehler: r.error.code === "23505" ? "Diesen Artikel gibt es in diesem Gang schon. Die bestehende Position bearbeiten." : fehlerText(r.error) });
     setOffen(false);
     await neuLaden();
     onMeldung("Position gespeichert. Bedarf neu gerechnet.");
@@ -85,7 +86,7 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
   async function entfernen(z: Bedarf) {
     if (!z.id) return;
     const r = await supabase.from("anlass_geschirr").delete().eq("id", z.id);
-    if (r.error) return onFehler("Position nicht entfernt", r.error.message);
+    if (r.error) return onFehler("Position nicht entfernt", fehlerText(r.error));
     await neuLaden();
     onMeldung(`${z.artikel ?? "Position"} entfernt.`);
   }

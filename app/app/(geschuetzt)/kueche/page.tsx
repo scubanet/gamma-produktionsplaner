@@ -9,6 +9,7 @@ import { aufgabenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/l
 import { checklisteSpeichern } from "@/lib/checkliste-speichern";
 import { ersteOffeneWelle, istErledigt, nachKategorie, passFiltern, passStand, passWellen, type PassFilter, type PassZeile } from "@/lib/kueche";
 import type { Vorschlag } from "@/lib/wellen";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { saisonId: string; saison: string; vorschlag: Vorschlag[]; checkliste: ChecklisteZeile[] };
 
@@ -40,7 +41,7 @@ export default function Kuechenpass() {
         setDaten(d);
         setAufgaben(aufgabenAus(d?.checkliste ?? []));
       },
-      (e: Error) => setFehler(e.message),
+      (e: Error) => setFehler(fehlerText(e)),
     );
   }, []);
 

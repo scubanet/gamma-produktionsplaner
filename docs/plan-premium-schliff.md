@@ -102,12 +102,14 @@ Für Kopfzeile und Favicon reicht das, für die App-Icons (192 und 512 px) nicht
 
 **Dateien:** neu `app/lib/fehler.ts`, `app/tests/fehler.test.ts`, rund 50 Stellen mit `e.message` oder `error.message`.
 
-- [ ] Funktion `fehlerText(e)`: bekannte Fälle in klare Sätze übersetzen (keine Verbindung, Sitzung abgelaufen, keine Berechtigung, Datensatz wird noch verwendet, doppelter Wert). Unbekanntes: «Das hat nicht geklappt. Bitte nochmals versuchen.»
-- [ ] Tests zuerst, je bekannter Fall einer (Muster wie `fehlertext` in `lib/anmeldung.ts`).
-- [ ] `Notice` bekommt optional `detail`: die technische Meldung steht aufklappbar unter «Technische Angaben», nicht im Haupttext.
-- [ ] Bei «Sitzung abgelaufen» direkt zur Anmeldung leiten statt einen Hinweis zu zeigen.
-- [ ] Alle Stellen umstellen, danach `grep` auf `\.message` in `app/app` und `app/components` prüfen.
-- [ ] Commit `Fehlermeldungen in klarer Sprache, Technik aufklappbar`
+- [x] Funktion `fehlerText(e)`: bekannte Fälle in klare Sätze übersetzen (keine Verbindung, Sitzung abgelaufen, keine Berechtigung, Datensatz wird noch verwendet, doppelter Wert). Unbekanntes: «Das hat nicht geklappt. Bitte nochmals versuchen.»
+- [x] Tests zuerst, je bekannter Fall einer (Muster wie `fehlertext` in `lib/anmeldung.ts`).
+- [x] `Notice` bekommt optional `detail`: die technische Meldung steht aufklappbar unter «Technische Angaben», nicht im Haupttext.
+- [x] Bei «Sitzung abgelaufen» direkt zur Anmeldung leiten statt einen Hinweis zu zeigen.
+- [x] Alle Stellen umstellen, danach `grep` auf `\.message` in `app/app` und `app/components` prüfen.
+- [x] Commit `Fehlermeldungen in klarer Sprache, Technik aufklappbar`
+
+Stand 20.11.2026: Deutsche Meldungen aus den Funktionen der Datenbank (`raise exception`, auch mit Code 23514, 23503 oder 42501) und eigene Texte der App bleiben stehen; übersetzt wird nur, was Postgres, PostgREST oder der Browser auf Englisch melden. Zusätzlicher Fall «Datenbank nicht auf dem Stand der App» (Tabelle oder Funktion fehlt, Befund N1). Die Seiten halten weiter einen Text als Zustand; `Notice` aus `lib/planer.ts` findet die technische Meldung dazu selbst. Nicht geprüft: «Sitzung abgelaufen» im Browser (nur im Test); die Anmeldeseite behält ihr eigenes `fehlertext`.
 
 ### Aufgabe 6: Leere Zustände
 

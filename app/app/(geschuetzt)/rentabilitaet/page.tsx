@@ -7,6 +7,7 @@ import { formatDatum, formatZahl } from "@/lib/format";
 import { statusLabel } from "@/lib/anlass";
 import { FIXKOSTEN_KATEGORIEN } from "@/lib/stammdaten";
 import { chf, dbStatus, monatText, prozent, type Kalkulation, type Monat } from "@/lib/ressourcen";
+import { fehlerText } from "@/lib/fehler";
 
 type Fixkosten = { id: string; kategorie: string; bezeichnung: string; chf_pro_monat: number; gueltig_ab: string; gueltig_bis: string | null };
 type Lohnsatz = { rolle: string; chf_pro_h: number; chf_pro_h_freelancer: number | null; gueltig_ab: string };
@@ -29,7 +30,7 @@ export default function Rentabilitaet() {
   const [gewaehlt, setGewaehlt] = useState("");
 
   useEffect(() => {
-    laden().then(setDaten, (e: Error) => setFehler(e.message));
+    laden().then(setDaten, (e: Error) => setFehler(fehlerText(e)));
   }, []);
 
   const monat = daten?.monate.find((m) => m.monat === gewaehlt) ?? daten?.monate[0] ?? null;

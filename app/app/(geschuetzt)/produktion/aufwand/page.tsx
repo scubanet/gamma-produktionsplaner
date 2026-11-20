@@ -10,6 +10,7 @@ import {
   abdeckung, anzahl, ausEntwurf, fehlend, gewichtText, minuten, nachBezug, nachKategorie, services, statusPill, summe, volumenText,
   type GeraetZeile, type ProduktionZeile, type RolleZeile, type ServiceZeile,
 } from "@/lib/planung";
+import { fehlerText } from "@/lib/fehler";
 
 type Daten = { saison: string; produktion: ProduktionZeile[]; rollen: RolleZeile[]; geraete: GeraetZeile[]; service: ServiceZeile[] };
 
@@ -54,7 +55,7 @@ export default function Aufwand() {
   const [serviceId, setServiceId] = useState("");
 
   useEffect(() => {
-    laden().then(setDaten, (e: Error) => setFehler(e.message));
+    laden().then(setDaten, (e: Error) => setFehler(fehlerText(e)));
   }, []);
 
   const gruppen = useMemo(() => nachBezug(daten?.produktion ?? [], nachKategorie), [daten]);

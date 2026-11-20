@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { formatGramm } from "@/lib/format";
 import { haltbarkeitText, lagerungText, type Zuteilung } from "@/lib/systemzuteilung";
 import { durchgangText, fehlendeAngaben, kurzText, minutenText, ortText, serviceText, type PlanungSchritt } from "@/lib/rezept-planung";
+import { fehlerText } from "@/lib/fehler";
 
 type Rezept = { id: string; name: string; typ: string; geaendert_am: string };
 type Kopf = { gebinde: string | null; verpackung: string | null; fuellmenge_g: number | null; service_min_pro_100: number | null; service_rolle: string | null; ergibt_g: number | null };
@@ -58,7 +59,7 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
     () =>
       laden(rezept.id).then(
         (daten) => setStand({ schluessel, daten }),
-        (e: Error) => setStand({ schluessel, fehler: e.message }),
+        (e: Error) => setStand({ schluessel, fehler: fehlerText(e) }),
       ),
     [rezept.id, schluessel],
   );
@@ -78,7 +79,7 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
       .limit(30)
       .then((r) => {
         if (!gilt) return;
-        if (r.error) return setAktion({ laeuft: false, fehler: r.error.message });
+        if (r.error) return setAktion({ laeuft: false, fehler: fehlerText(r.error) });
         setTreffer(r.data);
       });
     return () => {
@@ -91,7 +92,7 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
     if (aktion.laeuft) return;
     setAktion({ laeuft: true, fehler: null });
     const r = await supabase.from("komponente").update({ rezept_id: rezeptId }).eq("id", komponenteId).select("id");
-    if (r.error || !r.data?.length) return setAktion({ laeuft: false, fehler: r.error?.message ?? "Komponente nicht gefunden oder keine Berechtigung." });
+    if (r.error || !r.data?.length) return setAktion({ laeuft: false, fehler: (r.error ? fehlerText(r.error) : "Komponente nicht gefunden oder keine Berechtigung.") });
     setAktion({ laeuft: false, fehler: null });
     setDialog(false);
     await neuLaden();

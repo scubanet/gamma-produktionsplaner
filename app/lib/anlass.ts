@@ -1,3 +1,4 @@
+import { fehlerText as allgemeinerText } from "./fehler";
 // Anlass mit Services, Menülinien und Karten (Aufgabe 6). Mengen und Bedarf rechnen die Views
 // anlass_komponente_bedarf und produktionsliste; die App pflegt nur die Eingaben.
 import type { Database } from "./database.types";
@@ -100,7 +101,7 @@ export function fehlerText(e: { message: string; code?: string }): string {
   if (e.code === "23505" && /service_anlass_id_name_key/.test(e.message)) return "Einen Service mit diesem Namen gibt es schon.";
   if (e.code === "23505" && /menuelinie_anlass_id_name_key/.test(e.message)) return "Eine Menülinie mit diesem Namen gibt es schon.";
   if (e.code === "23503" && /service_menuelinie_id_fkey/.test(e.message)) return "Die Menülinie wird noch von Services verwendet. Zuerst die Services umstellen.";
-  return e.message;
+  return allgemeinerText(e);
 }
 
 /** Rubriken in der Reihenfolge ihres ersten Auftretens, darin nach Reihenfolge. */
