@@ -3995,6 +3995,77 @@ export type Database = {
           },
         ]
       }
+      lager_bedarf: {
+        Row: {
+          anlass: string | null
+          anlass_id: string | null
+          bedarf: number | null
+          beutel_im_lager: number | null
+          datum: string | null
+          einheit: string | null
+          gedeckt: boolean | null
+          herleitung: string | null
+          komponente_id: string | null
+          menge_im_lager: number | null
+          produkt: string | null
+          produkt_code: string | null
+          produkt_id: string | null
+          reihenfolge: number | null
+          saison_id: string | null
+          service: string | null
+          service_id: string | null
+        }
+        Relationships: []
+      }
+      lager_bestand: {
+        Row: {
+          beutel: number | null
+          beutel_abgelaufen: number | null
+          einheit: string | null
+          fruehestes_datum: string | null
+          kategorie: string | null
+          lagerung: string | null
+          menge: number | null
+          menge_abgelaufen: number | null
+          produkt: string | null
+          produkt_code: string | null
+          produkt_id: string | null
+          produkt_nr: number | null
+          tage_bis_ablauf: number | null
+        }
+        Relationships: []
+      }
+      lager_einheit: {
+        Row: {
+          abgelaufen: boolean | null
+          charge_id: string | null
+          datum_annahme: boolean | null
+          einheit: string | null
+          entsorgt_grund: string | null
+          erstellt_am: string | null
+          haltbarkeit_abweichend: boolean | null
+          haltbarkeit_heute: number | null
+          haltbarkeit_tage: number | null
+          kategorie: string | null
+          komponente_id: string | null
+          lagereinheit_id: string | null
+          lagerung: string | null
+          laufnummer: number | null
+          menge: number | null
+          produkt: string | null
+          produkt_code: string | null
+          produkt_id: string | null
+          produkt_nr: number | null
+          produziert_am: string | null
+          saison_id: string | null
+          seriennummer: string | null
+          tage_bis_ablauf: number | null
+          verbrauchen_bis: string | null
+          welle_nr: number | null
+          zustand: string | null
+        }
+        Relationships: []
+      }
       leitstand_rezepte: {
         Row: {
           freigegeben: number | null
@@ -5369,6 +5440,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      einheit_ausbuchen: { Args: { p_grund: string; p_seriennummer: string }; Returns: Json }
       einkauf_liste: { Args: { p_saison?: string }; Returns: Json }
       einkauf_summe_von: {
         Args: {
@@ -5470,6 +5542,17 @@ export type Database = {
           name: string
           reihenfolge: number
         }[]
+      }
+      produkt_einlagern: {
+        Args: {
+          p_anzahl: number
+          p_einheit: string
+          p_komponente: string
+          p_menge: number
+          p_produziert_am: string
+          p_verbrauchen_bis?: string
+        }
+        Returns: Json
       }
       rezept_loeschen: { Args: { p_rezept: string }; Returns: undefined }
       rezept_slug: { Args: { p_name: string }; Returns: string }

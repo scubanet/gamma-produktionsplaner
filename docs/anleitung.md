@@ -128,6 +128,16 @@ Für das Handy oder Tablet am Posten: eine Welle zum Abhaken.
 - Zuständig und Termine werden im Wellenplan geändert.
 - **Auf den Home-Bildschirm:** In Safari «Teilen» → «Zum Home-Bildschirm». Die App startet dann direkt im Küchenpass.
 
+## Lager
+
+Alle etikettierten Beutel mit Seriennummer. Der Bestand entsteht, wenn im Küchenpass Etiketten angelegt werden.
+
+- Oben: Beutel im Lager, Produkte mit Bestand, was in höchstens 3 Tagen abläuft, was abgelaufen ist. Abgelaufene Beutel zählen nicht zum Bestand.
+- Ein Klick auf ein Produkt zeigt seine Beutel, die zuerst ablaufenden zuoberst.
+- **Produkt einlagern:** für den Anfangsbestand oder Produktion ausserhalb des Wellenplans. Das Produktionsdatum gilt als Annahme.
+- **Ausbuchen:** pro Beutel, mit Grund. «Nicht produziert» (zu viele Etiketten angelegt) darf jede angemeldete Person; Ware entsorgen dürfen nur Admins.
+- **Bedarf der Spiele:** pro Spiel, was gebraucht wird und was dafür im Lager liegt. «Fehlt noch» ist kein Fehler. Derselbe Beutel steht bei jedem Spiel, für das er reicht.
+
 ## Systemzuteilung
 
 Ersetzt die Kategorienblätter der Excel.

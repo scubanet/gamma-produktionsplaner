@@ -8,7 +8,7 @@ export type NavEintrag = { label: string; href: string; current: boolean };
 export const GRUPPEN: Gruppe[] = [
   { label: "Leitstand", bereiche: [{ label: "Leitstand", href: "/" }] },
   { label: "Verkauf", bereiche: [{ label: "Offerten", href: "/offerten/" }, { label: "Anlässe", href: "/anlaesse/" }] },
-  { label: "Produktion", bereiche: [{ label: "Produktionsplan", href: "/produktion/" }, { label: "Ressourcen", href: "/ressourcen/" }, { label: "Einkauf", href: "/einkauf/" }, { label: "Küchenpass", href: "/kueche/" }] },
+  { label: "Produktion", bereiche: [{ label: "Produktionsplan", href: "/produktion/" }, { label: "Ressourcen", href: "/ressourcen/" }, { label: "Einkauf", href: "/einkauf/" }, { label: "Küchenpass", href: "/kueche/" }, { label: "Lager", href: "/lager/" }] },
   { label: "Küche", bereiche: [{ label: "Rezepte", href: "/rezepte/" }, { label: "Katalog", href: "/katalog/" }, { label: "Systemzuteilung", href: "/systemzuteilung/" }] },
   { label: "Auswertung", bereiche: [{ label: "Rentabilität", href: "/rentabilitaet/" }] },
   { label: "Verwaltung", bereiche: [{ label: "Stammdaten", href: "/stammdaten/" }, { label: "Benutzer", href: "/benutzer/" }] },
