@@ -11,7 +11,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 **Für jede Aufgabe gilt:**
 
 - Dieser Plan beschreibt Umfang, Dateien und Abnahme, nicht den Code. Vor dem Bauen die Schritte der Aufgabe ausarbeiten und die betroffenen Views lesen.
-- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 37), Views mit `security_invoker = true`, danach `cd app && npm run types`.
+- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 38), Views mit `security_invoker = true`, danach `cd app && npm run types`.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Jede neue Zahl bekommt eine Spalte «Herleitung».
 - Tests und Typprüfung vor jedem Commit: `cd app && npm test && npm run typecheck`. Ein Commit pro Aufgabe, Nachricht auf Deutsch.
 - Fragen an Dominik (mit **Frage** markiert) vor dem Bauen klären, nicht raten.
@@ -42,7 +42,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 | 3 | Einkauf aus dem Rezept (gebaut 20.11.2026) | kritisch | 2 |
 | 4 | Warenkosten aus dem Rezept (für den Anlass gebaut 20.11.2026, Offerte offen) | kritisch | 2 |
 | 5 | Aufwand in Ressourcen und Rentabilität übernehmen | kritisch | D1 |
-| 6 | Anlass wählen, Kontrollwerte aus dem Code nehmen (Kontrollwerte gebaut 20.11.2026, Anlass-Wahl wartet auf Entscheid) | mittel | – |
+| 6 | Anlass wählen, Kontrollwerte aus dem Code nehmen (gebaut 20.11.2026, Einkauf offen) | mittel | – |
 | 7 | Tests für die Rechenlogik in der Datenbank | mittel | – |
 | 8 | Sicherung ausserhalb von Supabase | mittel | Entscheid |
 | 9 | Änderungsprotokoll und Konfliktprüfung | mittel | – |
@@ -199,6 +199,15 @@ Migrationen 32 bis 36 liefen ohne Fehler. Danach lesend geprüft und in der App 
 **Umfang:** Aufgabe 10 aus `docs/plan-ui-ux-look-d.md` (Kontextzeile) bauen, mindestens mit Wahl des Anlasses. Die Status-Kontrolle entfernen. Mengen- und Wellen-Kontrollen als Abgleich Spengler Cup kennzeichnen und nur dort zeigen.
 
 **Abnahme:** White Turf 1 lässt sich in Produktion und Einkauf wählen; keine rote Kontrolle ohne fachlichen Grund.
+
+**Entscheid Dominik (20.11.2026): Mengen pro Anlass.** Gebaut (Migration 37, noch einzuspielen):
+
+- View `produktionsliste_anlass`: gleiche Spalten wie `produktionsliste`, dazu `anlass_id`. Menge aus dem Bedarf des Anlasses; Wellen und Start aus der Saison.
+- Produktionsliste: neues Feld «Anlass» vor «Spiel» («Alle Anlässe (Saison)» oder ein Anlass; Anlässe ohne Menülinie sind so beschriftet). Die Wahl bleibt im Browser gemerkt. Mit gewähltem Anlass zeigt die Liste dessen Mengen («Menge Anlass»), das Feld «Spiel» nur dessen Spiele, Kopfzeile und Excel-Export dessen Namen. Ein Anlass ohne Menülinie zeigt einen leeren Zustand mit Link zum Anlass. Der Excel-Abgleich erscheint bei «alle» und beim Spengler Cup.
+- Die Checkliste (erledigt, zuständig) bleibt pro Saison und Welle: Ein Häkchen gilt für die Komponente in der Welle, nicht für einen Anlass.
+- Lesend geprüft: Die View liefert für den Spengler Cup 251 Zeilen und dieselben Mengen, Wellen und Startdaten wie die Saison (heute hat nur er Menülinien); Bündner Trockenfleisch 181.5 kg. Die App ist nur ohne die View gesehen (Feld «Anlass» fehlt dann, Liste wie bisher).
+- Nicht gebaut: die Wahl im Einkauf. Dort gibt es schon «Welle oder Anlass»; Positionen einer Welle lassen sich nicht einem Anlass zuordnen, weil eine Welle mehrere Anlässe bedient. Braucht einen eigenen Entscheid (z.B. Anteil des Anlasses an der Welle nach Menge).
+- Wellen, Aufwand und Küchenpass wählen weiterhin die jüngste Saison.
 
 ### Aufgabe 7: Tests für die Rechenlogik in der Datenbank
 

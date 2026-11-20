@@ -75,6 +75,7 @@ Stand: 15.11.2026
 | 34 einkauf_aus_rezept | Views `einkauf_bedarf` und `einkauf_zutat` neu; `einkauf_position`, `einkauf_artikel`, `einkauf_summe` neu angelegt (Weg über das Rezept, Spalten `weg`, `rezept_status`, `zutaten…`, `wege`, `annahme`). Eingespielt am 20.11.2026 |
 | 35 rezept_warenkosten | View `rezept_warenkosten`: Warenkosten pro Rezept je Charge und je kg, ohne Zuschlag. Eingespielt am 20.11.2026 |
 | 36 anlass_warenkosten | Views `anlass_warenkosten_komponente` und `anlass_warenkosten` (Warenkosten des Anlasses aus den Menülinien über die Rezepte); `anlass_kostenart` nimmt sie für die Kostenart Waren, sobald sie vollständig sind. Eingespielt am 20.11.2026 |
+| 37 produktionsliste_anlass | View `produktionsliste_anlass`: Produktionsliste pro Anlass (Menge des Anlasses, Wellen und Start aus der Saison). Noch einzuspielen (Stand 20.11.2026) |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
 
 Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde nicht mit `supabase db push` eingespielt und trägt darum einen Zeitstempel (`20261110185525`); die Datei heisst seit dem 14.11.2026 gleich. Neue Migrationen immer mit `supabase db push` einspielen, sonst passen Datei und Datenbank nicht zusammen.

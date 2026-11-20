@@ -19,12 +19,14 @@ import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
 import type { Hinweis, Regeneration, System, Zuteilung } from "@/lib/systemzuteilung";
 
 type Bearbeiten = { zeile: Zuteilung; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[] };
+import { anlassOptionen, gueltigeWahl, wahlLesen, wahlMerken } from "@/lib/kontext";
 import { mengenKontrollen, wellenKontrolle, WELLEN_ERWARTET, zeigtAbgleich, type Kontrolle } from "@/lib/kontrollwerte";
 import { excelExport } from "@/lib/export";
 import { fehlerText } from "@/lib/fehler";
 
 type Anlass = { id: string; name: string; datum: string | null; datum_bis: string | null; saison_id: string | null; saison: { name: string } | null; menuelinie: { id: string; name: string }[] };
-type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; checkliste: ChecklisteZeile[]; proSpiel: SpielBedarf[]; zuteilung: ZuteilungKurz[]; rezepte: Map<string, { slug: string; status: string }>; systemName: Map<string, string> };
+type AnlassListe = ListeZeile & { anlass_id: string | null };
+type Daten = { anlass: Anlass; anlaesse: Anlass[]; listeAnlass: AnlassListe[] | null; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; checkliste: ChecklisteZeile[]; proSpiel: SpielBedarf[]; zuteilung: ZuteilungKurz[]; rezepte: Map<string, { slug: string; status: string }>; systemName: Map<string, string> };
 
 const STATUS_PILL: Record<string, "ok" | "warn" | "info"> = { ok: "ok", offen: "warn", Zukauf: "info" };
 const HALTBARKEIT_HINWEIS = "Annahme aus der Excel (rot markiert), noch mit Philipp und dem Küchenchef zu bestätigen. Wellen und Start hängen davon ab.";
@@ -55,6 +57,10 @@ async function laden(): Promise<Daten> {
   );
   const rezepteLaden = alleSeiten<{ id: string; slug: string; status: string }>((von, bis) => supabase.from("rezept").select("id, slug, status").order("id").range(von, bis));
   const systemeLaden = supabase.from("produktionssystem").select("code, name");
+  // Mengen pro Anlass (Migration 37). Fehlt die View noch, bleibt die Liste bei der ganzen Saison und die Wahl des Anlasses entfällt.
+  const listeAnlassLaden: Promise<AnlassListe[] | null> = alleSeiten<AnlassListe>((von, bis) =>
+    supabase.from("produktionsliste_anlass").select("*").in("anlass_id", anlassIds).order("anlass_id").order("komponente_id").order("einheit_total").range(von, bis),
+  ).catch(() => null);
   const [liste, bedarf, ...rest] = await Promise.all([
     supabase.from("produktionsliste").select("*").eq("saison_id", anlass.saison_id),
     supabase.from("anlass_komponente_bedarf").select("*").in("anlass_id", (a.data as unknown as Anlass[]).filter((x) => x.saison_id === anlass.saison_id).map((x) => x.id)),
@@ -63,11 +69,12 @@ async function laden(): Promise<Daten> {
   for (const r of [liste, bedarf, ...rest]) if (r.error) throw r.error;
   const checkliste = await checklisteLaden;
   const proSpiel = await proSpielLaden;
+  const listeAnlass = await listeAnlassLaden;
   const wellen = rest.map((w) => ((w as { data: unknown }).data as number | null) ?? null);
   const [zuteilung, rezepte, systeme] = await Promise.all([zuteilungLaden, rezepteLaden, systemeLaden]);
   if (systeme.error) throw systeme.error;
   return {
-    anlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, checkliste, proSpiel, zuteilung,
+    anlass, anlaesse: (a.data as unknown as Anlass[]).filter((x) => x.saison_id === anlass.saison_id), listeAnlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, checkliste, proSpiel, zuteilung,
     rezepte: new Map(rezepte.map((r) => [r.id, { slug: r.slug, status: r.status }])),
     systemName: new Map((systeme.data ?? []).map((s) => [s.code, s.name])),
   };
@@ -80,6 +87,8 @@ export default function Produktionsliste() {
   const [kategorie, setKategorie] = useState("");
   const [status, setStatus] = useState("");
   const [linie, setLinie] = useState("");
+  // Gewählter Anlass; leer = alle Anlässe der Saison. Gemerkt im Browser.
+  const [anlassWahl, setAnlassWahl] = useState("");
   const [exportLaeuft, setExportLaeuft] = useState(false);
   const [aufgaben, setAufgaben] = useState<Map<string, Aufgabe>>(new Map());
   const [sortFeld, setSortFeld] = useState<SortFeld>("kategorie");
@@ -101,6 +110,7 @@ export default function Produktionsliste() {
     laden().then((d) => {
       setDaten(d);
       setAufgaben(aufgabenAus(d.checkliste));
+      if (d.listeAnlass) setAnlassWahl(gueltigeWahl(wahlLesen(), d.anlaesse));
     }, (e: Error) => setFehler(fehlerText(e)));
   }
 
@@ -133,9 +143,12 @@ export default function Produktionsliste() {
 
   const alle = useMemo(() => {
     if (!daten) return [];
-    const roh = linie ? spielZeilen(daten.proSpiel, daten.liste, linie) : saisonZeilen(daten.liste, daten.bedarf);
+    // Mit gewähltem Anlass: Mengen dieses Anlasses aus der Datenbank; Wellen und Start bleiben die der Saison.
+    const liste = anlassWahl && daten.listeAnlass ? daten.listeAnlass.filter((x) => x.anlass_id === anlassWahl) : daten.liste;
+    const bedarf = anlassWahl ? daten.bedarf.filter((b) => b.anlass_id === anlassWahl) : daten.bedarf;
+    const roh = linie ? spielZeilen(daten.proSpiel, liste, linie) : saisonZeilen(liste, bedarf);
     return sortieren(mitAufgaben(mitZuteilung(roh, daten.zuteilung, daten.rezepte), fortschritt(aufgaben.values())), sortFeld, richtung);
-  }, [daten, linie, aufgaben, sortFeld, richtung]);
+  }, [daten, linie, anlassWahl, aufgaben, sortFeld, richtung]);
   const zeilen = useMemo(
     () => suchen(filtern(alle, { kategorie, status, erledigt, zustaendig }), suche, (z) => [z.komponente, z.kategorie, z.gericht, z.gang, ...z.zustaendige, ...z.produktion, z.lagerung]),
     [alle, kategorie, status, erledigt, zustaendig, suche],
@@ -195,7 +208,10 @@ export default function Produktionsliste() {
 
   const warten = fehler ? "–" : <Skeleton variant="zahl" />;
   // «linie» hält den gewählten Service (Spiel); leer = ganze Saison.
-  const spielListe = useMemo(() => spiele(daten?.proSpiel ?? []), [daten]);
+  const spielListe = useMemo(() => spiele((daten?.proSpiel ?? []).filter((b) => !anlassWahl || b.anlass_id === anlassWahl)), [daten, anlassWahl]);
+  const gewaehlterAnlass = daten?.anlaesse.find((x) => x.id === anlassWahl) ?? null;
+  // Kopf, Export und Abgleich beziehen sich auf den gewählten Anlass, sonst auf den Anlass mit Menülinien (im Pilot der Spengler Cup).
+  const kopfAnlass = gewaehlterAnlass ?? daten?.anlass ?? null;
   const spiel = spielListe.find((s) => s.id === linie) ?? null;
   const linienName = spiel?.name;
   const fruehesterStart = zeilen.map((z) => z.startAb).filter((d): d is string => !!d).sort()[0] ?? null;
@@ -247,7 +263,7 @@ export default function Produktionsliste() {
       ),
     },
     { key: "status", label: "Status", render: (r) => <StatusPill status={STATUS_PILL[r.status as string] ?? "neutral"}>{r.status as string}</StatusPill> },
-    { key: "menge", label: linie ? "Menge Spiel" : "Menge Saison", numeric: true, sortable: true, render: (r) => formatMenge(r.menge as number | null, r.einheit as string | null) },
+    { key: "menge", label: linie ? "Menge Spiel" : anlassWahl ? "Menge Anlass" : "Menge Saison", numeric: true, sortable: true, render: (r) => formatMenge(r.menge as number | null, r.einheit as string | null) },
     {
       key: "konservierung",
       label: "Konservierung",
@@ -286,7 +302,7 @@ export default function Produktionsliste() {
     setExportFehler(null);
     try {
       const teil = linienName ? ` ${linienName}` : "";
-      await excelExport(zeilen, `Produktionsliste ${daten.anlass.name}${teil}.xlsx`, !!linie);
+      await excelExport(zeilen, `Produktionsliste ${kopfAnlass?.name ?? daten.anlass.name}${teil}.xlsx`, !!linie);
     } catch (e) {
       setExportFehler(fehlerText(e));
     } finally {
@@ -299,7 +315,7 @@ export default function Produktionsliste() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">
-            {daten ? `${daten.anlass.saison?.name ?? "[Saison]"} · ${daten.anlass.name} ${formatDatum(daten.anlass.datum)}–${formatDatum(daten.anlass.datum_bis)}` : "Produktionsplan"}
+            {daten ? `${daten.anlass.saison?.name ?? "[Saison]"} · ${gewaehlterAnlass ? `${gewaehlterAnlass.name} ${formatDatum(gewaehlterAnlass.datum)}–${formatDatum(gewaehlterAnlass.datum_bis)}` : daten.listeAnlass ? "alle Anlässe" : `${daten.anlass.name} ${formatDatum(daten.anlass.datum)}–${formatDatum(daten.anlass.datum_bis)}`}` : "Produktionsplan"}
           </div>
           <h1 className="pl-h1">Produktionsliste{linienName ? ` – ${linienName}` : ""}</h1>
         </div>
@@ -317,13 +333,27 @@ export default function Produktionsliste() {
       <p className="pl-small pl-print-hide" role="status" tabIndex={-1} ref={meldungRef}>{meldung}</p>
 
       <div className="pl-grid-3 pl-print-hide">
+        {daten?.listeAnlass ? (
+          <Select
+            id="filter-anlass"
+            label="Anlass"
+            value={anlassWahl}
+            onChange={(v) => {
+              setAnlassWahl(v);
+              setLinie("");
+              wahlMerken(v);
+            }}
+            hint="Mengen des Anlasses; Wellen und Start gelten für die Saison"
+            options={anlassOptionen(daten.anlaesse.map((x) => ({ id: x.id, name: x.name, datum: x.datum, menuelinien: x.menuelinie.length })))}
+          />
+        ) : null}
         <Select
           id="filter-linie"
           label="Spiel"
           value={linie}
           onChange={setLinie}
           hint="Jedes Spiel einzeln, auch wenn mehrere dasselbe Menü haben"
-          options={[{ value: "", label: "Alle Spiele (Saison)" }, ...spielListe.map((s) => ({ value: s.id, label: `${s.name} · ${s.datum ? formatDatum(s.datum) : "[Datum]"} · Menü «${s.menuelinie ?? "[Menülinie]"}»` }))]}
+          options={[{ value: "", label: anlassWahl ? "Alle Spiele (Anlass)" : "Alle Spiele (Saison)" }, ...spielListe.map((s) => ({ value: s.id, label: `${s.name} · ${s.datum ? formatDatum(s.datum) : "[Datum]"} · Menü «${s.menuelinie ?? "[Menülinie]"}»` }))]}
         />
         <Select
           id="filter-kategorie"
@@ -393,6 +423,8 @@ export default function Produktionsliste() {
                     setRichtung(n.richtung);
                   }}
                 />
+              ) : gewaehlterAnlass && !alle.length ? (
+                <EmptyState title={`${gewaehlterAnlass.name} hat noch keine Menülinie`} text="Ohne Menülinie und Service gibt es keinen Bedarf und keine Produktionsliste." actionLabel="Anlass öffnen" href={`/anlaesse/bearbeiten/?id=${gewaehlterAnlass.id}`} />
               ) : (
                 <EmptyState title={suche.trim() ? `Nichts gefunden für «${suche.trim()}»` : "Keine Komponenten für diese Filter"} actionLabel="Filter zurücksetzen" onAction={() => { setSuche(""); setKategorie(""); setStatus(""); setErledigt(""); setZustaendig(""); }} />
               )
@@ -407,7 +439,7 @@ export default function Produktionsliste() {
           </Card>
 
           {/* Die Kontrollwerte aus der Excel gibt es nur für den Spengler Cup. */}
-          {zeigtAbgleich(daten?.anlass.name) ? (
+          {zeigtAbgleich(kopfAnlass?.name) ? (
           <details className="pl-details pl-print-hide">
             <summary>
               Abgleich Spengler Cup mit der Excel
@@ -442,7 +474,7 @@ export default function Produktionsliste() {
                 gewaehlt ? (
                   <div className="pl-grid-2">
                     <div>
-                      <div className="pl-label">{linie ? "Menge Spiel" : "Menge Saison"}</div>
+                      <div className="pl-label">{linie ? "Menge Spiel" : anlassWahl ? "Menge Anlass" : "Menge Saison"}</div>
                       <div className="pl-lead pl-mono">{formatMenge(gewaehlt.menge, gewaehlt.einheit)}</div>
                     </div>
                     <div>

@@ -189,3 +189,7 @@ Migration 36 (`anlass_warenkosten`): Warenkosten des Anlasses aus den Menülinie
 
 `supabase db push --remote` lief ohne Fehler, `npm run types` ist nachgezogen (Typen jetzt aus der Datenbank). Die Hinweise «noch nicht ausgeliefert» in den Nachträgen oben gelten für die Datenbank nicht mehr; die App selbst ist erst mit `git push` live. Stand und geprüfte Werte: `docs/plan-datenkette.md`, Abschnitt «Stand nach dem Einspielen».
 
+## Nachtrag 20.11.2026: Datenkette, Aufgabe 6
+
+Produktionsliste pro Anlass: Migration 37 (`produktionsliste_anlass`) und Feld «Anlass» in der Produktionsliste, committet, noch nicht ausgeliefert. Reihenfolge: `supabase db push --remote`, `cd app && npm run types`, `git push`. Ohne Migration 37 zeigt die Seite kein Feld «Anlass» und läuft wie bisher. Nach dem Einspielen prüfen: «Spengler Cup» wählen ergibt 251 Zeilen wie «Alle Anlässe»; «White Turf 1» zeigt «hat noch keine Menülinie».
+

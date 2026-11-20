@@ -4185,6 +4185,23 @@ export type Database = {
           },
         ]
       }
+      produktionsliste_anlass: {
+        Row: {
+          anlass_id: string | null
+          einheit_total: string | null
+          haltbarkeit_tage: number | null
+          kategorie: string | null
+          komponente: string | null
+          komponente_id: string | null
+          menge_total: number | null
+          saison_id: string | null
+          start_ab: string | null
+          status: string | null
+          wellen: number | null
+          zeilen_ohne_menge: number | null
+        }
+        Relationships: []
+      }
       rezept_kosten_arbeit_energie: {
         Row: {
           arbeit_chf: number | null
