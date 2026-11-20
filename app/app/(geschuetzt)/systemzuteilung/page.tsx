@@ -80,6 +80,17 @@ export default function Systemzuteilung() {
 
   const spalten: DataTableColumn[] = [
     { key: "name", label: "Komponente", subKey: "unterzeile" },
+    // Gleich neben dem Namen: so bleibt der Knopf sichtbar, auch wenn die Detailspalte die Tabelle schmal macht.
+    {
+      key: "aktion",
+      label: <span className="pl-sr">Bearbeiten</span>,
+      printHidden: true,
+      render: (r) => (
+        <Button ariaLabel={`${r.name as string} bearbeiten`} onClick={() => setBearbeiten(r.zeile as Zuteilung)}>
+          Bearbeiten
+        </Button>
+      ),
+    },
     { key: "status", label: "Status", render: (r) => <StatusPill status={STATUS_PILL[r.status as string] ?? "neutral"}>{r.status as string}</StatusPill> },
     { key: "produktion", label: "Produktion", render: (r) => (r.produktion as string[]).join(", ") || leerAnzeige(r.zeile as Zuteilung, "Produktion") },
     { key: "lagerung", label: "Lagerung" },
@@ -101,15 +112,6 @@ export default function Systemzuteilung() {
           </span>
         )),
     },
-    {
-      key: "aktion",
-      label: "",
-      render: (r) => (
-        <Button ariaLabel={`${r.name as string} bearbeiten`} onClick={() => setBearbeiten(r.zeile as Zuteilung)}>
-          Bearbeiten
-        </Button>
-      ),
-    },
   ];
   const tabelle = zeilen.map((z) => ({
     ...z,
@@ -128,7 +130,7 @@ export default function Systemzuteilung() {
         </div>
       </header>
 
-      {fehler ? <Notice title="Systemzuteilung nicht geladen">{fehler}</Notice> : null}
+      {fehler ? <Notice role="alert" title="Systemzuteilung nicht geladen">{fehler}</Notice> : null}
 
       <div className="pl-grid-4">
         <KpiTile label="Komponenten ok" value={anzahl((z) => z.status === "ok")} detail="mit Produktionssystem" />

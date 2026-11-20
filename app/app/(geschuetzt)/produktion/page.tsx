@@ -256,6 +256,17 @@ export default function Produktionsliste() {
         return r.erledigtAm ? <s className="pl-muted">{name}</s> : name;
       },
     },
+    // Gleich neben dem Namen: so bleibt der Knopf sichtbar, auch wenn die Detailspalte die Tabelle schmal macht.
+    {
+      key: "bearbeiten",
+      label: <span className="pl-sr">Bearbeiten</span>,
+      printHidden: true,
+      render: (r) => (
+        <Button ariaLabel={`${r.komponente as string} bearbeiten`} onClick={() => komponenteOeffnen(r as unknown as Zeile)} disabled={!r.komponenteId || oeffnet !== null}>
+          {oeffnet === r.komponenteId ? "Lädt …" : "Bearbeiten"}
+        </Button>
+      ),
+    },
     { key: "kategorie", label: "Kategorie", sortable: true },
     {
       key: "zustaendig",
@@ -287,16 +298,6 @@ export default function Produktionsliste() {
     { key: "wellen", label: "Wellen", numeric: true, sortable: true, render: (r) => (r.wellen === null ? leerwert(r.status as string, "Wellen") : String(r.wellen)) },
     { key: "startAb", label: "Start ab", numeric: true, sortable: true, render: (r) => (r.startAb === null ? leerwert(r.status as string, "Start") : formatDatum(r.startAb as string)) },
     { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
-    {
-      key: "bearbeiten",
-      label: <span className="pl-sr">Bearbeiten</span>,
-      printHidden: true,
-      render: (r) => (
-        <Button ariaLabel={`${r.komponente as string} bearbeiten`} onClick={() => komponenteOeffnen(r as unknown as Zeile)} disabled={!r.komponenteId || oeffnet !== null}>
-          {oeffnet === r.komponenteId ? "Lädt …" : "Bearbeiten"}
-        </Button>
-      ),
-    },
   ];
   const tabelle = zeilen.map((z) => ({
     ...z,
@@ -334,9 +335,9 @@ export default function Produktionsliste() {
         </div>
       </header>
 
-      {fehler ? <Notice title="Produktionsliste nicht geladen">{fehler}</Notice> : null}
-      {exportFehler ? <Notice title="Excel-Export fehlgeschlagen">{exportFehler}</Notice> : null}
-      {aktionsFehler ? <Notice title="Nicht gespeichert">{aktionsFehler}</Notice> : null}
+      {fehler ? <Notice role="alert" title="Produktionsliste nicht geladen">{fehler}</Notice> : null}
+      {exportFehler ? <Notice role="alert" title="Excel-Export fehlgeschlagen">{exportFehler}</Notice> : null}
+      {aktionsFehler ? <Notice role="alert" title="Nicht gespeichert">{aktionsFehler}</Notice> : null}
       <p className="pl-small pl-print-hide" role="status" tabIndex={-1} ref={meldungRef}>{meldung}</p>
 
       <div className="pl-grid-3 pl-print-hide">
