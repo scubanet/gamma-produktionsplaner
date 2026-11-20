@@ -146,7 +146,7 @@ function Rezeptbibliothek() {
           {rezept?.untertitel ? <div className="pl-sub">{rezept.untertitel}</div> : null}
         </div>
         {rezept && presets.length ? (
-          <div className="pl-actions">
+          <div className="pl-actions pl-actions--unten">
             <div>
               <div className="pl-label">{gericht ? "Portionen" : "Chargen"}</div>
               <SegmentedControl
@@ -157,7 +157,7 @@ function Rezeptbibliothek() {
               />
             </div>
             <form
-              className="pl-actions"
+              className="pl-actions pl-actions--unten"
               onSubmit={(e) => {
                 e.preventDefault();
                 if (eingabeWert !== null) setze({ wert: eingabeWert });

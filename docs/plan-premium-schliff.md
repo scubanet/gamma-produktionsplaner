@@ -146,16 +146,16 @@ Stand 20.11.2026: 36 Stellen nutzen `EmptyState`. Mit Aktion: Offerten, Anlässe
 - [x] Tabellenzeilen, die klickbar sind, zeigen das beim Überfahren (Hintergrund `surface-sunken`, Zeiger).
 - [x] Commit `Kopfzeile mit Benutzer-Menü, Schatten-Tokens, Icons`
 
-Stand 20.11.2026: Icons stehen an «Drucken» und «Hinzufügen», am Schliessen der Detailspalte und an der Sortierrichtung. Offen: Icon an den «Bearbeiten»-Knöpfen in Tabellenzeilen und im Suchfeld (bewusst nicht gesetzt, in jeder Zeile wirkt es unruhig; Entscheid Dominik). Klickbare Zeilen: Anlässe und Offerten. Aus dem Nachtrag erledigt: N2, N3, N4, N5; offen: N9, N10.
+Stand 20.11.2026: Icons stehen an «Drucken» und «Hinzufügen», am Schliessen der Detailspalte und an der Sortierrichtung. Offen: Icon an den «Bearbeiten»-Knöpfen in Tabellenzeilen und im Suchfeld (bewusst nicht gesetzt, in jeder Zeile wirkt es unruhig; Entscheid Dominik). Klickbare Zeilen: Anlässe und Offerten. Aus dem Nachtrag erledigt: N2, N3, N4, N5, N9; offen: N10.
 
 ### Aufgabe 9: Abnahme mit Bildern
 
-Stand 20.11.2026: Die Bilder fehlen noch. Der Browser-Bereich von Claude liefert nur verkleinerte Bilder (800 px breit), keine echten 1440 px; für die Abnahme braucht es echte Bildschirmfotos oder Dominik sieht die Seiten direkt durch.
-
-- [ ] Von jedem Screen ein Bild in 1440 px und 390 px, hell und dunkel, in `docs/abnahme-premium/` ablegen.
-- [ ] Prüffragen pro Bild: Ist die Marke sichtbar? Läuft nichts über? Gibt es einen Zustand für Laden, Leer und Fehler? Sind Abstände aus den Tokens?
+- [ ] Von jedem Screen ein Bild in 1440 px und 390 px, hell und dunkel, in `docs/abnahme-premium/` ablegen. **Teilweise:** 29 Bilder liegen dort (ohne Benutzerverwaltung, das Bild zeigt E-Mail-Adressen), verkleinert (Breite 800 px für 1440, 396 px für 390), weil der Browser-Bereich von Claude keine grösseren liefert. Vollständig ist 1440 px hell (22 Seiten, ohne Lieferanten hell und ohne Anmeldung); in 390 px gibt es vier Bilder, im Dunkel-Thema drei.
+- [x] Prüffragen pro Bild: Ist die Marke sichtbar? Läuft nichts über? Gibt es einen Zustand für Laden, Leer und Fehler? Sind Abstände aus den Tokens? Durchsicht vom 20.11.2026 nach allen Änderungen, angemeldet gegen die Pilot-Datenbank: Marke auf allen 22 Seiten in der Kopfzeile. Kein Überlauf in 390 px auf allen 21 gemessenen Seiten (gemessen im Dokument, nicht nur am Bild). Laden, Leer und Fehler gesehen auf Systemzuteilung, Lieferanten, Anlässe und Leitstand.
 - [x] Kontrast der neuen Elemente prüfen (Text 4.5:1, Bedienelemente 3:1). Gerechnet am 20.11.2026 aus den Tokens, hell und dunkel: Links in `accent` 15.3 und 7.8, Kürzel im Benutzer-Menü 14.8 und 10.5, Text im leeren Zustand 6.7 und 6.8, «Technische Angaben» 9.9 und 10.9, Fusszeile der Anmeldung 6.2 und 6.2. Das Skelett ist Schmuck (1.2), der Ladetext steht für Screenreader.
 - [ ] Dominik sieht die Bilder durch, bevor ausgeliefert wird.
+
+Nicht gesehen: die Anmeldeseite mit dem Logo (als Angemeldeter wird man weitergeleitet), Dialoge ausser «Änderungen verwerfen?» und Systemzuteilung, die Druckausgabe auf Papier. Aus der Durchsicht behoben: N9 («Skalieren» steht auf der Linie des Felds, `pl-actions--unten`). Aufgefallen, nicht geändert: In den Tabellen von Services, Karte und Menülinien stehen «Bearbeiten» und «Entfernen» mitten in der Zeile statt am rechten Rand.
 
 ## Nicht Teil dieses Plans
 

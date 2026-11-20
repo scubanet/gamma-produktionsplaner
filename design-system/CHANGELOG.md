@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.23 | 20.11.2026 | `pl-actions--unten`: Feld mit Label und Button daneben stehen auf der unteren Linie (Skalierung im Rezept). |
 | 0.22 | 20.11.2026 | Bildmarke von gammagruppe.ch als Rasterbild (`assets/bildmarke-web.png`) in Kopfzeile und Anmeldung; Brand mit `mono` (im Dunkel-Thema hell), TopNav mit `brandMono`. Favicon und App-Icons bleiben beim Platzhalter. |
 | 0.21 | 20.11.2026 | Neue Komponente EmptyState (Titel, ein Satz, eine Aktion) für «noch nichts erfasst» und «Filter ohne Treffer». DataTable mit `empty`. |
 | 0.20 | 20.11.2026 | Neue Komponente Skeleton (Varianten `text`, `zahl`, `zeile`, `karte`; Token `motion-pulse`), DataTable mit `loading`. Die App zeigt Skelette statt «…» und «wird geladen …». |

@@ -17,6 +17,8 @@
 @media (max-width: 560px) { .pl-h1 { font-size: 32px; line-height: 34px; } .pl-h1--name { font-size: 28px; line-height: 32px; } }
 .pl-sub { font-size: 15px; color: var(--ink-secondary); }
 .pl-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+/* Feld mit Label neben einem Button: beide stehen auf der unteren Linie. */
+.pl-actions--unten { align-items: flex-end; }
 /* Formular: Felder und Feldzeilen untereinander, z.B. in einer Karte */
 .pl-stack { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .pl-row { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
