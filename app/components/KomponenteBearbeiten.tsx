@@ -65,34 +65,72 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
     return () => onGeaendert?.(false);
   }, [geaendert, onGeaendert]);
 
+  // Noch eingebaut? Ein laufendes «Speichern und nächste» darf nach dem Abbau nichts mehr umschalten.
+  const lebt = useRef(true);
+  useEffect(() => {
+    lebt.current = true;
+    return () => {
+      lebt.current = false;
+    };
+  }, []);
+
   // Spalte: beim Öffnen geht der Fokus hinein (sie steht im Dokument nach der ganzen Liste), beim Schliessen zurück auf den Knopf der Zeile.
   const spalteRef = useRef<HTMLDivElement>(null);
   const ausloeser = useRef<Element | null>(null);
   useEffect(() => {
     if (!alsSpalte) return;
-    // Der Knopf der Zeile, von dem aus geöffnet wurde (nicht die Spalte selbst, falls der Effekt ein zweites Mal läuft).
-    if (!spalteRef.current?.contains(document.activeElement)) ausloeser.current = document.activeElement;
-    spalteRef.current?.focus({ preventScroll: true });
-    // Steht die Seite noch am Anfang, liegt die Spalte samt «Speichern» unter dem Bildschirmrand: so weit scrollen, dass sie ganz
-    // im Bild ist. Die Zeilen der Liste rücken dabei nur bis unter die Kopfzeile, die gewählte Zeile bleibt sichtbar.
+    let zeit: number | undefined;
+    // Wurde über die Rückfrage «Verwerfen» hierher gewechselt, ist deren Dialog noch einen Moment offen: solange lässt sich
+    // ausserhalb nichts fokussieren, und der Fokus läge auf einem Knopf des Dialogs. Warten, bis er zu ist (höchstens rund 1 s).
+    const hinein = (versuche: number) => {
+      if (document.querySelector("dialog[open]") && versuche > 0) return void (zeit = window.setTimeout(() => hinein(versuche - 1), 30));
+      // Der Knopf der Zeile, von dem aus geöffnet wurde (nicht die Spalte selbst, falls der Effekt ein zweites Mal läuft).
+      const ae = document.activeElement;
+      if (ae && ae !== document.body && !spalteRef.current?.contains(ae)) ausloeser.current = ae;
+      spalteRef.current?.focus({ preventScroll: true });
+    };
+    hinein(30);
     const spalte = spalteRef.current?.closest(".pl-split__detail");
     if (spalte) {
+      // Neue Komponente: das Formular beginnt oben, nicht dort, wo die vorige gescrollt war.
+      spalte.scrollTop = 0;
+      // Steht die Seite noch am Anfang, liegt die Spalte samt «Speichern» unter dem Bildschirmrand: so weit scrollen, dass sie ganz
+      // im Bild ist. Die Zeilen der Liste rücken dabei nur bis unter die Kopfzeile, die gewählte Zeile bleibt sichtbar.
       const r = spalte.getBoundingClientRect();
       const oben = parseFloat(getComputedStyle(spalte).top) || 0;
       const weit = Math.min(r.top - oben, r.bottom - window.innerHeight);
       if (weit > 0) window.scrollBy(0, weit);
     }
     return () => {
+      window.clearTimeout(zeit);
       const a = ausloeser.current;
       if (!(a instanceof HTMLElement)) return;
       // Die Spalte ist hier schon aus dem Dokument. Wurde über die Rückfrage geschlossen, ist deren Dialog noch einen Moment
-      // offen, und solange lässt sich ausserhalb nichts fokussieren: warten, bis er zu ist (höchstens rund eine Sekunde).
+      // offen: warten, bis er zu ist. Steht danach wieder eine Spalte da (Wechsel der Zeile), bleibt der Fokus dort.
       const zurueck = (versuche: number) => {
         if (document.querySelector("dialog[open]") && versuche > 0) return void window.setTimeout(() => zurueck(versuche - 1), 30);
+        if (document.querySelector(".pl-split__detail .pl-panel")) return;
         if (a.isConnected && (document.activeElement === document.body || !document.activeElement)) a.focus();
       };
       zurueck(30);
     };
+  }, [alsSpalte]);
+
+  // Dialog (schmale Bildschirme): Escape schon beim Tastendruck abfangen. Der Browser lässt das Schliessen eines Dialogs nur
+  // einmal pro Bedienung abbrechen; ein drittes Escape schlösse ihn sonst ohne Rückfrage.
+  const dialogEscape = useRef<() => void>(() => undefined);
+  useEffect(() => {
+    if (alsSpalte) return;
+    const taste = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      const dialog = document.getElementById("komponente-bearbeiten-titel")?.closest("dialog");
+      // Nur wenn der Bearbeiten-Dialog der oberste ist (nicht, wenn die Rückfrage darüber liegt).
+      if (!dialog || !(e.target instanceof Node) || !dialog.contains(e.target) || (e.target as Element).closest?.("dialog") !== dialog) return;
+      e.preventDefault();
+      dialogEscape.current();
+    };
+    document.addEventListener("keydown", taste, true);
+    return () => document.removeEventListener("keydown", taste, true);
   }, [alsSpalte]);
 
   const geschuetzt = (weiter: () => void) => (mitSchutz ? mitSchutz(weiter) : weiter());
@@ -131,7 +169,7 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
       // Die Spalte bleibt offen und zeigt den gespeicherten Stand, oder geht zur nächsten Zeile.
       setBasis({ zeile: neu.zeile, hinweise: neu.hinweise });
       setF(formularAus(neu.zeile));
-      if (danach) {
+      if (danach && lebt.current) {
         onGeaendert?.(false);
         danach();
       }
@@ -222,6 +260,12 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
     </>
   );
 
+  useEffect(() => {
+    dialogEscape.current = () => {
+      if (!speichert) geschuetzt(() => setOffen(false));
+    };
+  });
+
   const hinweisGeaendert = <span className="pl-small" role="status">{geaendert ? "Ungespeicherte Änderungen" : ""}</span>;
 
   if (alsSpalte)
@@ -242,7 +286,9 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
             title={titel}
             meta={stand ? `${meta} · ${stand}` : meta}
             label={`Zuteilung ${titel}`}
-            onClose={() => geschuetzt(onClose)}
+            onClose={() => {
+              if (!speichert) geschuetzt(onClose);
+            }}
             actions={
               <>
                 {speichernButton}
@@ -264,6 +310,8 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
     );
 
   return (
+    <>
+    <Ungespeichert geaendert={geaendert} />
     <Dialog
       open={offen}
       id="komponente-bearbeiten"
@@ -287,5 +335,6 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
     >
       {inhalt}
     </Dialog>
+    </>
   );
 }

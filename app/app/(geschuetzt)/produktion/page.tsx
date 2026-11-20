@@ -105,6 +105,12 @@ export default function Produktionsliste() {
   const [bearbeiten, setBearbeiten] = useState<Bearbeiten | null>(null);
   // Ungespeicherte Eingaben in der Bearbeiten-Spalte: vor dem Wechsel der Zeile nachfragen.
   const schutz = useEingabenSchutz();
+  // Spalte oder Dialog wird beim Öffnen festgelegt und bleibt, bis geschlossen ist: wechselte die Darstellung beim Drehen
+  // des Tablets, würde das Formular neu aufgebaut und die Eingaben wären weg.
+  const [modus, setModus] = useState<boolean | null>(null);
+  if (!bearbeiten && modus !== null) setModus(null);
+  if (bearbeiten && modus === null) setModus(schmal);
+  const alsDialog = modus ?? schmal;
   const [oeffnet, setOeffnet] = useState<string | null>(null);
   const [stamm, setStamm] = useState<{ systeme: System[]; regenerationen: Regeneration[] } | null>(null);
 
@@ -473,8 +479,8 @@ export default function Produktionsliste() {
           ) : null}
         </div>
 
-        {bearbeiten && !schmal ? (
-          <aside className="pl-split__detail pl-print-hide">
+        {bearbeiten && !alsDialog ? (
+          <aside className="pl-split__detail pl-print-hide" inert={oeffnet !== null} aria-busy={oeffnet !== null}>
             <KomponenteBearbeiten
               alsSpalte
               key={bearbeiten.zeile.id}
@@ -531,7 +537,7 @@ export default function Produktionsliste() {
           }}
         />
       ) : null}
-      {bearbeiten && schmal ? (
+      {bearbeiten && alsDialog ? (
         <KomponenteBearbeiten
           key={bearbeiten.zeile.id}
           zeile={bearbeiten.zeile}

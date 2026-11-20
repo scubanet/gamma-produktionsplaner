@@ -62,6 +62,12 @@ export default function Systemzuteilung() {
   const meldungRef = useRef<HTMLParagraphElement>(null);
   // Ungespeicherte Eingaben in der Bearbeiten-Spalte: vor dem Wechsel der Zeile nachfragen.
   const schutz = useEingabenSchutz();
+  // Spalte oder Dialog wird beim Öffnen festgelegt und bleibt, bis geschlossen ist: wechselte die Darstellung beim Drehen
+  // des Tablets, würde das Formular neu aufgebaut und die Eingaben wären weg.
+  const [modus, setModus] = useState<boolean | null>(null);
+  if (!bearbeiten && modus !== null) setModus(null);
+  if (bearbeiten && modus === null) setModus(schmal);
+  const alsDialog = modus ?? schmal;
 
   const neuLaden = () => laden().then(setDaten, (e: Error) => setFehler(fehlerText(e)));
   useEffect(() => {
@@ -84,6 +90,8 @@ export default function Systemzuteilung() {
         hinweise: [...d.hinweise.filter((h) => h.komponente_id !== neu.id), ...neueHinweise],
       },
     );
+    // Die offene Zeile nachführen: wird die Darstellung neu aufgebaut, steht dort der gespeicherte Stand.
+    setBearbeiten((b) => (b && b.id === neu.id ? neu : b));
     if (!gespeichert) return;
     const h = neueHinweise.length ? `${neueHinweise.length} Prüfhinweis(e): ${neueHinweise.map((x) => x.farbe).join(", ")}` : "keine Prüfhinweise";
     setMeldung(`${neu.name} gespeichert: Status ${neu.status}, Haltbarkeit ${haltbarkeitText(neu)}, ${h}.`);
@@ -108,7 +116,11 @@ export default function Systemzuteilung() {
       label: <span className="pl-sr">Bearbeiten</span>,
       printHidden: true,
       render: (r) => (
-        <Button ariaLabel={`${r.name as string} bearbeiten`} onClick={() => schutz.mitSchutz(() => setBearbeiten(r.zeile as Zuteilung))}>
+        <Button ariaLabel={`${r.name as string} bearbeiten`} onClick={() => {
+            // Die schon offene Zeile nochmals: nichts zu tun, auch keine Rückfrage.
+            if (bearbeiten?.id === r.id) return;
+            schutz.mitSchutz(() => setBearbeiten(r.zeile as Zuteilung));
+          }}>
           Bearbeiten
         </Button>
       ),
@@ -227,7 +239,7 @@ export default function Systemzuteilung() {
         </p>
       </section>
 
-      {bearbeiten && daten && !schmal ? (
+      {bearbeiten && daten && !alsDialog ? (
         <aside className="pl-split__detail pl-print-hide">
           <KomponenteBearbeiten
             alsSpalte
@@ -248,7 +260,7 @@ export default function Systemzuteilung() {
       ) : null}
       </div>
 
-      {bearbeiten && daten && schmal ? (
+      {bearbeiten && daten && alsDialog ? (
         <KomponenteBearbeiten
           key={bearbeiten.id}
           zeile={bearbeiten}

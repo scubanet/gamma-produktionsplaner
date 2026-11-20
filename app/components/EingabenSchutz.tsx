@@ -20,10 +20,9 @@ export function useEingabenSchutz(): { melden: (geaendert: boolean) => void; mit
         titel: "Änderungen verwerfen?",
         text: "Die Eingaben zu dieser Komponente sind nicht gespeichert und gehen verloren.",
         bestaetigen: "Verwerfen",
-        aktion: () => {
-          geaendert.current = false;
-          weiter();
-        },
+        // Den Stand meldet allein das Formular: wird es abgebaut, meldet es «nichts geändert»; bleibt es stehen
+        // (gleiche Zeile nochmals gewählt, Laden der nächsten gescheitert), bleibt der Schutz bestehen.
+        aktion: weiter,
       });
     },
     [fragen],
