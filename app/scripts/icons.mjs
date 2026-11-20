@@ -42,8 +42,9 @@ copyFileSync(pfad('../../design-system/assets/bildmarke-web.png'), pfad('../publ
 copyFileSync(quelle, pfad('../app/icon.svg'));
 writeFileSync(pfad('../app/favicon.ico'), ico([{ groesse: 32, png: await icon(32, 1, klar) }, { groesse: 48, png: await icon(48, 1, klar) }]));
 writeFileSync(pfad('../app/apple-icon.png'), await icon(180, 0.64, grund));
+// Nicht unter /icons/: Diesen Pfad belegt der Apache-Server des Hostings mit eigenen Dateien (404 für unsere).
 for (const g of [192, 512]) {
-  writeFileSync(pfad(`../public/icons/icon-${g}.png`), await icon(g, 0.72, grund));
-  writeFileSync(pfad(`../public/icons/icon-maskierbar-${g}.png`), await icon(g, 0.5, grund));
+  writeFileSync(pfad(`../public/brand/icon-${g}.png`), await icon(g, 0.72, grund));
+  writeFileSync(pfad(`../public/brand/icon-maskierbar-${g}.png`), await icon(g, 0.5, grund));
 }
 console.log('Icons geschrieben');
