@@ -48,14 +48,15 @@ select e.id as rezept_id, e.name, e.status,
        coalesce(s.zutaten_ohne_kosten, 0) as zutaten_ohne_kosten,
        round(s.waren_chf, 2) as waren_chf,
        e.ergibt_g,
-       round(s.waren_chf / nullif(e.ergibt_g, 0) * 1000, 2) as chf_pro_kg,
+       -- Vier Stellen: Der Wert wird mit Mengen in kg weitergerechnet (Anlass), zwei Stellen gäben dort Rundungsfehler.
+       round(s.waren_chf / nullif(e.ergibt_g, 0) * 1000, 4) as chf_pro_kg,
        -- Annahme: Rezept oder ein Unterrezept nicht freigegeben, Ergibt-Menge oder Zutatenmenge als Annahme vermerkt, Liter als Kilogramm gerechnet.
        (coalesce(s.annahme, false) or e.status <> 'freigegeben' or coalesce(s.zutaten_nicht_freigegeben, 0) > 0 or e.ergibt_annahme) as annahme,
        case
          when coalesce(s.zutaten, 0) = 0 then 'keine Zutaten'
          when s.zutaten_ohne_kosten > 0 then s.zutaten_ohne_kosten || ' von ' || s.zutaten || ' Zutaten ohne Artikel, Preis oder umrechenbare Einheit: Kosten [Preis]'
          else s.zutaten || ' Zutaten × Artikelpreis = CHF ' || to_char(round(s.waren_chf, 2), 'FM999999990.00') || ' je Charge'
-              || coalesce(' ÷ ' || trim_scale(e.ergibt_g) || ' g = CHF ' || to_char(round(s.waren_chf / nullif(e.ergibt_g, 0) * 1000, 2), 'FM999999990.00') || ' / kg', '; Ergibt-Menge [Menge]')
+              || coalesce(' ÷ ' || trim_scale(e.ergibt_g) || ' g = CHF ' || trim_scale(round(s.waren_chf / nullif(e.ergibt_g, 0) * 1000, 4)) || ' / kg', '; Ergibt-Menge [Menge]')
               || ' (ohne Zuschlag)'
        end as herleitung
 from e

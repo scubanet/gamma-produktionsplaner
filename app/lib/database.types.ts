@@ -2895,6 +2895,38 @@ export type Database = {
           },
         ]
       }
+      anlass_warenkosten: {
+        Row: {
+          anlass_id: string | null
+          annahme: boolean | null
+          bekannt_chf: number | null
+          herleitung: string | null
+          komponenten: number | null
+          komponenten_hauptartikel: number | null
+          komponenten_nicht_freigegeben: number | null
+          komponenten_ohne_kosten: number | null
+          komponenten_rezept: number | null
+          waren_chf: number | null
+        }
+        Relationships: []
+      }
+      anlass_warenkosten_komponente: {
+        Row: {
+          anlass_id: string | null
+          annahme: boolean | null
+          einheit: string | null
+          herleitung: string | null
+          komponente: string | null
+          komponente_id: string | null
+          kosten_chf: number | null
+          menge: number | null
+          rezept: string | null
+          rezept_id: string | null
+          rezept_status: string | null
+          weg: string | null
+        }
+        Relationships: []
+      }
       einkauf_artikel: {
         Row: {
           annahme: boolean | null

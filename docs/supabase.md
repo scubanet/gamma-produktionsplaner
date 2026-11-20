@@ -74,6 +74,7 @@ Stand: 15.11.2026
 | 33 zutat_artikel | Funktionen `saison_rezepte`, `zutat_artikel_vorschlag`, `zutat_artikel_verknuepft`, `zutat_artikel_zuordnen`, `zutat_artikel_loesen`; View `einkauf_zutaten_stand`. Keine neue Tabelle. Noch einzuspielen (Stand 20.11.2026) |
 | 34 einkauf_aus_rezept | Views `einkauf_bedarf` und `einkauf_zutat` neu; `einkauf_position`, `einkauf_artikel`, `einkauf_summe` neu angelegt (Weg über das Rezept, Spalten `weg`, `rezept_status`, `zutaten…`, `wege`, `annahme`). Noch einzuspielen (Stand 20.11.2026) |
 | 35 rezept_warenkosten | View `rezept_warenkosten`: Warenkosten pro Rezept je Charge und je kg, ohne Zuschlag. Noch einzuspielen (Stand 20.11.2026) |
+| 36 anlass_warenkosten | Views `anlass_warenkosten_komponente` und `anlass_warenkosten` (Warenkosten des Anlasses aus den Menülinien über die Rezepte); `anlass_kostenart` nimmt sie für die Kostenart Waren, sobald sie vollständig sind. Noch einzuspielen (Stand 20.11.2026) |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
 
 Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde nicht mit `supabase db push` eingespielt und trägt darum einen Zeitstempel (`20261110185525`); die Datei heisst seit dem 14.11.2026 gleich. Neue Migrationen immer mit `supabase db push` einspielen, sonst passen Datei und Datenbank nicht zusammen.

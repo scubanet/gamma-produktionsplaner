@@ -181,3 +181,7 @@ Einkauf aus dem Rezept: Migration 34 (`einkauf_aus_rezept`), committet, noch nic
 
 Migration 35 (`rezept_warenkosten`): Warenkosten pro Rezept je Charge und je kg, ohne Zuschlag. Nur die View, noch keine Anzeige. Die Quelle «rezept» in der Offerte ist nicht gebaut; die offene Frage (Menge pro Komponente) steht in `docs/plan-datenkette.md`. Einspielen zusammen mit 32 bis 34.
 
+## Nachtrag 20.11.2026: Datenkette, Aufgabe 4 (Anlass)
+
+Migration 36 (`anlass_warenkosten`): Warenkosten des Anlasses aus den Menülinien über die Rezepte. Die Kalkulation übernimmt sie für die Kostenart Waren erst, wenn jede Komponente Kosten hat; bis dahin steht der Stand in der Herleitung. Keine Änderung an der App. Einspielen zusammen mit 32 bis 35. Nach dem Einspielen prüfen: Ressourcen, Spengler Cup, Zeile «Waren» zeigt «aus den Rezepten erst 4 von 251 Komponenten mit Kosten».
+

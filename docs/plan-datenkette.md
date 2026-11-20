@@ -11,7 +11,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 **Für jede Aufgabe gilt:**
 
 - Dieser Plan beschreibt Umfang, Dateien und Abnahme, nicht den Code. Vor dem Bauen die Schritte der Aufgabe ausarbeiten und die betroffenen Views lesen.
-- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 36), Views mit `security_invoker = true`, danach `cd app && npm run types`.
+- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 37), Views mit `security_invoker = true`, danach `cd app && npm run types`.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Jede neue Zahl bekommt eine Spalte «Herleitung».
 - Tests und Typprüfung vor jedem Commit: `cd app && npm test && npm run typecheck`. Ein Commit pro Aufgabe, Nachricht auf Deutsch.
 - Fragen an Dominik (mit **Frage** markiert) vor dem Bauen klären, nicht raten.
@@ -40,7 +40,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 | 1 | Rezept-Freigabe und Kennzeichnung «aus Entwurf» (gebaut 19.11.2026) | kritisch | – |
 | 2 | Zutaten mit Artikeln verknüpfen (gebaut 20.11.2026) | kritisch | – |
 | 3 | Einkauf aus dem Rezept (gebaut 20.11.2026) | kritisch | 2 |
-| 4 | Warenkosten aus dem Rezept (Grundlage gebaut 20.11.2026, Rest wartet auf Entscheid) | kritisch | 2 |
+| 4 | Warenkosten aus dem Rezept (für den Anlass gebaut 20.11.2026, Offerte offen) | kritisch | 2 |
 | 5 | Aufwand in Ressourcen und Rentabilität übernehmen | kritisch | D1 |
 | 6 | Anlass wählen, Kontrollwerte aus dem Code nehmen | mittel | – |
 | 7 | Tests für die Rechenlogik in der Datenbank | mittel | – |
@@ -132,6 +132,15 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 1. Aus dem Katalog (`menge_pro_portion` pro Gericht und Komponente): passt zur Offerte, braucht aber die Mengen für die Gerichte, die offeriert werden (heute 15 von 300 vollständig).
 2. Aus den Menülinien des Anlasses (`menuelinie_komponente.menge_pro_gast`, bei allen 344 Zeilen erfasst): rechnet die Warenkosten des Anlasses für die Rentabilität, nicht die der Offerte. Das wäre für den Durchstich Spiel 1 sofort rechenbar.
 3. Beides: zuerst 2 für die Rentabilität, 1 für die Offerte, sobald die Mengen im Katalog stehen.
+
+**Entscheid Dominik (20.11.2026): zuerst über die Menülinien.** Gebaut (Migration 36, noch einzuspielen):
+
+- `anlass_warenkosten_komponente`: pro Anlass und Komponente Bedarf × CHF/kg des Rezepts; sonst Bedarf × Preis des Hauptartikels bei gleicher Einheit (Annahme); sonst leer.
+- `anlass_warenkosten`: Total nur, wenn jede Komponente Kosten hat; sonst steht die Teilsumme als «bisher bekannt», nie als Total.
+- `anlass_kostenart`: Die Kostenart Waren nimmt dieses Total, sobald es vollständig ist, mit Vorrang vor der Offerte. Solange es unvollständig ist, ändert sich kein Betrag; der Stand steht in der Herleitung der Zeile «Waren» (Ressourcen und Kalkulation). Plan und Ist von Hand gelten wie bisher.
+- Lesend geprüft gegen die Pilot-Datenbank: Spengler Cup, 251 Komponenten, 4 mit Kosten (bisher bekannt CHF 2050.52), kein Total. Die geänderte `anlass_kostenart` selbst lief nicht (sie baut auf den neuen Views auf).
+- Kleine Abweichung zum Einkauf: Der Einkauf rundet pro Zutat (Gemüsestreifen CHF 25.21), die Warenkosten des Anlasses rechnen mit CHF/kg auf vier Stellen (5.5 kg × 4.584 = CHF 25.21). Über viele Komponenten können sich Rappen unterscheiden.
+- Offen: die Quelle «rezept» in der Offerte (`gericht_warenkosten`, `offerte_position`), sobald der Katalog die Menge pro Portion kennt.
 
 Aufgefallen: Das Rezept «Kartoffelgratin» (eine der zehn Komponenten von Spiel 1) hat keine Zutaten.
 
