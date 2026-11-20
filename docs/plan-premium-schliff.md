@@ -91,12 +91,14 @@ Für Kopfzeile und Favicon reicht das, für die App-Icons (192 und 512 px) nicht
 
 **Dateien:** neue Komponente `design-system/components/Skeleton/`, alle Seiten unter `app/app/(geschuetzt)/`.
 
-- [ ] Komponente `Skeleton` mit Varianten `text`, `zahl`, `zeile` (Tabellenzeile) und `karte`. Fläche `surface-sunken`, ruhiges Pulsieren, bei reduzierter Bewegung statisch. `aria-hidden`, dazu einmal pro Seite ein `role="status"` mit `pl-sr`-Text.
-- [ ] `DataTable` bekommt `loading` und zeigt dann acht Skelettzeilen mit den echten Spaltenbreiten.
-- [ ] `KpiTile` und `pl-todo__zahl`: Skelett statt «…».
-- [ ] Alle Stellen ersetzen: `grep -rn -E '"…"|wird geladen' app/app app/components`. Betroffen sind Leitstand, Rezepte, Rezept bearbeiten, Produktion (Liste, Wellen, Aufwand), Küchenpass, Katalog, Systemzuteilung, Anlässe, Offerten, Rentabilität, Einkauf.
+- [x] Komponente `Skeleton` mit Varianten `text`, `zahl`, `zeile` (Tabellenzeile) und `karte`. Fläche `surface-sunken`, ruhiges Pulsieren, bei reduzierter Bewegung statisch. `aria-hidden`, dazu einmal pro Seite ein `role="status"` mit `pl-sr`-Text.
+- [x] `DataTable` bekommt `loading` und zeigt dann acht Skelettzeilen mit den echten Spaltenbreiten.
+- [x] `KpiTile` und `pl-todo__zahl`: Skelett statt «…».
+- [x] Alle Stellen ersetzen: `grep -rn -E '"…"|wird geladen' app/app app/components`. Betroffen sind Leitstand, Rezepte, Rezept bearbeiten, Produktion (Liste, Wellen, Aufwand), Küchenpass, Katalog, Systemzuteilung, Anlässe, Offerten, Rentabilität, Einkauf.
 - [ ] Das Layout darf beim Eintreffen der Daten nicht springen: Skelett hat die Höhe des späteren Inhalts.
-- [ ] Commit `Ladezustände mit Skelett statt Platzhaltertext`
+- [x] Commit `Ladezustände mit Skelett statt Platzhaltertext`
+
+Stand 20.11.2026: Skelett an allen Stellen aus dem `grep` (48 Stellen in 25 Dateien), auch im Breadcrumb und bei «Anmeldung wird geprüft». Offen: Die Seiten zeigen beim Laden acht allgemeine Skelettzeilen statt der Tabelle mit echten Spalten; `DataTable` kann `loading`, aber die Tabellen entstehen heute erst mit den Daten. Darum springt das Layout beim Eintreffen der Daten noch, wenn die Liste länger oder kürzer ist als das Skelett. Umbau pro Seite, wenn es stört.
 
 ### Aufgabe 5: Fehlermeldungen
 

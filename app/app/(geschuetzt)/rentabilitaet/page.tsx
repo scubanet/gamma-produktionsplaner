@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill } from "@/lib/planer";
+import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { statusLabel } from "@/lib/anlass";
@@ -218,7 +218,7 @@ export default function Rentabilitaet() {
           </Notice>
         </>
       ) : daten ? null : (
-        <p className="pl-muted" role="status">{fehler ? "Keine Daten." : "Rentabilität wird geladen …"}</p>
+        (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Rentabilität wird geladen" />)
       )}
     </>
   );

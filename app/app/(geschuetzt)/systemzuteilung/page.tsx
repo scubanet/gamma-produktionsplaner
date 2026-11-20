@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Button, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
+import { Button, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { useSchmal } from "@/lib/schmal";
 import { formatZahl } from "@/lib/format";
@@ -54,7 +54,7 @@ export default function Systemzuteilung() {
   const hinweise = useMemo(() => hinweiseNachKomponente(daten?.hinweise ?? []), [daten]);
   const alle = useMemo(() => (daten ? sortieren(daten.zeilen, daten.kategorien) : []), [daten]);
   const zeilen = useMemo(() => filtern(alle, hinweise, filter), [alle, hinweise, filter]);
-  const anzahl = (pred: (z: Zuteilung) => boolean) => (daten ? formatZahl(alle.filter(pred).length) : fehler ? "–" : "…");
+  const anzahl = (pred: (z: Zuteilung) => boolean) => (daten ? formatZahl(alle.filter(pred).length) : fehler ? "–" : <Skeleton variant="zahl" />);
   const hinweisAnzahl = (farbe: string) => (daten ? daten.hinweise.filter((h) => h.farbe === farbe).length : 0);
   const set = (teil: Partial<Filter>) => setFilter((f) => ({ ...f, ...teil }));
 
@@ -136,7 +136,7 @@ export default function Systemzuteilung() {
         <KpiTile label="Zukauf" value={anzahl((z) => z.status === "Zukauf")} detail="CF-Stufe 4 oder 5" />
         <KpiTile
           label="Prüfhinweise rot / gelb"
-          value={daten ? `${formatZahl(hinweisAnzahl("rot"))} / ${formatZahl(hinweisAnzahl("gelb"))}` : fehler ? "–" : "…"}
+          value={daten ? `${formatZahl(hinweisAnzahl("rot"))} / ${formatZahl(hinweisAnzahl("gelb"))}` : fehler ? "–" : <Skeleton variant="zahl" />}
           detail="zeigen an, sperren nichts"
         />
       </div>
@@ -186,7 +186,7 @@ export default function Systemzuteilung() {
         ) : fehler ? (
           <p className="pl-muted">Keine Daten, siehe Hinweis oben.</p>
         ) : (
-          <p className="pl-muted" role="status">Systemzuteilung wird geladen …</p>
+          <Skeleton variant="zeile" label="Systemzuteilung wird geladen" />
         )}
         <p className="pl-small">
           <span className="pl-assumed">Haltbarkeit</span>: {HALTBARKEIT_HINWEIS} Status, Haltbarkeit und Prüfhinweise rechnet die Datenbank aus Produktion, Lagerung und CF-Stufe.

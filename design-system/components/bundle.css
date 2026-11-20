@@ -339,7 +339,18 @@
 .pl-panel > .pl-panel__head, .pl-panel > .pl-panel__body { animation: pl-einblenden-a var(--motion-base) var(--ease-standard); }
 .pl-panel--b > .pl-panel__head, .pl-panel--b > .pl-panel__body { animation: pl-einblenden-b var(--motion-base) var(--ease-standard); }
 .pl-progress__bar, .pl-anteil__teil { transform-origin: left; animation: pl-wachsen var(--motion-base) var(--ease-standard); }
-@media (prefers-reduced-motion: reduce) { :root { --motion-fast: 0ms; --motion-base: 0ms; } }
+/* Skeleton: Ladezustand in der Form des späteren Inhalts. */
+@keyframes pl-puls { 50% { opacity: 0.45; } }
+.pl-skel { display: block; border-radius: var(--radius-sm); background: var(--surface-hover); animation: pl-puls var(--motion-pulse) ease-in-out infinite; }
+.pl-skel-gruppe { display: flex; flex-direction: column; min-width: 0; }
+.pl-skel--text { height: 12px; margin: 5px 0; }
+.pl-skel--text:last-child { width: 60%; }
+.pl-skel--zahl { display: inline-block; width: 3.5ch; height: 0.72em; vertical-align: baseline; }
+.pl-skel--zeile { height: 20px; margin: 12px 0; }
+.pl-skel--zeile:nth-child(odd) { width: 92%; }
+.pl-skel--zelle { height: 14px; margin: 3px 0; min-width: 32px; }
+.pl-skel--karte { height: 168px; border-radius: var(--radius-lg); }
+@media (prefers-reduced-motion: reduce) { :root { --motion-fast: 0ms; --motion-base: 0ms; } .pl-skel { animation: none; } }
 
 @media print {
   .pl-nav, .pl-top, .pl-tabs, .pl-print-hide { display: none !important; }

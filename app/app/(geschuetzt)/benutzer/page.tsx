@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Card, DataTable, Dialog, KpiTile, Notice, StatusPill, TextField } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, KpiTile, Notice, StatusPill, TextField, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { datumText, neuerZugang, sortieren, status, type Benutzer } from "@/lib/benutzer";
 import { fehlerText } from "@/lib/fehler";
@@ -158,7 +158,7 @@ export default function BenutzerSeite() {
           </Card>
         </>
       ) : !fehler ? (
-        <p className="pl-muted" role="status">Benutzer werden geladen …</p>
+        <Skeleton variant="zeile" label="Benutzer werden geladen" />
       ) : null}
 
       <Dialog

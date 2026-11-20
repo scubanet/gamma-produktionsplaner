@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill } from "@/lib/planer";
+import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
@@ -106,7 +106,7 @@ export default function Einkauf() {
     <>
       <header className="pl-head">
         <div>
-          <div className="pl-crumb">Einkauf · {s?.saison ?? "…"}{bezug ? ` · nur ${bezug}` : ""}</div>
+          <div className="pl-crumb">Einkauf · {s?.saison ?? <Skeleton variant="zahl" />}{bezug ? ` · nur ${bezug}` : ""}</div>
           <h1 className="pl-h1">Einkaufsliste</h1>
         </div>
         <div className="pl-actions pl-print-hide">
@@ -231,7 +231,7 @@ export default function Einkauf() {
           </Card>
         </>
       ) : daten === undefined ? (
-        <p className="pl-muted" role="status">{fehler ? "Keine Daten." : "Einkaufsliste wird geladen …"}</p>
+        (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Einkaufsliste wird geladen" />)
       ) : null}
 
       <ArtikelZuordnen

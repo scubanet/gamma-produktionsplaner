@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill } from "@/lib/planer";
+import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
@@ -80,7 +80,7 @@ export default function Aufwand() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">
-            <a href="/produktion/">Produktionsplan</a> · {daten?.saison ?? "…"}
+            <a href="/produktion/">Produktionsplan</a> · {daten?.saison ?? <Skeleton variant="zahl" />}
           </div>
           <h1 className="pl-h1">Aufwand aus den Rezepten</h1>
           <div className="pl-sub">Produktion pro Welle, Logistik und Service pro Spiel</div>
@@ -92,7 +92,7 @@ export default function Aufwand() {
 
       {fehler ? <Notice role="alert" title="Aufwand nicht geladen">{fehler}</Notice> : null}
       {daten === null ? <Notice title="Keine Saison">Es gibt noch keine Saison mit Anlässen.</Notice> : null}
-      {daten === undefined && !fehler ? <p className="pl-muted" role="status">Aufwand wird gerechnet …</p> : null}
+      {daten === undefined && !fehler ? <Skeleton variant="zeile" label="Aufwand wird gerechnet" /> : null}
 
       {daten ? (
         <>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, DataTable, Dialog, ItemList, Notice, StatusPill, TextField } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, ItemList, Notice, StatusPill, TextField, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatGramm } from "@/lib/format";
 import { haltbarkeitText, lagerungText, type Zuteilung } from "@/lib/systemzuteilung";
@@ -102,7 +102,7 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
   if (!d?.daten) {
     return (
       <Card title="Planung" meta="Produktion, Gebinde und Service">
-        {d?.fehler ? <Notice role="alert" title="Planung nicht geladen">{d.fehler}</Notice> : <p className="pl-muted" role="status">Planung wird geladen …</p>}
+        {d?.fehler ? <Notice role="alert" title="Planung nicht geladen">{d.fehler}</Notice> : <Skeleton variant="zeile" label="Planung wird geladen" />}
       </Card>
     );
   }

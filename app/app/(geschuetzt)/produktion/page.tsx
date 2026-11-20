@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn, Skeleton } from "@/lib/planer";
 import { suchen } from "@/lib/suche";
 import { useSchmal } from "@/lib/schmal";
 import { supabase } from "@/lib/supabase";
@@ -198,7 +198,7 @@ export default function Produktionsliste() {
     : [];
   const abweichungen = kontrollen.filter((k) => k.ok === false).length;
 
-  const warten = fehler ? "–" : "…";
+  const warten = fehler ? "–" : <Skeleton variant="zahl" />;
   // «linie» hält den gewählten Service (Spiel); leer = ganze Saison.
   const spielListe = useMemo(() => spiele(daten?.proSpiel ?? []), [daten]);
   const spiel = spielListe.find((s) => s.id === linie) ?? null;
@@ -404,7 +404,7 @@ export default function Produktionsliste() {
             ) : fehler ? (
               <p className="pl-muted">Keine Daten, siehe Hinweis oben.</p>
             ) : (
-              <p className="pl-muted" role="status">Produktionsliste wird geladen …</p>
+              <Skeleton variant="zeile" label="Produktionsliste wird geladen" />
             )}
             <p className="pl-small">
               <span className="pl-assumed">Haltbarkeit</span>: {HALTBARKEIT_HINWEIS} [Haltbarkeit] = noch nicht zugeteilt (Status offen); – = trifft nicht zu (Zukauf oder nur vor Ort). Konservierung = Produktionssystem und Lagerart aus der Systemzuteilung{daten ? ` (${[...daten.systemName].map(([c, n]) => `${c} = ${n}`).join("; ")})` : ""}. Klick auf den Namen öffnet das Rezept; [Rezept] = noch keines verknüpft; «Rezept Entwurf» oder «Rezept Geprüft» = Rezept noch nicht freigegeben.

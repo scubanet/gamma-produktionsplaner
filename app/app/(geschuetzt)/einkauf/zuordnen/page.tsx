@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button, Card, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill } from "@/lib/planer";
+import { Button, Card, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import { filtern, gruppieren, vorschlagDetail, type ArtikelVorschlag, type KomponenteOffen, type VorschlagZeile } from "@/lib/artikel-vorschlag";
@@ -81,7 +81,7 @@ export default function ArtikelZuordnenSeite() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">
-            <a href="/einkauf/">Einkauf</a> · {daten?.saison ?? "…"}
+            <a href="/einkauf/">Einkauf</a> · {daten?.saison ?? <Skeleton variant="zahl" />}
           </div>
           <h1 className="pl-h1">Artikel zuordnen</h1>
         </div>
@@ -172,7 +172,7 @@ export default function ArtikelZuordnenSeite() {
           </Card>
         </>
       ) : daten === undefined ? (
-        <p className="pl-muted" role="status">{fehler ? "Keine Daten." : "Vorschläge werden gesucht …"}</p>
+        (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Vorschläge werden gesucht" />)
       ) : null}
 
       <ArtikelZuordnen

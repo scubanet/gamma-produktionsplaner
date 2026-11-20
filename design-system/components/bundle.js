@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"},{"name":"Brand"},{"name":"Icon"},{"name":"UserMenu"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"},{"name":"Brand"},{"name":"Icon"},{"name":"UserMenu"},{"name":"Skeleton"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
@@ -35,6 +35,15 @@
         p.meta ? h('span', { className: 'pl-card__meta' }, p.meta) : null,
         p.actions || null) : null,
       p.children);
+  }
+
+  // Ladezustand: graue Flächen in der Form des späteren Inhalts. Die Flächen sind für Screenreader ausgeblendet; label sagt einmal, was lädt.
+  function Skeleton(p) {
+    var v = p.variant || 'text';
+    if (v === 'zahl') return h('span', { className: 'pl-skel pl-skel--zahl' }, h('span', { className: 'pl-sr' }, p.label || 'lädt'));
+    var n = p.rows || (v === 'text' ? 3 : v === 'zeile' ? 8 : 1), teile = [];
+    for (var i = 0; i < n; i++) teile.push(h('span', { key: i, className: 'pl-skel pl-skel--' + v, 'aria-hidden': 'true' }));
+    return h('div', { className: 'pl-skel-gruppe' }, p.label ? h('span', { className: 'pl-sr', role: 'status' }, p.label) : null, teile);
   }
 
   function KpiTile(p) {
@@ -226,7 +235,11 @@
             kann ? h('button', { type: 'button', className: 'pl-table__sort', onClick: function () { p.onSort(c.key); } },
               c.label, ist ? h(Icon, { name: p.sort.dir === 'ab' ? 'sort-down' : 'sort-up' }) : null) : c.label);
         }))),
-        h('tbody', null, p.rows.map(function (r, i) {
+        h('tbody', null, p.loading ? [0, 1, 2, 3, 4, 5, 6, 7].map(function (i) {
+          return h('tr', { key: i, 'aria-hidden': 'true' }, p.columns.map(function (c) {
+            return h('td', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined }, h('span', { className: 'pl-skel pl-skel--zelle' }));
+          }));
+        }) : p.rows.map(function (r, i) {
           // rowHref: die ganze Zeile führt zum Ziel. Der Link in der Zeile bleibt für Tastatur und Screenreader; Klicks auf Bedienelemente zählen nicht.
           var ziel = p.rowHref ? p.rowHref(r) : null;
           return h('tr', { key: r.id || i, className: cx(p.isSelected && p.isSelected(r) && 'pl-table__row--selected', ziel && 'pl-table__row--link') || undefined,
@@ -334,6 +347,6 @@
       p.detail ? h('details', { className: 'pl-notice__detail' }, h('summary', null, 'Technische Angaben'), h('code', null, p.detail)) : null);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

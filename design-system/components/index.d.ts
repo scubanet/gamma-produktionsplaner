@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 export type IconName = 'search' | 'print' | 'plus' | 'edit' | 'close' | 'sort-up' | 'sort-down';
 export interface IconProps { name: IconName; }
+export interface SkeletonProps { variant?: 'text' | 'zahl' | 'zeile' | 'karte'; rows?: number; label?: string; }
 export interface UserMenuProps { name?: string; email?: string; signOutLabel?: string; onSignOut: () => void; }
 export interface ButtonProps { variant?: 'primary' | 'secondary' | 'dashed'; icon?: IconName; href?: string; ariaLabel?: string; type?: 'button' | 'submit'; disabled?: boolean; onClick?: () => void; children: ReactNode; }
 export interface CardProps { title?: ReactNode; meta?: ReactNode; actions?: ReactNode; tone?: 'default' | 'panel'; children?: ReactNode; }
@@ -21,7 +22,7 @@ export interface RecipeStep { id: string; text: ReactNode; assumed?: boolean; ch
 export interface RecipeGroupsProps { groups: { id?: string; title?: ReactNode; ingredients: RecipeIngredient[]; steps: RecipeStep[] }[]; pctLabel?: string; }
 export interface CheckboxProps { label: ReactNode; checked?: boolean; defaultChecked?: boolean; onChange?: (e: unknown) => void; }
 export interface DataTableColumn { key: string; label: ReactNode; numeric?: boolean; printHidden?: boolean; sortable?: boolean; subKey?: string; render?: (row: Record<string, unknown>) => ReactNode; }
-export interface DataTableProps { columns: DataTableColumn[]; rows: Record<string, unknown>[]; sort?: { key: string; dir: 'auf' | 'ab' }; onSort?: (key: string) => void; isSelected?: (row: Record<string, unknown>) => boolean; rowHref?: (row: Record<string, unknown>) => string | null | undefined; }
+export interface DataTableProps { columns: DataTableColumn[]; rows: Record<string, unknown>[]; sort?: { key: string; dir: 'auf' | 'ab' }; onSort?: (key: string) => void; loading?: boolean; isSelected?: (row: Record<string, unknown>) => boolean; rowHref?: (row: Record<string, unknown>) => string | null | undefined; }
 export interface TimelineBar { label: string; from: number; to: number; location?: 'zentral' | 'vorort' | 'logistik'; }
 export interface TimelineProps { start: number; end: number; step?: number; marker?: number; lanes: { name: string; bars: TimelineBar[] }[]; }
 export interface SideNavItem { label: string; href?: string; current?: boolean; disabled?: boolean; }
@@ -57,3 +58,4 @@ export declare const DetailPanel: (p: DetailPanelProps) => JSX.Element;
 export declare const Brand: (p: BrandProps) => JSX.Element;
 export declare const Icon: (p: IconProps) => JSX.Element;
 export declare const UserMenu: (p: UserMenuProps) => JSX.Element;
+export declare const Skeleton: (p: SkeletonProps) => JSX.Element;

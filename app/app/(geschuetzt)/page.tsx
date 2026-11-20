@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Notice, StatusPill } from "@/lib/planer";
+import { Notice, StatusPill, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { naechsterAnlass, rezepteStand, summe, wannText, wellenName, type LeitAnlass } from "@/lib/leitstand";
@@ -51,7 +51,7 @@ export default function Leitstand() {
   const stand = summe(wellen);
   const rez = rezepteStand(d?.rezepte ?? [], saisonId);
   const saisonAnlaesse = d ? d.anlaesse.filter((a) => (saisonId ? a.saison_id === saisonId : true)) : [];
-  const zahl = (n: number | undefined) => (d ? formatZahl(n ?? 0) : fehler ? "–" : "…");
+  const zahl = (n: number | undefined) => (d ? formatZahl(n ?? 0) : fehler ? "–" : <Skeleton variant="zahl" />);
   const zuteilung = d ? d.ok + d.offen + d.zukauf : 0;
 
   const aufgaben = [
@@ -115,7 +115,7 @@ export default function Leitstand() {
                 </div>
               ))
             ) : (
-              <p className="pl-muted" role="status">{d ? "Noch keine Checkliste für diese Saison." : fehler ? "Keine Daten." : "Wird geladen …"}</p>
+              (d || fehler ? <p className="pl-muted" role="status">{d ? "Noch keine Checkliste für diese Saison." : "Keine Daten."}</p> : <Skeleton variant="zeile" rows={3} label="Leitstand wird geladen" />)
             )}
             <p className="pl-small">«Ohne Welle» sind Komponenten im Zukauf, ohne Zuteilung oder nur vor Ort.</p>
           </section>
@@ -132,7 +132,7 @@ export default function Leitstand() {
                 </a>
               ))
             ) : (
-              <p className="pl-muted" role="status">{d ? "Noch keine Anlässe erfasst." : fehler ? "Keine Daten." : "Wird geladen …"}</p>
+              (d || fehler ? <p className="pl-muted" role="status">{d ? "Noch keine Anlässe erfasst." : "Keine Daten."}</p> : <Skeleton variant="zeile" rows={4} />)
             )}
           </section>
 
@@ -152,7 +152,7 @@ export default function Leitstand() {
                 </div>
               </>
             ) : (
-              <p className="pl-muted" role="status">{d ? "Noch keine Komponenten." : fehler ? "Keine Daten." : "Wird geladen …"}</p>
+              (d || fehler ? <p className="pl-muted" role="status">{d ? "Noch keine Komponenten." : "Keine Daten."}</p> : <Skeleton variant="text" />)
             )}
           </section>
         </aside>

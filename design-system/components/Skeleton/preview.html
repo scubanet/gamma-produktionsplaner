@@ -1,0 +1,5 @@
+<!-- @dsCard group="Rückmeldung" height=320 -->
+<div class="pl-root" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:24px;background:var(--ground)" id="r"></div>
+<script>const {Skeleton,KpiTile}=window.Planer;const h=React.createElement;ReactDOM.createRoot(document.getElementById('r')).render(h(React.Fragment,null,
+h('div',null,h(KpiTile,{label:'Komponenten ok',value:h(Skeleton,{variant:'zahl'}),detail:'mit Produktionssystem'}),h('div',{style:{height:16}}),h(Skeleton,{variant:'text'})),
+h(Skeleton,{variant:'zeile',rows:5,label:'Liste wird geladen'})));</script>

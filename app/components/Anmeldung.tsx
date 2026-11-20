@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import type { Session } from "@supabase/supabase-js";
+import { Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { ANMELDEN } from "@/lib/navigation";
 import { beiSitzungsende } from "@/lib/fehler";
@@ -32,6 +33,6 @@ export function Anmeldung({ children }: { children: ReactNode }) {
     if (sitzung === null) router.replace(`${ANMELDEN}?weiter=${encodeURIComponent(pfad)}`);
   }, [sitzung, pfad, router]);
 
-  if (!sitzung) return <p className="pl-main pl-muted" role="status">Anmeldung wird geprüft …</p>;
+  if (!sitzung) return <div className="pl-main"><Skeleton variant="karte" label="Anmeldung wird geprüft" /></div>;
   return <SitzungKontext.Provider value={sitzung}>{children}</SitzungKontext.Provider>;
 }

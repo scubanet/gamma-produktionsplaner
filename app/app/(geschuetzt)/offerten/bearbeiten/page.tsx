@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, DataTable, Dialog, ItemList, KpiTile, Notice, Select, TextField } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, ItemList, KpiTile, Notice, Select, TextField, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import {
@@ -186,7 +186,7 @@ function Bearbeiten() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">
-            <a href="/offerten/">Offerten</a> · {offerte?.nummer ?? "…"}
+            <a href="/offerten/">Offerten</a> · {offerte?.nummer ?? <Skeleton variant="zahl" />}
           </div>
           <h1 className={offerte ? "pl-h1 pl-h1--name" : "pl-h1"}>{offerte?.name ?? "Offerte"}</h1>
         </div>
@@ -256,7 +256,7 @@ function Bearbeiten() {
                 </div>
               </form>
             ) : (
-              <p className="pl-muted" role="status">{hinweis ? "Keine Daten." : "Offerte wird geladen …"}</p>
+              (hinweis ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Offerte wird geladen" />)
             )}
           </Card>
 
@@ -326,7 +326,7 @@ function Bearbeiten() {
                 <p className="pl-muted">Noch keine Gerichte. Unten aus dem Katalog hinzufügen.</p>
               )
             ) : (
-              <p className="pl-muted" role="status">{hinweis ? "Keine Daten." : "Gerichte werden geladen …"}</p>
+              (hinweis ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Gerichte werden geladen" />)
             )}
             <p className="pl-small">
               <span className="pl-assumed">gestrichelt</span> = Annahme, bitte prüfen: Warenkosten geschätzt mit CHF/kg der Kategorie aus dem Verkaufstool,
@@ -371,7 +371,7 @@ function Bearbeiten() {
                 { id: "d", label: "Deckungsbeitrag", wert: formatChf(s?.deckungsbeitrag_chf ?? null) },
               ]}
             />
-            <p className="pl-small">{s?.herleitung ?? "…"}</p>
+            <p className="pl-small">{s?.herleitung ?? <Skeleton variant="zahl" />}</p>
           </Card>
           {(s?.mengentypen_anteil_pruefen ?? 0) > 0 ? (
             <Notice title="Anteile prüfen">

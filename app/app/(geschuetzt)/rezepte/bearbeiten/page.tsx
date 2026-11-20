@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, Checkbox, Dialog, Notice, Select, TextField } from "@/lib/planer";
+import { Button, Card, Checkbox, Dialog, Notice, Select, TextField, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { istGeaendert } from "@/lib/ungespeichert";
 import { Ungespeichert } from "@/components/Ungespeichert";
@@ -106,7 +106,7 @@ function RezeptBearbeiten() {
         {stand?.fehler !== undefined ? (
           <Notice role="alert" title="Rezept nicht geladen">{stand.fehler}</Notice>
         ) : (
-          <p className="pl-muted" role="status">Rezept wird geladen …</p>
+          <Skeleton variant="zeile" label="Rezept wird geladen" />
         )}
       </>
     );

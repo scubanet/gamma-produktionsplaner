@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, Select, TextField } from "@/lib/planer";
+import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, Select, TextField, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { suchen } from "@/lib/suche";
 import { PlanungKarte } from "@/components/rezepte/PlanungKarte";
@@ -123,7 +123,7 @@ function Rezeptbibliothek() {
   const d = details?.schluessel === standSchluessel ? details : null;
   const s = skaliert?.schluessel === skalSchluessel ? skaliert : null;
   const fehler = listenFehler ?? d?.fehler ?? s?.fehler ?? null;
-  const laedt = (x: unknown) => (x ? null : fehler ? "Keine Daten, siehe Hinweis oben." : "…");
+  const laedt = (x: unknown) => (x ? null : fehler ? "Keine Daten, siehe Hinweis oben." : <Skeleton variant="zahl" />);
 
   const waehlen = (neu: string) => router.replace(`/rezepte/?r=${encodeURIComponent(neu)}`);
   const besonderes = besonderesZeilen(rezept?.besonderes ?? null);
@@ -141,7 +141,7 @@ function Rezeptbibliothek() {
     <>
       <header className="pl-head">
         <div>
-          <div className="pl-crumb">Rezepte · {rezepte ? `${rezepte.length} Rezepte` : "…"}</div>
+          <div className="pl-crumb">Rezepte · {rezepte ? `${rezepte.length} Rezepte` : <Skeleton variant="zahl" />}</div>
           <h1 className={rezept ? "pl-h1 pl-h1--name" : "pl-h1"}>{rezept?.name ?? "Rezeptbibliothek"}</h1>
           {rezept?.untertitel ? <div className="pl-sub">{rezept.untertitel}</div> : null}
         </div>
@@ -214,7 +214,7 @@ function Rezeptbibliothek() {
               )}
             </>
           ) : (
-            <p className="pl-muted" role="status">{listenFehler ? "Keine Daten." : "Rezepte werden geladen …"}</p>
+            (listenFehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Rezepte werden geladen" />)
           )}
         </div>
 
@@ -245,7 +245,7 @@ function Rezeptbibliothek() {
                   <div className="pl-label">Benötigte Zeit (Basismenge)</div>
                   <div>aktiv {d?.daten ? formatMinuten(d.daten.zeit?.aktiv_min ?? null) : laedt(null)}</div>
                   <div className="pl-small">
-                    unbeaufsichtigt {d?.daten ? formatMinuten(d.daten.zeit?.unbeaufsichtigt_min ?? null) : "…"}; Zeiten werden nicht skaliert
+                    unbeaufsichtigt {d?.daten ? formatMinuten(d.daten.zeit?.unbeaufsichtigt_min ?? null) : <Skeleton variant="zahl" />}; Zeiten werden nicht skaliert
                   </div>
                 </div>
                 <div>
@@ -324,7 +324,7 @@ function Rezeptbibliothek() {
               title="Zutaten und Zubereitung"
               meta={
                 <>
-                  Basis 100 % = {s?.daten ? basisZutat(s.daten.zutaten) : "…"} · <span className="pl-assumed">gestrichelt</span> = Annahme, bitte prüfen
+                  Basis 100 % = {s?.daten ? basisZutat(s.daten.zutaten) : <Skeleton variant="zahl" />} · <span className="pl-assumed">gestrichelt</span> = Annahme, bitte prüfen
                 </>
               }
             >
@@ -349,7 +349,7 @@ function Rezeptbibliothek() {
               ) : fehler ? (
                 <p className="pl-muted">Keine Daten, siehe Hinweis oben.</p>
               ) : (
-                <p className="pl-muted" role="status">Rezept wird geladen …</p>
+                <Skeleton variant="zeile" label="Rezept wird geladen" />
               )}
             </Card>
           ) : null}

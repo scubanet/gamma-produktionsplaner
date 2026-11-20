@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Notice, StatusPill } from "@/lib/planer";
+import { Notice, StatusPill, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum } from "@/lib/format";
@@ -129,7 +129,7 @@ function Bearbeiten() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">
-            <a href="/anlaesse/">Anlässe</a> · {a ? `${a.nummer ?? "[Nummer]"} · ${zeitraum(a.datum, a.datum_bis, formatDatum)} · ${a.ort ?? "[Ort]"}` : "…"}
+            <a href="/anlaesse/">Anlässe</a> · {a ? `${a.nummer ?? "[Nummer]"} · ${zeitraum(a.datum, a.datum_bis, formatDatum)} · ${a.ort ?? "[Ort]"}` : <Skeleton variant="zahl" />}
           </div>
           <h1 className={a ? "pl-h1 pl-h1--name" : "pl-h1"}>{a?.name ?? "Anlass"}</h1>
         </div>
@@ -177,7 +177,7 @@ function Bearbeiten() {
           <Karten anlassId={a.id} karten={daten.karten} vorlagen={daten.vorlagen} onMeldung={melden} />
         </>
       ) : (
-        <p className="pl-muted" role="status">{hinweis ? "Keine Daten." : "Anlass wird geladen …"}</p>
+        (hinweis ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Anlass wird geladen" />)
       )}
     </>
   );

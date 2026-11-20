@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Card, Checkbox, DataTable, Dialog, Fieldset, Notice, Select, StatusPill, TextField } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, Dialog, Fieldset, Notice, Select, StatusPill, TextField, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import { WOCHENTAGE, fehlerText, formAus, lieferantDaten, liefertageText, type Lieferant, type LieferantForm } from "@/lib/einkauf";
@@ -183,7 +183,7 @@ export default function Lieferanten() {
             <p className="pl-muted">Noch keine Lieferanten. «Lieferant erfassen» legt den ersten an.</p>
           )
         ) : (
-          <p className="pl-muted" role="status">{fehler ? "Keine Daten." : "Lieferanten werden geladen …"}</p>
+          (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Lieferanten werden geladen" />)
         )}
       </Card>
 
@@ -208,7 +208,7 @@ export default function Lieferanten() {
         <Checkbox label="nur Artikel ohne Lieferant" checked={auswahl.nurOhne} onChange={(e) => setAuswahl({ ...auswahl, nurOhne: checked(e) })} />
         <div className="pl-actions">
           <Button variant="primary" onClick={zuordnen} disabled={ordnetZu || !auswahl.lieferant || !anzahl}>
-            {ordnetZu ? "Wird zugeordnet …" : `${anzahl === null ? "…" : formatZahl(anzahl)} Artikel zuordnen`}
+            {ordnetZu ? "Wird zugeordnet …" : anzahl === null ? "Artikel zuordnen" : `${formatZahl(anzahl)} Artikel zuordnen`}
           </Button>
           <span className="pl-small">{anzahl === 0 ? "Kein Artikel passt auf diese Auswahl." : "Die Zahl zeigt, wie viele Artikel auf die Auswahl passen."}</span>
         </div>

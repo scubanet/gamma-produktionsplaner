@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card, DataTable, Notice, Select, StatusPill } from "@/lib/planer";
+import { Button, Card, DataTable, Notice, Select, StatusPill, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { STATUS, statusLabel, statusPill, zeitraum } from "@/lib/anlass";
@@ -105,7 +105,7 @@ export default function Anlaesse() {
             <p className="pl-muted">Keine Anlässe mit diesem Status.</p>
           )
         ) : (
-          <p className="pl-muted" role="status">{fehler ? "Keine Daten." : "Anlässe werden geladen …"}</p>
+          (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Anlässe werden geladen" />)
         )}
       </Card>
     </>

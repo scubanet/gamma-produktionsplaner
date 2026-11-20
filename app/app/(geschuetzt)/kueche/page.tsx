@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Notice, SegmentedControl } from "@/lib/planer";
+import { Notice, SegmentedControl, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
@@ -79,7 +79,7 @@ export default function Kuechenpass() {
     <>
       <header className="pl-head">
         <div>
-          <div className="pl-crumb">Produktion Hünenberg · {daten?.saison ?? "…"}</div>
+          <div className="pl-crumb">Produktion Hünenberg · {daten?.saison ?? <Skeleton variant="zahl" />}</div>
           <h1 className="pl-h1">{welle ? `Welle ${welle.nr}` : "Küchenpass"}</h1>
           {welle ? <div className="pl-sub">Produktion ab {welle.datum ? formatDatum(welle.datum) : "[Datum]"}</div> : null}
         </div>
@@ -93,7 +93,7 @@ export default function Kuechenpass() {
           Wellen entstehen, sobald Komponenten eine Systemzuteilung mit Haltbarkeit haben. <a href="/systemzuteilung/">Zur Systemzuteilung</a>
         </Notice>
       ) : null}
-      {daten === undefined && !fehler ? <p className="pl-muted" role="status">Küchenpass wird geladen …</p> : null}
+      {daten === undefined && !fehler ? <Skeleton variant="zeile" label="Küchenpass wird geladen" /> : null}
 
       {welle ? (
         <>

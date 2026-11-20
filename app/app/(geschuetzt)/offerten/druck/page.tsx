@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Card, DataTable, Notice } from "@/lib/planer";
+import { Button, Card, DataTable, Notice, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { formatChf, heuteIso, nachGang, type Offerte, type Position, type Summe } from "@/lib/offerte";
@@ -39,7 +39,7 @@ function Druck() {
 
   if (!id) return <Notice title="Keine Offerte gewählt">Bitte eine Offerte aus der Liste öffnen.</Notice>;
   if (fehler) return <Notice role="alert" title="Offerte nicht geladen">{fehler}</Notice>;
-  if (daten === undefined) return <p className="pl-muted" role="status">Offerte wird geladen …</p>;
+  if (daten === undefined) return <Skeleton variant="zeile" label="Offerte wird geladen" />;
   if (daten === null) return <Notice title="Offerte nicht gefunden">Die Offerte gibt es nicht oder sie wurde gelöscht.</Notice>;
 
   const { offerte: o, summe: s } = daten;

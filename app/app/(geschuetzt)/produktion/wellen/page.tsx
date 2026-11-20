@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Card, Checkbox, DataTable, Dialog, KpiTile, Notice, SegmentedControl, StatusPill, TextField, type DataTableColumn } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, Dialog, KpiTile, Notice, SegmentedControl, StatusPill, TextField, type DataTableColumn, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
@@ -188,7 +188,7 @@ export default function Wellen() {
       <header className="pl-head">
         <div>
           <div className="pl-crumb">
-            <a href="/produktion/">Produktionsplan</a> · {u?.saison ?? "…"}
+            <a href="/produktion/">Produktionsplan</a> · {u?.saison ?? <Skeleton variant="zahl" />}
           </div>
           <h1 className="pl-h1">Produktionswellen</h1>
         </div>
@@ -334,7 +334,7 @@ export default function Wellen() {
           </p>
         </>
       ) : daten === undefined ? (
-        <p className="pl-muted" role="status">{hinweis ? "Keine Daten." : "Wellen werden geladen …"}</p>
+        (hinweis ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Wellen werden geladen" />)
       ) : null}
 
       {zustaendigZiel ? (

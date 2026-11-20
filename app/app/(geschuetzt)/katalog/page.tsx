@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card, DataTable, ItemList, Notice, Select, StatusPill, TextField } from "@/lib/planer";
+import { Card, DataTable, ItemList, Notice, Select, StatusPill, TextField, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import { haltbarkeitText, leerAnzeige, type Zuteilung } from "@/lib/systemzuteilung";
@@ -84,7 +84,7 @@ function Katalogansicht() {
     <>
       <header className="pl-head">
         <div>
-          <div className="pl-crumb">Katalog · {daten ? `${daten.kollektion} · ${formatZahl(daten.gerichte.length)} Gerichte` : "…"}</div>
+          <div className="pl-crumb">Katalog · {daten ? `${daten.kollektion} · ${formatZahl(daten.gerichte.length)} Gerichte` : <Skeleton variant="zahl" />}</div>
           <h1 className={gericht ? "pl-h1 pl-h1--name" : "pl-h1"}>{gericht?.name ?? "Katalog"}</h1>
         </div>
       </header>
@@ -116,7 +116,7 @@ function Katalogansicht() {
               <p className="pl-muted">Keine Gerichte für diese Suche.</p>
             )
           ) : (
-            <p className="pl-muted" role="status">{fehler ? "Keine Daten." : "Katalog wird geladen …"}</p>
+            (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Katalog wird geladen" />)
           )}
         </div>
 
