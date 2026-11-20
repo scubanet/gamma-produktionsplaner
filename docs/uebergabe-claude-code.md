@@ -211,4 +211,4 @@ Aus der UX-Durchsicht (33 Vorschläge) sind die sechs kleinen mit hoher Wirkung 
 
 Geprüft: Typen, Lint, 200 Tests, Build; im Browser nur lesend (Dialoge geöffnet und abgebrochen). Nicht geprüft, weil es in die Pilot-Datenbank schreibt: Verknüpfen, Lösen, Löschen und Abhaken selbst.
 
-Offen: Die Seiten `/einkauf/` und `/einkauf/zuordnen/` holen die Saison weiterhin über die schwere View `einkauf_summe` (Einkaufsliste lädt rund 20 s). Übrige Vorschläge der Durchsicht (Ränge 6–12, 14–33) sind nicht gebaut.
+Ladezeit Einkauf (nachgemessen, einzeln geladen, lokale Entwicklungsversion): `/einkauf/` 2,8 s, `/einkauf/zuordnen/` 3,3 s. Die zuerst notierten «rund 20 s» waren ein Messfehler (viele Seiten gleichzeitig geladen). Die drei Views `einkauf_summe`, `einkauf_artikel` und `einkauf_position` rechnen je denselben Unterbau; gleichzeitig abgefragt bremsen sie sich (Versuch, die Summe parallel zu laden, brachte nichts und ist verworfen). Schneller ginge es nur mit einer Funktion, die den Unterbau einmal rechnet (neue Migration); bei unter 3 s nicht gebaut. Übrige Vorschläge der Durchsicht (Ränge 6–12, 14–33) sind nicht gebaut.
