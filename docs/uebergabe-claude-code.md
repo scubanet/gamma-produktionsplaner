@@ -169,3 +169,11 @@ Zutaten mit Artikeln verknüpfen: Seite `/einkauf/zutaten/`, Migration 33 (`zuta
 - Nicht geprüft: Migration 33 lief in keiner Datenbank. Nach dem Einspielen prüfen: eine Bezeichnung verknüpfen, der Zähler steigt um die gemeldete Zahl; «Lösen» stellt den Stand wieder her.
 - Offene Frage im Plan `docs/plan-datenkette.md`: Grundzutaten ohne Artikel und «Wasser».
 
+## Nachtrag 20.11.2026: Datenkette, Aufgabe 3
+
+Einkauf aus dem Rezept: Migration 34 (`einkauf_aus_rezept`), committet, noch nicht ausgeliefert. Details und Kontrollwert in `docs/plan-datenkette.md`.
+
+- **Reihenfolge beim Ausliefern:** `supabase db push --remote` (Migrationen 32, 33, 34), dann `cd app && npm run types`, dann `git push`. Die App läuft auch gegen die Datenbank ohne Migration 34 (Einkaufsliste wie bisher), aber nicht umgekehrt geprüft.
+- Migration 33 wurde vor dem Einspielen korrigiert: `saison_rezepte` löst Unterrezepte jetzt richtig auf (`zutat.komponente_id` zeigt auf `rezept`, nicht auf `komponente`).
+- Nach dem Einspielen prüfen: Einkaufsliste zeigt Artikel aus den Rezepten; Gemüsestreifen im Spengler Cup CHF 25.21; die Kontrollwerte der Produktion (181.5 kg, 79.2 kg, 27.5 kg) sind unverändert (Migration 34 fasst nur den Einkauf an).
+

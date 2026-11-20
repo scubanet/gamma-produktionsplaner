@@ -2897,6 +2897,7 @@ export type Database = {
       }
       einkauf_artikel: {
         Row: {
+          annahme: boolean | null
           artikel: string | null
           artikel_einheit: string | null
           artikel_id: string | null
@@ -2908,6 +2909,7 @@ export type Database = {
           herleitung: string | null
           komponenten: number | null
           komponenten_namen: string | null
+          komponenten_nicht_freigegeben: number | null
           kosten_chf: number | null
           lieferant: string | null
           lieferant_id: string | null
@@ -2918,6 +2920,23 @@ export type Database = {
           quelle: string | null
           saison_id: string | null
           sortierung: number | null
+          wege: string | null
+        }
+        Relationships: []
+      }
+      einkauf_bedarf: {
+        Row: {
+          bedarf_am: string | null
+          bezug: string | null
+          bezug_typ: string | null
+          einheit: string | null
+          komponente_id: string | null
+          liefern_bis: string | null
+          menge: number | null
+          quelle: string | null
+          saison_id: string | null
+          sortierung: number | null
+          vorlauf: number | null
         }
         Relationships: []
       }
@@ -2946,11 +2965,18 @@ export type Database = {
           nur_vor_ort: boolean | null
           preis_pro_einheit: number | null
           quelle: string | null
+          rezept: string | null
+          rezept_id: string | null
+          rezept_status: string | null
           saison_id: string | null
           sortierung: number | null
           status: string | null
           typ: string | null
           verlust_pct: number | null
+          weg: string | null
+          zutaten: number | null
+          zutaten_ohne_artikel: number | null
+          zutaten_ohne_menge: number | null
         }
         Relationships: [
           {
@@ -2972,9 +2998,50 @@ export type Database = {
           positionen_artikel_ohne_kosten: number | null
           positionen_nicht_im_plan: number | null
           positionen_offen: number | null
+          positionen_rezept: number | null
+          positionen_rezept_nicht_freigegeben: number | null
+          positionen_rezept_unvollstaendig: number | null
           positionen_zukauf: number | null
           saison: string | null
           saison_id: string | null
+        }
+        Relationships: []
+      }
+      einkauf_zutat: {
+        Row: {
+          annahme: boolean | null
+          artikel: string | null
+          artikel_einheit: string | null
+          artikel_id: string | null
+          artikelnummer: string | null
+          bedarf_am: string | null
+          bezug: string | null
+          bezug_typ: string | null
+          einheit: string | null
+          herleitung: string | null
+          komponente: string | null
+          komponente_id: string | null
+          kosten_chf: number | null
+          lieferant: string | null
+          lieferant_id: string | null
+          liefern_bis: string | null
+          menge_artikel: number | null
+          menge_basis_g: number | null
+          menge_komponente: number | null
+          menge_zutat_g: number | null
+          offen_grund: string | null
+          preis_pro_einheit: number | null
+          quelle: string | null
+          rezept: string | null
+          rezept_id: string | null
+          rezept_status: string | null
+          saison_id: string | null
+          sortierung: number | null
+          verlust_pct: number | null
+          zutat: string | null
+          zutat_id: string | null
+          zutat_rezept: string | null
+          zutat_rezept_id: string | null
         }
         Relationships: []
       }

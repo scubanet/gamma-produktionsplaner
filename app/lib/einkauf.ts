@@ -74,3 +74,20 @@ export function fehlerText(e: { message: string; code?: string }): string {
   if (e.code === "23503" && /artikel_lieferant_id_fkey/.test(e.message)) return "Dem Lieferanten sind noch Artikel zugeordnet.";
   return allgemeinerText(e);
 }
+
+/** «5 von 8 Zutaten verknüpft, 2 davon Menge von Hand» für eine Position, die über das Rezept läuft. */
+export function zutatenStandText(p: { zutaten: number | null; zutaten_ohne_artikel: number | null; zutaten_ohne_menge: number | null }): string {
+  if (p.zutaten === null) return "[Zutaten]";
+  const hand = p.zutaten_ohne_menge ?? 0;
+  return `${p.zutaten - (p.zutaten_ohne_artikel ?? 0)} von ${p.zutaten} Zutaten verknüpft${hand ? `, ${hand} davon Menge von Hand` : ""}`;
+}
+
+/** Woher die Menge einer Artikelzeile kommt. Ohne Angabe (Datenbank vor Migration 34) gilt der bisherige Weg über den Hauptartikel. */
+export function herkunftText(z: { wege?: string | null; komponenten_nicht_freigegeben?: number | null }): string {
+  const wege = (z.wege ?? "hauptartikel").split(", ");
+  const text = [wege.includes("hauptartikel") ? "über den Hauptartikel" : "", wege.includes("rezept") ? "aus dem Rezept" : ""].filter(Boolean).join(" und ");
+  return z.komponenten_nicht_freigegeben ? `${text}, ${z.komponenten_nicht_freigegeben} nicht freigegeben` : text;
+}
+
+/** Gestrichelt, solange die Datenbank die Zeile nicht ausdrücklich als gesichert meldet. */
+export const istAnnahme = (z: { annahme?: boolean | null }): boolean => z.annahme !== false;

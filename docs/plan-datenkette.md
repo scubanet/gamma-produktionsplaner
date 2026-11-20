@@ -11,7 +11,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 **Für jede Aufgabe gilt:**
 
 - Dieser Plan beschreibt Umfang, Dateien und Abnahme, nicht den Code. Vor dem Bauen die Schritte der Aufgabe ausarbeiten und die betroffenen Views lesen.
-- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 34), Views mit `security_invoker = true`, danach `cd app && npm run types`.
+- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 35), Views mit `security_invoker = true`, danach `cd app && npm run types`.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Jede neue Zahl bekommt eine Spalte «Herleitung».
 - Tests und Typprüfung vor jedem Commit: `cd app && npm test && npm run typecheck`. Ein Commit pro Aufgabe, Nachricht auf Deutsch.
 - Fragen an Dominik (mit **Frage** markiert) vor dem Bauen klären, nicht raten.
@@ -39,7 +39,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 | D | Daten erfassen (Dominik, kein Code) | kritisch | – |
 | 1 | Rezept-Freigabe und Kennzeichnung «aus Entwurf» (gebaut 19.11.2026) | kritisch | – |
 | 2 | Zutaten mit Artikeln verknüpfen (gebaut 20.11.2026) | kritisch | – |
-| 3 | Einkauf aus dem Rezept | kritisch | 2 |
+| 3 | Einkauf aus dem Rezept (gebaut 20.11.2026) | kritisch | 2 |
 | 4 | Warenkosten aus dem Rezept | kritisch | 2 |
 | 5 | Aufwand in Ressourcen und Rentabilität übernehmen | kritisch | D1 |
 | 6 | Anlass wählen, Kontrollwerte aus dem Code nehmen | mittel | – |
@@ -98,6 +98,17 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 **Abnahme:** Zähler «x von y Zutaten der Saison verknüpft» im Einkauf; die Zutaten der zehn Rezepte von Spiel 1 sind verknüpft.
 
 ### Aufgabe 3: Einkauf aus dem Rezept
+
+**Stand 20.11.2026: gebaut** (Migration 34, noch einzuspielen). Entscheid Dominik (20.11.2026): Auch ein Rezept im Entwurf zählt, mit Kennzeichnung.
+
+- Weg pro Komponente: `rezept`, sobald das Rezept mindestens eine verknüpfte Zutat hat; sonst `hauptartikel`; Zukauf und offen wie bisher. Hat eine Komponente beides, gilt das Rezept.
+- Rechnung: Bedarf der Komponente ÷ Ergibt-Menge des Rezepts = Faktor; Zutat × Faktor; über `zutat.artikel_id` zum Artikel, plus dessen Verlust. Unterrezepte werden aufgelöst (bis fünf Stufen; `zutat.komponente_id` zeigt auf ein Rezept).
+- Unvollständig: Eine Zutat ohne Artikel, oder mit einem Artikel in einem Gebinde ohne Gewicht (Flasche, Dose, Tetrapack …: «Menge von Hand»). Die Position hat dann keine Kosten; die verknüpften Zutaten stehen trotzdem in der Einkaufsliste. Neue Karte «Aus dem Rezept, noch unvollständig».
+- Annahme (gestrichelt): Rezept nicht freigegeben, Liter als Kilogramm gerechnet, Menge der Zutat als Annahme vermerkt, oder Weg über den Hauptartikel.
+- Lieferung und «Bestellen bis» werden neu pro Artikelzeile gerechnet, nicht mehr pro Komponente.
+- Geprüft: Die fünf View-Abfragen liefen als eine Abfrage lesend gegen die Pilot-Datenbank (20.11.2026). Ergebnis: 253 Positionen, davon 171 über das Rezept (4 vollständig, alle im Entwurf), 22 Zukauf, 60 offen; 1205 Zutatenzeilen, 187 Artikelzeilen, 130 davon mit Menge. Die Migration selbst (drop und create) lief in keiner Datenbank. Vor dem Einspielen `supabase db push --remote --dry-run`.
+- **Kontrollwert** (Handrechnung, für Aufgabe 7): Gemüsestreifen, Spengler Cup, Bedarf 5.5 kg, Rezept ergibt 50 g je Charge, Faktor 110. Knollensellerie 15 g × 110 = 1.65 kg × CHF 3.16 = CHF 5.21; Lauch 18 g × 110 = 1.98 kg × CHF 5.10 = CHF 10.10; Rüebli 20 g × 110 = 2.2 kg × CHF 4.50 = CHF 9.90; zusammen CHF 25.21. Die View liefert dieselben Werte. Gemüsestreifen gehört nicht zu den zehn Komponenten von Spiel 1; von diesen ist noch keine vollständig verknüpft.
+- Auffällig: 165 von 486 verknüpften Zutatenzeilen hängen an Artikeln in Gebinden ohne Gewicht. Für diese braucht es `gebinde_g` oder `stueck_g` am Artikel (beide Spalten gibt es, sie sind leer), sonst bleibt «Menge von Hand». Passt zum Laden der Preislisten.
 
 **Befund:** `einkauf_position` (Migration 12, Zeile 295) rechnet Komponentenmenge × (1 + Verlust) über den Hauptartikel der Komponente; im Kommentar als Annahme vermerkt, «bis Rezepte mit Artikeln verknüpft sind». Keine Komponente hat einen Hauptartikel.
 

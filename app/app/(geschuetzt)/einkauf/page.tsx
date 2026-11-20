@@ -7,7 +7,7 @@ import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import { formatChf } from "@/lib/offerte";
 import { standText } from "@/lib/zutat-vorschlag";
-import { bestellschlussText, nachLieferant, type ArtikelZeile, type Position, type Summe } from "@/lib/einkauf";
+import { bestellschlussText, herkunftText, istAnnahme, nachLieferant, zutatenStandText, type ArtikelZeile, type Position, type Summe } from "@/lib/einkauf";
 import { ArtikelZuordnen, type Ziel } from "@/components/einkauf/ArtikelZuordnen";
 import { fehlerText } from "@/lib/fehler";
 
@@ -67,6 +67,8 @@ export default function Einkauf() {
   const artikel = (daten?.artikel ?? []).filter(passt);
   const zukauf = (daten?.positionen ?? []).filter((p) => p.typ === "zukauf" && passt(p));
   const offen = (daten?.positionen ?? []).filter((p) => p.typ === "offen" && passt(p));
+  // Über das Rezept gerechnet, aber noch nicht vollständig: Zutaten ohne Artikel oder mit Menge von Hand.
+  const rezeptOffen = (daten?.positionen ?? []).filter((p) => p.typ === "rezept" && ((p.zutaten_ohne_artikel ?? 0) > 0 || (p.zutaten_ohne_menge ?? 0) > 0) && passt(p));
   // Verknüpfte Komponenten, je Komponente einmal: hier lässt sich der Hauptartikel ändern oder entfernen.
   const verknuepft = [...new Map((daten?.positionen ?? []).filter((p) => p.typ === "artikel").map((p) => [p.komponente_id, p])).values()];
 
@@ -127,7 +129,7 @@ export default function Einkauf() {
             <KpiTile
               label="Warenkosten verknüpfter Artikel"
               value={s.kosten_chf === null ? "[Preis]" : <span className="pl-assumed">{formatChf(s.kosten_chf)}</span>}
-              detail={`ganze Saison: ${s.positionen_artikel} Position(en), davon ${s.positionen_artikel_ohne_kosten} ohne Kosten (nicht in der Summe); Menge der Komponente plus Verlust (Annahme)`}
+              detail={`ganze Saison: ${s.positionen_artikel} Position(en), davon ${s.positionen_artikel_ohne_kosten} ohne Kosten (nicht in der Summe)${s.positionen_rezept ? `; ${s.positionen_rezept} über das Rezept, ${s.positionen_rezept_nicht_freigegeben ?? 0} davon nicht freigegeben` : ""}`}
             />
             <KpiTile
               label="Nächster Bestellschluss"
@@ -135,7 +137,7 @@ export default function Einkauf() {
               detail={`aus Liefertagen und Vorlauf der Lieferanten${(s.bestellschluesse_vorbei ?? 0) > 0 ? `; ${s.bestellschluesse_vorbei} Termin(e) schon vorbei` : ""}`}
             />
             <KpiTile label="Zukauf ohne Artikel" value={formatZahl(s.positionen_zukauf ?? 0)} detail="CF-Stufe 4 oder 5, Artikel noch zuordnen" />
-            <KpiTile label="Noch nicht verknüpft" value={formatZahl(s.positionen_offen ?? 0)} detail="Komponenten ohne Hauptartikel" />
+            <KpiTile label="Noch nicht verknüpft" value={formatZahl(s.positionen_offen ?? 0)} detail="weder Rezept mit verknüpften Zutaten noch Hauptartikel" />
           </div>
           <p className="pl-small pl-print-hide">
             <a href="/einkauf/zutaten/">{standText(daten?.zutaten ?? null)}</a>
@@ -164,7 +166,7 @@ export default function Einkauf() {
                 columns={[
                   { key: "artikel", label: "Artikel", subKey: "unterzeile" },
                   { key: "bezug", label: "Für", subKey: "bedarfText" },
-                  { key: "mengeText", label: "Menge", numeric: true, render: (r) => <span className="pl-assumed">{r.mengeText as string}</span> },
+                  { key: "mengeText", label: "Menge", numeric: true, render: (r) => <span className={r.annahme ? "pl-assumed" : undefined}>{r.mengeText as string}</span> },
                   { key: "kosten", label: <span className="pl-assumed">Kosten</span>, numeric: true },
                   { key: "liefertermin", label: <span className="pl-assumed">Lieferung</span>, numeric: true },
                   { key: "bestellen", label: <span className="pl-assumed">Bestellen bis</span>, numeric: true },
@@ -173,7 +175,8 @@ export default function Einkauf() {
                 rows={g.zeilen.map((z) => ({
                   id: `${z.bezug}-${z.artikel_id}`,
                   artikel: z.artikel,
-                  unterzeile: `${z.artikelnummer ?? "[Artikelnummer]"} · für ${z.komponenten_namen}`,
+                  unterzeile: `${z.artikelnummer ?? "[Artikelnummer]"} · für ${z.komponenten_namen} · ${herkunftText(z)}`,
+                  annahme: istAnnahme(z),
                   bezug: z.bezug,
                   bedarfText: z.bedarf_am ? `Bedarf am ${formatDatum(z.bedarf_am)}` : "[Datum]",
                   mengeText: z.menge_artikel === null ? "[Menge]" : `${formatZahl(z.menge_artikel, z.artikel_einheit === "Stk" ? 0 : 2)} ${z.artikel_einheit ?? ""}`,
@@ -186,10 +189,11 @@ export default function Einkauf() {
               />
             </Card>
           ))}
-          {daten && !artikel.length ? <EmptyState title={`Noch keine Komponente mit Hauptartikel${bezug ? ` in ${bezug}` : ""}`} actionLabel="Artikel zuordnen" href="/einkauf/zuordnen/" /> : null}
+          {daten && !artikel.length ? <EmptyState title={`Noch kein Artikel in der Einkaufsliste${bezug ? ` für ${bezug}` : ""}`} text="Artikel kommen aus den Rezepten, sobald Zutaten verknüpft sind, sonst über den Hauptartikel der Komponente." actionLabel="Zutaten zuordnen" href="/einkauf/zutaten/" /> : null}
 
           <p className="pl-small">
-            <span className="pl-assumed">gestrichelt</span> = Annahme, bitte prüfen: Artikelmenge = Menge der Komponente plus Verlust des Artikels, solange Rezepte nicht mit Artikeln verknüpft sind.
+            <span className="pl-assumed">gestrichelt</span> = Annahme, bitte prüfen: das Rezept ist nicht freigegeben, Liter sind als Kilogramm gerechnet, oder die Menge läuft über den Hauptartikel
+            (Menge der Komponente plus Verlust) statt über das Rezept. Aus dem Rezept: Bedarf der Komponente ÷ Ergibt-Menge = Faktor, Zutat × Faktor, plus Verlust des Artikels.
             Annahme: Ware trifft einen Tag vor Bedarf ein; daraus folgen Lieferung und «Bestellen bis». Die Mengen im Wellenplan sind immer aktuell, das Datum kommt aus dem Plan.
             Bestellungen werden hier nicht gespeichert.
           </p>
@@ -217,11 +221,40 @@ export default function Einkauf() {
             </div>
           ) : null}
 
+          {rezeptOffen.length ? (
+            <Card title="Aus dem Rezept, noch unvollständig" meta={`${rezeptOffen.length} Position(en): die verknüpften Zutaten stehen in der Liste, Kosten erst, wenn alle Zutaten einen Artikel und eine Menge haben`}>
+              <DataTable
+                columns={[
+                  { key: "komponente", label: "Komponente", subKey: "kategorie" },
+                  { key: "rezept", label: "Rezept", render: (r) => <span className={r.rezeptStatus === "freigegeben" ? undefined : "pl-assumed"}>{r.rezept as string}</span>, subKey: "rezeptStatusText" },
+                  { key: "bezug", label: "Für", subKey: "bedarfText" },
+                  { key: "stand", label: "Zutaten" },
+                  { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                ]}
+                rows={rezeptOffen.map((p) => ({
+                  id: `${p.bezug}-${p.komponente_id}-${p.einheit}`,
+                  komponente: p.komponente,
+                  kategorie: p.kategorie,
+                  rezept: p.rezept ?? "[Rezept]",
+                  rezeptStatus: p.rezept_status,
+                  rezeptStatusText: p.rezept_status === "freigegeben" ? "freigegeben" : `Rezept ${p.rezept_status ?? "[Status]"}`,
+                  bezug: p.bezug,
+                  bedarfText: p.bedarf_am ? `Bedarf am ${formatDatum(p.bedarf_am)}` : "[Datum]",
+                  stand: zutatenStandText(p),
+                  herleitung: p.herleitung,
+                }))}
+              />
+              <p className="pl-small pl-print-hide">
+                <a href="/einkauf/zutaten/">Zutaten zuordnen</a>. «Menge von Hand»: Der Artikel wird in einem Gebinde ohne hinterlegtes Gewicht geführt (Flasche, Dose, Tetrapack).
+              </p>
+            </Card>
+          ) : null}
+
           <Card title="Zukauf ohne Artikel" meta={`${zukauf.length} Position(en): Artikel [Artikel]`}>
             {zukauf.length ? <DataTable columns={ohneArtikelSpalten} rows={ohneArtikelZeilen(zukauf)} /> : <p className="pl-muted">Keine.</p>}
           </Card>
 
-          <Card title="Noch nicht verknüpft" meta={`${offen.length} Position(en) ohne Hauptartikel; erscheinen nicht in der Bestellliste`}>
+          <Card title="Noch nicht verknüpft" meta={`${offen.length} Position(en) ohne Rezept mit verknüpften Zutaten und ohne Hauptartikel; erscheinen nicht in der Bestellliste`}>
             {offen.length ? (
               <DataTable
                 columns={[

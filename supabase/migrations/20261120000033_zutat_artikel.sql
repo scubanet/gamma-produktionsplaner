@@ -16,12 +16,11 @@ as $$
       join komponente c on c.id = p.komponente_id
       where p.saison_id = p_saison and c.rezept_id is not null
     union
-      select c.rezept_id
+      -- zutat.komponente_id zeigt auf ein Rezept (Unterrezept), nicht auf die Tabelle komponente.
+      select z.komponente_id
       from rz
       join zutatengruppe g on g.rezept_id = rz.rezept_id
       join zutat z on z.gruppe_id = g.id and z.komponente_id is not null
-      join komponente c on c.id = z.komponente_id
-      where c.rezept_id is not null
   )
   select rezept_id from rz;
 $$;
