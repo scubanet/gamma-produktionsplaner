@@ -185,3 +185,7 @@ Migration 35 (`rezept_warenkosten`): Warenkosten pro Rezept je Charge und je kg,
 
 Migration 36 (`anlass_warenkosten`): Warenkosten des Anlasses aus den Menülinien über die Rezepte. Die Kalkulation übernimmt sie für die Kostenart Waren erst, wenn jede Komponente Kosten hat; bis dahin steht der Stand in der Herleitung. Keine Änderung an der App. Einspielen zusammen mit 32 bis 35. Nach dem Einspielen prüfen: Ressourcen, Spengler Cup, Zeile «Waren» zeigt «aus den Rezepten erst 4 von 251 Komponenten mit Kosten».
 
+## Nachtrag 20.11.2026: Migrationen 32 bis 36 eingespielt
+
+`supabase db push --remote` lief ohne Fehler, `npm run types` ist nachgezogen (Typen jetzt aus der Datenbank). Die Hinweise «noch nicht ausgeliefert» in den Nachträgen oben gelten für die Datenbank nicht mehr; die App selbst ist erst mit `git push` live. Stand und geprüfte Werte: `docs/plan-datenkette.md`, Abschnitt «Stand nach dem Einspielen».
+

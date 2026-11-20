@@ -65,7 +65,7 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 
 ### Aufgabe 1: Rezept-Freigabe und Kennzeichnung «aus Entwurf»
 
-**Stand 19.11.2026: gebaut** (Migration 32, noch einzuspielen). Entscheide Dominik: «Geprüft» dürfen alle Angemeldeten setzen; freigeben und eine Freigabe zurücknehmen nur Admins. Ein freigegebenes Rezept bleibt beim Speichern freigegeben. Zusätzlich zum Umfang: Knopf «Zurück auf Entwurf». Abweichung: Der Küchenpass zeigt heute keine Werte aus Rezepten und bleibt unverändert; in der Produktionsliste ist der Rezept-Link gekennzeichnet.
+**Stand 19.11.2026: gebaut** (Migration 32, eingespielt am 20.11.2026). Entscheide Dominik: «Geprüft» dürfen alle Angemeldeten setzen; freigeben und eine Freigabe zurücknehmen nur Admins. Ein freigegebenes Rezept bleibt beim Speichern freigegeben. Zusätzlich zum Umfang: Knopf «Zurück auf Entwurf». Abweichung: Der Küchenpass zeigt heute keine Werte aus Rezepten und bleibt unverändert; in der Produktionsliste ist der Rezept-Link gekennzeichnet.
 
 **Befund:** `rezept.status` kennt `entwurf`, `geprueft`, `freigegeben`, aber die App zeigt den Status nur an (`rezepte/bearbeiten/page.tsx`, Karte «Rezept»). Die Views `planung_*` (Migration 24) rechnen mit jedem Rezept.
 
@@ -81,7 +81,7 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 
 ### Aufgabe 2: Zutaten mit Artikeln verknüpfen
 
-**Stand 20.11.2026: gebaut** (Migration 33, noch einzuspielen). Seite `/einkauf/zutaten/` «Zutaten zuordnen», Zähler in der Einkaufsliste.
+**Stand 20.11.2026: gebaut** (Migration 33, eingespielt am 20.11.2026). Seite `/einkauf/zutaten/` «Zutaten zuordnen», Zähler in der Einkaufsliste.
 
 - Eine Zeile pro Bezeichnung, nicht pro Zutat: «Salz» steht in 115 Zutaten und wird einmal entschieden. Ein Klick verknüpft alle offenen Zutaten mit genau dieser Bezeichnung in den Rezepten der Saison; mit dem Häkchen «auch in Rezepten ausserhalb der Saison» auch die übrigen. Bestehende Verknüpfungen bleiben.
 - «Verknüpfte Zutaten» zeigt, was verknüpft ist, mit «Lösen» (gilt für alle Rezepte). Bisher liess sich eine Verknüpfung in der App weder ansehen noch ändern.
@@ -99,7 +99,7 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 
 ### Aufgabe 3: Einkauf aus dem Rezept
 
-**Stand 20.11.2026: gebaut** (Migration 34, noch einzuspielen). Entscheid Dominik (20.11.2026): Auch ein Rezept im Entwurf zählt, mit Kennzeichnung.
+**Stand 20.11.2026: gebaut** (Migration 34, eingespielt am 20.11.2026). Entscheid Dominik (20.11.2026): Auch ein Rezept im Entwurf zählt, mit Kennzeichnung.
 
 - Weg pro Komponente: `rezept`, sobald das Rezept mindestens eine verknüpfte Zutat hat; sonst `hauptartikel`; Zukauf und offen wie bisher. Hat eine Komponente beides, gilt das Rezept.
 - Rechnung: Bedarf der Komponente ÷ Ergibt-Menge des Rezepts = Faktor; Zutat × Faktor; über `zutat.artikel_id` zum Artikel, plus dessen Verlust. Unterrezepte werden aufgelöst (bis fünf Stufen; `zutat.komponente_id` zeigt auf ein Rezept).
@@ -125,7 +125,7 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 
 **Stand 20.11.2026: Grundlage gebaut, Rest wartet auf einen Entscheid.** Entscheid Dominik (20.11.2026): Der Zuschlag von 20 % entfällt beim Weg über das Rezept.
 
-- Gebaut (Migration 35, noch einzuspielen): View `rezept_warenkosten` mit Warenkosten je Charge und je kg, Unterrezepte aufgelöst, ohne Zuschlag, leer solange eine Zutat keine Kosten hat. Lesend geprüft gegen die Pilot-Datenbank: 364 Rezepte, 4 mit vollständigen Kosten. Kontrollwert: Gemüsestreifen CHF 0.23 je Charge, CHF 4.58 je kg (5.5 kg × 4.584 = CHF 25.21, gleich wie im Einkauf).
+- Gebaut (Migration 35, eingespielt am 20.11.2026): View `rezept_warenkosten` mit Warenkosten je Charge und je kg, Unterrezepte aufgelöst, ohne Zuschlag, leer solange eine Zutat keine Kosten hat. Lesend geprüft gegen die Pilot-Datenbank: 364 Rezepte, 4 mit vollständigen Kosten. Kontrollwert: Gemüsestreifen CHF 0.23 je Charge, CHF 4.58 je kg (5.5 kg × 4.584 = CHF 25.21, gleich wie im Einkauf).
 - Nicht gebaut: die Quelle «rezept» in `gericht_warenkosten` und `offerte_position`. Grund: Die Offerte kennt pro Gericht nur das Quantum (Gramm pro Gast für das ganze Gericht). Wie viel davon auf welche Komponente fällt, steht in `gericht_komponente.menge_pro_portion`, und das ist nur bei 45 von 696 Zeilen erfasst (15 von 300 Gerichten vollständig). Ohne diese Mengen lässt sich ein Gericht nicht aus den Rezepten seiner Komponenten kalkulieren.
 
 **Frage** (neu): Woher kommt die Menge pro Komponente für die Warenkosten?
@@ -133,7 +133,7 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 2. Aus den Menülinien des Anlasses (`menuelinie_komponente.menge_pro_gast`, bei allen 344 Zeilen erfasst): rechnet die Warenkosten des Anlasses für die Rentabilität, nicht die der Offerte. Das wäre für den Durchstich Spiel 1 sofort rechenbar.
 3. Beides: zuerst 2 für die Rentabilität, 1 für die Offerte, sobald die Mengen im Katalog stehen.
 
-**Entscheid Dominik (20.11.2026): zuerst über die Menülinien.** Gebaut (Migration 36, noch einzuspielen):
+**Entscheid Dominik (20.11.2026): zuerst über die Menülinien.** Gebaut (Migration 36, eingespielt am 20.11.2026):
 
 - `anlass_warenkosten_komponente`: pro Anlass und Komponente Bedarf × CHF/kg des Rezepts; sonst Bedarf × Preis des Hauptartikels bei gleicher Einheit (Annahme); sonst leer.
 - `anlass_warenkosten`: Total nur, wenn jede Komponente Kosten hat; sonst steht die Teilsumme als «bisher bekannt», nie als Total.
@@ -151,6 +151,17 @@ Aufgefallen: Das Rezept «Kartoffelgratin» (eine der zehn Komponenten von Spiel
 **Frage:** Entfällt der Zuschlag von 20 % beim Weg über das Rezept ganz?
 
 **Abnahme:** Offerte mit Gerichten von Spiel 1 zeigt Quelle «rezept»; der Deckungsbeitrag ändert sich nachvollziehbar.
+
+### Stand nach dem Einspielen (20.11.2026)
+
+Migrationen 32 bis 36 liefen ohne Fehler. Danach lesend geprüft und in der App gesehen:
+
+- Zähler: 480 von 1099 Zutaten verknüpft, 186 offene Bezeichnungen, 181 Rezepte im Bedarf der Saison. Die Zahlen liegen über denen der Vorprüfung (1087, 178, 179), weil die Unterrezepte jetzt mitzählen.
+- Einkauf: 171 Positionen über das Rezept, 22 Zukauf, 60 offen; 187 Artikelzeilen, 130 mit Menge. Gemüsestreifen: 1.65 kg, 1.98 kg, 2.2 kg, zusammen CHF 25.21.
+- Warenkosten: 364 Rezepte, 4 mit Kosten; Spengler Cup «aus den Rezepten erst 4 von 251 Komponenten mit Kosten (bisher bekannt CHF 2050.41, kein Total)», auch in der Kostenart Waren.
+- Kontrollwerte unverändert: Bündner Trockenfleisch 181.5 kg; Status 311 / 129 / 53.
+- `anon` hat auf keiner neuen View Rechte. `npm run types` aus der Datenbank: Spalten und Funktionen gleich wie von Hand nachgeführt, nur die Beziehungen (`Relationships`) kamen dazu.
+- Nicht geprüft: die schreibenden Funktionen `zutat_artikel_zuordnen` und `zutat_artikel_loesen` (sie ändern echte Daten; der erste Klick von Dominik ist der Test) und `rezept_status_setzen`.
 
 ### Aufgabe 5: Aufwand in Ressourcen und Rentabilität übernehmen
 
