@@ -11,7 +11,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 **Für jede Aufgabe gilt:**
 
 - Dieser Plan beschreibt Umfang, Dateien und Abnahme, nicht den Code. Vor dem Bauen die Schritte der Aufgabe ausarbeiten und die betroffenen Views lesen.
-- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 35), Views mit `security_invoker = true`, danach `cd app && npm run types`.
+- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 36), Views mit `security_invoker = true`, danach `cd app && npm run types`.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Jede neue Zahl bekommt eine Spalte «Herleitung».
 - Tests und Typprüfung vor jedem Commit: `cd app && npm test && npm run typecheck`. Ein Commit pro Aufgabe, Nachricht auf Deutsch.
 - Fragen an Dominik (mit **Frage** markiert) vor dem Bauen klären, nicht raten.
@@ -40,7 +40,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 | 1 | Rezept-Freigabe und Kennzeichnung «aus Entwurf» (gebaut 19.11.2026) | kritisch | – |
 | 2 | Zutaten mit Artikeln verknüpfen (gebaut 20.11.2026) | kritisch | – |
 | 3 | Einkauf aus dem Rezept (gebaut 20.11.2026) | kritisch | 2 |
-| 4 | Warenkosten aus dem Rezept | kritisch | 2 |
+| 4 | Warenkosten aus dem Rezept (Grundlage gebaut 20.11.2026, Rest wartet auf Entscheid) | kritisch | 2 |
 | 5 | Aufwand in Ressourcen und Rentabilität übernehmen | kritisch | D1 |
 | 6 | Anlass wählen, Kontrollwerte aus dem Code nehmen | mittel | – |
 | 7 | Tests für die Rechenlogik in der Datenbank | mittel | – |
@@ -122,6 +122,18 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 **Abnahme:** Für eine Komponente von Spiel 1 stimmt die Einkaufsmenge jeder Zutat mit einer Handrechnung überein; der Wert kommt als Kontrollwert in die Tests (Aufgabe 7).
 
 ### Aufgabe 4: Warenkosten aus dem Rezept
+
+**Stand 20.11.2026: Grundlage gebaut, Rest wartet auf einen Entscheid.** Entscheid Dominik (20.11.2026): Der Zuschlag von 20 % entfällt beim Weg über das Rezept.
+
+- Gebaut (Migration 35, noch einzuspielen): View `rezept_warenkosten` mit Warenkosten je Charge und je kg, Unterrezepte aufgelöst, ohne Zuschlag, leer solange eine Zutat keine Kosten hat. Lesend geprüft gegen die Pilot-Datenbank: 364 Rezepte, 4 mit vollständigen Kosten. Kontrollwert: Gemüsestreifen CHF 0.23 je Charge, CHF 4.58 je kg (5.5 kg × 4.584 = CHF 25.21, gleich wie im Einkauf).
+- Nicht gebaut: die Quelle «rezept» in `gericht_warenkosten` und `offerte_position`. Grund: Die Offerte kennt pro Gericht nur das Quantum (Gramm pro Gast für das ganze Gericht). Wie viel davon auf welche Komponente fällt, steht in `gericht_komponente.menge_pro_portion`, und das ist nur bei 45 von 696 Zeilen erfasst (15 von 300 Gerichten vollständig). Ohne diese Mengen lässt sich ein Gericht nicht aus den Rezepten seiner Komponenten kalkulieren.
+
+**Frage** (neu): Woher kommt die Menge pro Komponente für die Warenkosten?
+1. Aus dem Katalog (`menge_pro_portion` pro Gericht und Komponente): passt zur Offerte, braucht aber die Mengen für die Gerichte, die offeriert werden (heute 15 von 300 vollständig).
+2. Aus den Menülinien des Anlasses (`menuelinie_komponente.menge_pro_gast`, bei allen 344 Zeilen erfasst): rechnet die Warenkosten des Anlasses für die Rentabilität, nicht die der Offerte. Das wäre für den Durchstich Spiel 1 sofort rechenbar.
+3. Beides: zuerst 2 für die Rentabilität, 1 für die Offerte, sobald die Mengen im Katalog stehen.
+
+Aufgefallen: Das Rezept «Kartoffelgratin» (eine der zehn Komponenten von Spiel 1) hat keine Zutaten.
 
 **Befund:** `gericht_warenkosten` (Migration 03, Zeile 328) und `offerte_position` (Migration 10) rechnen Hauptartikel × Menge + 20 % Zuschlag (`wk_zuschlag`), sonst die Schätzung CHF/kg der Kategorie.
 

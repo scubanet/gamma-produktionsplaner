@@ -177,3 +177,7 @@ Einkauf aus dem Rezept: Migration 34 (`einkauf_aus_rezept`), committet, noch nic
 - Migration 33 wurde vor dem Einspielen korrigiert: `saison_rezepte` löst Unterrezepte jetzt richtig auf (`zutat.komponente_id` zeigt auf `rezept`, nicht auf `komponente`).
 - Nach dem Einspielen prüfen: Einkaufsliste zeigt Artikel aus den Rezepten; Gemüsestreifen im Spengler Cup CHF 25.21; die Kontrollwerte der Produktion (181.5 kg, 79.2 kg, 27.5 kg) sind unverändert (Migration 34 fasst nur den Einkauf an).
 
+## Nachtrag 20.11.2026: Datenkette, Aufgabe 4 (Grundlage)
+
+Migration 35 (`rezept_warenkosten`): Warenkosten pro Rezept je Charge und je kg, ohne Zuschlag. Nur die View, noch keine Anzeige. Die Quelle «rezept» in der Offerte ist nicht gebaut; die offene Frage (Menge pro Komponente) steht in `docs/plan-datenkette.md`. Einspielen zusammen mit 32 bis 34.
+

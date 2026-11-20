@@ -3852,6 +3852,21 @@ export type Database = {
           },
         ]
       }
+      rezept_warenkosten: {
+        Row: {
+          annahme: boolean | null
+          chf_pro_kg: number | null
+          ergibt_g: number | null
+          herleitung: string | null
+          name: string | null
+          rezept_id: string | null
+          status: string | null
+          waren_chf: number | null
+          zutaten: number | null
+          zutaten_ohne_kosten: number | null
+        }
+        Relationships: []
+      }
       rezept_zeit: {
         Row: {
           aktiv_min: number | null
