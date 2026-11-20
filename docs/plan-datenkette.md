@@ -167,7 +167,7 @@ Migrationen 32 bis 36 liefen ohne Fehler. Danach lesend geprüft und in der App 
 
 Unabhängige Durchsicht der Arbeit vom 20.11.2026 (Migrationen 33 bis 37, App, Design System): fünf Prüfer, je ein Gegenprüfer, alle nur lesend. 17 Befunde, 10 bestätigt, 5 plausibel, 2 widerlegt. In den Pilotdaten war kein Betrag falsch; mehrere Befunde hätten mit neuen Daten falsch gerechnet. Die Handrechnung der Prüfer über alle 1105 Zutatenzeilen der ersten Stufe ergab keine Abweichung.
 
-Behoben (Migration 38, noch einzuspielen, und App):
+Behoben (Migration 38, eingespielt am 20.11.2026, und App; danach lesend geprüft: 253 Positionen, 1205 Zutatenzeilen, 187 Artikelzeilen, keine doppelten Schlüssel, Gemüsestreifen CHF 25.21, Kontrollwert 181.5 kg unverändert):
 
 - Einkauf: Schlüssel eines Bedarfs war der Name von Welle oder Anlass. Zwei gleichnamige Anlässe in einer Saison hätten Zutaten, Kosten und Artikelmengen vervielfacht. Neu `bezug_id`.
 - Einkauf: Herleitung bei Unterrezepten ging nicht auf (Mengen stimmten). Neu steht der Bedarf des Unterrezepts in Gramm.

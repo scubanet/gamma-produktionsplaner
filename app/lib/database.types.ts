@@ -287,13 +287,6 @@ export type Database = {
             foreignKeyName: "anlass_gericht_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
-          {
-            foreignKeyName: "anlass_gericht_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
             referencedRelation: "planung_produktion_schritt"
             referencedColumns: ["rezept_id"]
           },
@@ -650,13 +643,6 @@ export type Database = {
             referencedRelation: "artikel"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "artikel_allergen_artikel_id_fkey"
-            columns: ["artikel_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["artikel_id"]
-          },
         ]
       }
       artikel_preis: {
@@ -685,13 +671,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "artikel"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "artikel_preis_artikel_id_fkey"
-            columns: ["artikel_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["artikel_id"]
           },
         ]
       }
@@ -893,13 +872,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "kollektion"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "gericht_katalog_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
           },
           {
             foreignKeyName: "gericht_katalog_rezept_id_fkey"
@@ -1283,13 +1255,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "komponente_hauptartikel_id_fkey"
-            columns: ["hauptartikel_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["artikel_id"]
-          },
-          {
             foreignKeyName: "komponente_kategorie_fkey"
             columns: ["kategorie"]
             isOneToOne: false
@@ -1302,13 +1267,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "kollektion"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
           },
           {
             foreignKeyName: "komponente_rezept_id_fkey"
@@ -1641,13 +1599,6 @@ export type Database = {
           text?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "offener_punkt_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
           {
             foreignKeyName: "offener_punkt_rezept_id_fkey"
             columns: ["rezept_id"]
@@ -2102,13 +2053,6 @@ export type Database = {
             foreignKeyName: "rezept_komponente_gericht_id_fkey"
             columns: ["gericht_id"]
             isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
-          {
-            foreignKeyName: "rezept_komponente_gericht_id_fkey"
-            columns: ["gericht_id"]
-            isOneToOne: false
             referencedRelation: "planung_produktion_schritt"
             referencedColumns: ["rezept_id"]
           },
@@ -2125,13 +2069,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "rezept_warenkosten"
             referencedColumns: ["rezept_id"]
-          },
-          {
-            foreignKeyName: "rezept_komponente_komponente_id_fkey"
-            columns: ["komponente_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
           },
           {
             foreignKeyName: "rezept_komponente_komponente_id_fkey"
@@ -2508,25 +2445,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "zutat_artikel_id_fkey"
-            columns: ["artikel_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["artikel_id"]
-          },
-          {
             foreignKeyName: "zutat_gruppe_id_fkey"
             columns: ["gruppe_id"]
             isOneToOne: false
             referencedRelation: "zutatengruppe"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "zutat_komponente_id_fkey"
-            columns: ["komponente_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
           },
           {
             foreignKeyName: "zutat_komponente_id_fkey"
@@ -2571,13 +2494,6 @@ export type Database = {
           titel?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "zutatengruppe_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
           {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
             columns: ["rezept_id"]
@@ -3106,13 +3022,6 @@ export type Database = {
             foreignKeyName: "komponente_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
             referencedRelation: "planung_produktion_schritt"
             referencedColumns: ["rezept_id"]
           },
@@ -3361,43 +3270,7 @@ export type Database = {
           zutat_rezept: string | null
           zutat_rezept_id: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "artikel_lieferant_id_fkey"
-            columns: ["lieferant_id"]
-            isOneToOne: false
-            referencedRelation: "lieferant"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "planung_produktion_schritt"
-            referencedColumns: ["rezept_id"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "rezept"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "rezept_warenkosten"
-            referencedColumns: ["rezept_id"]
-          },
-        ]
+        Relationships: []
       }
       einkauf_zutaten_stand: {
         Row: {
@@ -3563,13 +3436,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "komponente_hauptartikel_id_fkey"
-            columns: ["hauptartikel_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["artikel_id"]
-          },
-          {
             foreignKeyName: "komponente_kategorie_fkey"
             columns: ["kategorie"]
             isOneToOne: false
@@ -3582,13 +3448,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "kollektion"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
           },
           {
             foreignKeyName: "komponente_rezept_id_fkey"
@@ -3922,13 +3781,6 @@ export type Database = {
             foreignKeyName: "komponente_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
             referencedRelation: "planung_produktion_schritt"
             referencedColumns: ["rezept_id"]
           },
@@ -4064,13 +3916,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "kategorie"
             referencedColumns: ["code"]
-          },
-          {
-            foreignKeyName: "komponente_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
           },
           {
             foreignKeyName: "komponente_rezept_id_fkey"
@@ -4344,13 +4189,6 @@ export type Database = {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
-          {
-            foreignKeyName: "zutatengruppe_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
             referencedRelation: "planung_produktion_schritt"
             referencedColumns: ["rezept_id"]
           },
@@ -4376,13 +4214,6 @@ export type Database = {
           waren_chf: number | null
         }
         Relationships: [
-          {
-            foreignKeyName: "zutatengruppe_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
           {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
             columns: ["rezept_id"]
@@ -4428,13 +4259,6 @@ export type Database = {
           unbeaufsichtigt_min: number | null
         }
         Relationships: [
-          {
-            foreignKeyName: "zutatengruppe_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
-          },
           {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
             columns: ["rezept_id"]
@@ -4953,25 +4777,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "zutat_artikel_id_fkey"
-            columns: ["artikel_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["artikel_id"]
-          },
-          {
             foreignKeyName: "zutat_gruppe_id_fkey"
             columns: ["gruppe_id"]
             isOneToOne: false
             referencedRelation: "zutatengruppe"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "zutat_komponente_id_fkey"
-            columns: ["komponente_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
           },
           {
             foreignKeyName: "zutat_komponente_id_fkey"
@@ -4993,13 +4803,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "rezept_warenkosten"
             referencedColumns: ["rezept_id"]
-          },
-          {
-            foreignKeyName: "zutatengruppe_rezept_id_fkey"
-            columns: ["rezept_id"]
-            isOneToOne: false
-            referencedRelation: "einkauf_zutat"
-            referencedColumns: ["zutat_rezept_id"]
           },
           {
             foreignKeyName: "zutatengruppe_rezept_id_fkey"
