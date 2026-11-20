@@ -16,6 +16,7 @@ import { alleSeiten } from "@/lib/seiten";
 import { RezeptLink } from "@/components/RezeptLink";
 import { ZustaendigDialog } from "@/components/produktion/ZustaendigDialog";
 import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
+import { useEingabenSchutz } from "@/components/EingabenSchutz";
 import type { Hinweis, Regeneration, System, Zuteilung } from "@/lib/systemzuteilung";
 
 type Bearbeiten = { zeile: Zuteilung; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[] };
@@ -102,6 +103,8 @@ export default function Produktionsliste() {
   const [dialog, setDialog] = useState<Zeile | null>(null);
   const [aktionsFehler, setAktionsFehler] = useState<string | null>(null);
   const [bearbeiten, setBearbeiten] = useState<Bearbeiten | null>(null);
+  // Ungespeicherte Eingaben in der Bearbeiten-Spalte: vor dem Wechsel der Zeile nachfragen.
+  const schutz = useEingabenSchutz();
   const [oeffnet, setOeffnet] = useState<string | null>(null);
   const [stamm, setStamm] = useState<{ systeme: System[]; regenerationen: Regeneration[] } | null>(null);
 
@@ -223,6 +226,10 @@ export default function Produktionsliste() {
   const linienName = spiel?.name;
   const fruehesterStart = zeilen.map((z) => z.startAb).filter((d): d is string => !!d).sort()[0] ?? null;
 
+  // «Speichern und nächste»: die nächste Zeile der gefilterten Liste mit einer anderen Komponente.
+  const stelle = gewaehlt ? zeilen.indexOf(gewaehlt) : -1;
+  const naechsteZeile = stelle >= 0 ? zeilen.slice(stelle + 1).find((z) => z.komponenteId && z.komponenteId !== gewaehlt?.komponenteId) ?? null : null;
+
   const spalten: DataTableColumn[] = [
     {
       key: "erledigt",
@@ -262,7 +269,7 @@ export default function Produktionsliste() {
       label: <span className="pl-sr">Bearbeiten</span>,
       printHidden: true,
       render: (r) => (
-        <Button ariaLabel={`${r.komponente as string} bearbeiten`} onClick={() => komponenteOeffnen(r as unknown as Zeile)} disabled={!r.komponenteId || oeffnet !== null}>
+        <Button ariaLabel={`${r.komponente as string} bearbeiten`} onClick={() => schutz.mitSchutz(() => komponenteOeffnen(r as unknown as Zeile))} disabled={!r.komponenteId || oeffnet !== null}>
           {oeffnet === r.komponenteId ? "Lädt …" : "Bearbeiten"}
         </Button>
       ),
@@ -476,6 +483,9 @@ export default function Produktionsliste() {
               systeme={bearbeiten.systeme}
               regenerationen={bearbeiten.regenerationen}
               onClose={() => setBearbeiten(null)}
+              onGeaendert={schutz.melden}
+              mitSchutz={schutz.mitSchutz}
+              naechste={naechsteZeile ? { name: naechsteZeile.komponente, weiter: () => komponenteOeffnen(naechsteZeile) } : null}
               onAktualisiert={komponenteGespeichert}
               onNeuLaden={neuLaden}
               zusatz={
@@ -529,10 +539,13 @@ export default function Produktionsliste() {
           systeme={bearbeiten.systeme}
           regenerationen={bearbeiten.regenerationen}
           onClose={() => setBearbeiten(null)}
+          onGeaendert={schutz.melden}
+          mitSchutz={schutz.mitSchutz}
           onAktualisiert={komponenteGespeichert}
           onNeuLaden={neuLaden}
         />
       ) : null}
+      {schutz.dialog}
     </>
   );
 }

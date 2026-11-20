@@ -260,3 +260,12 @@ Offen aus der UX-Liste: 8 bis 12 (Melde-Baustein im Küchenpass, Küchenpass-Zei
 - **Bekannt, nicht gebaut (Stufe 2, braucht eine View):** Der Leitstand zählt Zuteilung und Zukauf weiter über den ganzen Katalog (129 offen), die Saison hat 124; «Rezepte der Saison» zählt 179, die verlinkte Liste zeigt alle 363 nicht freigegebenen. «Prüfhinweise» zählt Hinweise, die Liste Komponenten (heute beide 235).
 - Nicht gebaut aus Rang 11: Herleitungsspalte der Produktionsliste am Bildschirm ganz weglassen.
 - Offen: Rang 10 (Detailspalte schützt Eingaben, «Speichern und nächste») und 16 bis 33.
+
+## Nachtrag 20.11.2026: UX-Rang 10, Bearbeiten-Spalte
+
+- **Verlustschutz:** `components/EingabenSchutz.tsx` (`useEingabenSchutz`). Mit ungespeicherten Eingaben fragt die Seite «Änderungen verwerfen?», bevor eine andere Zeile gewählt, die Spalte geschlossen (Kreuz, «Schliessen», Escape) oder der Dialog abgebrochen wird; Links der Navigation fängt `Ungespeichert` ab. In den Aktionen steht «Ungespeicherte Änderungen».
+- **«Speichern und nächste»** in der Spalte: speichert und öffnet die nächste Zeile der gefilterten Liste. Systemzuteilung zeigt im Kopf «noch N offen».
+- **Sichtbarkeit und Fokus:** Beim Öffnen scrollt die Seite so weit, dass die Spalte samt «Speichern» im Bild ist (die gewählte Zeile bleibt sichtbar); der Fokus geht in die Spalte und beim Schliessen zurück auf den Knopf der Zeile.
+- Gilt für `/systemzuteilung/` und `/produktion/` (gleiche Komponente `KomponenteBearbeiten`).
+- Geprüft im Browser ohne zu speichern: Rückfrage bei Zeilenwechsel, Kreuz und Escape; Verwerfen; Fokus-Rückgabe; Knöpfe im Bild. **Nicht ausgeführt:** «Speichern und nächste» selbst (schreibt in die Pilot-Datenbank).
+- Nicht gebaut: Knopf mit `aria-busy` statt `disabled`.

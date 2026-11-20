@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Button, Checkbox, DetailPanel, Dialog, Fieldset, Notice, Select, StatusPill, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import {
@@ -8,6 +8,8 @@ import {
   type Formular, type Hinweis, type Regeneration, type System, type Zuteilung,
 } from "@/lib/systemzuteilung";
 import { fehlerText } from "@/lib/fehler";
+import { istGeaendert } from "@/lib/ungespeichert";
+import { Ungespeichert } from "./Ungespeichert";
 
 type Props = {
   zeile: Zuteilung;
@@ -23,6 +25,14 @@ type Props = {
   alsSpalte?: boolean;
   /** Nur in der Spalte: Angaben der Seite über dem Formular, z.B. Menge und Herleitung. */
   zusatz?: ReactNode;
+  /** Meldet der Seite, ob es ungespeicherte Eingaben gibt (für useEingabenSchutz). */
+  onGeaendert?: (geaendert: boolean) => void;
+  /** Aus useEingabenSchutz: fragt vor dem Schliessen nach, wenn Eingaben verloren gingen. Ohne: schliesst direkt. */
+  mitSchutz?: (weiter: () => void) => void;
+  /** Nur in der Spalte: die nächste Zeile der Liste, für «Speichern und nächste». */
+  naechste?: { name: string; weiter: () => void } | null;
+  /** Nur in der Spalte: Stand der Arbeit, z.B. «noch 129 offen». */
+  stand?: string;
 };
 
 const checked = (e: unknown) => (e as { target: HTMLInputElement }).target.checked;
@@ -37,7 +47,7 @@ async function nachladen(id: string) {
   return { zeile: z.data, hinweise: h.data ?? [] };
 }
 
-export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen, onClose, onAktualisiert, onNeuLaden, alsSpalte, zusatz }: Props) {
+export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen, onClose, onAktualisiert, onNeuLaden, alsSpalte, zusatz, onGeaendert, mitSchutz, naechste, stand }: Props) {
   const [offen, setOffen] = useState(true);
   const [basis, setBasis] = useState<{ zeile: Zuteilung; hinweise: Hinweis[] }>({ zeile, hinweise });
   const [f, setF] = useState<Formular>(() => formularAus(zeile));
@@ -49,7 +59,45 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
   const set = (teil: Partial<Formular>) => setF((alt) => ({ ...alt, ...teil }));
   const id = basis.zeile.id!;
 
-  async function speichern() {
+  const geaendert = istGeaendert(f, formularAus(basis.zeile));
+  useEffect(() => {
+    onGeaendert?.(geaendert);
+    return () => onGeaendert?.(false);
+  }, [geaendert, onGeaendert]);
+
+  // Spalte: beim Öffnen geht der Fokus hinein (sie steht im Dokument nach der ganzen Liste), beim Schliessen zurück auf den Knopf der Zeile.
+  const spalteRef = useRef<HTMLDivElement>(null);
+  const ausloeser = useRef<Element | null>(null);
+  useEffect(() => {
+    if (!alsSpalte) return;
+    // Der Knopf der Zeile, von dem aus geöffnet wurde (nicht die Spalte selbst, falls der Effekt ein zweites Mal läuft).
+    if (!spalteRef.current?.contains(document.activeElement)) ausloeser.current = document.activeElement;
+    spalteRef.current?.focus({ preventScroll: true });
+    // Steht die Seite noch am Anfang, liegt die Spalte samt «Speichern» unter dem Bildschirmrand: so weit scrollen, dass sie ganz
+    // im Bild ist. Die Zeilen der Liste rücken dabei nur bis unter die Kopfzeile, die gewählte Zeile bleibt sichtbar.
+    const spalte = spalteRef.current?.closest(".pl-split__detail");
+    if (spalte) {
+      const r = spalte.getBoundingClientRect();
+      const oben = parseFloat(getComputedStyle(spalte).top) || 0;
+      const weit = Math.min(r.top - oben, r.bottom - window.innerHeight);
+      if (weit > 0) window.scrollBy(0, weit);
+    }
+    return () => {
+      const a = ausloeser.current;
+      if (!(a instanceof HTMLElement)) return;
+      // Die Spalte ist hier schon aus dem Dokument. Wurde über die Rückfrage geschlossen, ist deren Dialog noch einen Moment
+      // offen, und solange lässt sich ausserhalb nichts fokussieren: warten, bis er zu ist (höchstens rund eine Sekunde).
+      const zurueck = (versuche: number) => {
+        if (document.querySelector("dialog[open]") && versuche > 0) return void window.setTimeout(() => zurueck(versuche - 1), 30);
+        if (a.isConnected && (document.activeElement === document.body || !document.activeElement)) a.focus();
+      };
+      zurueck(30);
+    };
+  }, [alsSpalte]);
+
+  const geschuetzt = (weiter: () => void) => (mitSchutz ? mitSchutz(weiter) : weiter());
+
+  async function speichern(danach?: () => void) {
     const r = updateAus(f);
     if ("fehler" in r) return setFehler(r.fehler);
     setSpeichert(true);
@@ -80,16 +128,20 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
     }
     onAktualisiert(neu.zeile, neu.hinweise, true);
     if (alsSpalte) {
-      // Die Spalte bleibt offen und zeigt den gespeicherten Stand.
+      // Die Spalte bleibt offen und zeigt den gespeicherten Stand, oder geht zur nächsten Zeile.
       setBasis({ zeile: neu.zeile, hinweise: neu.hinweise });
       setF(formularAus(neu.zeile));
+      if (danach) {
+        onGeaendert?.(false);
+        danach();
+      }
     } else setOffen(false);
   }
 
   const titel = basis.zeile.name ?? "[Komponente]";
   const meta = `${basis.zeile.kategorie} · Excel-Zeile ${basis.zeile.quelle_zeile}`;
   const speichernButton = (
-    <Button variant="primary" onClick={speichern} disabled={speichert}>
+    <Button variant="primary" onClick={() => speichern()} disabled={speichert}>
       {speichert ? "Wird gespeichert …" : "Speichern"}
     </Button>
   );
@@ -170,23 +222,45 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
     </>
   );
 
+  const hinweisGeaendert = <span className="pl-small" role="status">{geaendert ? "Ungespeicherte Änderungen" : ""}</span>;
+
   if (alsSpalte)
     return (
-      <DetailPanel
-        title={titel}
-        meta={meta}
-        label={`Zuteilung ${titel}`}
-        onClose={onClose}
-        actions={
-          <>
-            {speichernButton}
-            <Button onClick={onClose} disabled={speichert}>Schliessen</Button>
-          </>
-        }
-      >
-        {zusatz}
-        {inhalt}
-      </DetailPanel>
+      <>
+        <Ungespeichert geaendert={geaendert} />
+        <div
+          ref={spalteRef}
+          tabIndex={-1}
+          onKeyDown={(e) => {
+            // Escape schliesst die Spalte, nie still: mit ungespeicherten Eingaben fragt die Seite nach.
+            if (e.key !== "Escape" || e.defaultPrevented || speichert) return;
+            e.preventDefault();
+            geschuetzt(onClose);
+          }}
+        >
+          <DetailPanel
+            title={titel}
+            meta={stand ? `${meta} · ${stand}` : meta}
+            label={`Zuteilung ${titel}`}
+            onClose={() => geschuetzt(onClose)}
+            actions={
+              <>
+                {speichernButton}
+                {naechste ? (
+                  <Button onClick={() => speichern(naechste.weiter)} disabled={speichert} ariaLabel={`Speichern und weiter zu ${naechste.name}`}>
+                    Speichern und nächste
+                  </Button>
+                ) : null}
+                <Button onClick={() => geschuetzt(onClose)} disabled={speichert}>Schliessen</Button>
+                {hinweisGeaendert}
+              </>
+            }
+          >
+            {zusatz}
+            {inhalt}
+          </DetailPanel>
+        </div>
+      </>
     );
 
   return (
@@ -196,10 +270,17 @@ export function KomponenteBearbeiten({ zeile, hinweise, systeme, regenerationen,
       title={titel}
       meta={meta}
       onClose={onClose}
-      onCancel={(e) => speichert && e.preventDefault()}
+      onCancel={(e) => {
+        // Escape: während des Speicherns nichts; mit ungespeicherten Eingaben zuerst nachfragen.
+        if (speichert) return e.preventDefault();
+        if (!geaendert || !mitSchutz) return;
+        e.preventDefault();
+        mitSchutz(() => setOffen(false));
+      }}
       actions={
         <>
-          <Button onClick={() => setOffen(false)} disabled={speichert}>Abbrechen</Button>
+          {hinweisGeaendert}
+          <Button onClick={() => geschuetzt(() => setOffen(false))} disabled={speichert}>Abbrechen</Button>
           {speichernButton}
         </>
       }

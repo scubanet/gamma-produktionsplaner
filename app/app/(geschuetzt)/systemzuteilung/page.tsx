@@ -11,6 +11,7 @@ import {
   type Filter, type Hinweis, type Regeneration, type System, type Zuteilung,
 } from "@/lib/systemzuteilung";
 import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
+import { useEingabenSchutz } from "@/components/EingabenSchutz";
 import { fehlerText } from "@/lib/fehler";
 
 type Daten = { zeilen: Zuteilung[]; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[]; kategorien: string[]; kollektion: string };
@@ -59,6 +60,8 @@ export default function Systemzuteilung() {
   const [meldung, setMeldung] = useState("");
   const schmal = useSchmal();
   const meldungRef = useRef<HTMLParagraphElement>(null);
+  // Ungespeicherte Eingaben in der Bearbeiten-Spalte: vor dem Wechsel der Zeile nachfragen.
+  const schutz = useEingabenSchutz();
 
   const neuLaden = () => laden().then(setDaten, (e: Error) => setFehler(fehlerText(e)));
   useEffect(() => {
@@ -93,6 +96,10 @@ export default function Systemzuteilung() {
     if (id && !zeilen.some((z) => z.id === id)) meldungRef.current?.focus();
   }
 
+  // «Speichern und nächste»: die Zeile nach der bearbeiteten in der gefilterten Liste (Stand vor dem Speichern).
+  const stelle = bearbeiten ? zeilen.findIndex((z) => z.id === bearbeiten.id) : -1;
+  const naechste = stelle >= 0 ? zeilen[stelle + 1] ?? null : null;
+
   const spalten: DataTableColumn[] = [
     { key: "name", label: "Komponente", subKey: "unterzeile" },
     // Gleich neben dem Namen: so bleibt der Knopf sichtbar, auch wenn die Detailspalte die Tabelle schmal macht.
@@ -101,7 +108,7 @@ export default function Systemzuteilung() {
       label: <span className="pl-sr">Bearbeiten</span>,
       printHidden: true,
       render: (r) => (
-        <Button ariaLabel={`${r.name as string} bearbeiten`} onClick={() => setBearbeiten(r.zeile as Zuteilung)}>
+        <Button ariaLabel={`${r.name as string} bearbeiten`} onClick={() => schutz.mitSchutz(() => setBearbeiten(r.zeile as Zuteilung))}>
           Bearbeiten
         </Button>
       ),
@@ -230,6 +237,10 @@ export default function Systemzuteilung() {
             systeme={daten.systeme}
             regenerationen={daten.regenerationen}
             onClose={geschlossen}
+            onGeaendert={schutz.melden}
+            mitSchutz={schutz.mitSchutz}
+            naechste={naechste ? { name: naechste.name ?? "[Komponente]", weiter: () => setBearbeiten(naechste) } : null}
+            stand={`noch ${formatZahl(alle.filter((z) => z.status === "offen").length)} offen`}
             onAktualisiert={aktualisiert}
             onNeuLaden={neuLaden}
           />
@@ -245,10 +256,13 @@ export default function Systemzuteilung() {
           systeme={daten.systeme}
           regenerationen={daten.regenerationen}
           onClose={geschlossen}
+          onGeaendert={schutz.melden}
+          mitSchutz={schutz.mitSchutz}
           onAktualisiert={aktualisiert}
           onNeuLaden={neuLaden}
         />
       ) : null}
+      {schutz.dialog}
     </>
   );
 }
