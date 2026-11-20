@@ -29,9 +29,9 @@ export function gruppieren(zeilen: VorschlagZeile[]): KomponenteOffen[] {
     .sort((a, b) => a.kategorie.localeCompare(b.kategorie, "de-CH") || a.komponente.localeCompare(b.komponente, "de-CH"));
 }
 
-/** «CHF 12.50 / kg · 83 %»; fehlender Preis als [Preis]. */
+/** «CHF 12.50 / kg · Name ähnlich: 83 %»; fehlender Preis als [Preis]. Die Zahl vergleicht nur die Namen, nicht die Sache. */
 export function vorschlagDetail(v: ArtikelVorschlag): string {
-  return `${v.preis === null ? "[Preis]" : formatChf(v.preis)} / ${v.einheit ?? "[Einheit]"} · ${Math.round(v.aehnlichkeit * 100)} %`;
+  return `${v.preis === null ? "[Preis]" : formatChf(v.preis)} / ${v.einheit ?? "[Einheit]"} · Name ähnlich: ${Math.round(v.aehnlichkeit * 100)} %`;
 }
 
 export type VorschlagFilter = { kategorie: string; treffer: "" | "mit" | "ohne" };

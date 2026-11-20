@@ -12,6 +12,9 @@ import { useBestaetigen } from "@/components/Bestaetigen";
 import { fehlerText } from "@/lib/fehler";
 
 type Verknuepft = { schluessel: string; bezeichnung: string; artikel_id: string; artikel: string; artikel_einheit: string | null; preis_pro_einheit: number | null; anzahl: number; rezepte_anzahl: number };
+/** Ab so vielen Zutaten fragt ein Vorschlag-Knopf nach, bevor er verknüpft. */
+const RUECKFRAGE_AB = 10;
+
 /** Anker einer Zeile, damit der Fokus nach dem Verknüpfen auf die nächste Bezeichnung gehen kann. */
 const zeilenId = (schluessel: string) => `zutat-${encodeURIComponent(schluessel)}`;
 
@@ -57,6 +60,8 @@ export default function ZutatenZuordnenSeite() {
   const [oeffnung, setOeffnung] = useState(0);
   const meldungRef = useRef<HTMLParagraphElement>(null);
   const [fragen, rueckfrage] = useBestaetigen();
+  // Die zuletzt verknüpfte Bezeichnung, für «Rückgängig» neben der Meldung.
+  const [letzte, setLetzte] = useState<Verknuepft | null>(null);
 
   const neuLaden = useCallback(
     () =>
@@ -80,12 +85,19 @@ export default function ZutatenZuordnenSeite() {
 
   const melden = (text: string) => {
     setFehler(null);
+    setLetzte(null);
     setMeldung(text);
   };
 
   // Fokus nach dem Verknüpfen im Dialog: undefined = nichts vorgemerkt, null = auf die Meldung.
   const fokusNach = useRef<string | null | undefined>(undefined);
   const fokusSetzen = (id: string | null) => (id ? document.getElementById(id) : meldungRef.current)?.focus();
+
+  const fokusNachholen = () => {
+    const id = fokusNach.current;
+    fokusNach.current = undefined;
+    if (id !== undefined) fokusSetzen(id);
+  };
 
   /** Zähler und Liste der verknüpften Zutaten neu holen; die offene Liste bleibt, wie sie auf dem Bildschirm steht. */
   async function standNeu(saisonId: string) {
@@ -113,6 +125,7 @@ export default function ZutatenZuordnenSeite() {
     const zielId = nachbar ? zeilenId(nachbar) : null;
     setDaten((d) => (d ? { ...d, offen: d.offen.filter((x) => x.schluessel !== z.schluessel) } : d));
     melden(`${z.bezeichnung}: ${formatZahl(r.data)} ${r.data === 1 ? "Zutat" : "Zutaten"} mit ${artikel} verknüpft. Lösen unten unter «Verknüpfte Zutaten».`);
+    setLetzte({ schluessel: z.schluessel, bezeichnung: z.bezeichnung, artikel_id: artikelId, artikel, artikel_einheit: null, preis_pro_einheit: null, anzahl: r.data, rezepte_anzahl: z.rezepteAnzahl });
     if (imDialog) fokusNach.current = zielId;
     else requestAnimationFrame(() => fokusSetzen(zielId));
     await standNeu(daten.saisonId);
@@ -148,6 +161,24 @@ export default function ZutatenZuordnenSeite() {
 
       {fehler ? <Notice role="alert" title={fehler.titel}>{fehler.text}</Notice> : null}
       <p className="pl-small" role="status" tabIndex={-1} ref={meldungRef}>{meldung}</p>
+      {letzte ? (
+        <div className="pl-actions">
+          <Button
+            disabled={speichert}
+            ariaLabel={`Verknüpfung von ${letzte.bezeichnung} mit ${letzte.artikel} rückgängig machen`}
+            onClick={() =>
+              fragen({
+                titel: `${letzte.bezeichnung} von ${letzte.artikel} wieder lösen?`,
+                text: "Rückgängig löst den Artikel bei allen Zutaten mit dieser Bezeichnung, auch bei solchen, die schon vorher mit diesem Artikel verknüpft waren.",
+                bestaetigen: "Lösen",
+                aktion: () => loesen(letzte),
+              })
+            }
+          >
+            Rückgängig
+          </Button>
+        </div>
+      ) : null}
       {daten === null ? <Notice title="Keine Saison">Es gibt noch keine Saison mit Anlässen.</Notice> : null}
 
       {daten ? (
@@ -202,9 +233,20 @@ export default function ZutatenZuordnenSeite() {
                               <Button
                                 disabled={speichert}
                                 ariaLabel={`${v.artikel} mit ${z.bezeichnung} verknüpfen`}
-                                onClick={async () => {
-                                  const f = await zuordnen(z, v.artikelId, v.artikel);
-                                  if (f) setFehler({ titel: "Nicht gespeichert", text: `${z.bezeichnung}: ${f}` });
+                                onClick={() => {
+                                  const los = async (imDialog: boolean) => {
+                                    const f = await zuordnen(z, v.artikelId, v.artikel, imDialog);
+                                    if (f) setFehler({ titel: "Nicht gespeichert", text: `${z.bezeichnung}: ${f}` });
+                                  };
+                                  // Ein Klick verknüpft alle Zutaten dieser Bezeichnung: bei vielen zuerst nachfragen.
+                                  if (z.anzahl + (weitere ? z.weitere : 0) < RUECKFRAGE_AB) return los(false);
+                                  fragen({
+                                    titel: `${z.bezeichnung} mit ${v.artikel} verknüpfen?`,
+                                    text: `Der Artikel wird bei ${umfangText(z.anzahl, z.rezepteAnzahl)} der Saison eingetragen${weitere && z.weitere ? `, dazu bei ${formatZahl(z.weitere)} ausserhalb der Saison` : ""}. Der Vorschlag vergleicht nur die Namen (${Math.round(v.aehnlichkeit * 100)} % ähnlich).`,
+                                    bestaetigen: "Verknüpfen",
+                                    aktion: () => los(true),
+                                    danach: fokusNachholen,
+                                  });
                                 }}
                               >
                                 {v.artikel}
@@ -323,9 +365,7 @@ export default function ZutatenZuordnenSeite() {
         fehler={zielFehler}
         onClose={() => {
           setZielOffen(false);
-          const id = fokusNach.current;
-          fokusNach.current = undefined;
-          if (id !== undefined) requestAnimationFrame(() => fokusSetzen(id));
+          requestAnimationFrame(fokusNachholen);
         }}
         onWahl={async (a) => {
           if (!ziel) return;

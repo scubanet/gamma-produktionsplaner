@@ -45,7 +45,7 @@ describe("Artikel-Vorschläge", () => {
     expect(filtern(liste, { kategorie: "Dessert", treffer: "" })).toHaveLength(2);
   });
   it("zeigt Preis, Einheit und Ähnlichkeit; fehlender Preis als Platzhalter", () => {
-    expect(vorschlagDetail(liste[0].vorschlaege[0])).toMatch(/4\.50 \/ kg · 67 %$/);
-    expect(vorschlagDetail(liste[0].vorschlaege[1])).toBe("[Preis] / kg · 55 %");
+    expect(vorschlagDetail(liste[0].vorschlaege[0])).toMatch(/4\.50 \/ kg · Name ähnlich: 67 %$/);
+    expect(vorschlagDetail(liste[0].vorschlaege[1])).toBe("[Preis] / kg · Name ähnlich: 55 %");
   });
 });

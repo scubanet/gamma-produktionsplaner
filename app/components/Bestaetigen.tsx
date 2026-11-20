@@ -10,6 +10,8 @@ export type Rueckfrage = {
   /** Beschriftung des Knopfs, z.B. «Löschen». Ohne aktion zeigt der Dialog nur «Schliessen» (z.B. wenn zuerst etwas anderes zu tun ist). */
   bestaetigen?: string;
   aktion?: () => Promise<unknown> | unknown;
+  /** Nach ausgeführter Aktion und geschlossenem Dialog, z.B. Fokus setzen. Ohne danach geht der Fokus auf die Meldung der Seite, wenn er verloren ist. */
+  danach?: () => void;
 };
 
 /**
@@ -20,6 +22,7 @@ export function useBestaetigen(): [(r: Rueckfrage) => void, ReactNode] {
   const [frage, setFrage] = useState<Rueckfrage | null>(null);
   const [laeuft, setLaeuft] = useState(false);
   const ausgefuehrt = useRef(false);
+  const danach = useRef<(() => void) | undefined>(undefined);
 
   async function ausfuehren() {
     if (!frage?.aktion || laeuft) return;
@@ -27,6 +30,7 @@ export function useBestaetigen(): [(r: Rueckfrage) => void, ReactNode] {
     try {
       await frage.aktion();
       ausgefuehrt.current = true;
+      danach.current = frage.danach;
     } finally {
       setLaeuft(false);
       setFrage(null);
@@ -43,7 +47,10 @@ export function useBestaetigen(): [(r: Rueckfrage) => void, ReactNode] {
         // Nach dem Löschen gibt es den auslösenden Knopf oft nicht mehr: der Fokus geht dann auf die Meldung der Seite.
         if (!ausgefuehrt.current) return;
         ausgefuehrt.current = false;
+        const d = danach.current;
+        danach.current = undefined;
         requestAnimationFrame(() => {
+          if (d) return d();
           if (document.activeElement === document.body) document.querySelector<HTMLElement>('[role="status"][tabindex="-1"]')?.focus();
         });
       }}
