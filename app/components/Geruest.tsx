@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { Button, Tabs, TopNav } from "@/lib/planer";
+import { BILDMARKE, Button, Tabs, TopNav } from "@/lib/planer";
 import { hauptnav, seitenTabs, unternav } from "@/lib/navigation";
 import { supabase } from "@/lib/supabase";
 import { useSitzung } from "./Anmeldung";
@@ -14,6 +14,7 @@ export function Geruest({ children }: { children: ReactNode }) {
     <div className="pl-app pl-app--top">
       {/* Auf jeder Seite: Bereiche, wer angemeldet ist, und abmelden. Nach dem Abmelden leitet <Anmeldung> zur Anmeldeseite. */}
       <TopNav
+        brandSrc={BILDMARKE}
         items={hauptnav(pfad)}
         actions={
           <>

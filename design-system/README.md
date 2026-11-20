@@ -60,11 +60,11 @@ Linien-Icons, 18 px, Strichstärke 1.8, `currentColor`, abgerundete Enden. Keine
 
 ## Logo
 
-Noch kein offizielles GAMMA-Logo im System. Platzhalter ist ein bordeauxrotes Quadrat (`accent`, `radius-sm`) mit dem Produktnamen in Text. Sobald das GAMMA-Logo vorliegt, kommt es als Asset hierher.
+Die Marke steht als Komponente Brand in der Kopfzeile und auf der Anmeldeseite. Die Bildmarke ist eine einzige Datei, `assets/bildmarke.svg`; daraus erzeugt `app/scripts/icons.mjs` Favicon und App-Icons. Noch liegt dort ein Platzhalter (bordeauxrotes Quadrat in `accent`), bis GAMMA die Bildmarke («G» im Kreisring) als Vektordatei liefert. Das Logo wird nicht verändert: nur Schwarz oder Weiss oder nach Vorgabe von GAMMA, Schutzraum einhalten.
 
 ## Komponenten
 
-Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
+Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel, Brand. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
 
 ## Wie das System weiterwächst
 

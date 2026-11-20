@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"},{"name":"Brand"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
@@ -247,10 +247,24 @@
       }));
   }
 
+  // Marke: Bildmarke (Datei design-system/assets/bildmarke.svg, in der App unter /brand/) plus Wortmarke und Produktname.
+  function Brand(p) {
+    var gross = p.size === 'lg';
+    var inhalt = [
+      p.src ? h('img', { key: 'm', className: 'pl-brand__mark', src: p.src, alt: '', width: gross ? 56 : 28, height: gross ? 56 : 28 })
+        : h('span', { key: 'm', className: 'pl-brand__mark pl-brand__mark--platzhalter', 'aria-hidden': 'true' }),
+      h('span', { key: 't', className: 'pl-brand__text' },
+        h('span', { className: 'pl-brand__name' }, p.company || 'GAMMA Catering'),
+        p.product === null ? null : h('span', { className: 'pl-brand__product' }, p.product || 'Produktionsplaner'))
+    ];
+    var cls = cx('pl-brand', gross && 'pl-brand--lg');
+    return p.href ? h('a', { className: cls, href: p.href }, inhalt) : h('div', { className: cls }, inhalt);
+  }
+
   function TopNav(p) {
     var st = React.useState(false), offen = st[0], setOffen = st[1];
     return h('header', { className: 'pl-top' },
-      h('a', { className: 'pl-top__brand', href: '/' }, p.company || 'GAMMACATERING'),
+      h(Brand, { href: '/', src: p.brandSrc, company: p.company }),
       h('button', { type: 'button', className: 'pl-top__toggle', 'aria-expanded': offen, 'aria-controls': 'pl-top-menu', onClick: function () { setOffen(!offen); } }, 'Menü'),
       h('nav', { id: 'pl-top-menu', className: cx('pl-top__nav', offen && 'pl-top__nav--offen'), 'aria-label': 'Hauptnavigation' },
         p.items.map(function (it) {
@@ -273,6 +287,6 @@
       p.items ? h('ul', null, p.items.map(function (x, i) { return h('li', { key: i }, x); })) : p.children);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

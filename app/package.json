@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "tokens": "node scripts/tokens.mjs",
+    "icons": "node scripts/icons.mjs",
     "predev": "npm run tokens",
     "dev": "next dev",
     "prebuild": "npm run tokens",

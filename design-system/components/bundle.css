@@ -245,17 +245,28 @@
 .pl-table th:has(.pl-table__sort) { padding-bottom: 0; }
 @media print { .pl-table__sort { min-height: 0; padding-bottom: 0; } .pl-table th:has(.pl-table__sort) { padding-bottom: 10px; } }
 
+/* Brand: Bildmarke, Wortmarke und Produktname. Klein in der TopNav, gross und gestapelt auf der Anmeldeseite. */
+.pl-brand { display: inline-flex; align-items: center; gap: 10px; min-height: var(--control-height); color: var(--ink); text-decoration: none; }
+.pl-brand__mark { flex: none; display: block; width: 28px; height: 28px; }
+.pl-brand__mark--platzhalter { border-radius: var(--radius-sm); background: var(--accent); }
+.pl-brand__text { display: flex; flex-direction: column; line-height: 1.2; }
+.pl-brand__name { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.pl-brand__product { font-size: 12px; color: var(--ink-muted); }
+.pl-brand--lg { flex-direction: column; gap: var(--space-3); text-align: center; }
+.pl-brand--lg .pl-brand__mark { width: 56px; height: 56px; }
+.pl-brand--lg .pl-brand__name { font-size: 22px; }
+.pl-brand--lg .pl-brand__product { font-size: 14px; }
+
 /* TopNav und Tabs: Hauptnavigation oben mit sechs Bereichen, Seiten und Ansichten als Tabs. */
 .pl-app--top { flex-direction: column; flex-wrap: nowrap; }
 .pl-app--top .pl-main { flex: 1 1 auto; }
 .pl-top { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-1) var(--space-6); min-height: 60px; padding: 0 var(--space-10); border-bottom: 1px solid var(--border); background: var(--surface); }
-.pl-top__brand { min-height: var(--control-height); display: inline-flex; align-items: center; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
 .pl-top__nav { display: flex; flex-wrap: wrap; gap: 0 var(--space-6); flex: 1; }
 .pl-top__item, .pl-tabs__item { min-height: var(--control-height); display: inline-flex; align-items: center; text-decoration: none; }
 .pl-top__item { font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); }
 .pl-top__item:hover, .pl-tabs__item:hover { color: var(--accent); }
 .pl-top__item[aria-current=page] { color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
-.pl-top__brand:focus-visible, .pl-top__item:focus-visible, .pl-tabs__item:focus-visible, .pl-top__toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pl-brand:focus-visible, .pl-top__item:focus-visible, .pl-tabs__item:focus-visible, .pl-top__toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pl-top__actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-left: auto; }
 .pl-top__toggle { display: none; align-items: center; min-height: var(--control-height); padding: 0 var(--space-4); margin-left: auto; border: 1px solid var(--border-control); border-radius: var(--radius-md); background: var(--surface); font: inherit; font-family: var(--font-sans); font-size: 14px; color: var(--ink); cursor: pointer; }
 .pl-tabs { display: flex; flex-wrap: wrap; gap: 0 var(--space-6); padding: 0 var(--space-10); border-bottom: 1px solid var(--border); font-size: 15px; }

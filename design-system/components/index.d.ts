@@ -24,7 +24,8 @@ export interface TimelineProps { start: number; end: number; step?: number; mark
 export interface SideNavItem { label: string; href?: string; current?: boolean; disabled?: boolean; }
 export interface SideNavProps { product?: string; company?: string; items: SideNavItem[]; }
 export interface NavLink { label: string; href: string; current?: boolean; }
-export interface TopNavProps { company?: string; items: NavLink[]; actions?: ReactNode; }
+export interface BrandProps { size?: 'sm' | 'lg'; src?: string; href?: string; company?: string; product?: string | null; }
+export interface TopNavProps { company?: string; brandSrc?: string; items: NavLink[]; actions?: ReactNode; }
 export interface TabsProps { label: string; items: NavLink[]; tone?: 'default' | 'sunken'; }
 export interface DetailPanelProps { title: ReactNode; meta?: ReactNode; label?: string; actions?: ReactNode; onClose?: () => void; children?: ReactNode; }
 export interface NoticeProps { title?: ReactNode; role?: 'alert' | 'status'; items?: ReactNode[]; children?: ReactNode; }
@@ -50,3 +51,4 @@ export declare const RecipeGroups: (p: RecipeGroupsProps) => JSX.Element;
 export declare const TopNav: (p: TopNavProps) => JSX.Element;
 export declare const Tabs: (p: TabsProps) => JSX.Element | null;
 export declare const DetailPanel: (p: DetailPanelProps) => JSX.Element;
+export declare const Brand: (p: BrandProps) => JSX.Element;

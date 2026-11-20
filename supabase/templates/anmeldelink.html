@@ -1,11 +1,25 @@
-<h2>Anmeldung Produktionsplaner</h2>
-
-<p>Öffne diesen Link und klicke danach auf «Jetzt anmelden»:</p>
-
-<p><a href="https://gamma.atoll-os.com/anmelden/?token_hash={{ .TokenHash }}&type=email">Im Produktionsplaner anmelden</a></p>
-
-<p>Oder gib auf der Anmeldeseite diesen Code ein:</p>
-
-<p style="font-size: 24px; letter-spacing: 4px;"><strong>{{ .Token }}</strong></p>
-
-<p>Link und Code gelten eine Stunde und nur einmal. Wenn du keine Anmeldung angefordert hast, kannst du diese E-Mail ignorieren.</p>
+<!-- Farben wie im Design System (accent, ink, ink-muted, surface-sunken); E-Mail-Programme kennen keine Tokens, darum hier fest. -->
+<div style="margin:0;padding:32px 16px;background:#F7F7F3;font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;color:#242424;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:420px;margin:0 auto;">
+    <tr>
+      <td align="center" style="padding-bottom:24px;">
+        <img src="https://gamma.atoll-os.com/icons/icon-192.png" width="48" height="48" alt="" style="display:block;border:0;margin:0 auto 12px;">
+        <div style="font-size:20px;font-weight:600;">GAMMA Catering</div>
+        <div style="font-size:14px;color:#5C5C5C;">Produktionsplaner</div>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:24px;background:#FFFFFF;border:1px solid #E4E4E0;border-radius:4px;font-size:15px;line-height:22px;">
+        <h2 style="margin:0 0 12px;font-size:16px;line-height:22px;">Anmeldung Produktionsplaner</h2>
+        <p style="margin:0 0 16px;">Öffne diesen Link und klicke danach auf «Jetzt anmelden»:</p>
+        <p style="margin:0 0 24px;"><a href="https://gamma.atoll-os.com/anmelden/?token_hash={{ .TokenHash }}&type=email" style="display:inline-block;padding:12px 18px;background:#4C0C14;color:#FFFFFF;font-weight:600;text-decoration:none;border-radius:3px;">Im Produktionsplaner anmelden</a></p>
+        <p style="margin:0 0 8px;">Oder gib auf der Anmeldeseite diesen Code ein:</p>
+        <p style="margin:0 0 24px;font-family:Menlo,Consolas,monospace;font-size:24px;letter-spacing:4px;"><strong>{{ .Token }}</strong></p>
+        <p style="margin:0;font-size:13px;line-height:19px;color:#5C5C5C;">Link und Code gelten eine Stunde und nur einmal. Wenn du keine Anmeldung angefordert hast, kannst du diese E-Mail ignorieren.</p>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding-top:16px;font-size:12px;color:#5C5C5C;">GAMMA Catering · Hünenberg</td>
+    </tr>
+  </table>
+</div>

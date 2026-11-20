@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GAMMA Catering">
+  <!-- Platzhalter (Quadrat in accent), bis GAMMA die Bildmarke als Vektordatei liefert. Diese Datei tauschen, dann `npm run icons` in app/. -->
+  <style>
+    .m { fill: #4C0C14; }
+    @media (prefers-color-scheme: dark) { .m { fill: #E0A0A8; } }
+  </style>
+  <rect class="m" width="64" height="64" rx="6"/>
+</svg>

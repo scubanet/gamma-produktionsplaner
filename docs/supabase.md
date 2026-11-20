@@ -35,6 +35,7 @@ Stand: 15.11.2026
 - Ohne Passwort: Die E-Mail enthält einen Link auf `/anmelden/?token_hash=…&type=email` und einen Code. Der Link meldet erst mit dem Klick auf «Jetzt anmelden» an (`verifyOtp` in `app/app/anmelden/page.tsx`, Hilfen in `app/lib/anmeldung.ts`).
 - Grund (17.11.2026): Mailschutz-Programme bei Firmen- und Gemeindeadressen öffnen jeden Link zur Prüfung. Der frühere Link (`{{ .ConfirmationURL }}`) meldete schon beim Öffnen an und war verbraucht, bevor die Person klickte. `{{ .ConfirmationURL }}` deshalb nicht mehr in die Vorlage aufnehmen.
 - Die Mailvorlage liegt in `supabase/templates/anmeldelink.html` und wird von Hand im Dashboard eingetragen: Authentication → Emails → «Magic Link». Sie enthält die Adresse `gamma.atoll-os.com` fest; beim Umzug auf den GAMMA-Server dort anpassen.
+- Stand 20.11.2026: Vorlage im Auftritt der App (Marke oben, Knopf in `accent`). Sie muss nach dem Ausliefern erneut von Hand im Dashboard eingetragen werden; das Bild oben lädt `https://gamma.atoll-os.com/icons/icon-192.png` und erscheint erst, wenn die App mit den Icons ausgeliefert ist.
 
 ## Migrationen
 
