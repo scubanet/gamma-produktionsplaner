@@ -222,3 +222,15 @@ Ladezeit Einkauf: siehe Nachtrag «Migration 39». Die zuerst notierten «rund 2
 - **Reihenfolge beim Ausliefern zwingend:** `supabase db push --remote`, dann `cd app && npm run types`, dann `git push`. Anders als bei 34, 37 und 38 läuft `/einkauf/` nicht ohne Migration 39: die Seite ruft nur noch `einkauf_liste` (ohne sie Fehler PGRST202, «Einkauf nicht geladen»).
 - Nach dem Einspielen: Ladezeit neu messen, Typen aus der Datenbank erzeugen und mit den von Hand nachgeführten vergleichen.
 - **Eingespielt am 20.11.2026.** Danach geprüft (als `authenticated`): `einkauf_liste()` gleich den Views (Summe, 187 Artikelzeilen, 253 Positionen), rund 0,2 s; unbekannte Saison gibt null; `anon` darf nicht ausführen. Erzeugte Typen gleich den von Hand nachgeführten. `/einkauf/` lädt lokal (Entwicklungsversion) in 1,3 s statt 2,8 s; `/einkauf/zuordnen/` unverändert 3,3 s (dort bestimmt `komponente_artikel_vorschlag` die Zeit).
+
+## Nachtrag 20.11.2026: UX-Runde 2 (Ränge 6, 7, 14, 15)
+
+- **Zutaten zuordnen (Rang 6, Stufe 1):** Ein Vorschlag-Knopf fragt ab 10 betroffenen Zutaten nach (mit «auch ausserhalb der Saison» zählen diese mit). Nach dem Verknüpfen steht «Rückgängig» unter der Meldung; es löst alle Zutaten dieser Bezeichnung mit diesem Artikel, auch früher verknüpfte, und sagt das in der Rückfrage. Die Prozentzahl heisst «Name ähnlich: 60 %» (auch auf «Artikel zuordnen»). Stufe 2 (Rangfolge und Schwelle der Vorschläge in der Datenbank) wartet auf den Entscheid zu Grundzutaten (Salz, Zucker, Wasser).
+- **Rezepte am Handy (Rang 7, kleinste Fassung):** Ist ein Rezept gewählt und bricht die Zeile um, steht die Karte vor der Liste; «Anderes Rezept wählen» springt zur Liste, nach der Wahl springt die Seite zum Kopf. Die Reihenfolge im Dokument bleibt Liste vor Karte (Tastatur). Ausbau (Liste hinter einem Knopf) nicht gebaut.
+- **Offerte (Rang 14):** Solange die Summen laden, Skelett in Kacheln, Tabelle und Herleitung; «[Preis]» und «[Gäste]» nur, wenn geladen und der Wert fehlt.
+- **Tab-Titel (Rang 15):** `useSeitentitel` im Gerüst setzt den Titel aus der Überschrift («Einkaufsliste – Produktionsplaner», beim Rezept dessen Name).
+- Kachel «Nächster Bestellschluss»: `[Bestelltermin]` bricht um. Design System 0.26.
+
+Geprüft: Typen, Lint, Tests, Build; im Browser lesend (Rückfrage geöffnet und abgebrochen). Nicht geprüft, weil es schreibt: Verknüpfen mit Rückfrage und «Rückgängig» selbst.
+
+Offen aus der UX-Liste: 8 bis 12 (Melde-Baustein im Küchenpass, Küchenpass-Zeile mit Rezept und Lagerung, Verlustschutz in der Detailspalte, Herleitung gekürzt, Leitstand-Links), 16 bis 33.
