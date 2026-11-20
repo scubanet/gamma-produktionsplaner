@@ -239,6 +239,15 @@ Offen aus der UX-Liste: 8 bis 12 (Melde-Baustein im Küchenpass, Küchenpass-Zei
 
 - **Meldezeile (Rang 8):** neuer Baustein im Design System (0.27), fest am unteren Bildschirmrand. Im Küchenpass: «… erledigt · Rückgängig» für 6 s; ein Speicherfehler bleibt stehen mit «Nochmals versuchen» und wird von der Bestätigung einer anderen Zeile nicht ersetzt. Die bisherige Notice «Nicht gespeichert» und die Statuszeile über der Liste entfallen.
 - **Zeile (Rang 9):** unter dem Namen Konservierung und Lagerart (Systemzuteilung) und «haltbar bis spätestens» (`wellen_vorschlag.haltbar_bis`). Knopf «Rezept» (ausserhalb der Abhak-Fläche) öffnet die Rezeptkarte im selben Fenster mit `?von=kueche&welle=N`; dort «Zurück zum Küchenpass». `/kueche/?welle=N` öffnet diese Welle; die Adresse folgt der Wahl.
-- **Offene Fachfrage:** «haltbar bis» rechnet ab dem spätesten Produktionstag des Vorschlags, nicht ab dem geplanten oder echten Produktionstag. Darum heisst es «spätestens». Fürs Etikett bräuchte es das Datum ab dem Tag, an dem wirklich produziert wurde (Entscheid Dominik, Rechnung gehört in die Datenbank).
+- **Fachfrage MHD entschieden (Dominik, 20.11.2026):** ab Produktionsdatum, siehe Nachtrag «Migration 40».
 - Nicht gebaut aus den Vorschlägen: Kennzeichnung «wird gespeichert» an der Zeile; Rückkehr vom Rezept zur selben Zeile (landet am Anfang der Welle).
 - Geprüft: Typen, Lint, 203 Tests, Build; im Browser Anzeige, Rezept-Link, Rückweg, Wellenwechsel. **Versehen beim Prüfen:** Ein Test hat «Geräucherter Saibling», Welle 1, kurz als erledigt gespeichert (das Abfangen der Anfrage griff nicht); sofort mit «Rückgängig» zurückgenommen, in der Datenbank kontrolliert (`erledigt_am` leer). Der Fehlerfall («Nochmals versuchen») ist im Browser nicht geprüft.
+
+## Nachtrag 20.11.2026: Migration 40, MHD ab Produktionsdatum
+
+- Entscheid Dominik: «MHD muss ab Produktionsdatum gerechnet werden.»
+- `produktion_aufgabe.produziert_am`: Produktionstag, vom Trigger gesetzt (Regeln in `docs/supabase.md`, Abschnitt Checkliste). View `produktion_checkliste` liefert `haltbar_bis` und `haltbar_grundlage`; `wellenplan.haltbar_bis` und sein Hinweis «Haltbarkeit endet am …» rechnen bei abgehakten Zeilen ebenfalls ab dem Produktionstag. `wellen_vorschlag` bleibt (spätester Termin).
+- Küchenpass zeigt «produziert … · haltbar bis …», «Produktion … geplant · haltbar bis …» oder «Produktion spätestens … · haltbar bis …». Nach dem Abhaken lädt er nach; bis der Stand zum Häkchen passt, steht «haltbar bis …» ohne Datum. Ohne die Migration gilt wie zuvor «haltbar bis spätestens» aus dem Vorschlag.
+- Lesend geprüft: die neun bisherigen Spalten der Checkliste sind identisch (253 Zeilen), `haltbar_bis` der 82 Zeilen mit Welle gleich dem Vorschlag, solange nichts abgehakt ist. Trigger und Wellenplan konnten nur durchgesehen, nicht ausgeführt werden (der Wellenplan hat im Pilot 0 Zeilen).
+- **Annahme, offen:** Abgehakt wird am Produktionstag. Wer am nächsten Morgen abhakt, bekommt ein um einen Tag zu spätes MHD; korrigieren lässt sich der Produktionstag in der App nicht. Braucht es das, kommt ein Feld «produziert am».
+- Reihenfolge: `supabase db push --remote`, `cd app && npm run types`, `git push`. Die App läuft auch ohne Migration 40.

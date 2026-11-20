@@ -117,7 +117,12 @@ Für das Handy oder Tablet am Posten: eine Welle zum Abhaken.
 - Oben steht der Fortschritt (erledigt / alle). «Noch offen», «Erledigt» und «Alle» filtern die Liste.
 - Nach dem Abhaken erscheint unten am Bildschirm eine Meldung mit «Rückgängig» (einige Sekunden).
 - Klappt das Speichern nicht (z.B. kein Netz), geht das Häkchen zurück und unten steht «nicht gespeichert» mit «Nochmals versuchen». Die Meldung bleibt, bis sie geschlossen oder wiederholt wird.
-- Unter dem Namen stehen Konservierung, Lagerart und «haltbar bis spätestens» (gerechnet ab dem spätesten Produktionstag der Welle). «Rezept» öffnet die Rezeptkarte; von dort führt «Zurück zum Küchenpass» zur selben Welle.
+- Unter dem Namen stehen Konservierung und Lagerart und die Haltbarkeit, gerechnet ab dem Produktionsdatum:
+  - abgehakt: «produziert 22.12.2026 · haltbar bis 12.01.2027». Der Produktionstag ist der Tag des Abhakens; darum am Produktionstag abhaken.
+  - noch offen, mit Datum im Wellenplan: «Produktion 23.12.2026 geplant · haltbar bis …».
+  - noch offen, ohne Wellenplan: «Produktion spätestens 24.12.2026 · haltbar bis …».
+  - Wird ein Häkchen am selben Tag zurückgenommen, gilt es als Versehen. Wird es später zurückgenommen und wieder gesetzt, bleibt der erste Produktionstag: das MHD wird dadurch nie länger.
+- «Rezept» öffnet die Rezeptkarte; von dort führt «Zurück zum Küchenpass» zur selben Welle.
 - Die Liste lädt jede Minute nach und immer, wenn die App wieder in den Vordergrund kommt. Oben steht «Stand» mit der Uhrzeit; «Aktualisieren» lädt sofort. So sieht man, was andere inzwischen abgehakt haben.
 - Zuständig und Termine werden im Wellenplan geändert.
 - **Auf den Home-Bildschirm:** In Safari «Teilen» → «Zum Home-Bildschirm». Die App startet dann direkt im Küchenpass.

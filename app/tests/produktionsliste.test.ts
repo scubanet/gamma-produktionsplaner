@@ -118,6 +118,7 @@ describe("Checkliste", () => {
   it("liest die View produktion_checkliste und überspringt Zeilen ohne Schlüssel", () => {
     const zeile = (p: Partial<ChecklisteZeile>): ChecklisteZeile => ({
       saison_id: "s", komponente_id: "a", welle_nr: 1, produktion_am: "2026-12-22", spaetestens_am: "2026-12-22", plan_nummer: null,
+      haltbarkeit_tage: null, produziert_am: null, haltbar_bis: null, haltbar_grundlage: null,
       zustaendig: null, erledigt_am: null, erledigt_von: null, ...p,
     });
     const m = aufgabenAus([zeile({}), zeile({ welle_nr: 2, zustaendig: "Remo" }), zeile({ komponente_id: null })]);

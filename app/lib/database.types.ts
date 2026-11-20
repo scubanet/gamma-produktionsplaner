@@ -1707,6 +1707,7 @@ export type Database = {
           geaendert_am: string
           geaendert_von: string | null
           komponente_id: string
+          produziert_am: string | null
           saison_id: string
           welle_nr: number
           zustaendig: string | null
@@ -1717,6 +1718,7 @@ export type Database = {
           geaendert_am?: string
           geaendert_von?: string | null
           komponente_id: string
+          produziert_am?: string | null
           saison_id: string
           welle_nr?: number
           zustaendig?: string | null
@@ -1727,6 +1729,7 @@ export type Database = {
           geaendert_am?: string
           geaendert_von?: string | null
           komponente_id?: string
+          produziert_am?: string | null
           saison_id?: string
           welle_nr?: number
           zustaendig?: string | null
@@ -4021,9 +4024,13 @@ export type Database = {
         Row: {
           erledigt_am: string | null
           erledigt_von: string | null
+          haltbar_bis: string | null
+          haltbar_grundlage: string | null
+          haltbarkeit_tage: number | null
           komponente_id: string | null
           plan_nummer: number | null
           produktion_am: string | null
+          produziert_am: string | null
           saison_id: string | null
           spaetestens_am: string | null
           welle_nr: number | null

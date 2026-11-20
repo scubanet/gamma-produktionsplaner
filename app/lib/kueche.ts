@@ -1,6 +1,6 @@
 // Küchenpass: die Checkliste einer Welle zum Abhaken am Posten. Mengen und Termine kommen aus der Datenbank
 // (View wellen_vorschlag), der Stand aus der Checkliste; hier wird nur gruppiert und gefiltert.
-import { schluessel, type Aufgabe } from "./checkliste";
+import { schluessel, type Aufgabe, type ChecklisteZeile } from "./checkliste";
 import type { Vorschlag } from "./wellen";
 import { formatDatum } from "./format";
 import { konservierungText, lagerart, type ZuteilungKurz } from "./produktionsliste";
@@ -50,17 +50,27 @@ export function nachKategorie(zeilen: PassZeile[]): { kategorie: string; zeilen:
 }
 
 /**
- * Zweite Zeile im Pass, fürs Etikett: «SF · 0–2 °C · haltbar bis 24.12.2026». Konservierung aus der Systemzuteilung,
- * «haltbar bis spätestens» aus dem Wellen-Vorschlag (spätester Produktionstag + Haltbarkeit); was fehlt, steht als Platzhalter.
+ * Haltbarkeit fürs Etikett, ab Produktionsdatum (Entscheid Dominik, 20.11.2026). Die Datenbank rechnet (Checkliste, Migration 40):
+ * abgehakt = produziert an diesem Tag; sonst das Datum des Wellenplans; sonst der späteste Termin des Vorschlags.
+ * Kennt die Checkliste die Spalten noch nicht (Migration fehlt), gilt wie zuvor «spätestens» aus dem Wellen-Vorschlag.
  */
-export function passLager(zuteilung: ZuteilungKurz | undefined, haltbarBis: string | null): { konservierung: string; haltbar: string } {
-  const konservierung = zuteilung ? konservierungText({ produktion: zuteilung.produktion ?? [], lagerung: lagerart(zuteilung) }) : null;
-  return { konservierung: konservierung ?? "[Lagerung]", haltbar: `haltbar bis spätestens ${haltbarBis ? formatDatum(haltbarBis) : "[Datum]"}` };
+export function passHaltbar(
+  c: Partial<Pick<ChecklisteZeile, "haltbar_bis" | "haltbar_grundlage" | "haltbarkeit_tage" | "produktion_am" | "produziert_am">> | undefined,
+  vorschlagBis: string | null,
+): string {
+  if (!c || c.haltbar_grundlage === undefined) return `haltbar bis spätestens ${vorschlagBis ? formatDatum(vorschlagBis) : "[Datum]"}`;
+  if (c.haltbarkeit_tage == null) return "haltbar bis [Haltbarkeit]";
+  if (!c.haltbar_bis) return "haltbar bis [Datum]";
+  const bis = `haltbar bis ${formatDatum(c.haltbar_bis)}`;
+  if (c.haltbar_grundlage === "produziert") return `produziert ${formatDatum(c.produziert_am ?? null)} · ${bis}`;
+  if (c.haltbar_grundlage === "geplant") return `Produktion ${formatDatum(c.produktion_am ?? null)} geplant · ${bis}`;
+  return `Produktion spätestens ${formatDatum(c.produktion_am ?? null)} · ${bis}`;
 }
 
-export function passLagerText(zuteilung: ZuteilungKurz | undefined, haltbarBis: string | null): string {
-  const l = passLager(zuteilung, haltbarBis);
-  return `${l.konservierung} · ${l.haltbar}`;
+/** Konservierung und Lagerart aus der Systemzuteilung: «SF · SV · 0–2 °C»; ohne Zuteilung Platzhalter. */
+export function passKonservierung(zuteilung: ZuteilungKurz | undefined): string {
+  const text = zuteilung ? konservierungText({ produktion: zuteilung.produktion ?? [], lagerung: lagerart(zuteilung) }) : null;
+  return text ?? "[Lagerung]";
 }
 
 /** Sprung zur Rezeptkarte im selben Fenster, mit Rückweg zur Welle (die Home-Bildschirm-App hat keine Tabs). */

@@ -7,7 +7,7 @@ import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import { aufgabenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/lib/checkliste";
 import { checklisteSpeichern } from "@/lib/checkliste-speichern";
-import { ersteOffeneWelle, istErledigt, nachKategorie, passFiltern, passLager, passRezeptHref, passStand, passWellen, standText, standUebernehmen, type PassFilter, type PassZeile } from "@/lib/kueche";
+import { ersteOffeneWelle, istErledigt, nachKategorie, passFiltern, passHaltbar, passKonservierung, passRezeptHref, passStand, passWellen, standText, standUebernehmen, type PassFilter, type PassZeile } from "@/lib/kueche";
 import type { Vorschlag } from "@/lib/wellen";
 import type { ZuteilungKurz } from "@/lib/produktionsliste";
 import { fehlerText } from "@/lib/fehler";
@@ -65,10 +65,15 @@ export default function Kuechenpass() {
   // Zeilen, die seit dem Start des laufenden Nachladens angefasst wurden: das Nachladen hat sie womöglich vor dem Speichern gelesen.
   const beruehrt = useRef(new Set<string>());
   const laedt = useRef(false);
+  const nochmal = useRef(false);
 
   /** Stand aus der Datenbank holen: Häkchen von anderen Geräten und geänderte Mengen. Scrollposition und Wahl bleiben. */
-  const nachladen = useCallback((melden: boolean) => {
-    if (laedt.current) return;
+  const nachladen = useCallback((melden: boolean, danach = false) => {
+    if (laedt.current) {
+      // Nach dem Speichern: läuft schon ein Nachladen, danach nochmals, denn es hat womöglich vorher gelesen.
+      if (danach) nochmal.current = true;
+      return;
+    }
     laedt.current = true;
     setLaedtNach(true);
     // Zuteilung und Rezepte einmal holen; scheitert das, beim nächsten Nachladen nochmals. Der Pass selbst läuft auch ohne.
@@ -84,8 +89,10 @@ export default function Kuechenpass() {
     laden()
       .then(
         (d) => {
+          // Die Menge dieses Ladevorgangs festhalten: ein gleich folgendes Nachladen setzt beruehrt neu, bevor React rendert.
+          const fest = beruehrt.current;
           setDaten(d);
-          setAufgaben((jetzt) => standUebernehmen(aufgabenAus(d?.checkliste ?? []), jetzt, new Set([...lauf.current.keys(), ...beruehrt.current])));
+          setAufgaben((jetzt) => standUebernehmen(aufgabenAus(d?.checkliste ?? []), jetzt, new Set([...lauf.current.keys(), ...fest])));
           setStand0(new Date());
           setFehler(null);
         },
@@ -95,8 +102,13 @@ export default function Kuechenpass() {
       .finally(() => {
         laedt.current = false;
         setLaedtNach(false);
+        if (nochmal.current) {
+          nochmal.current = false;
+          nachladenRef.current(false, true);
+        }
       });
   }, []);
+  const nachladenRef = useRef(nachladen);
 
   /** Eine Bestätigung verschwindet nach einigen Sekunden von selbst; ein Fehler bleibt, bis er geschlossen oder wiederholt wird. */
   const melden = useCallback((m: Melde | null) => {
@@ -129,6 +141,8 @@ export default function Kuechenpass() {
   }, [nachladen]);
 
   const wellen = useMemo(() => passWellen(daten?.vorschlag ?? []), [daten]);
+  // Zeilen der Checkliste mit der Haltbarkeit ab Produktionsdatum, wie sie die Datenbank rechnet.
+  const checkliste = useMemo(() => new Map((daten?.checkliste ?? []).flatMap((c) => (c.komponente_id && c.welle_nr !== null ? [[schluessel(c.komponente_id, c.welle_nr), c] as const] : []))), [daten]);
   // Beim Öffnen die erste Welle mit offenen Zeilen; danach bleibt die gewählte Welle, auch wenn sie fertig wird.
   const [startWelle, setStartWelle] = useState<number | null>(null);
   if (startWelle === null && wellen.length) setStartWelle(ersteOffeneWelle(wellen, aufgaben));
@@ -169,6 +183,8 @@ export default function Kuechenpass() {
       return neu;
     });
     melden({ art: "ok", text: an ? `${z.komponente} erledigt.` : `${z.komponente} wieder offen.`, z, an });
+    // «Haltbar bis» rechnet die Datenbank ab dem Produktionstag: frisch holen.
+    nachladen(false, true);
   }
 
   return (
@@ -231,7 +247,11 @@ export default function Kuechenpass() {
                   const fertig = istErledigt(z, aufgaben);
                   const zustaendig = aufgaben.get(schluessel(z.komponenteId, z.nr))?.zustaendig;
                   const zuteilung = stamm?.zuteilung.get(z.komponenteId);
-                  const lager = passLager(zuteilung, z.haltbarBis);
+                  // Die Haltbarkeit kommt aus dem geladenen Stand. Passt er nicht zum Häkchen (eben angetippt, Nachladen läuft noch
+                  // oder ist gescheitert), steht kein Datum da statt eines mit falscher Grundlage.
+                  const c = checkliste.get(schluessel(z.komponenteId, z.nr));
+                  const passt = !c || c.haltbar_grundlage === undefined || (c.haltbar_grundlage === "produziert") === fertig;
+                  const lager = { konservierung: passKonservierung(zuteilung), haltbar: passt ? passHaltbar(c, z.haltbarBis) : "haltbar bis …" };
                   const slug = zuteilung?.rezept_id ? stamm?.slug.get(zuteilung.rezept_id) : undefined;
                   return (
                     <div key={z.komponenteId} className={fertig ? "pl-pass pl-pass--erledigt" : "pl-pass"}>
@@ -268,7 +288,7 @@ export default function Kuechenpass() {
           )}
 
           <p className="pl-small">
-            Menge aus dem Wellen-Vorschlag. «Haltbar bis spätestens» rechnet ab dem spätesten Produktionstag der Welle; wird früher produziert, endet die Haltbarkeit früher. Zuständig und Termine ändern im <a href="/produktion/wellen/">Wellenplan</a>.
+            Menge aus dem Wellen-Vorschlag. «Haltbar bis» rechnet ab dem Produktionsdatum: abgehakt gilt der Tag des Abhakens, sonst das Datum im Wellenplan, sonst der späteste Produktionstag. Zuständig und Termine ändern im <a href="/produktion/wellen/">Wellenplan</a>.
           </p>
         </>
       ) : null}
