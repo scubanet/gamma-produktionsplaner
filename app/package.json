@@ -12,7 +12,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "types": "cd .. && supabase gen types typescript --project-id oqmtocxemtcsvtzmswwx > app/lib/database.types.ts"
+    "types": "cd .. && supabase gen types typescript --remote=oqmtocxemtcsvtzmswwx > app/lib/database.types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
