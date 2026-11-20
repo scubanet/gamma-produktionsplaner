@@ -5,8 +5,10 @@ import { Button, Card, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { istGeaendert } from "@/lib/ungespeichert";
 import { Ungespeichert } from "@/components/Ungespeichert";
-import { formatZahl } from "@/lib/format";
-import { ANLASS_SPALTEN, STATUS, fehlerText, kopfAus, kopfUpdate, type Anlass, type Kopf } from "@/lib/anlass";
+import { formatDatum, formatZahl } from "@/lib/format";
+import { ANLASS_SPALTEN, STATUS, fehlerText, kopfAus, kopfUpdate, statusLabel, type Anlass, type Kopf } from "@/lib/anlass";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 
 export type Stamm = {
   saisons: { id: string; name: string }[];
@@ -22,6 +24,9 @@ export function AnlassKopf({ anlass, stamm, onGespeichert, onFehler }: {
   onGespeichert: (a: Anlass) => void;
   onFehler: (text: string) => void;
 }) {
+  const stufe = useStufe();
+  const planen = darf(stufe, "planen");
+  const preise = darf(stufe, "preise");
   const [k, setK] = useState<Kopf>(() => kopfAus(anlass));
   const [speichert, setSpeichert] = useState(false);
   const set = (teil: Partial<Kopf>) => setK((x) => ({ ...x, ...teil }));
@@ -36,6 +41,37 @@ export function AnlassKopf({ anlass, stamm, onGespeichert, onFehler }: {
     if (u.error) return onFehler(fehlerText(u.error));
     setK(kopfAus(u.data));
     onGespeichert(u.data);
+  }
+
+  // Ohne «planen» reine Leseansicht: Werte als Text, kein Formular.
+  if (!planen) {
+    const felder: [string, string | null | undefined][] = [
+      ["Anlass", anlass.name],
+      ["Nummer", anlass.nummer],
+      ["Kunde", anlass.kunde],
+      ["Datum von", anlass.datum ? formatDatum(anlass.datum) : null],
+      ["Datum bis", anlass.datum_bis ? formatDatum(anlass.datum_bis) : null],
+      ["Ort", anlass.ort],
+      ["Saison", stamm.saisons.find((s) => s.id === anlass.saison_id)?.name],
+      ["Vorlauf (Tage)", String(anlass.vorlauf_tage)],
+      ["Status", statusLabel(anlass.status)],
+      ["Betrieb", stamm.betriebe.find((b) => b.code === anlass.betrieb)?.name],
+      ["Angebotsform", stamm.angebotsformen.find((a) => a.code === anlass.angebotsform)?.name],
+      ["Gäste (Richtwert)", anlass.gaeste === null ? null : formatZahl(anlass.gaeste)],
+      ["Interne Bemerkung", anlass.bemerkung],
+    ];
+    return (
+      <Card title="Anlass" meta="Saison und Datum bestimmen die Produktionswellen">
+        <div className="pl-grid-3">
+          {felder.map(([label, text]) => (
+            <div key={label}>
+              <div className="pl-label">{label}</div>
+              <div>{text || "–"}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
   }
 
   return (
@@ -69,7 +105,7 @@ export function AnlassKopf({ anlass, stamm, onGespeichert, onFehler }: {
             label="Betrieb"
             value={k.betrieb}
             onChange={(v) => set({ betrieb: v })}
-            options={[{ value: "", label: "[Betrieb wählen]" }, ...stamm.betriebe.map((b) => ({ value: b.code, label: `${b.name} (Faktor ${formatZahl(b.faktor_vk, 1)})` }))]}
+            options={[{ value: "", label: "[Betrieb wählen]" }, ...stamm.betriebe.map((b) => ({ value: b.code, label: preise ? `${b.name} (Faktor ${formatZahl(b.faktor_vk, 1)})` : b.name }))]}
           />
           <Select
             id="angebotsform"

@@ -12,6 +12,8 @@ import type { Vorschlag } from "@/lib/wellen";
 import type { ZuteilungKurz } from "@/lib/produktionsliste";
 import { fehlerText } from "@/lib/fehler";
 import { EtikettenDialog } from "@/components/kueche/EtikettenDialog";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 
 type Daten = { saisonId: string; saison: string; vorschlag: Vorschlag[]; checkliste: ChecklisteZeile[] };
 
@@ -44,6 +46,7 @@ type Melde = { art: "ok" | "fehler"; text: string; z: PassZeile; an: boolean };
 const MELDE_DAUER = 6000;
 
 export default function Kuechenpass() {
+  const planen = darf(useStufe(), "planen");
   const [daten, setDaten] = useState<Daten | null | undefined>(undefined);
   const [fehler, setFehler] = useState<string | null>(null);
   const [aufgaben, setAufgaben] = useState<Map<string, Aufgabe>>(new Map());
@@ -295,7 +298,7 @@ export default function Kuechenpass() {
           )}
 
           <p className="pl-small">
-            Menge aus dem Wellen-Vorschlag. «Haltbar bis» rechnet ab dem Produktionsdatum: abgehakt gilt der Tag des Abhakens, sonst das Datum im Wellenplan, sonst der späteste Produktionstag. Zuständig und Termine ändern im <a href="/produktion/wellen/">Wellenplan</a>.
+            Menge aus dem Wellen-Vorschlag. «Haltbar bis» rechnet ab dem Produktionsdatum: abgehakt gilt der Tag des Abhakens, sonst das Datum im Wellenplan, sonst der späteste Produktionstag.{planen ? <> Zuständig und Termine ändern im <a href="/produktion/wellen/">Wellenplan</a>.</> : null}
           </p>
         </>
       ) : null}

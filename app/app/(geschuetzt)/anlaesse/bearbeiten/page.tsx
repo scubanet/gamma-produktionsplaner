@@ -13,6 +13,8 @@ import { Geschirr } from "@/components/anlass/Geschirr";
 import { Menuelinien, type KatalogGericht, type LinieGaeste } from "@/components/anlass/Menuelinien";
 import { Karten, type Vorlage } from "@/components/anlass/Karten";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { sichtbar } from "@/lib/stufe";
 
 type Daten = {
   anlass: Anlass | null;
@@ -83,6 +85,7 @@ async function laden(id: string): Promise<Daten> {
 
 function Bearbeiten() {
   const id = useSearchParams().get("id") ?? "";
+  const stufe = useStufe();
   const [stamm, setStamm] = useState<StammDaten | null>(null);
   const [daten, setDaten] = useState<Daten | null>(null);
   const [hinweis, setHinweis] = useState<{ titel: string; text: string } | null>(null);
@@ -111,6 +114,7 @@ function Bearbeiten() {
 
   if (!id) return <Notice title="Kein Anlass gewählt">Bitte einen Anlass aus der Liste öffnen.</Notice>;
   if (daten && !daten.anlass) return <Notice title="Anlass nicht gefunden">Den Anlass gibt es nicht oder er wurde gelöscht.</Notice>;
+  if (daten?.anlass?.status === "offerte" && !sichtbar(stufe, "/offerten")) return <Notice title="Nicht freigegeben">Offerten gehören nicht zu deiner Stufe.</Notice>;
 
   // Fokus auf die Meldung: der geklickte Button kann nach dem Neuladen verschwunden sein.
   const melden = (text: string) => {

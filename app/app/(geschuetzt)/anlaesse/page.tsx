@@ -8,6 +8,8 @@ import { formatDatum, formatZahl } from "@/lib/format";
 import { STATUS, statusLabel, statusPill, zeitraum } from "@/lib/anlass";
 import type { Database } from "@/lib/database.types";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 
 type Zeile = Database["public"]["Views"]["anlass_uebersicht"]["Row"];
 
@@ -19,6 +21,7 @@ async function laden(): Promise<Zeile[]> {
 
 export default function Anlaesse() {
   const router = useRouter();
+  const planen = darf(useStufe(), "planen");
   const [zeilen, setZeilen] = useState<Zeile[] | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
   const [status, setStatus] = useState("");
@@ -46,11 +49,13 @@ export default function Anlaesse() {
           <div className="pl-crumb">Planung</div>
           <h1 className="pl-h1">Anlässe</h1>
         </div>
-        <div className="pl-actions">
-          <Button variant="primary" onClick={neu} disabled={legtAn}>
-            {legtAn ? "Wird angelegt …" : "Anlass erfassen"}
-          </Button>
-        </div>
+        {planen ? (
+          <div className="pl-actions">
+            <Button variant="primary" onClick={neu} disabled={legtAn}>
+              {legtAn ? "Wird angelegt …" : "Anlass erfassen"}
+            </Button>
+          </div>
+        ) : null}
       </header>
 
       {fehler ? <Notice role="alert" title="Fehler">{fehler}</Notice> : null}
@@ -62,7 +67,7 @@ export default function Anlaesse() {
           value={status}
           onChange={setStatus}
           options={[{ value: "", label: "Alle Status" }, ...STATUS.map((s) => ({ value: s.wert, label: s.label }))]}
-          hint="Offerten stehen unter Offerten und werden dort bestätigt."
+          hint={planen ? "Offerten stehen unter Offerten und werden dort bestätigt." : undefined}
         />
       </div>
 
@@ -104,8 +109,10 @@ export default function Anlaesse() {
           ) : (
             zeilen.length ? (
               <EmptyState title="Keine Anlässe mit diesem Status" actionLabel="Filter zurücksetzen" onAction={() => setStatus("")} />
-            ) : (
+            ) : planen ? (
               <EmptyState title="Noch keine Anlässe" actionLabel="Ersten Anlass erfassen" icon="plus" onAction={neu} />
+            ) : (
+              <EmptyState title="Noch keine Anlässe" />
             )
           )
         ) : (

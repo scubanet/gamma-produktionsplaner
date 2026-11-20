@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BILDMARKE, BILDMARKE_MONO, Tabs, TopNav, UserMenu } from "@/lib/planer";
+import { BILDMARKE, BILDMARKE_MONO, Notice, Tabs, TopNav, UserMenu } from "@/lib/planer";
 import { hauptnav, seitenTabs, unternav } from "@/lib/navigation";
 import { supabase } from "@/lib/supabase";
-import { useSitzung } from "./Anmeldung";
+import { sichtbar, stufeLabel } from "@/lib/stufe";
+import { useSitzung, useStufe } from "./Anmeldung";
 
 const PRODUKT = "Produktionsplaner";
 
@@ -40,6 +42,7 @@ function useSeitentitel() {
 export function Geruest({ children }: { children: ReactNode }) {
   const pfad = usePathname();
   const sitzung = useSitzung();
+  const stufe = useStufe();
   useSeitentitel();
   return (
     <div className="pl-app pl-app--top">
@@ -47,7 +50,7 @@ export function Geruest({ children }: { children: ReactNode }) {
       <TopNav
         brandSrc={BILDMARKE}
         brandMono={BILDMARKE_MONO}
-        items={hauptnav(pfad)}
+        items={hauptnav(pfad, stufe)}
         actions={
           <UserMenu
             name={(sitzung?.user.user_metadata?.name as string | undefined) || undefined}
@@ -56,10 +59,18 @@ export function Geruest({ children }: { children: ReactNode }) {
           />
         }
       />
-      <Tabs label="Seiten des Bereichs" tone="sunken" items={unternav(pfad)} />
+      <Tabs label="Seiten des Bereichs" tone="sunken" items={unternav(pfad, stufe)} />
       <main className="pl-main">
-        <Tabs label="Ansichten" items={seitenTabs(pfad)} />
-        {children}
+        <Tabs label="Ansichten" items={seitenTabs(pfad, stufe)} />
+        {/* Seiten ausserhalb der Stufe gar nicht laden (z.B. über ein Lesezeichen). Die Datenbank sperrt unabhängig davon. */}
+        {sichtbar(stufe, pfad) ? children : (
+          <>
+            <header className="pl-head"><div><h1 className="pl-h1">Nicht freigegeben</h1></div></header>
+            <Notice title={`Diese Seite gehört nicht zur Stufe «${stufeLabel(stufe)}»`}>
+              Deine Stufe ändert ein Administrator in der Benutzerverwaltung. <Link href="/">Zum Leitstand</Link>
+            </Notice>
+          </>
+        )}
       </main>
     </div>
   );

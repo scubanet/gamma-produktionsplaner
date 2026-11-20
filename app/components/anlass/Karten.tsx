@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button, Card, DataTable, Dialog, Notice, Select, TextField, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { fehlerText } from "@/lib/anlass";
+import { useStufe } from "@/components/Anmeldung";
+import { sichtbar } from "@/lib/stufe";
 
 export type Vorlage = { id: string; name: string; anlassId: string | null; anlass: string | null; positionen: number };
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
@@ -16,6 +18,7 @@ export function Karten({ anlassId, karten, vorlagen, onMeldung }: {
   onMeldung: (text: string) => void;
 }) {
   const router = useRouter();
+  const stufe = useStufe();
   const [offen, setOffen] = useState(false);
   const [form, setForm] = useState<{ vorlage: string; name: string; fehler: string | null }>({ vorlage: "", name: "", fehler: null });
   const [arbeitet, setArbeitet] = useState(false);
@@ -33,6 +36,9 @@ export function Karten({ anlassId, karten, vorlagen, onMeldung }: {
     onMeldung("Karte angelegt.");
     router.push(`/anlaesse/karte/?id=${id}`);
   }
+
+  // Karten führen Preise und sind für «Küche» gesperrt: Abschnitt samt Links weglassen.
+  if (!sichtbar(stufe, "/anlaesse/karte")) return null;
 
   return (
     <Card

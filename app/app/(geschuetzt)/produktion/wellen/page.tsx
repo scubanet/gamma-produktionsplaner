@@ -11,6 +11,8 @@ import { aufgabenAus, fortschritt, personen as personenAus, schluessel, type Auf
 import { checklisteSpeichern } from "@/lib/checkliste-speichern";
 import { ZustaendigDialog } from "@/components/produktion/ZustaendigDialog";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 
 type Daten = { uebersicht: Uebersicht; vorschlag: Vorschlag[]; plan: PlanZeile[]; checkliste: ChecklisteZeile[] };
 /** Eine Komponente in einer Welle; nr ist die Welle der Komponente im Vorschlag (Schlüssel der Checkliste). */
@@ -35,6 +37,8 @@ async function laden(): Promise<Daten | null> {
 }
 
 export default function Wellen() {
+  const stufe = useStufe();
+  const planen = darf(stufe, "planen");
   const [daten, setDaten] = useState<Daten | null | undefined>(undefined);
   const [hinweis, setHinweis] = useState<{ titel: string; text: string } | null>(null);
   const [meldung, setMeldung] = useState("");
@@ -164,11 +168,15 @@ export default function Wellen() {
     label: "Zuständig",
     render: (r) =>
       r.ziel ? (
-        <span className="pl-print-hide">
-          <Button variant={r.zustaendig ? "secondary" : "dashed"} onClick={() => setZustaendigZiel(r.ziel as Ziel)} ariaLabel={`Zuständig für ${r.komponente as string} in dieser Welle`}>
-            {(r.zustaendig as string | null) ?? "+ Zuständig"}
-          </Button>
-        </span>
+        planen ? (
+          <span className="pl-print-hide">
+            <Button variant={r.zustaendig ? "secondary" : "dashed"} onClick={() => setZustaendigZiel(r.ziel as Ziel)} ariaLabel={`Zuständig für ${r.komponente as string} in dieser Welle`}>
+              {(r.zustaendig as string | null) ?? "+ Zuständig"}
+            </Button>
+          </span>
+        ) : (
+          ((r.zustaendig as string | null) ?? "–")
+        )
       ) : null,
   };
 
@@ -194,9 +202,11 @@ export default function Wellen() {
         </div>
         <div className="pl-actions pl-print-hide">
           <Button icon="print" onClick={() => window.print()} disabled={!daten}>Drucken / PDF</Button>
-          <Button variant="primary" onClick={() => setUebernehmenOffen(true)} disabled={!vorschlagWellen.length}>
-            {hatPlan ? "Vorschlag neu übernehmen" : "Vorschlag übernehmen"}
-          </Button>
+          {planen ? (
+            <Button variant="primary" onClick={() => setUebernehmenOffen(true)} disabled={!vorschlagWellen.length}>
+              {hatPlan ? "Vorschlag neu übernehmen" : "Vorschlag übernehmen"}
+            </Button>
+          ) : null}
         </div>
       </header>
 
@@ -216,12 +226,12 @@ export default function Wellen() {
 
           {(u.services_ohne_datum ?? 0) > 0 ? (
             <Notice title={`${u.services_ohne_datum} von ${u.services} Services ohne Datum`}>
-              Ohne Datum weiss die Datenbank nicht, aus welcher Welle ein Service bedient wird: Die Mengen stehen als [Menge]. Bitte das Datum bei den Services im Anlass eintragen.
+              Ohne Datum weiss die Datenbank nicht, aus welcher Welle ein Service bedient wird: Die Mengen stehen als [Menge].{planen ? " Bitte das Datum bei den Services im Anlass eintragen." : null}
             </Notice>
           ) : null}
           {(u.komponenten_offen ?? 0) > 0 ? (
             <Notice title={`${u.komponenten_offen} Komponenten noch offen`}>
-              Ohne Produktionssystem gibt es keine Haltbarkeit und darum keine Welle. Zuteilen in der Systemzuteilung.
+              Ohne Produktionssystem gibt es keine Haltbarkeit und darum keine Welle.{planen ? " Zuteilen in der Systemzuteilung." : null}
             </Notice>
           ) : null}
 
@@ -238,7 +248,7 @@ export default function Wellen() {
                   key={w.welleId}
                   title={`Welle ${w.nummer} · ${w.datum ? formatDatum(w.datum) : "[Datum]"}`}
                   meta={`spätestens ${w.spaetestens ? formatDatum(w.spaetestens) : "[Datum]"}${w.bemerkung ? ` · ${w.bemerkung}` : ""} · ${w.zeilen.length} Komponenten, ${erledigtIn(w.zeilen.map((z) => ({ komponente_id: z.komponente_id, nr: z.vorschlag_nr })))} erledigt${w.rot || w.gelb ? ` · ${w.rot} rot, ${w.gelb} gelb` : ""}`}
-                  actions={
+                  actions={planen ? (
                     <span className="pl-print-hide">
                       <Button
                         ariaLabel={`Datum der Welle ${w.nummer} ändern`}
@@ -250,7 +260,7 @@ export default function Wellen() {
                         Datum ändern
                       </Button>
                     </span>
-                  }
+                  ) : undefined}
                 >
                   <DataTable
                     columns={[

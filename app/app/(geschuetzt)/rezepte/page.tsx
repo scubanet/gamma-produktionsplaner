@@ -13,6 +13,8 @@ import {
   type Faktor, type Gruppe, type KomponenteSkaliert, type Punkt, type Rezept, type Schritt, type Zutat,
 } from "@/lib/rezepte";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf, sichtbar } from "@/lib/stufe";
 
 type Zeit = { aktiv_min: number | null; unbeaufsichtigt_min: number | null };
 type Details = { gruppen: Gruppe[]; schritte: Schritt[]; zeit: Zeit | null; offen: Punkt[] };
@@ -66,6 +68,9 @@ async function skalieren(r: Rezept, wert: number): Promise<Skaliert> {
 
 function Rezeptbibliothek() {
   const router = useRouter();
+  const stufe = useStufe();
+  const preise = darf(stufe, "preise");
+  const pflegen = sichtbar(stufe, "/rezepte/bearbeiten");
   const parameter = useSearchParams();
   const slug = parameter.get("r");
   // Nach dem Speichern leitet die Pflegeseite mit gespeichert=1 hierher; beim nächsten Wechsel des Rezepts ist der Hinweis weg.
@@ -211,9 +216,11 @@ function Rezeptbibliothek() {
 
       <div className={rezept ? "pl-row pl-row--haupt-zuerst" : "pl-row"}>
         <div className="pl-col-side" id="rezept-liste">
-          <div>
-            <Button icon="plus" variant="dashed" href="/rezepte/bearbeiten/">Rezept</Button>
-          </div>
+          {pflegen ? (
+            <div>
+              <Button icon="plus" variant="dashed" href="/rezepte/bearbeiten/">Rezept</Button>
+            </div>
+          ) : null}
           {rezepte ? (
             <>
               <TextField
@@ -259,7 +266,7 @@ function Rezeptbibliothek() {
                     admin={admin}
                     onGesetzt={(status, geaendert_am) => setRezepte((alle) => alle?.map((r) => (r.id === rezept.id ? { ...r, status, geaendert_am } : r)) ?? null)}
                   />
-                  <Button href={`/rezepte/bearbeiten/?r=${encodeURIComponent(rezept.slug)}`}>Bearbeiten</Button>
+                  {pflegen ? <Button href={`/rezepte/bearbeiten/?r=${encodeURIComponent(rezept.slug)}`}>Bearbeiten</Button> : null}
                 </>
               }
             >
@@ -277,11 +284,13 @@ function Rezeptbibliothek() {
                     unbeaufsichtigt {d?.daten ? formatMinuten(d.daten.zeit?.unbeaufsichtigt_min ?? null) : <Skeleton variant="zahl" />}; Zeiten werden nicht skaliert
                   </div>
                 </div>
-                <div>
-                  <div className="pl-label">{gericht ? "Herstellkosten pro Portion" : "Herstellkosten"}</div>
-                  <div className="pl-mono">[Preis]</div>
-                  <div className="pl-small">Zutaten noch nicht mit dem Artikelstamm verknüpft, Lohnsätze fehlen</div>
-                </div>
+                {preise ? (
+                  <div>
+                    <div className="pl-label">{gericht ? "Herstellkosten pro Portion" : "Herstellkosten"}</div>
+                    <div className="pl-mono">[Preis]</div>
+                    <div className="pl-small">Zutaten noch nicht mit dem Artikelstamm verknüpft, Lohnsätze fehlen</div>
+                  </div>
+                ) : null}
                 <div>
                   <div className="pl-label">Geräte</div>
                   <div>{d?.daten ? geraete(d.daten.schritte).join(", ") || "[Geräte]" : laedt(null)}</div>

@@ -6,8 +6,10 @@ import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { naechsterAnlass, rezepteStand, summe, wannText, wellenName, type LeitAnlass } from "@/lib/leitstand";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf, sichtbar } from "@/lib/stufe";
 
-type Anlass = LeitAnlass & { saison: { name: string } | null };
+type Anlass = LeitAnlass & { status: string; saison: { name: string } | null };
 type Welle = { saison_id: string | null; welle_nr: number | null; aufgaben: number | null; erledigt: number | null };
 type Rezepte = { saison_id: string | null; rezepte: number | null; freigegeben: number | null };
 type Daten = { ok: number; offen: number; zukauf: number; hinweise: number; anlaesse: Anlass[]; wellen: Welle[]; rezepte: Rezepte[] };
@@ -36,7 +38,7 @@ async function laden(): Promise<Daten> {
     zaehlen("offen"),
     zaehlen("Zukauf"),
     supabase.from("komponente_pruefhinweis").select("komponente_id", { count: "exact", head: true }),
-    supabase.from("anlass").select("id, name, datum, datum_bis, saison_id, saison(name)").order("datum"),
+    supabase.from("anlass").select("id, name, datum, datum_bis, saison_id, status, saison(name)").order("datum"),
     supabase.from("leitstand_wellen").select("*").order("welle_nr"),
     supabase.from("leitstand_rezepte").select("*"),
   ]);
@@ -55,6 +57,7 @@ async function laden(): Promise<Daten> {
 const zeitraum = (a: LeitAnlass) => (a.datum_bis && a.datum_bis !== a.datum ? `${formatDatum(a.datum)}–${formatDatum(a.datum_bis)}` : formatDatum(a.datum));
 
 export default function Leitstand() {
+  const stufe = useStufe();
   const [d, setD] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
   const [zusatz, setZusatz] = useState<Zusatz | null>(null);
@@ -64,12 +67,14 @@ export default function Leitstand() {
     zusatzLaden().then(setZusatz, () => setZusatz({ services: null, linien: null, zutaten: null }));
   }, []);
 
-  const naechster = d ? naechsterAnlass(d.anlaesse) : null;
+  // Offerten gehören zum Verkauf: Stufen ohne die Seite Offerten sehen sie auch hier nicht.
+  const anlaesse = d ? (sichtbar(stufe, "/offerten") ? d.anlaesse : d.anlaesse.filter((a) => a.status !== "offerte")) : [];
+  const naechster = d ? naechsterAnlass(anlaesse) : null;
   const saisonId = naechster?.saison_id ?? null;
   const wellen = d ? d.wellen.filter((w) => saisonId !== null && w.saison_id === saisonId) : [];
   const stand = summe(wellen);
   const rez = rezepteStand(d?.rezepte ?? [], saisonId);
-  const saisonAnlaesse = d ? d.anlaesse.filter((a) => (saisonId ? a.saison_id === saisonId : true)) : [];
+  const saisonAnlaesse = d ? anlaesse.filter((a) => (saisonId ? a.saison_id === saisonId : true)) : [];
   const zahl = (n: number | undefined) => (d ? formatZahl(n ?? 0) : fehler ? "–" : <Skeleton variant="zahl" />);
   const zuteilung = d ? d.ok + d.offen + d.zukauf : 0;
   const zutatenStand = zusatz?.zutaten?.find((z) => z.saison_id === saisonId) ?? null;
@@ -84,7 +89,7 @@ export default function Leitstand() {
   };
 
   const aufgaben = [
-    { zahl: zahl(d?.offen), titel: "Komponenten ohne Systemzuteilung", text: "Ohne Zuteilung keine Haltbarkeit, keine Welle, kein Startdatum", href: "/systemzuteilung/?status=offen", ziel: "Zuteilen", herleitung: "Komponenten mit Status offen" },
+    { zahl: zahl(d?.offen), titel: "Komponenten ohne Systemzuteilung", text: "Ohne Zuteilung keine Haltbarkeit, keine Welle, kein Startdatum", href: "/systemzuteilung/?status=offen", ziel: darf(stufe, "planen") ? "Zuteilen" : "Ansehen", herleitung: "Komponenten mit Status offen" },
     { zahl: zahl(d?.hinweise), titel: "Prüfhinweise", text: "Plausibilitätsregeln rot oder gelb, sperren nichts", href: "/systemzuteilung/?hinweis=mit", ziel: "Prüfen", herleitung: "Alle Prüfhinweise der Systemzuteilung" },
     { zahl: d ? `${formatZahl(stand.erledigt)} / ${formatZahl(stand.aufgaben)}` : zahl(undefined), titel: "Aufgaben in der Checkliste erledigt", text: "Eine Aufgabe pro Komponente und Welle", href: "/produktion/", ziel: "Produktion", herleitung: "Checkliste der Saison des nächsten Anlasses" },
     { zahl: d ? `${formatZahl(rez.freigegeben)} / ${formatZahl(rez.rezepte)}` : zahl(undefined), titel: "Rezepte der Saison freigegeben", text: "Werte aus nicht freigegebenen Rezepten sind gestrichelt wie Annahmen", href: "/rezepte/?status=offen", ziel: "Rezepte", herleitung: "Rezepte der Komponenten im Bedarf der Saison des nächsten Anlasses" },
@@ -97,7 +102,7 @@ export default function Leitstand() {
       herleitung: "Zutaten in den Rezepten der Saison minus verknüpfte (ohne Unterrezepte)",
     },
     { zahl: zahl(d?.zukauf), titel: "Komponenten im Zukauf", text: "CF-Stufe 4 oder 5, gehen in den Einkauf", href: "/einkauf/", ziel: "Einkauf", herleitung: "Komponenten mit Status Zukauf" },
-  ];
+  ].filter((a) => sichtbar(stufe, a.href.split("?")[0]));
 
   return (
     <>

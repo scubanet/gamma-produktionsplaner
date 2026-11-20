@@ -17,6 +17,8 @@ import { RezeptLink } from "@/components/RezeptLink";
 import { ZustaendigDialog } from "@/components/produktion/ZustaendigDialog";
 import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
 import { useEingabenSchutz } from "@/components/EingabenSchutz";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 import type { Hinweis, Regeneration, System, Zuteilung } from "@/lib/systemzuteilung";
 
 type Bearbeiten = { zeile: Zuteilung; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[] };
@@ -82,6 +84,8 @@ async function laden(): Promise<Daten> {
 }
 
 export default function Produktionsliste() {
+  const stufe = useStufe();
+  const planen = darf(stufe, "planen");
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
   const [exportFehler, setExportFehler] = useState<string | null>(null);
@@ -270,7 +274,8 @@ export default function Produktionsliste() {
       },
     },
     // Gleich neben dem Namen: so bleibt der Knopf sichtbar, auch wenn die Detailspalte die Tabelle schmal macht.
-    {
+    // Ohne «planen» (Stufe «Küche») gibt es die Spalte nicht.
+    ...(planen ? [{
       key: "bearbeiten",
       label: <span className="pl-sr">Bearbeiten</span>,
       printHidden: true,
@@ -279,19 +284,22 @@ export default function Produktionsliste() {
           {oeffnet === r.komponenteId ? "Lädt …" : "Bearbeiten"}
         </Button>
       ),
-    },
+    } satisfies DataTableColumn] : []),
     { key: "kategorie", label: "Kategorie", sortable: true },
     {
       key: "zustaendig",
       label: "Zuständig",
       sortable: true,
-      render: (r) => (
-        <span className="pl-print-hide">
-          <Button variant={r.zustaendig ? "secondary" : "dashed"} onClick={() => setDialog(r as unknown as Zeile)} ariaLabel={`Zuständig für ${r.komponente as string}`}>
-            {(r.zustaendig as string | null) ?? "+ Zuständig"}
-          </Button>
-        </span>
-      ),
+      render: (r) =>
+        planen ? (
+          <span className="pl-print-hide">
+            <Button variant={r.zustaendig ? "secondary" : "dashed"} onClick={() => setDialog(r as unknown as Zeile)} ariaLabel={`Zuständig für ${r.komponente as string}`}>
+              {(r.zustaendig as string | null) ?? "+ Zuständig"}
+            </Button>
+          </span>
+        ) : (
+          ((r.zustaendig as string | null) ?? "–")
+        ),
     },
     { key: "status", label: "Status", render: (r) => <StatusPill status={STATUS_PILL[r.status as string] ?? "neutral"}>{r.status as string}</StatusPill> },
     { key: "menge", label: linie ? "Menge Spiel" : anlassWahl ? "Menge Anlass" : "Menge Saison", numeric: true, sortable: true, render: (r) => formatMenge(r.menge as number | null, r.einheit as string | null) },

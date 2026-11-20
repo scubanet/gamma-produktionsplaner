@@ -7,6 +7,8 @@ import { formatGramm } from "@/lib/format";
 import { haltbarkeitText, lagerungText, type Zuteilung } from "@/lib/systemzuteilung";
 import { durchgangText, fehlendeAngaben, kurzText, minutenText, ortText, serviceText, type PlanungSchritt } from "@/lib/rezept-planung";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf, sichtbar } from "@/lib/stufe";
 
 type Rezept = { id: string; name: string; typ: string; geaendert_am: string };
 type Kopf = { gebinde: string | null; verpackung: string | null; fuellmenge_g: number | null; service_min_pro_100: number | null; service_rolle: string | null; ergibt_g: number | null };
@@ -47,6 +49,8 @@ async function laden(id: string): Promise<Daten> {
 
 /** Planung auf der Rezeptkarte: Aufwand, Gebinde, Service und die Systemzuteilung der verknüpften Komponenten. */
 export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearbeitenHref: string }) {
+  const stufe = useStufe();
+  const planen = darf(stufe, "planen");
   const [stand, setStand] = useState<{ schluessel: string; daten?: Daten; fehler?: string } | null>(null);
   const [dialog, setDialog] = useState(false);
   const [suche, setSuche] = useState("");
@@ -114,7 +118,7 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
     <Card
       title="Planung"
       meta="Grundlage für Produktion, Logistik und Service pro Anlass"
-      actions={<span className="pl-print-hide"><Button href={bearbeitenHref}>Angaben erfassen</Button></span>}
+      actions={sichtbar(stufe, bearbeitenHref.split("?")[0]) ? <span className="pl-print-hide"><Button href={bearbeitenHref}>Angaben erfassen</Button></span> : undefined}
     >
       <div className="pl-stack">
         {fehlt.length ? (
@@ -170,9 +174,11 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
           <>
             <div className="pl-card__head" style={{ marginBottom: 0 }}>
               <h3 className="pl-card__title">Im Katalog verknüpft</h3>
-              <span className="pl-print-hide">
-                <Button icon="plus" variant="dashed" onClick={() => { setSuche(rezept.name); setTreffer(null); setAktion({ laeuft: false, fehler: null }); setDialog(true); }}>Komponente verknüpfen</Button>
-              </span>
+              {planen ? (
+                <span className="pl-print-hide">
+                  <Button icon="plus" variant="dashed" onClick={() => { setSuche(rezept.name); setTreffer(null); setAktion({ laeuft: false, fehler: null }); setDialog(true); }}>Komponente verknüpfen</Button>
+                </span>
+              ) : null}
             </div>
             {komponenten.length ? (
               <DataTable
@@ -182,14 +188,16 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
                   { key: "lagerung", label: "Lagerung" },
                   { key: "haltbarkeit", label: <span className="pl-assumed">Haltbarkeit</span>, numeric: true },
                   { key: "regeneration", label: "Regeneration" },
-                  {
-                    key: "aktion",
-                    label: <span className="pl-sr">Aktionen</span>,
-                    printHidden: true,
-                    render: (r) => (
-                      <Button ariaLabel={`Verknüpfung mit ${r.name as string} lösen`} onClick={() => verknuepfen(r.id as string, null)} disabled={aktion.laeuft}>Lösen</Button>
-                    ),
-                  },
+                  ...(planen
+                    ? [{
+                        key: "aktion",
+                        label: <span className="pl-sr">Aktionen</span>,
+                        printHidden: true,
+                        render: (r: Record<string, unknown>) => (
+                          <Button ariaLabel={`Verknüpfung mit ${r.name as string} lösen`} onClick={() => verknuepfen(r.id as string, null)} disabled={aktion.laeuft}>Lösen</Button>
+                        ),
+                      }]
+                    : []),
                 ]}
                 rows={komponenten.map((k) => ({
                   id: k.id,

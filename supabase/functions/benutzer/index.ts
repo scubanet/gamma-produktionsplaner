@@ -1,7 +1,8 @@
 // Benutzerverwaltung für den Produktionsplaner (Entscheid Dominik, 14.11.2026):
-// Zugang verwalten (anlegen, auflisten, sperren, Admin ja/nein), nur für Administratoren.
+// Zugang verwalten (anlegen, auflisten, sperren, Stufe setzen), nur für Administratoren.
+// Stufen (Entscheid Dominik, 20.11.2026): admin (app_admin), kueche (app_kueche), sonst benutzer. Admin geht vor.
 // Läuft als Supabase Edge Function, weil dafür der Service-Schlüssel nötig ist; der bleibt auf dem Server.
-// Aufruf aus der App: supabase.functions.invoke("benutzer", { body: { aktion: "liste" | "anlegen" | "sperren" | "admin", … } }).
+// Aufruf aus der App: supabase.functions.invoke("benutzer", { body: { aktion: "liste" | "anlegen" | "sperren" | "stufe", … } }).
 // Antwort immer 200 mit { … } oder { fehler: "…" }, damit die App die Meldung anzeigen kann.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -9,6 +10,7 @@ const ERLAUBTE_HERKUNFT = ["https://gamma.atoll-os.com", "http://localhost:3000"
 // Rund 100 Jahre: gilt als gesperrt, bis ein Admin entsperrt.
 const SPERRE = "876000h";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const STUFEN = ["admin", "benutzer", "kueche"];
 const gesperrt = (u: unknown, jetzt = Date.now()) => {
   const bis = (u as { banned_until?: string | null }).banned_until;
   return !!bis && Date.parse(bis) > jetzt;
@@ -48,13 +50,16 @@ Deno.serve(async (req) => {
     const aktion = String(p.aktion ?? "");
 
     if (aktion === "liste") {
-      const [benutzer, admins] = await Promise.all([
+      const [benutzer, admins, kueche] = await Promise.all([
         admin.auth.admin.listUsers({ page: 1, perPage: 1000 }),
         admin.from("app_admin").select("user_id"),
+        admin.from("app_kueche").select("user_id"),
       ]);
       if (benutzer.error) return fehler(benutzer.error.message);
       if (admins.error) return fehler(admins.error.message);
+      if (kueche.error) return fehler(kueche.error.message);
       const adminIds = new Set((admins.data ?? []).map((a) => a.user_id));
+      const kuecheIds = new Set((kueche.data ?? []).map((a) => a.user_id));
       const jetzt = Date.now();
       return antwort({
         benutzer: benutzer.data.users.map((u) => ({
@@ -65,6 +70,7 @@ Deno.serve(async (req) => {
           letzte_anmeldung: u.last_sign_in_at ?? null,
           gesperrt: gesperrt(u, jetzt),
           admin: adminIds.has(u.id),
+          stufe: adminIds.has(u.id) ? "admin" : kuecheIds.has(u.id) ? "kueche" : "benutzer",
           ich: u.id === ich.id,
         })),
       });
@@ -98,12 +104,42 @@ Deno.serve(async (req) => {
       if (soll) {
         const r = await admin.from("app_admin").upsert({ user_id: id, bemerkung: `In der App ernannt von ${ich.email ?? ich.id}` });
         if (r.error) return fehler(r.error.message);
+        // Wie bei «stufe»: höchstens eine Zeile, sonst ergäbe «Admin entziehen» später die Stufe Küche.
+        const k = await admin.from("app_kueche").delete().eq("user_id", id);
+        if (k.error) return fehler(k.error.message);
       } else {
         if (id === ich.id) return fehler("Das eigene Admin-Recht kann man nicht entziehen. Ein anderer Admin kann das tun.");
         const r = await admin.from("app_admin").delete().eq("user_id", id);
         if (r.error) return fehler(r.error.message);
       }
       return antwort({ id, admin: soll });
+    }
+
+    // Stufe setzen: admin, benutzer oder kueche. Zuerst die neue Stufe eintragen, dann die andere entfernen.
+    // Scheitert ein Schritt, meldet die Funktion den Fehler; die Liste zeigt danach den wahren Stand.
+    if (aktion === "stufe") {
+      const stufe = String(p.stufe ?? "");
+      if (!STUFEN.includes(stufe)) return fehler("Stufe fehlt.");
+      if (id === ich.id && stufe !== "admin") return fehler("Die eigene Stufe kann man nicht senken. Ein anderer Admin kann das tun.");
+      const gibtEs = await admin.auth.admin.getUserById(id);
+      if (gibtEs.error || !gibtEs.data.user) return fehler("Diesen Benutzer gibt es nicht mehr. Bitte die Liste neu laden.");
+      if (stufe === "admin") {
+        const r = await admin.from("app_admin").upsert({ user_id: id, bemerkung: `In der App ernannt von ${ich.email ?? ich.id}` });
+        if (r.error) return fehler(r.error.message);
+      }
+      if (stufe === "kueche") {
+        const r = await admin.from("app_kueche").upsert({ user_id: id });
+        if (r.error) return fehler(r.error.message);
+      }
+      if (stufe !== "admin") {
+        const r = await admin.from("app_admin").delete().eq("user_id", id);
+        if (r.error) return fehler(r.error.message);
+      }
+      if (stufe !== "kueche") {
+        const r = await admin.from("app_kueche").delete().eq("user_id", id);
+        if (r.error) return fehler(r.error.message);
+      }
+      return antwort({ id, stufe });
     }
 
     return fehler("Unbekannte Aktion.");

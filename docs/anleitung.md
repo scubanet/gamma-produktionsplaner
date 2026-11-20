@@ -221,7 +221,15 @@ Nur für Administratoren.
 
 - **Zugang anlegen:** Name und E-Mail eingeben. Die Person öffnet danach gamma.atoll-os.com und lässt sich mit dieser Adresse einen Anmeldelink schicken. Ein Passwort gibt es nicht.
 - **Sperren und Entsperren:** nimmt den Zugang weg, ohne Daten zu löschen.
-- **Zum Admin machen:** Admins verwalten Benutzer und dürfen Rezepte löschen. Den eigenen Zugang kann man weder sperren noch herabstufen.
+- **Stufe ändern:** Jeder Zugang hat eine von drei Stufen. Den eigenen Zugang kann man weder sperren noch herabstufen. Eine neue Stufe gilt, sobald die Person die App neu lädt.
+
+| Stufe | Sieht | Darf |
+| --- | --- | --- |
+| Admin | alles | alles, dazu Benutzer verwalten, Rezepte löschen, Ware entsorgen |
+| Benutzer | alles ausser der Benutzerverwaltung | planen, Rezepte schreiben, einkaufen, offerieren |
+| Küche | Leitstand, Anlässe, Produktionsplan, Einkaufsliste, Küchenpass, Lager, Rezepte, Katalog, Systemzuteilung – ohne Preise | abhaken, Etiketten anlegen, einlagern, «nicht produziert» ausbuchen |
+
+Ein neuer Zugang hat die Stufe «Benutzer». Für Mitarbeitende in der Produktion nach dem Anlegen auf «Küche» stellen.
 
 ## Womit anfangen
 

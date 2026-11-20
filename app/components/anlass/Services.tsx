@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Card, DataTable, Dialog, Notice, Select, TextField, EmptyState } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, Notice, Select, TextField, EmptyState, type DataTableColumn } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { useBestaetigen } from "@/components/Bestaetigen";
 import { formatDatum, formatZahl } from "@/lib/format";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 import { fehlerText, ganzzahl, geaenderteDaten, ungueltigesDatum, type Menuelinie, type Service } from "@/lib/anlass";
 
 type Form = { id: string | null; name: string; datum: string; gaeste: string; menuelinie_id: string; fehler: string | null };
@@ -18,6 +20,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
   onMeldung: (text: string) => void;
   onFehler: (titel: string, text: string) => void;
 }) {
+  const planen = darf(useStufe(), "planen");
   const [form, setForm] = useState<Form | null>(null);
   const [fragen, rueckfrage] = useBestaetigen();
   const [offen, setOffen] = useState(false);
@@ -89,6 +92,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
 
   return (
     <Card title="Services" meta="je Spiel oder Tag mit Gästen und Menülinie" actions={
+        !planen ? undefined :
         <span className="pl-actions">
           {services.length > 1 ? <Button onClick={datenOeffnen}>{ohneDatum ? `Daten erfassen (${ohneDatum} fehlen)` : "Daten ändern"}</Button> : null}
           <Button icon="plus" variant="dashed" onClick={() => oeffnen(null)}>Service</Button>
@@ -97,7 +101,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
     >
       {services.length ? (
         <DataTable
-          columns={[
+          columns={([
             { key: "name", label: "Service" },
             { key: "datumText", label: "Datum", numeric: true },
             { key: "gaesteText", label: "Gäste", numeric: true },
@@ -112,7 +116,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
                 </span>
               ),
             },
-          ]}
+          ] as DataTableColumn[]).filter((c) => planen || c.key !== "aktion")}
           rows={sortiert.map((s) => ({
             id: s.id,
             service: s,

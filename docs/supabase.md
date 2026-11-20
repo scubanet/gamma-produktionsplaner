@@ -23,12 +23,32 @@ Stand: 15.11.2026
 
 ## Benutzerverwaltung (Edge Function `benutzer`)
 
-- `supabase/functions/benutzer/index.ts`: Zugang anlegen, Benutzer auflisten, sperren und entsperren, Admin-Recht geben und entziehen. Nur für Benutzer in `app_admin`; die Funktion prüft das Token der App und arbeitet dann mit dem Service-Schlüssel, der den Server nie verlässt.
+- `supabase/functions/benutzer/index.ts`: Zugang anlegen, Benutzer auflisten, sperren und entsperren, Stufe setzen (`aktion: "stufe"` mit `admin`, `benutzer` oder `kueche`; die alte Aktion `admin` bleibt für ältere App-Stände). Nur für Benutzer in `app_admin`; die Funktion prüft das Token der App und arbeitet dann mit dem Service-Schlüssel, der den Server nie verlässt.
+- **Reihenfolge bei Migration 43 (zwingend):** 1. `supabase db push --remote` (legt `app_kueche` und `stufe()` an), 2. `supabase functions deploy benutzer`, 3. erst dann die App pushen. Die Funktion liest `app_kueche`; ohne die Tabelle fällt die Seite Benutzer aus. Die neue App braucht für «Stufe ändern» die neue Funktion.
 - Ausliefern: `supabase functions deploy benutzer` im Repo-Wurzelordner. Die Funktion gehört nicht zu den Migrationen und wird nicht vom Workflow «Ausliefern» verteilt.
 - Ein neuer Zugang hat kein Passwort und eine bestätigte Adresse; die Person meldet sich mit dem Anmeldelink an. Sperren setzt eine Sperre von rund 100 Jahren, gelöscht wird nichts.
-- Schutz: Niemand sperrt sich selbst oder entzieht sich selbst das Admin-Recht; so bleibt immer mindestens ein Admin.
+- Schutz: Niemand sperrt sich selbst oder senkt die eigene Stufe; so bleibt immer mindestens ein Admin.
 - Erlaubte Herkunft (CORS): `https://gamma.atoll-os.com` und `http://localhost:3000`. Beim Umzug auf den GAMMA-Server die Adresse in der Funktion anpassen.
-- Rollen und Rechte pro Abteilung gibt es weiterhin nicht (Entscheid Dominik, 14.11.2026: nur Zugang verwalten).
+- Rollen pro Abteilung gibt es nicht. Seit Migration 43 gibt es drei Stufen, siehe unten.
+
+## Stufen (Migration 43)
+
+Entscheid Dominik, 20.11.2026.
+
+| Stufe | Wer | Darf |
+| --- | --- | --- |
+| Admin | steht in `app_admin` | alles, dazu Benutzer verwalten, Rezepte löschen, Ware entsorgen |
+| Benutzer | alle anderen Angemeldeten | alles lesen und schreiben |
+| Küche | steht in `app_kueche` (und nicht in `app_admin`) | lesen ohne die Geld-Tabellen; schreiben nur: abhaken (`produktion_aufgabe`, ohne `zustaendig`), `etiketten_erstellen`, `produkt_einlagern`, `einheit_ausbuchen` mit «nicht produziert» |
+
+- `stufe()` gibt die Stufe des Angemeldeten, `ist_kueche()` und `ist_admin()` sind die Bausteine für Regeln. Die App liest `stufe()` einmal nach der Anmeldung (`components/Anmeldung.tsx`, `useStufe`); was sie zeigt, steht in `app/lib/stufe.ts` (Rechte `planen`, `preise`, gesperrte Seiten).
+- Zugriffsregeln: Jede Tabelle hat `lesen` (alle Angemeldeten) und `anlegen`, `aendern`, `loeschen` (nicht für «Küche»). Die Pilot-Regel `pilot_angemeldet` gibt es nicht mehr. **Neue Tabellen bekommen dieselben vier Regeln.**
+- Für «Küche» nicht lesbar: `lohnsatz`, `energiepreis`, `fixkosten`, `anlass_kosten`, `artikel_preis`, `offerte_gericht`, `anlass_personal`, `anlass_geraet`, `karte_position`. Davon hängen nur Kosten- und Offerten-Views ab (und `karte_uebersicht`).
+- **Preisschutz, Schritt 1:** Preise, die als Spalte in einer sonst nötigen Tabelle stehen (`artikel.preis_*`, `anlass.umsatz_netto_chf`, Mietpreise, `betrieb.faktor_vk`) und Views wie `gericht_warenkosten` oder `einkauf_position` blendet nur die App aus; über die Schnittstelle kann «Küche» sie lesen. Schritt 2 (offen): diese Spalten in eigene Tabellen oder Views ohne Preis für «Küche».
+- Die App merkt sich die Stufe im Browser (`localStorage`, `planer.stufe`) und gleicht sie bei jedem Laden mit `stufe()` ab. Wird jemand herabgestuft, während die App offen ist, gilt die neue Anzeige ab dem nächsten Laden; bis dahin lehnt die Datenbank das Schreiben ab, einzelne Dialoge melden dann aber trotzdem «gespeichert» (Ändern trifft 0 Zeilen ohne Fehler). Offen: an diesen Stellen 0 Zeilen als Fehler behandeln.
+- `produktion_aufgabe`: «Küche» kann Saison, Komponente und Welle einer Zeile nicht ändern (Trigger, Fehler 42501) und `zustaendig` nicht setzen. Anlegen kann sie Zeilen für jede bestehende Saison und Komponente (ohne «Zuständig»); eine Prüfung gegen die Checkliste gibt es nicht.
+- Offerten (`anlass.status = 'offerte'`) blendet für «Küche» nur die App aus (Leitstand, Anlass-Seite); lesbar sind sie über die Schnittstelle wie die Preis-Spalten.
+- Eine vierte Stufe: Tabelle wie `app_kueche`, Zweig in `stufe()`, Eintrag in `STUFEN`, `RECHTE` und `GESPERRT` (`app/lib/stufe.ts`) und in `STUFEN` der Edge Function.
 
 ## Anmeldung per E-Mail
 
@@ -81,6 +101,7 @@ Stand: 15.11.2026
 | 40 mhd_ab_produktionsdatum | `produktion_aufgabe.produziert_am` (Produktionstag, vom Trigger beim Abhaken gesetzt). View `produktion_checkliste` mit `haltbarkeit_tage`, `produziert_am`, `haltbar_bis`, `haltbar_grundlage`; `wellenplan.haltbar_bis` bei abgehakten Zeilen ab dem Produktionstag. Eingespielt am 20.11.2026 |
 | 41 etiketten_lager | Etiketten und Lager, Etappe 1: `produkt` und `komponente.produkt_id`, `rezept.beutel_g` (samt `rezept_speichern`), `charge`, `lagereinheit`, `lagerbewegung`, `druckauftrag` (nur lesbar, geschrieben über Funktionen), Views `bedarf_service_welle`, `etikett_vorschlag`, `etikett_beutel`, Funktion `etiketten_erstellen` (erste `security definer`-Funktion im Projekt). Eingespielt am 20.11.2026 |
 | 42 lager | Lager, Etappe 2: Views `lager_einheit`, `lager_bestand`, `lager_bedarf`; Funktionen `produkt_einlagern` (ohne Welle), `einheit_ausbuchen`, `lager_recht` (einzige Stelle für die Rechte des Lagers); `etikett_vorschlag.beutel_rest` leer statt 0 ohne Vorschlag. Eingespielt am 20.11.2026 |
+| 43 stufe_kueche | Stufe «Küche»: Tabelle `app_kueche`, Funktionen `ist_kueche()`, `stufe()`; alle 49 Pilot-Regeln ersetzt durch `lesen`, `anlegen`, `aendern`, `loeschen` (Schreiben nicht für «Küche»); neun Geld-Tabellen für «Küche» nicht lesbar; `produktion_aufgabe` für «Küche» schreibbar ohne `zustaendig` (Trigger `produktion_aufgabe_kueche`); Rezepte anlegen und ändern nicht für «Küche». Noch einzuspielen |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
 
 Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde nicht mit `supabase db push` eingespielt und trägt darum einen Zeitstempel (`20261110185525`); die Datei heisst seit dem 14.11.2026 gleich. Neue Migrationen immer mit `supabase db push` einspielen, sonst passen Datei und Datenbank nicht zusammen.

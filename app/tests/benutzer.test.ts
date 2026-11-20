@@ -3,7 +3,7 @@ import { datumText, neuerZugang, sortieren, status, type Benutzer } from "../lib
 import { navEintraege } from "../lib/navigation";
 
 const b = (x: Partial<Benutzer>): Benutzer => ({
-  id: "1", email: "a@gamma.ch", name: "", erstellt_am: "2026-11-10T08:00:00Z", letzte_anmeldung: null, gesperrt: false, admin: false, ich: false, ...x,
+  id: "1", email: "a@gamma.ch", name: "", erstellt_am: "2026-11-10T08:00:00Z", letzte_anmeldung: null, gesperrt: false, admin: false, stufe: "benutzer", ich: false, ...x,
 });
 
 describe("Benutzerverwaltung", () => {
@@ -18,9 +18,9 @@ describe("Benutzerverwaltung", () => {
     expect(status(b({ letzte_anmeldung: "2026-11-14T07:00:00Z" }))).toEqual({ text: "aktiv", pill: "ok" });
     expect(status(b({ letzte_anmeldung: "2026-11-14T07:00:00Z", gesperrt: true }))).toEqual({ text: "gesperrt", pill: "warn" });
   });
-  it("Admins zuerst, dann nach Name oder E-Mail", () => {
-    const l = sortieren([b({ id: "1", email: "zoe@gamma.ch" }), b({ id: "2", name: "Dominik", admin: true }), b({ id: "3", name: "Anna" })]);
-    expect(l.map((x) => x.id)).toEqual(["2", "3", "1"]);
+  it("Admins zuerst, dann Benutzer, dann Küche; innerhalb nach Name oder E-Mail", () => {
+    const l = sortieren([b({ id: "4", name: "Aaron", stufe: "kueche" }), b({ id: "1", email: "zoe@gamma.ch" }), b({ id: "2", name: "Dominik", admin: true, stufe: "admin" }), b({ id: "3", name: "Anna" })]);
+    expect(l.map((x) => x.id)).toEqual(["2", "3", "1", "4"]);
   });
   it("Datum und Navigation", () => {
     expect(datumText("2026-11-14T07:00:00Z")).toBe("14.11.2026");

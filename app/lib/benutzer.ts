@@ -1,10 +1,11 @@
 // Benutzerverwaltung: Liste und Aktionen laufen über die Edge Function «benutzer» (nur Admins).
 // Hier nur Typen, Prüfung der Eingaben und Anzeige.
 import { formatDatum } from "./format";
+import type { Stufe } from "./stufe";
 
 export type Benutzer = {
   id: string; email: string; name: string; erstellt_am: string; letzte_anmeldung: string | null;
-  gesperrt: boolean; admin: boolean; ich: boolean;
+  gesperrt: boolean; admin: boolean; stufe: Stufe; ich: boolean;
 };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,9 +28,11 @@ export function status(b: Pick<Benutzer, "gesperrt" | "letzte_anmeldung">): Stat
 
 export const datumText = (iso: string | null) => (iso ? formatDatum(iso.slice(0, 10)) : "–");
 
-/** Admins zuerst, dann nach Name bzw. E-Mail. */
+const RANG: Record<Stufe, number> = { admin: 0, benutzer: 1, kueche: 2 };
+
+/** Admins zuerst, dann Benutzer, dann Küche; innerhalb nach Name bzw. E-Mail. */
 export function sortieren(liste: Benutzer[]): Benutzer[] {
-  return [...liste].sort((a, b) => Number(b.admin) - Number(a.admin) || (a.name || a.email).localeCompare(b.name || b.email, "de-CH"));
+  return [...liste].sort((a, b) => RANG[a.stufe] - RANG[b.stufe] || (a.name || a.email).localeCompare(b.name || b.email, "de-CH"));
 }
 
 /** Ein Admin darf sich nicht selbst sperren oder das eigene Admin-Recht entziehen. */

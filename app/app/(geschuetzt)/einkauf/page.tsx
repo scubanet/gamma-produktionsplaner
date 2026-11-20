@@ -9,6 +9,8 @@ import { standText } from "@/lib/zutat-vorschlag";
 import { bestellschlussText, herkunftText, istAnnahme, nachLieferant, zutatenStandText, type ArtikelZeile, type Position, type Summe } from "@/lib/einkauf";
 import { ArtikelZuordnen, type Ziel } from "@/components/einkauf/ArtikelZuordnen";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf, sichtbar, ohnePreis } from "@/lib/stufe";
 
 type Daten = { summe: Summe; artikel: ArtikelZeile[]; positionen: Position[]; zutaten: { zutaten: number | null; verknuepft: number | null } | null };
 
@@ -23,6 +25,10 @@ async function laden(): Promise<Daten | null> {
 }
 
 export default function Einkauf() {
+  const stufe = useStufe();
+  const planen = darf(stufe, "planen");
+  const preise = darf(stufe, "preise");
+  const zutatenLink = sichtbar(stufe, "/einkauf/zutaten");
   const [daten, setDaten] = useState<Daten | null | undefined>(undefined);
   const [fehler, setFehler] = useState<string | null>(null);
   const [meldung, setMeldung] = useState("");
@@ -89,7 +95,7 @@ export default function Einkauf() {
         </Button>
       ),
     },
-  ];
+  ].slice(0, planen ? undefined : -1);
   const ohneArtikelZeilen = (liste: Position[]) =>
     liste.map((p) => ({
       id: `${p.bezug_id ?? p.bezug}-${p.komponente_id}-${p.einheit}`,
@@ -99,7 +105,7 @@ export default function Einkauf() {
       bezug: p.bezug,
       bedarfText: p.bedarf_am ? `Bedarf am ${formatDatum(p.bedarf_am)}` : "[Datum]",
       mengeText: formatMenge(p.menge_komponente, p.einheit),
-      herleitung: p.herleitung ?? "[Herleitung fehlt]",
+      herleitung: preise ? p.herleitung ?? "[Herleitung fehlt]" : ohnePreis(p.herleitung),
     }));
 
   return (
@@ -121,11 +127,11 @@ export default function Einkauf() {
       {s ? (
         <>
           <div className="pl-grid-4">
-            <KpiTile
+            {preise ? <KpiTile
               label="Warenkosten verknüpfter Artikel"
               value={s.kosten_chf === null ? "[Preis]" : <span className="pl-assumed">{formatChf(s.kosten_chf)}</span>}
               detail={`ganze Saison: ${s.positionen_artikel} Position(en), davon ${s.positionen_artikel_ohne_kosten} ohne Kosten (nicht in der Summe)${s.positionen_rezept ? `; ${s.positionen_rezept} über das Rezept, ${s.positionen_rezept_nicht_freigegeben ?? 0} davon nicht freigegeben` : ""}`}
-            />
+            /> : null}
             <KpiTile
               label="Nächster Bestellschluss"
               value={s.naechster_bestellschluss ? bestellschlussText(s.naechster_bestellschluss) : "[Bestelltermin]"}
@@ -135,7 +141,7 @@ export default function Einkauf() {
             <KpiTile label="Noch nicht verknüpft" value={formatZahl(s.positionen_offen ?? 0)} detail={<>weder Rezept mit verknüpften Zutaten noch Hauptartikel. <a className="pl-link pl-print-hide" href="#offen">Zur Liste</a></>} />
           </div>
           <p className="pl-small pl-print-hide">
-            <a href="/einkauf/zutaten/">{standText(daten?.zutaten ?? null)}</a>
+            {zutatenLink ? <a href="/einkauf/zutaten/">{standText(daten?.zutaten ?? null)}</a> : standText(daten?.zutaten ?? null)}
           </p>
 
           {(s.positionen_nicht_im_plan ?? 0) > 0 ? (
@@ -162,7 +168,7 @@ export default function Einkauf() {
                   { key: "artikel", label: "Artikel", subKey: "unterzeile", subDetail: true },
                   { key: "bezug", label: "Für", subKey: "bedarfText" },
                   { key: "mengeText", label: "Menge", numeric: true, render: (r) => <span className={r.annahme ? "pl-assumed" : undefined}>{r.mengeText as string}</span> },
-                  { key: "kosten", label: <span className="pl-assumed">Kosten</span>, numeric: true },
+                  ...(preise ? [{ key: "kosten", label: <span className="pl-assumed">Kosten</span>, numeric: true }] : []),
                   { key: "liefertermin", label: <span className="pl-assumed">Lieferung</span>, numeric: true },
                   { key: "bestellen", label: <span className="pl-assumed">Bestellen bis</span>, numeric: true },
                   { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
@@ -179,12 +185,12 @@ export default function Einkauf() {
                   kosten: z.kosten_chf !== null ? formatChf(z.kosten_chf) : z.preis_pro_einheit === null ? "[Preis]" : "[Menge]",
                   liefertermin: z.liefertermin ? formatDatum(z.liefertermin) : "[Liefertermin]",
                   bestellen: bestellschlussText(z.bestellen_bis),
-                  herleitung: z.herleitung,
+                  herleitung: preise ? z.herleitung : ohnePreis(z.herleitung),
                 }))}
               />
             </Card>
           ))}
-          {daten && !artikel.length ? <EmptyState title={`Noch kein Artikel in der Einkaufsliste${bezug ? ` für ${bezug}` : ""}`} text="Artikel kommen aus den Rezepten, sobald Zutaten verknüpft sind, sonst über den Hauptartikel der Komponente." actionLabel="Zutaten zuordnen" href="/einkauf/zutaten/" /> : null}
+          {daten && !artikel.length ? <EmptyState title={`Noch kein Artikel in der Einkaufsliste${bezug ? ` für ${bezug}` : ""}`} text="Artikel kommen aus den Rezepten, sobald Zutaten verknüpft sind, sonst über den Hauptartikel der Komponente." actionLabel={zutatenLink ? "Zutaten zuordnen" : undefined} href={zutatenLink ? "/einkauf/zutaten/" : undefined} /> : null}
 
           <p className="pl-small">
             <span className="pl-assumed">gestrichelt</span> = Annahme, bitte prüfen: das Rezept ist nicht freigegeben, Liter sind als Kilogramm gerechnet, oder die Menge läuft über den Hauptartikel
@@ -193,7 +199,7 @@ export default function Einkauf() {
             Bestellungen werden hier nicht gespeichert.
           </p>
 
-          {verknuepft.length ? (
+          {planen && verknuepft.length ? (
             <div className="pl-print-hide">
               <Card title="Verknüpfte Komponenten" meta="Hauptartikel ändern oder Zuordnung entfernen">
                 <DataTable
@@ -217,7 +223,7 @@ export default function Einkauf() {
           ) : null}
 
           {rezeptOffen.length ? (
-            <Card title="Aus dem Rezept, noch unvollständig" meta={`${rezeptOffen.length} Position(en): die verknüpften Zutaten stehen in der Liste, Kosten erst, wenn alle Zutaten einen Artikel und eine Menge haben`}>
+            <Card title="Aus dem Rezept, noch unvollständig" meta={`${rezeptOffen.length} Position(en): die verknüpften Zutaten stehen in der Liste${preise ? ", Kosten erst, wenn alle Zutaten einen Artikel und eine Menge haben" : ""}`}>
               <DataTable
                 columns={[
                   { key: "komponente", label: "Komponente", subKey: "kategorie" },
@@ -236,11 +242,11 @@ export default function Einkauf() {
                   bezug: p.bezug,
                   bedarfText: p.bedarf_am ? `Bedarf am ${formatDatum(p.bedarf_am)}` : "[Datum]",
                   stand: zutatenStandText(p),
-                  herleitung: p.herleitung,
+                  herleitung: preise ? p.herleitung : ohnePreis(p.herleitung),
                 }))}
               />
               <p className="pl-small pl-print-hide">
-                <a href="/einkauf/zutaten/">Zutaten zuordnen</a>. «Menge von Hand»: Der Artikel wird in einem Gebinde ohne hinterlegtes Gewicht geführt (Flasche, Dose, Tetrapack).
+                {zutatenLink ? <><a href="/einkauf/zutaten/">Zutaten zuordnen</a>. </> : null}«Menge von Hand»: Der Artikel wird in einem Gebinde ohne hinterlegtes Gewicht geführt (Flasche, Dose, Tetrapack).
               </p>
             </Card>
           ) : null}
@@ -272,7 +278,7 @@ export default function Einkauf() {
         (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Einkaufsliste wird geladen" />)
       ) : null}
 
-      <ArtikelZuordnen
+      {planen ? <ArtikelZuordnen
         key={oeffnung}
         ziel={ziel}
         offen={zielOffen}
@@ -284,7 +290,7 @@ export default function Einkauf() {
           setMeldung(text);
           requestAnimationFrame(() => meldungRef.current?.focus());
         }}
-      />
+      /> : null}
     </>
   );
 }

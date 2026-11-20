@@ -1,4 +1,5 @@
 import type { SideNavItem } from "./planer";
+import { sichtbar, type Stufe } from "./stufe";
 
 export type Bereich = { label: string; href: string };
 export type Gruppe = { label: string; bereiche: Bereich[] };
@@ -40,6 +41,12 @@ function aktiv(href: string, aktuell: string): boolean {
   return h === "/" ? aktuell === "/" : aktuell === h || aktuell.startsWith(`${h}/`);
 }
 
+/** Bereiche, die eine Stufe sieht; Bereiche ohne sichtbare Seite fallen weg. Ohne Stufe: alle. */
+const gruppenFuer = (stufe?: Stufe): Gruppe[] =>
+  stufe
+    ? GRUPPEN.map((g) => ({ ...g, bereiche: g.bereiche.filter((b) => sichtbar(stufe, b.href)) })).filter((g) => g.bereiche.length > 0)
+    : GRUPPEN;
+
 export function navEintraege(pfad: string): SideNavItem[] {
   const aktuell = ohneSchraegstrich(pfad);
   return BEREICHE.map((b) =>
@@ -47,28 +54,32 @@ export function navEintraege(pfad: string): SideNavItem[] {
   );
 }
 
-const gruppeVon = (aktuell: string) => GRUPPEN.find((g) => g.bereiche.some((b) => aktiv(b.href, aktuell)));
+const gruppeVon = (aktuell: string, gruppen: Gruppe[]) => gruppen.find((g) => g.bereiche.some((b) => aktiv(b.href, aktuell)));
 
 /** Hauptnavigation: ein Eintrag pro Bereich, verlinkt auf dessen erste Seite. */
-export function hauptnav(pfad: string): NavEintrag[] {
-  const g = gruppeVon(ohneSchraegstrich(pfad));
-  return GRUPPEN.map((x) => ({ label: x.label, href: x.bereiche[0].href, current: x === g }));
+export function hauptnav(pfad: string, stufe?: Stufe): NavEintrag[] {
+  const gruppen = gruppenFuer(stufe);
+  const g = gruppeVon(ohneSchraegstrich(pfad), gruppen);
+  return gruppen.map((x) => ({ label: x.label, href: x.bereiche[0].href, current: x === g }));
 }
 
 /** Seiten des aktuellen Bereichs; leer, wenn der Bereich nur eine Seite hat. */
-export function unternav(pfad: string): NavEintrag[] {
+export function unternav(pfad: string, stufe?: Stufe): NavEintrag[] {
   const aktuell = ohneSchraegstrich(pfad);
-  const g = gruppeVon(aktuell);
+  const g = gruppeVon(aktuell, gruppenFuer(stufe));
   if (!g || g.bereiche.length < 2) return [];
   return g.bereiche.map((b) => ({ label: b.label, href: b.href, current: aktiv(b.href, aktuell) }));
 }
 
 /** Ansichten der aktuellen Seite (z.B. Liste, Wellen, Aufwand); leer, wenn die Seite keine hat. */
-export function seitenTabs(pfad: string): NavEintrag[] {
+export function seitenTabs(pfad: string, stufe?: Stufe): NavEintrag[] {
   const aktuell = ohneSchraegstrich(pfad);
   const wurzel = Object.keys(ANSICHTEN).find((w) => aktuell === w || aktuell.startsWith(`${w}/`));
   if (!wurzel) return [];
-  return ANSICHTEN[wurzel].map((a) => ({ label: a.label, href: a.href, current: ohneSchraegstrich(a.href) === aktuell }));
+  const ansichten = ANSICHTEN[wurzel].filter((a) => !stufe || sichtbar(stufe, a.href));
+  // Eine einzige Ansicht braucht keine Tabs.
+  if (ansichten.length < 2) return [];
+  return ansichten.map((a) => ({ label: a.label, href: a.href, current: ohneSchraegstrich(a.href) === aktuell }));
 }
 
 export const ANMELDEN = "/anmelden/";

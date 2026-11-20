@@ -562,6 +562,21 @@ export type Database = {
         }
         Relationships: []
       }
+      app_kueche: {
+        Row: {
+          erstellt_am: string
+          user_id: string
+        }
+        Insert: {
+          erstellt_am?: string
+          user_id: string
+        }
+        Update: {
+          erstellt_am?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       artikel: {
         Row: {
           aktiv: boolean
@@ -5749,6 +5764,7 @@ export type Database = {
         }[]
       }
       ist_admin: { Args: never; Returns: boolean }
+      ist_kueche: { Args: never; Returns: boolean }
       karte_kopieren: {
         Args: { p_anlass: string; p_karte: string; p_name?: string }
         Returns: string
@@ -5846,6 +5862,7 @@ export type Database = {
         }[]
       }
       saison_rezepte: { Args: { p_saison: string }; Returns: string[] }
+      stufe: { Args: never; Returns: string }
       wellen_anzahl: {
         Args: { p_haltbarkeit: number; p_saison: string }
         Returns: number

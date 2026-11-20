@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Card, DataTable, Dialog, KpiTile, Notice, StatusPill, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, KpiTile, Notice, Select, StatusPill, TextField, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { datumText, neuerZugang, sortieren, status, type Benutzer } from "@/lib/benutzer";
 import { fehlerText } from "@/lib/fehler";
+import { STUFEN, stufeLabel, type Stufe } from "@/lib/stufe";
 
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
 
@@ -24,13 +25,15 @@ export default function BenutzerSeite() {
   const [arbeitet, setArbeitet] = useState<string | null>(null);
   const [form, setForm] = useState<{ name: string; email: string; fehler: string | null } | null>(null);
   const [offen, setOffen] = useState(false);
+  const [stufeWahl, setStufeWahl] = useState<{ b: Benutzer; stufe: Stufe } | null>(null);
   const meldungRef = useRef<HTMLParagraphElement>(null);
 
   const neuLaden = useCallback(
     () =>
       rufen<{ benutzer: Benutzer[] }>({ aktion: "liste" }).then(
         (d) => {
-          setListe(sortieren(d.benutzer));
+          // Antwortet noch die alte Funktion (ohne Stufe), gilt Admin oder Benutzer.
+          setListe(sortieren(d.benutzer.map((b) => ({ ...b, stufe: b.stufe ?? (b.admin ? "admin" : "benutzer") }))));
           return true;
         },
         (e: Error) => {
@@ -56,8 +59,10 @@ export default function BenutzerSeite() {
     setArbeitet(b.id);
     try {
       await rufen({ ...body, id: b.id });
+      setStufeWahl(null);
       if (await neuLaden()) melden(text);
     } catch (e) {
+      setStufeWahl(null);
       setFehler({ titel: "Nicht gespeichert", text: `${b.name || b.email}: ${fehlerText(e)}` });
     } finally {
       setArbeitet(null);
@@ -101,16 +106,16 @@ export default function BenutzerSeite() {
         <>
           <div className="pl-grid-3">
             <KpiTile label="Benutzer" value={String(alle.length)} detail={`${alle.filter((b) => b.gesperrt).length} gesperrt`} />
-            <KpiTile label="Administratoren" value={String(alle.filter((b) => b.admin).length)} detail="verwalten Benutzer und dürfen Rezepte löschen" />
+            <KpiTile label="Administratoren" value={String(alle.filter((b) => b.stufe === "admin").length)} detail={`verwalten Benutzer und dürfen Rezepte löschen · ${alle.filter((b) => b.stufe === "kueche").length} Stufe Küche`} />
             <KpiTile label="Noch nie angemeldet" value={String(alle.filter((b) => !b.letzte_anmeldung).length)} detail="Zugang angelegt, Anmeldelink noch nicht benutzt" />
           </div>
 
-          <Card title="Benutzer" meta="Alle angemeldeten Benutzer dürfen lesen und schreiben; Admins dazu Benutzer verwalten und Rezepte löschen">
+          <Card title="Benutzer" meta="Benutzer lesen und schreiben; Admins verwalten dazu Benutzer und löschen Rezepte; Küche liest ohne Preise, hakt ab und führt Etiketten und Lager">
             <DataTable
               columns={[
                 { key: "name", label: "Benutzer", subKey: "email" },
                 { key: "status", label: "Status", render: (r) => <StatusPill status={(r.st as { pill: "ok" | "warn" | "neutral" }).pill}>{(r.st as { text: string }).text}</StatusPill> },
-                { key: "admin", label: "Rolle", render: (r) => (r.admin ? <StatusPill status="info">Admin</StatusPill> : "Benutzer") },
+                { key: "stufe", label: "Stufe", render: (r) => (r.stufe === "admin" ? <StatusPill status="info">Admin</StatusPill> : stufeLabel(r.stufe as Stufe)) },
                 { key: "letzte", label: "Letzte Anmeldung", numeric: true },
                 { key: "erstellt", label: "Angelegt", numeric: true },
                 {
@@ -129,12 +134,8 @@ export default function BenutzerSeite() {
                         >
                           {b.gesperrt ? "Entsperren" : "Sperren"}
                         </Button>
-                        <Button
-                          ariaLabel={b.admin ? `${wer} das Admin-Recht entziehen` : `${wer} zum Admin machen`}
-                          disabled={arbeitet !== null}
-                          onClick={() => aktion(b, { aktion: "admin", admin: !b.admin }, b.admin ? `${wer} ist kein Admin mehr.` : `${wer} ist jetzt Admin.`)}
-                        >
-                          {b.admin ? "Admin entziehen" : "Zum Admin machen"}
+                        <Button ariaLabel={`Stufe von ${wer} ändern, heute ${stufeLabel(b.stufe)}`} disabled={arbeitet !== null} onClick={() => setStufeWahl({ b, stufe: b.stufe })}>
+                          Stufe ändern
                         </Button>
                       </span>
                     );
@@ -147,7 +148,7 @@ export default function BenutzerSeite() {
                 name: b.name || "[Name]",
                 email: b.email,
                 st: status(b),
-                admin: b.admin,
+                stufe: b.stufe,
                 letzte: datumText(b.letzte_anmeldung),
                 erstellt: datumText(b.erstellt_am),
               }))}
@@ -160,6 +161,38 @@ export default function BenutzerSeite() {
       ) : !fehler ? (
         <Skeleton variant="zeile" label="Benutzer werden geladen" />
       ) : null}
+
+      <Dialog
+        open={stufeWahl !== null}
+        id="benutzer-stufe"
+        title="Stufe ändern"
+        meta={stufeWahl ? stufeWahl.b.name || stufeWahl.b.email : undefined}
+        onClose={() => setStufeWahl(null)}
+        onCancel={(e) => arbeitet !== null && e.preventDefault()}
+        actions={
+          <>
+            <Button onClick={() => setStufeWahl(null)} disabled={arbeitet !== null}>Abbrechen</Button>
+            <Button
+              variant="primary"
+              disabled={arbeitet !== null || !stufeWahl || stufeWahl.stufe === stufeWahl.b.stufe}
+              onClick={() => stufeWahl && aktion(stufeWahl.b, { aktion: "stufe", stufe: stufeWahl.stufe }, `${stufeWahl.b.name || stufeWahl.b.email} hat jetzt die Stufe ${stufeLabel(stufeWahl.stufe)}. Die Person sieht das nach dem nächsten Laden der App.`)}
+            >
+              {arbeitet !== null ? "Wird gespeichert …" : "Stufe speichern"}
+            </Button>
+          </>
+        }
+      >
+        {stufeWahl ? (
+          <Select
+            id="benutzer-stufe-wahl"
+            label="Stufe"
+            value={stufeWahl.stufe}
+            options={STUFEN.map((s) => ({ value: s.stufe, label: s.label }))}
+            hint={STUFEN.find((s) => s.stufe === stufeWahl.stufe)?.darf}
+            onChange={(v) => setStufeWahl({ ...stufeWahl, stufe: v as Stufe })}
+          />
+        ) : null}
+      </Dialog>
 
       <Dialog
         open={offen}

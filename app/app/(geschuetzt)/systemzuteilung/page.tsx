@@ -13,6 +13,8 @@ import {
 import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
 import { useEingabenSchutz } from "@/components/EingabenSchutz";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 
 type Daten = { zeilen: Zuteilung[]; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[]; kategorien: string[]; kollektion: string };
 
@@ -50,6 +52,7 @@ async function bedarfLaden(): Promise<{ saison: string; ids: Set<string> } | nul
 }
 
 export default function Systemzuteilung() {
+  const planen = darf(useStufe(), "planen");
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
   // Der Leitstand verlinkt mit Filter in der Adresse (?status=offen, ?hinweis=mit, ?bedarf=1).
@@ -227,7 +230,7 @@ export default function Systemzuteilung() {
           <span className="pl-card__meta">{daten ? `${formatZahl(zeilen.length)} von ${formatZahl(alle.length)}` : ""}</span>
         </div>
         {daten ? (
-          zeilen.length ? <DataTable columns={spalten} rows={tabelle} isSelected={(r) => !!bearbeiten && r.id === bearbeiten.id} /> : <EmptyState title="Keine Komponenten für diese Filter" />
+          zeilen.length ? <DataTable columns={planen ? spalten : spalten.filter((s) => s.key !== "aktion")} rows={tabelle} isSelected={(r) => !!bearbeiten && r.id === bearbeiten.id} /> : <EmptyState title="Keine Komponenten für diese Filter" />
         ) : fehler ? (
           <p className="pl-muted">Keine Daten, siehe Hinweis oben.</p>
         ) : (

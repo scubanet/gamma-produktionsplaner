@@ -11,6 +11,8 @@ import {
   type Gericht, type GerichtKomponente, type Quantum, type Warenkosten,
 } from "@/lib/katalog";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 
 type Daten = {
   gerichte: Gericht[];
@@ -26,12 +28,12 @@ type Daten = {
 
 const STATUS_PILL: Record<string, "ok" | "warn" | "info"> = { ok: "ok", offen: "warn", Zukauf: "info" };
 
-async function laden(): Promise<Daten> {
+async function laden(preise: boolean): Promise<Daten> {
   const [g, gk, z, w, q, a, m, k, ko] = await Promise.all([
     supabase.from("gericht_katalog").select("id, code, name, kategorie, gang, mengentyp, quelle_zeile"),
     supabase.from("gericht_komponente").select("gericht_id, reihenfolge, komponente_id, bezeichnung, verweis_kategorie, menge_pro_portion"),
     supabase.from("komponente_zuteilung").select("*"),
-    supabase.from("gericht_warenkosten").select("*"),
+    preise ? supabase.from("gericht_warenkosten").select("*") : Promise.resolve({ data: [], error: null }),
     supabase.from("quantum").select("*"),
     supabase.from("angebotsform").select("code, name").order("reihenfolge"),
     supabase.from("mengentyp").select("code, einheit"),
@@ -54,6 +56,7 @@ async function laden(): Promise<Daten> {
 
 function Katalogansicht() {
   const router = useRouter();
+  const preise = darf(useStufe(), "preise");
   const gewaehlt = useSearchParams().get("g");
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
@@ -61,8 +64,8 @@ function Katalogansicht() {
   const [kategorie, setKategorie] = useState("");
 
   useEffect(() => {
-    laden().then(setDaten, (e: Error) => setFehler(fehlerText(e)));
-  }, []);
+    laden(preise).then(setDaten, (e: Error) => setFehler(fehlerText(e)));
+  }, [preise]);
 
   const treffer = useMemo(() => (daten ? suchen(daten.gerichte, suche, kategorie) : []), [daten, suche, kategorie]);
   const gruppen = useMemo(() => (daten ? gruppieren(treffer, daten.kategorien) : []), [daten, treffer]);
@@ -134,11 +137,13 @@ function Katalogansicht() {
                     <div>{gericht.mengentyp ?? "[Mengentyp]"}</div>
                     <div className="pl-small">Einheit {einheit} pro Gast</div>
                   </div>
-                  <div>
-                    <div className="pl-label">Warenkosten pro Portion</div>
-                    <div className={wk?.annahme ? "pl-mono pl-assumed" : "pl-mono"}>{wk?.text}</div>
-                    <div className="pl-small">{wk?.sub}</div>
-                  </div>
+                  {preise ? (
+                    <div>
+                      <div className="pl-label">Warenkosten pro Portion</div>
+                      <div className={wk?.annahme ? "pl-mono pl-assumed" : "pl-mono"}>{wk?.text}</div>
+                      <div className="pl-small">{wk?.sub}</div>
+                    </div>
+                  ) : null}
                 </div>
               </Card>
 

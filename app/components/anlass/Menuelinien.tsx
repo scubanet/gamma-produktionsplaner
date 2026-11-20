@@ -1,12 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Button, Card, DataTable, Dialog, ItemList, Notice, Select, TextField, EmptyState } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, ItemList, Notice, Select, TextField, EmptyState, type DataTableColumn } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { useBestaetigen } from "@/components/Bestaetigen";
 import { RezeptLink } from "@/components/RezeptLink";
 import { formatZahl, zahlDeCh } from "@/lib/format";
 import { anteilAus, anteilText } from "@/lib/offerte";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 import { dezimal, fehlerText, gerichteNachGang, type LinieGericht, type LinieKomponente, type Menuelinie } from "@/lib/anlass";
 
 export type LinieGaeste = { menuelinie_id: string | null; gaeste: number | null; herleitung: string | null; services: number | null };
@@ -33,6 +35,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
   onFehler: (titel: string, text: string) => void;
 }) {
   const sortiert = useMemo(() => [...linien].sort((a, b) => a.reihenfolge - b.reihenfolge), [linien]);
+  const planen = darf(useStufe(), "planen");
   const [gewaehlt, setGewaehlt] = useState<string>("");
   const [fragen, rueckfrage] = useBestaetigen();
   const linie = sortiert.find((l) => l.id === gewaehlt) ?? sortiert[0] ?? null;
@@ -109,12 +112,13 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
     <Card
       title="Menülinien"
       meta="Menge pro Gast je Komponente; Bedarf = Gäste der Linie × Anteil × Menge (Produktionsliste). Klick auf den Namen öffnet das Rezept."
-      actions={<Button icon="plus" variant="dashed" onClick={() => oeffnen({ art: "linie", id: null, text: "", fehler: null })}>Menülinie</Button>}
+      actions={planen ? <Button icon="plus" variant="dashed" onClick={() => oeffnen({ art: "linie", id: null, text: "", fehler: null })}>Menülinie</Button> : undefined}
     >
       {linie ? (
         <>
           <div className="pl-head">
             <Select id="linie" label="Menülinie" value={linie.id} onChange={setGewaehlt} options={sortiert.map((l) => ({ value: l.id, label: l.name }))} />
+            {planen ? (
             <div className="pl-actions">
               <Button onClick={() => oeffnen({ art: "linie", id: linie.id, text: linie.name, fehler: null })}>Umbenennen</Button>
               <Button
@@ -129,11 +133,12 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
                 Menülinie löschen
               </Button>
             </div>
+            ) : null}
           </div>
           <p className="pl-small">
             Gäste dieser Linie: {g?.services ? `${formatZahl(g.gaeste ?? 0)} (${g.herleitung})` : "[Gäste] – noch keinem Service zugeordnet"}
           </p>
-          {ohneMenge ? <Notice title={`${ohneMenge} Komponente(n) ohne Menge`}>In der Systemzuteilung fehlt die Menge pro Portion. Bitte unten mit «Menge» eintragen; bis dahin zeigt die Produktionsliste für diese Komponente kein Total, sondern [Menge].</Notice> : null}
+          {ohneMenge ? <Notice title={`${ohneMenge} Komponente(n) ohne Menge`}>In der Systemzuteilung fehlt die Menge pro Portion. {planen ? "Bitte unten mit «Menge» eintragen; bis dahin" : "Bis dahin"} zeigt die Produktionsliste für diese Komponente kein Total, sondern [Menge].</Notice> : null}
 
           {gerichteNachGang(linienGerichte).map((gr) => (
             <div key={gr.gang}>
@@ -145,13 +150,15 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
                       <strong>{x.gericht_id && rezeptVonGericht.has(x.gericht_id) ? <RezeptLink name={x.bezeichnung} slug={rezeptVonGericht.get(x.gericht_id)} /> : x.bezeichnung}</strong>
                       <div className="pl-small">Anteil {anteilText(x.anteil)} % der Gäste{x.gericht_id ? "" : " · nicht aus dem Katalog"}</div>
                     </div>
+                    {planen ? (
                     <div className="pl-actions">
                       <Button ariaLabel={`Anteil ${x.bezeichnung} ändern`} onClick={() => oeffnen({ art: "anteil", gericht: x, text: anteilText(x.anteil), fehler: null })}>Anteil</Button>
                       <Button ariaLabel={`${x.bezeichnung} entfernen`} onClick={() => fragen({ titel: `${x.bezeichnung} entfernen?`, text: `Das Gericht wird aus der Menülinie ${linie.name} entfernt, mit seinen Komponenten und Mengen pro Gast. Im Katalog bleibt es bestehen.`, bestaetigen: "Entfernen", aktion: () => gerichtEntfernen(x) })}>Entfernen</Button>
                     </div>
+                    ) : null}
                   </div>
                   <DataTable
-                    columns={[
+                    columns={([
                       {
                         key: "bezeichnung",
                         label: "Komponente",
@@ -177,7 +184,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
                           </Button>
                         ),
                       },
-                    ]}
+                    ] as DataTableColumn[]).filter((c) => planen || c.key !== "aktion")}
                     rows={komponenten
                       .filter((k) => k.linie_gericht_id === x.id)
                       .sort((a, c) => a.reihenfolge - c.reihenfolge)
@@ -194,6 +201,8 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
           ))}
           {!linienGerichte.length ? <EmptyState title="Noch keine Gerichte in dieser Linie" /> : null}
 
+          {planen ? (
+          <>
           <div className="pl-eyebrow">Gericht hinzufügen</div>
           <div className="pl-grid-2">
             <Select id="gang" label="Gang" value={gangFilter} onChange={setGangFilter} options={[{ value: "", label: "Alle Gänge" }, ...gaenge.map((x) => ({ value: x, label: x }))]} />
@@ -209,9 +218,11 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
             <EmptyState title="Keine passenden Gerichte" />
           )}
           {auswahl.length > 30 ? <p className="pl-small">{auswahl.length - 30} weitere: Suche oder Gang eingrenzen.</p> : null}
+          </>
+          ) : null}
         </>
       ) : (
-        <EmptyState title="Noch keine Menülinie" text="«Menülinie» legt eine an, z.B. «Spiel 1 und 6»." />
+        <EmptyState title="Noch keine Menülinie" text={planen ? "«Menülinie» legt eine an, z.B. «Spiel 1 und 6»." : undefined} />
       )}
 
       <Dialog

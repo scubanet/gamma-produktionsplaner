@@ -5,6 +5,8 @@ import { Button, StatusPill } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { statusPill, statusSchritte, statusText, type Rezept } from "@/lib/rezepte";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 
 /** Status des Rezepts als Pill mit den Knöpfen «Geprüft», «Freigeben», «Zurück auf Entwurf». Die Datenbank prüft Stand und Recht. */
 export function RezeptStatus({ rezept, admin, onGesetzt }: {
@@ -12,6 +14,7 @@ export function RezeptStatus({ rezept, admin, onGesetzt }: {
   admin: boolean;
   onGesetzt: (status: string, geaendertAm: string) => void;
 }) {
+  const planen = darf(useStufe(), "planen");
   const [laeuft, setLaeuft] = useState(false);
   const [fehler, setFehler] = useState<string | null>(null);
 
@@ -28,7 +31,7 @@ export function RezeptStatus({ rezept, admin, onGesetzt }: {
   return (
     <>
       <StatusPill status={statusPill(rezept.status)}>{statusText(rezept.status)}</StatusPill>
-      {statusSchritte(rezept.status, admin).map((s) => (
+      {(planen ? statusSchritte(rezept.status, admin) : []).map((s) => (
         <Button key={s.status} onClick={() => setzen(s.status)} disabled={laeuft}>{s.label}</Button>
       ))}
       {fehler ? <span className="pl-small" role="alert">{fehler}</span> : null}

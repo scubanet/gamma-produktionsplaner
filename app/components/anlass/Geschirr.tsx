@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, DataTable, Dialog, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, Skeleton, EmptyState } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, Skeleton, EmptyState, type DataTableColumn } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatChf } from "@/lib/offerte";
 import {
@@ -9,6 +9,8 @@ import {
   type Bedarf, type PositionForm, type ServiceArtikel,
 } from "@/lib/geschirr";
 import { fehlerText } from "@/lib/fehler";
+import { useStufe } from "@/components/Anmeldung";
+import { darf } from "@/lib/stufe";
 
 type Daten = { zeilen: Bedarf[]; artikel: ServiceArtikel[]; standard: number };
 const wert = (e: unknown) => (e as { target: HTMLInputElement }).target.value;
@@ -36,6 +38,9 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
   onMeldung: (text: string) => void;
   onFehler: (titel: string, text: string) => void;
 }) {
+  const stufe = useStufe();
+  const planen = darf(stufe, "planen");
+  const preise = darf(stufe, "preise");
   const [daten, setDaten] = useState<Daten | null>(null);
   const [ladeFehler, setLadeFehler] = useState<string | null>(null);
   const [form, setForm] = useState<(PositionForm & { fehler: string | null }) | null>(null);
@@ -102,6 +107,7 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
       title="Geschirr und Besteck"
       meta="pro Gast und Gang, Abweichungen pro Gericht als eigene Position, Material für die Ausgabe als feste Stückzahl"
       actions={
+        !planen ? undefined :
         <span className="pl-actions pl-print-hide">
           <Button onClick={standardUebernehmen} disabled={arbeitet || !daten}>Standard übernehmen</Button>
           <Button icon="plus" variant="dashed" onClick={() => { setForm({ ...formAus(null, gaenge[0] ?? ""), fehler: null }); setOffen(true); }} disabled={!daten?.artikel.length}>Position</Button>
@@ -110,10 +116,10 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
     >
       <div className="pl-stack">
         {ladeFehler ? <Notice role="alert" title="Geschirr nicht geladen">{ladeFehler}</Notice> : null}
-        {daten && !daten.artikel.length ? (
+        {planen && daten && !daten.artikel.length ? (
           <Notice title="Noch keine Artikel">Teller, Besteck und Material zuerst in den Stammdaten unter «Geschirr und Besteck» erfassen.</Notice>
         ) : null}
-        {daten && daten.artikel.length && !daten.standard && !zeilen.length ? (
+        {planen && daten && daten.artikel.length && !daten.standard && !zeilen.length ? (
           <Notice title="Kein Standard für diese Angebotsform">
             {angebotsform ? "In den Stammdaten unter «Standard Geschirr» festlegen, was pro Gast und Gang gilt. Oder die Positionen hier von Hand erfassen." : "Der Anlass hat keine Angebotsform. Im Kopf des Anlasses wählen."}
           </Notice>
@@ -121,17 +127,17 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
 
         {zeilen.length ? (
           <>
-            <div className="pl-grid-4">
+            <div className={preise ? "pl-grid-4" : "pl-grid-3"}>
               <KpiTile label="Positionen" value={String(zeilen.length)} detail={`${zeilen.filter((z) => z.aus_standard).length} aus dem Standard, ${zeilen.filter((z) => !z.aus_standard).length} angepasst oder ergänzt`} />
               <KpiTile label="Gäste für die Rechnung" value={gaeste === null ? "[Gäste]" : <span className="pl-assumed">{stueck(gaeste)}</span>} detail="grösster Service; Annahme: dazwischen wird abgewaschen" />
               <KpiTile label="Zusatzbedarf Miete" value={miete.length ? `${miete.length} Artikel` : "–"} detail={miete.length ? `${stueck(miete.reduce((s, z) => s + (z.miete ?? 0), 0))} Stück über dem eigenen Bestand` : "eigener Bestand reicht"} />
-              <KpiTile label="Mietkosten" value={kosten === null ? "[Preis]" : formatChf(kosten)} detail="Stück über dem Bestand × Mietpreis" />
+              {preise ? <KpiTile label="Mietkosten" value={kosten === null ? "[Preis]" : formatChf(kosten)} detail="Stück über dem Bestand × Mietpreis" /> : null}
             </div>
             {gruppen.map((g) => (
               <div key={g.gang}>
                 <div className="pl-eyebrow" style={{ marginBottom: 8 }}>{g.gang}</div>
                 <DataTable
-                  columns={[
+                  columns={([
                     { key: "artikel", label: "Artikel", subKey: "sub" },
                     { key: "proGast", label: "pro Gast × Wechsel", numeric: true },
                     { key: "bedarf", label: "Bedarf", numeric: true },
@@ -151,7 +157,7 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
                         </span>
                       ),
                     },
-                  ]}
+                  ] as DataTableColumn[]).filter((c) => planen || c.key !== "aktion")}
                   rows={g.zeilen.map((z) => ({
                     id: z.id,
                     z,
@@ -173,8 +179,8 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
               Gleichzeitige Anlässe sind beim eigenen Bestand noch nicht berücksichtigt. [Körbe] und [Gewicht]: Stück pro Korb und Gewicht beim Artikel in den Stammdaten erfassen.
             </p>
           </>
-        ) : daten && daten.artikel.length ? (
-          <EmptyState title="Noch keine Positionen" text="«Standard übernehmen» schlägt sie für die Gänge des Menüs vor." />
+        ) : daten && (daten.artikel.length || !planen) ? (
+          <EmptyState title="Noch keine Positionen" text={planen ? "«Standard übernehmen» schlägt sie für die Gänge des Menüs vor." : undefined} />
         ) : !daten && !ladeFehler ? (
           <Skeleton variant="zeile" label="Geschirr wird geladen" />
         ) : null}
