@@ -19,13 +19,12 @@ import { KomponenteBearbeiten } from "@/components/KomponenteBearbeiten";
 import type { Hinweis, Regeneration, System, Zuteilung } from "@/lib/systemzuteilung";
 
 type Bearbeiten = { zeile: Zuteilung; hinweise: Hinweis[]; systeme: System[]; regenerationen: Regeneration[] };
-import { mengenKontrollen, statusKontrolle, STATUS_ERWARTET, wellenKontrolle, WELLEN_ERWARTET, type Kontrolle } from "@/lib/kontrollwerte";
+import { mengenKontrollen, wellenKontrolle, WELLEN_ERWARTET, zeigtAbgleich, type Kontrolle } from "@/lib/kontrollwerte";
 import { excelExport } from "@/lib/export";
 import { fehlerText } from "@/lib/fehler";
 
 type Anlass = { id: string; name: string; datum: string | null; datum_bis: string | null; saison_id: string | null; saison: { name: string } | null; menuelinie: { id: string; name: string }[] };
-type StatusZahl = Record<keyof typeof STATUS_ERWARTET, number | null>;
-type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; status: StatusZahl; checkliste: ChecklisteZeile[]; proSpiel: SpielBedarf[]; zuteilung: ZuteilungKurz[]; rezepte: Map<string, { slug: string; status: string }>; systemName: Map<string, string> };
+type Daten = { anlass: Anlass; liste: ListeZeile[]; bedarf: BedarfZeile[]; wellen: (number | null)[]; checkliste: ChecklisteZeile[]; proSpiel: SpielBedarf[]; zuteilung: ZuteilungKurz[]; rezepte: Map<string, { slug: string; status: string }>; systemName: Map<string, string> };
 
 const STATUS_PILL: Record<string, "ok" | "warn" | "info"> = { ok: "ok", offen: "warn", Zukauf: "info" };
 const HALTBARKEIT_HINWEIS = "Annahme aus der Excel (rot markiert), noch mit Philipp und dem Küchenchef zu bestätigen. Wellen und Start hängen davon ab.";
@@ -40,7 +39,6 @@ async function laden(): Promise<Daten> {
   const anlass = (a.data as unknown as Anlass[]).find((x) => x.menuelinie.length > 0);
   if (!anlass?.saison_id) throw new Error("Kein Anlass mit Menülinien gefunden.");
 
-  const statusWerte = Object.keys(STATUS_ERWARTET) as (keyof typeof STATUS_ERWARTET)[];
   const saisonId = anlass.saison_id;
   // Checkliste: eine Zeile pro Komponente und Welle, kann über 1000 Zeilen haben.
   const checklisteLaden = alleSeiten<ChecklisteZeile>((von, bis) =>
@@ -61,18 +59,15 @@ async function laden(): Promise<Daten> {
     supabase.from("produktionsliste").select("*").eq("saison_id", anlass.saison_id),
     supabase.from("anlass_komponente_bedarf").select("*").in("anlass_id", (a.data as unknown as Anlass[]).filter((x) => x.saison_id === anlass.saison_id).map((x) => x.id)),
     ...WELLEN_ERWARTET.map(([tage]) => supabase.rpc("wellen_anzahl", { p_saison: anlass.saison_id!, p_haltbarkeit: tage })),
-    ...statusWerte.map((st) => supabase.from("komponente_zuteilung").select("id", { count: "exact", head: true }).eq("status", st)),
   ]);
   for (const r of [liste, bedarf, ...rest]) if (r.error) throw r.error;
   const checkliste = await checklisteLaden;
   const proSpiel = await proSpielLaden;
-  const wellen = rest.slice(0, WELLEN_ERWARTET.length).map((w) => ((w as { data: unknown }).data as number | null) ?? null);
-  const zaehlung = rest.slice(WELLEN_ERWARTET.length) as { count: number | null }[];
-  const status = Object.fromEntries(statusWerte.map((st, i) => [st, zaehlung[i].count])) as StatusZahl;
+  const wellen = rest.map((w) => ((w as { data: unknown }).data as number | null) ?? null);
   const [zuteilung, rezepte, systeme] = await Promise.all([zuteilungLaden, rezepteLaden, systemeLaden]);
   if (systeme.error) throw systeme.error;
   return {
-    anlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, status, checkliste, proSpiel, zuteilung,
+    anlass, liste: liste.data ?? [], bedarf: bedarf.data ?? [], wellen, checkliste, proSpiel, zuteilung,
     rezepte: new Map(rezepte.map((r) => [r.id, { slug: r.slug, status: r.status }])),
     systemName: new Map((systeme.data ?? []).map((s) => [s.code, s.name])),
   };
@@ -194,7 +189,7 @@ export default function Produktionsliste() {
   const kategorien = useMemo(() => [...new Set((daten?.liste ?? []).map((l) => l.kategorie ?? ""))].filter(Boolean).sort((a, b) => a.localeCompare(b, "de-CH")), [daten]);
 
   const kontrollen: Kontrolle[] = daten
-    ? [...mengenKontrollen(daten.liste, daten.bedarf), ...WELLEN_ERWARTET.map(([t, e], i) => wellenKontrolle(t, e, daten.wellen[i])), statusKontrolle(daten.status)]
+    ? [...mengenKontrollen(daten.liste, daten.bedarf), ...WELLEN_ERWARTET.map(([t, e], i) => wellenKontrolle(t, e, daten.wellen[i]))]
     : [];
   const abweichungen = kontrollen.filter((k) => k.ok === false).length;
 
@@ -411,9 +406,11 @@ export default function Produktionsliste() {
             </p>
           </Card>
 
+          {/* Die Kontrollwerte aus der Excel gibt es nur für den Spengler Cup. */}
+          {zeigtAbgleich(daten?.anlass.name) ? (
           <details className="pl-details pl-print-hide">
             <summary>
-              Abgleich mit der Excel
+              Abgleich Spengler Cup mit der Excel
               <span className="pl-small">{daten ? (abweichungen ? `${abweichungen} Abweichung(en)` : "alle Kontrollwerte gleich") : ""}</span>
             </summary>
             <DataTable
@@ -426,6 +423,7 @@ export default function Produktionsliste() {
               rows={kontrollen.map((k, i) => ({ id: i, ...k }))}
             />
           </details>
+          ) : null}
         </div>
 
         {bearbeiten && !schmal ? (

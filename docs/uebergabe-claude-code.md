@@ -80,8 +80,8 @@ Müssen nach jeder Änderung gleich herauskommen (zuletzt geprüft nach Migratio
 - Bündner Trockenfleisch, Spengler Cup gesamt: 181.5 kg (30 g × 6'050 Gäste)
 - Rindsentrecote, Menülinie «Spiel 1 und 6»: 79.2 kg (120 g × 1'100 Gäste × 60 %)
 - Bunter Blattsalat, Menülinie «Spiel 1 und 6»: 27.5 kg
-- Haltbarkeit 21 Tage ergibt 3 Wellen in der Saison Winter 2026/27, 3 Tage ergibt 8, 180 Tage ergibt 1
-- Komponenten-Status: 310 ok, 130 offen, 53 Zukauf
+- Haltbarkeit 21 Tage ergibt 3 Wellen in der Saison Winter 2026/27, 3 Tage ergibt 8, 180 Tage ergibt 1 (Stand 20.11.2026: die App rechnet bei 3 Tagen 10 statt 8, siehe `docs/plan-datenkette.md`, Aufgabe 6)
+- Komponenten-Status: kein Kontrollwert mehr (seit 20.11.2026; er ändert sich mit jeder Zuteilung, Stand 311 ok, 129 offen, 53 Zukauf)
 
 ## Entscheide von Dominik
 

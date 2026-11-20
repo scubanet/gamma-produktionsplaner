@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { filtern, herleitungTerm, konservierungText, lagerart, leerwert, linienZeilen, mitAufgaben, mitZuteilung, naechsteSortierung, OHNE_ZUSTAENDIG, saisonZeilen, sortieren, spiele, spielZeilen, type BedarfZeile, type ListeZeile, type SpielBedarf } from "../lib/produktionsliste";
 import { aufgabenAus, fortschritt, fortschrittText, personen, schluessel, type Aufgabe, type ChecklisteZeile } from "../lib/checkliste";
-import { mengenKontrollen, statusKontrolle, wellenKontrolle } from "../lib/kontrollwerte";
+import { mengenKontrollen, wellenKontrolle, zeigtAbgleich } from "../lib/kontrollwerte";
 import { formatAnteil, formatDatum, formatMenge } from "../lib/format";
 
 const liste = (p: Partial<ListeZeile>): ListeZeile => ({
@@ -170,10 +170,10 @@ describe("Nachbesserungen aus dem Review", () => {
     expect(leerwert("ok", "Start")).toBe("–");
   });
 
-  it("Status-Kontrollwert 310 / 130 / 53", () => {
-    expect(statusKontrolle({ ok: 310, offen: 130, Zukauf: 53 }).ok).toBe(true);
-    expect(statusKontrolle({ ok: 309, offen: 131, Zukauf: 53 }).ok).toBe(false);
-    expect(statusKontrolle({ ok: null, offen: 130, Zukauf: 53 }).ok).toBeNull();
+  it("der Abgleich mit der Excel gilt nur für den Spengler Cup", () => {
+    expect(zeigtAbgleich("Spengler Cup")).toBe(true);
+    expect(zeigtAbgleich("White Turf 1")).toBe(false);
+    expect(zeigtAbgleich(null)).toBe(false);
   });
 });
 

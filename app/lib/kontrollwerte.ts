@@ -1,6 +1,12 @@
 // Kontrollwerte aus der GAMMA-Excel (docs/uebergabe-claude-code.md). Die App vergleicht nur und meldet
-// Abweichungen; angepasst wird nichts.
+// Abweichungen; angepasst wird nichts. Die Werte gelten für den Spengler Cup in der Saison Winter 2026/27 und
+// werden nur dort gezeigt. Den Status der Komponenten (ok / offen / Zukauf) vergleicht die App nicht mehr:
+// er ändert sich mit jeder Zuteilung und war nie ein Rechenwert.
 import type { BedarfZeile, ListeZeile } from "./produktionsliste";
+
+/** Anlass, für den die Excel als Abgleich vorliegt. */
+export const ABGLEICH_ANLASS = "Spengler Cup";
+export const zeigtAbgleich = (anlassName: string | null | undefined): boolean => anlassName === ABGLEICH_ANLASS;
 
 export type Kontrolle = { label: string; excel: string; app: string | null; ok: boolean | null };
 
@@ -42,19 +48,5 @@ export function wellenKontrolle(tage: number, erwartet: number, app: number | nu
     excel: String(erwartet),
     app: app === null ? null : String(app),
     ok: app === null ? null : app === erwartet,
-  };
-}
-
-export const STATUS_ERWARTET = { ok: 310, offen: 130, Zukauf: 53 } as const;
-
-/** Komponenten-Status über alle Komponenten der Systemzuteilung (nicht nur Spengler Cup). */
-export function statusKontrolle(app: Record<keyof typeof STATUS_ERWARTET, number | null>): Kontrolle {
-  const werte = [app.ok, app.offen, app.Zukauf];
-  const fehlt = werte.some((w) => w === null);
-  return {
-    label: "Komponenten-Status ok / offen / Zukauf",
-    excel: `${STATUS_ERWARTET.ok} / ${STATUS_ERWARTET.offen} / ${STATUS_ERWARTET.Zukauf}`,
-    app: fehlt ? null : werte.join(" / "),
-    ok: fehlt ? null : app.ok === STATUS_ERWARTET.ok && app.offen === STATUS_ERWARTET.offen && app.Zukauf === STATUS_ERWARTET.Zukauf,
   };
 }

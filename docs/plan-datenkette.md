@@ -42,7 +42,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 | 3 | Einkauf aus dem Rezept (gebaut 20.11.2026) | kritisch | 2 |
 | 4 | Warenkosten aus dem Rezept (für den Anlass gebaut 20.11.2026, Offerte offen) | kritisch | 2 |
 | 5 | Aufwand in Ressourcen und Rentabilität übernehmen | kritisch | D1 |
-| 6 | Anlass wählen, Kontrollwerte aus dem Code nehmen | mittel | – |
+| 6 | Anlass wählen, Kontrollwerte aus dem Code nehmen (Kontrollwerte gebaut 20.11.2026, Anlass-Wahl wartet auf Entscheid) | mittel | – |
 | 7 | Tests für die Rechenlogik in der Datenbank | mittel | – |
 | 8 | Sicherung ausserhalb von Supabase | mittel | Entscheid |
 | 9 | Änderungsprotokoll und Konfliktprüfung | mittel | – |
@@ -183,6 +183,16 @@ Migrationen 32 bis 36 liefen ohne Fehler. Danach lesend geprüft und in der App 
 - [ ] Dominik rechnet drei Werte von Hand nach (eine Einkaufsmenge, eine Stundenzahl, einen Deckungsbeitrag).
 
 ### Aufgabe 6: Anlass wählen, Kontrollwerte aus dem Code nehmen
+
+**Stand 20.11.2026: Kontrollwerte gebaut, Anlass-Wahl wartet auf einen Entscheid.**
+
+- Gebaut: Die Status-Kontrolle (310 / 130 / 53) ist entfernt; sie war rot, seit eine Komponente zugeteilt wurde, ohne fachlichen Grund. Der Abgleich heisst «Abgleich Spengler Cup mit der Excel» und erscheint nur, wenn die Produktionsliste den Spengler Cup zeigt (`zeigtAbgleich` in `app/lib/kontrollwerte.ts`).
+- **Abweichung, gemeldet, nicht angepasst:** «Wellen bei 3 Tagen Haltbarkeit»: Excel 8, App 10. Die drei Mengen (181.5 kg, 79.2 kg, 27.5 kg) und die Wellen bei 21 und 180 Tagen sind gleich. `wellen_anzahl` zählt über alle sechs Anlässe der Saison Winter 2026/27 (Spengler Cup, WEF 2027, Snow Polo World Cup, White Turf 1 bis 3); die Excel rechnete vermutlich mit weniger Anlässen oder anderen Daten. An der Funktion hat sich nichts geändert. Zu klären: Welche Anlässe und Daten galten in der Excel, und sollen Anlässe ohne Menülinie überhaupt Wellen auslösen?
+- Nicht gebaut: die Wahl des Anlasses. Produktionsliste, Wellen, Checkliste und Einkauf rechnen in der Datenbank pro Saison, nicht pro Anlass; eine Welle bedient mehrere Anlässe. Alle sechs Anlässe liegen in derselben Saison, und nur der Spengler Cup hat Menülinien. «White Turf 1 wählen» ergäbe heute eine leere Liste.
+
+**Frage** (neu): Was soll die Wahl bedeuten?
+1. Saison wählen (Kontext ist die Saison; der Anlass dient nur als Filter für «Spiel» und für den Einkauf, wie heute «Welle oder Anlass»). Wenig Umbau, nützt erst mit einer zweiten Saison.
+2. Mengen pro Anlass (Produktionsliste und Einkauf filtern auf einen Anlass; Wellen bleiben für die Saison). Braucht eine View pro Anlass in der Datenbank.
 
 **Befund:** `produktion/page.tsx` Zeile 39 nimmt den ersten Anlass mit Menülinien; Wellen, Aufwand, Küchenpass und Einkauf nehmen die jüngste Saison. `app/lib/kontrollwerte.ts` enthält feste Werte; die Status-Kontrolle weicht ab, seit eine Komponente bearbeitet wurde.
 
