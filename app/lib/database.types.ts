@@ -2978,6 +2978,14 @@ export type Database = {
         }
         Relationships: []
       }
+      einkauf_zutaten_stand: {
+        Row: {
+          saison_id: string | null
+          verknuepft: number | null
+          zutaten: number | null
+        }
+        Relationships: []
+      }
       gericht_warenkosten: {
         Row: {
           gericht_id: string | null
@@ -4404,6 +4412,7 @@ export type Database = {
           skal_pct: number
         }[]
       }
+      saison_rezepte: { Args: { p_saison: string }; Returns: string[] }
       wellen_anzahl: {
         Args: { p_haltbarkeit: number; p_saison: string }
         Returns: number
@@ -4417,6 +4426,50 @@ export type Database = {
         }[]
       }
       wellenplan_uebernehmen: { Args: { p_saison: string }; Returns: number }
+      zutat_artikel_loesen: {
+        Args: { p_artikel: string; p_schluessel: string }
+        Returns: number
+      }
+      zutat_artikel_verknuepft: {
+        Args: { p_saison: string }
+        Returns: {
+          anzahl: number
+          artikel: string
+          artikel_einheit: string
+          artikel_id: string
+          bezeichnung: string
+          preis_pro_einheit: number
+          rezepte_anzahl: number
+          schluessel: string
+        }[]
+      }
+      zutat_artikel_vorschlag: {
+        Args: { p_anzahl?: number; p_saison: string; p_schwelle?: number }
+        Returns: {
+          aehnlichkeit: number
+          anzahl: number
+          artikel: string
+          artikel_einheit: string
+          artikel_id: string
+          artikelnummer: string
+          bezeichnung: string
+          preis_pro_einheit: number
+          rang: number
+          rezepte: string[]
+          rezepte_anzahl: number
+          schluessel: string
+          weitere: number
+        }[]
+      }
+      zutat_artikel_zuordnen: {
+        Args: {
+          p_artikel: string
+          p_saison: string
+          p_schluessel: string
+          p_weitere?: boolean
+        }
+        Returns: number
+      }
     }
     Enums: {
       fixkosten_kategorie:

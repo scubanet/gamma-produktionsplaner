@@ -6,22 +6,25 @@ import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import { formatChf } from "@/lib/offerte";
+import { standText } from "@/lib/zutat-vorschlag";
 import { bestellschlussText, nachLieferant, type ArtikelZeile, type Position, type Summe } from "@/lib/einkauf";
 import { ArtikelZuordnen, type Ziel } from "@/components/einkauf/ArtikelZuordnen";
 import { fehlerText } from "@/lib/fehler";
 
-type Daten = { summe: Summe; artikel: ArtikelZeile[]; positionen: Position[] };
+type Daten = { summe: Summe; artikel: ArtikelZeile[]; positionen: Position[]; zutaten: { zutaten: number | null; verknuepft: number | null } | null };
 
 async function laden(): Promise<Daten | null> {
   const s = await supabase.from("einkauf_summe").select("*").order("saison", { ascending: false }).limit(1).maybeSingle();
   if (s.error) throw s.error;
   if (!s.data?.saison_id) return null;
   const saison = s.data.saison_id;
-  const [artikel, positionen] = await Promise.all([
+  const [artikel, positionen, zutaten] = await Promise.all([
     alleSeiten<ArtikelZeile>((von, bis) => supabase.from("einkauf_artikel").select("*").eq("saison_id", saison).order("sortierung").order("artikel_id").range(von, bis)),
     alleSeiten<Position>((von, bis) => supabase.from("einkauf_position").select("*").eq("saison_id", saison).order("sortierung").order("komponente_id").order("einheit").range(von, bis)),
+    // Zähler der verknüpften Zutaten (Migration 33). Fehlt die View noch, bleibt der Zähler ein Platzhalter und die Liste lädt trotzdem.
+    supabase.from("einkauf_zutaten_stand").select("zutaten, verknuepft").eq("saison_id", saison).maybeSingle().then((r) => r.data ?? null),
   ]);
-  return { summe: s.data, artikel, positionen };
+  return { summe: s.data, artikel, positionen, zutaten };
 }
 
 export default function Einkauf() {
@@ -134,6 +137,9 @@ export default function Einkauf() {
             <KpiTile label="Zukauf ohne Artikel" value={formatZahl(s.positionen_zukauf ?? 0)} detail="CF-Stufe 4 oder 5, Artikel noch zuordnen" />
             <KpiTile label="Noch nicht verknüpft" value={formatZahl(s.positionen_offen ?? 0)} detail="Komponenten ohne Hauptartikel" />
           </div>
+          <p className="pl-small pl-print-hide">
+            <a href="/einkauf/zutaten/">{standText(daten?.zutaten ?? null)}</a>
+          </p>
 
           {(s.positionen_nicht_im_plan ?? 0) > 0 ? (
             <div className="pl-print-hide">

@@ -28,6 +28,7 @@ const ANSICHTEN: Record<string, Bereich[]> = {
     { label: "Einkaufsliste", href: "/einkauf/" },
     { label: "Lieferanten", href: "/einkauf/lieferanten/" },
     { label: "Artikel zuordnen", href: "/einkauf/zuordnen/" },
+    { label: "Zutaten zuordnen", href: "/einkauf/zutaten/" },
   ],
 };
 

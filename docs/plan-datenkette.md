@@ -11,7 +11,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 **Für jede Aufgabe gilt:**
 
 - Dieser Plan beschreibt Umfang, Dateien und Abnahme, nicht den Code. Vor dem Bauen die Schritte der Aufgabe ausarbeiten und die betroffenen Views lesen.
-- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 33), Views mit `security_invoker = true`, danach `cd app && npm run types`.
+- Rechenlogik in Views oder SQL-Funktionen, neue Migration pro Aufgabe (nächste Nummer ist 34), Views mit `security_invoker = true`, danach `cd app && npm run types`.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Jede neue Zahl bekommt eine Spalte «Herleitung».
 - Tests und Typprüfung vor jedem Commit: `cd app && npm test && npm run typecheck`. Ein Commit pro Aufgabe, Nachricht auf Deutsch.
 - Fragen an Dominik (mit **Frage** markiert) vor dem Bauen klären, nicht raten.
@@ -38,7 +38,7 @@ Stand: 19.11.2026. Ergebnis der kritischen Durchsicht von Repo und Pilot-Datenba
 | --- | --- | --- | --- |
 | D | Daten erfassen (Dominik, kein Code) | kritisch | – |
 | 1 | Rezept-Freigabe und Kennzeichnung «aus Entwurf» (gebaut 19.11.2026) | kritisch | – |
-| 2 | Zutaten mit Artikeln verknüpfen | kritisch | – |
+| 2 | Zutaten mit Artikeln verknüpfen (gebaut 20.11.2026) | kritisch | – |
 | 3 | Einkauf aus dem Rezept | kritisch | 2 |
 | 4 | Warenkosten aus dem Rezept | kritisch | 2 |
 | 5 | Aufwand in Ressourcen und Rentabilität übernehmen | kritisch | D1 |
@@ -80,6 +80,16 @@ Aufgaben 1, 2, 6 und 7 sind unabhängig. Empfohlen: D parallel zu 1 und 2, dann 
 **Abnahme:** Ein freigegebenes Rezept erscheint ohne Kennzeichnung, ein Entwurf mit. Summen, die Entwürfe enthalten, sind als solche erkennbar.
 
 ### Aufgabe 2: Zutaten mit Artikeln verknüpfen
+
+**Stand 20.11.2026: gebaut** (Migration 33, noch einzuspielen). Seite `/einkauf/zutaten/` «Zutaten zuordnen», Zähler in der Einkaufsliste.
+
+- Eine Zeile pro Bezeichnung, nicht pro Zutat: «Salz» steht in 115 Zutaten und wird einmal entschieden. Ein Klick verknüpft alle offenen Zutaten mit genau dieser Bezeichnung in den Rezepten der Saison; mit dem Häkchen «auch in Rezepten ausserhalb der Saison» auch die übrigen. Bestehende Verknüpfungen bleiben.
+- «Verknüpfte Zutaten» zeigt, was verknüpft ist, mit «Lösen» (gilt für alle Rezepte). Bisher liess sich eine Verknüpfung in der App weder ansehen noch ändern.
+- Zutaten, die ein Unterrezept sind (`zutat.komponente_id`), bekommen keinen Artikel und zählen nicht mit.
+- Gelesen in der Pilot-Datenbank am 20.11.2026: 179 Rezepte im Bedarf der Saison, 1087 Zutaten, 480 verknüpft, 178 offene Bezeichnungen, 46 davon mit Vorschlag. Die Abfragen der Vorschläge, der verknüpften Zutaten und des Zählers liefen lesend gegen die Datenbank; die Migration selbst und die beiden schreibenden Funktionen liefen in keiner Datenbank. Vor dem Einspielen `supabase db push --remote --dry-run`.
+- Abnahme offen: Die Zutaten der zehn Rezepte von Spiel 1 verknüpft Dominik von Hand (Entscheid: Verknüpfungen macht er selbst).
+
+**Frage** (neu, vor Aufgabe 3 klären): Grundzutaten wie Salz, Zucker und Weissmehl haben keinen passenden Artikel in der Preisliste, die Vorschläge dafür sind falsch («Zucker» trifft «Aprikosenmark ohne Zucker»). Fehlen diese Artikel in der Preisliste? Und «Wasser» (22 Zutaten in der Saison) wird nie eingekauft: Braucht es ein Kennzeichen «kein Einkauf», damit eine Komponente in Aufgabe 3 trotzdem als vollständig gilt?
 
 **Befund:** `zutat.artikel_id` gibt es seit Migration 01, 480 von 3020 Zutaten sind verknüpft. Eine Seite dafür fehlt.
 

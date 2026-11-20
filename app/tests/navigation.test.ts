@@ -75,6 +75,7 @@ describe("Navigation in Bereichen", () => {
     expect(seitenTabs("/produktion/wellen/").filter((x) => x.current).map((x) => x.label)).toEqual(["Wellen"]);
     expect(seitenTabs("/produktion/").filter((x) => x.current).map((x) => x.label)).toEqual(["Liste"]);
     expect(seitenTabs("/rezepte/")).toEqual([]);
+    expect(seitenTabs("/einkauf/zutaten/").map((x) => [x.label, x.current])).toEqual([["Einkaufsliste", false], ["Lieferanten", false], ["Artikel zuordnen", false], ["Zutaten zuordnen", true]]);
   });
 
   it("Ziel nach der Anmeldung: nur Pfade dieser App", () => {

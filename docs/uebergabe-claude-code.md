@@ -160,3 +160,12 @@ Plan `docs/plan-premium-schliff.md`, Aufgaben 0 bis 8 gebaut und committet, noch
 - Bewegung, Skelett beim Laden, leere Zustände mit nächstem Schritt, eigener Dialog bei ungespeicherten Änderungen.
 - Fehlermeldungen: `app/lib/fehler.ts`. Deutsche Meldungen aus `raise exception` bleiben; neue Funktionen der Datenbank sollen ihre Meldungen weiter auf Deutsch schreiben.
 - Offen: Aufgabe 9 (Abnahme mit Bildern, Dominik sieht sie durch), Mailvorlage im Dashboard neu eintragen, Design-System-Artifact nachführen, Befunde N1, N8, N9, N10 im Plan.
+
+## Nachtrag 20.11.2026: Datenkette, Aufgabe 2
+
+Zutaten mit Artikeln verknüpfen: Seite `/einkauf/zutaten/`, Migration 33 (`zutat_artikel`), committet, noch nicht ausgeliefert.
+
+- **Reihenfolge beim Ausliefern:** zuerst `supabase db push --remote` (Migrationen 32 und 33), dann `cd app && npm run types` (die Typen sind von Hand nachgeführt und sollen gleich herauskommen), erst dann `git push`. Ohne Migration 33 meldet die Seite «Die Datenbank ist nicht auf dem Stand der App»; die Einkaufsliste lädt trotzdem und zeigt den Zähler als Platzhalter.
+- Nicht geprüft: Migration 33 lief in keiner Datenbank. Nach dem Einspielen prüfen: eine Bezeichnung verknüpfen, der Zähler steigt um die gemeldete Zahl; «Lösen» stellt den Stand wieder her.
+- Offene Frage im Plan `docs/plan-datenkette.md`: Grundzutaten ohne Artikel und «Wasser».
+
