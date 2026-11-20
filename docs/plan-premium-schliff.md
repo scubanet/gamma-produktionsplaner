@@ -35,9 +35,9 @@ Aufgaben 1 und 2 zuerst: Sie bestimmen den ersten Eindruck und brauchen zusammen
 
 ### Aufgabe 0: Durchsicht aller Screens
 
-- [ ] `cd app && npm run dev`, anmelden, jede Seite aus `lib/navigation.ts` (`GRUPPEN` und `ANSICHTEN`) in 1440 px und 390 px Breite ansehen, hell und dunkel.
-- [ ] Pro Seite notieren: Was fällt als unfertig auf (Abstände, Umbrüche, überlaufende Tabellen, nackte Texte, Sprünge beim Laden)?
-- [ ] Befunde unten im Abschnitt «Nachtrag Durchsicht» eintragen und den Aufgaben 3 bis 8 zuordnen oder als neue Aufgabe anhängen. Erst danach weiterbauen.
+- [x] `cd app && npm run dev`, anmelden, jede Seite aus `lib/navigation.ts` (`GRUPPEN` und `ANSICHTEN`) in 1440 px und 390 px Breite ansehen, hell und dunkel.
+- [x] Pro Seite notieren: Was fällt als unfertig auf (Abstände, Umbrüche, überlaufende Tabellen, nackte Texte, Sprünge beim Laden)?
+- [x] Befunde unten im Abschnitt «Nachtrag Durchsicht» eintragen und den Aufgaben 3 bis 8 zuordnen oder als neue Aufgabe anhängen. Erst danach weiterbauen.
 
 ### Aufgabe 1: Anmeldeseite neu setzen
 
@@ -45,14 +45,14 @@ Aufgaben 1 und 2 zuerst: Sie bestimmen den ersten Eindruck und brauchen zusammen
 
 **Ursache des überlaufenden Felds:** Die Seite beginnt mit `<main className="pl-main">` ohne den Rahmen `pl-app`. `box-sizing: border-box` hängt an `.pl-app *` und `.pl-root *`, darum rechnet das Feld Innenabstand und Rahmen zur Breite dazu.
 
-- [ ] Rahmen `pl-app` um die Seite, damit `box-sizing` greift. Prüfen, ob das Feld bündig in der Karte sitzt.
-- [ ] Layout `pl-auth`: Inhalt horizontal und vertikal zentriert, Karte höchstens 420 px breit, Hintergrund `surface-sunken`, Karte auf `surface` mit Schatten-Token aus Aufgabe 8.
-- [ ] Über der Karte die Marke aus Aufgabe 2, darunter «Produktionsplaner» als Titel in Normalgrösse (nicht 44 px Versalien).
-- [ ] Unter der Karte eine ruhige Fusszeile: «GAMMA Catering · Hünenberg». Keine weiteren Links.
-- [ ] Alle drei Zustände gleich setzen: E-Mail eingeben, «E-Mail gesendet» mit Code, «Anmeldung bestätigen».
-- [ ] Code-Feld: sechs Ziffern in Mono, grösser (20 px), zentriert, mit Abstand zwischen den Ziffern.
-- [ ] Bei 390 px: Karte randlos mit 16 px Seitenabstand, nichts läuft über.
-- [ ] Commit `Anmeldeseite zentriert, mit Marke, Feld bündig`
+- [x] Rahmen `pl-app` um die Seite, damit `box-sizing` greift. Prüfen, ob das Feld bündig in der Karte sitzt.
+- [x] Layout `pl-auth`: Inhalt horizontal und vertikal zentriert, Karte höchstens 420 px breit, Hintergrund `surface-sunken`, Karte auf `surface` mit Schatten-Token aus Aufgabe 8.
+- [x] Über der Karte die Marke aus Aufgabe 2, darunter «Produktionsplaner» als Titel in Normalgrösse (nicht 44 px Versalien).
+- [x] Unter der Karte eine ruhige Fusszeile: «GAMMA Catering · Hünenberg». Keine weiteren Links.
+- [x] Alle drei Zustände gleich setzen: E-Mail eingeben, «E-Mail gesendet» mit Code, «Anmeldung bestätigen».
+- [x] Code-Feld: sechs Ziffern in Mono, grösser (20 px), zentriert, mit Abstand zwischen den Ziffern.
+- [x] Bei 390 px: Karte randlos mit 16 px Seitenabstand, nichts läuft über.
+- [x] Commit `Anmeldeseite zentriert, mit Marke, Feld bündig`
 
 ### Aufgabe 2: Marke und App-Icons
 
@@ -66,13 +66,13 @@ Für Kopfzeile und Favicon reicht das, für die App-Icons (192 und 512 px) nicht
 
 **Dateien:** neue Komponente `design-system/components/Brand/`, `TopNav`, `app/app/anmelden/page.tsx`, `app/app/favicon.ico`, `app/public/manifest.webmanifest`, `app/public/icons/`, `app/app/layout.tsx`.
 
-- [ ] Komponente `Brand`: Bildmarke («G» im Kreis; bis die SVG von GAMMA vorliegt das Rasterbild der Website in Kopfzeile und Anmeldung) plus Wortmarke «GAMMA Catering» und klein «Produktionsplaner». Grössen `sm` (TopNav) und `lg` (Anmeldung). Bildmarke als SVG-Datei, damit der Tausch gegen das Logo eine Datei betrifft.
-- [ ] `TopNav` nutzt `Brand` statt reinem Text.
-- [ ] Icons 192 und 512 px, maskierbar, dazu `apple-touch-icon` 180 px, aus derselben SVG erzeugt (Skript in `app/scripts/`). Im Manifest eintragen, `icons` ist heute leer.
-- [ ] `favicon.ico` prüfen und durch die Bildmarke ersetzen, dazu `icon.svg`.
-- [ ] `theme-color` für hell und dunkel in `layout.tsx`.
-- [ ] Mailvorlage `supabase/templates/anmeldelink.html` im gleichen Auftritt (Marke oben, Knopf in `accent`). Hinweis in `docs/supabase.md`: Vorlage muss danach von Hand im Dashboard eingetragen werden.
-- [ ] Commit `Marke als Komponente, App-Icons und Favicon`
+- [x] Komponente `Brand`: Bildmarke («G» im Kreis; bis die SVG von GAMMA vorliegt das Rasterbild der Website in Kopfzeile und Anmeldung) plus Wortmarke «GAMMA Catering» und klein «Produktionsplaner». Grössen `sm` (TopNav) und `lg` (Anmeldung). Bildmarke als SVG-Datei, damit der Tausch gegen das Logo eine Datei betrifft.
+- [x] `TopNav` nutzt `Brand` statt reinem Text.
+- [x] Icons 192 und 512 px, maskierbar, dazu `apple-touch-icon` 180 px, aus derselben SVG erzeugt (Skript in `app/scripts/`). Im Manifest eintragen, `icons` ist heute leer.
+- [x] `favicon.ico` prüfen und durch die Bildmarke ersetzen, dazu `icon.svg`.
+- [x] `theme-color` für hell und dunkel in `layout.tsx`.
+- [x] Mailvorlage `supabase/templates/anmeldelink.html` im gleichen Auftritt (Marke oben, Knopf in `accent`). Hinweis in `docs/supabase.md`: Vorlage muss danach von Hand im Dashboard eingetragen werden.
+- [x] Commit `Marke als Komponente, App-Icons und Favicon`
 
 ### Aufgabe 3: Bewegung
 
@@ -153,4 +153,19 @@ Für Kopfzeile und Favicon reicht das, für die App-Icons (192 und 512 px) nicht
 
 ## Nachtrag Durchsicht
 
-*(wird in Aufgabe 0 ergänzt)*
+Durchsicht vom 20.11.2026, angemeldet auf `localhost:3000` gegen die Pilot-Datenbank. Gesehen: alle 16 Seiten aus `GRUPPEN` und `ANSICHTEN` in 1440 px hell; in 390 px Produktionsliste, Rezepte, Anlässe, Rentabilität, Ressourcen und Küchenpass; dunkel Aufwand und Rentabilität. **Nicht gesehen:** die Unterseiten zum Bearbeiten (Anlass, Offerte, Rezept), Karte und Druckansichten, die übrigen Seiten in 390 px und dunkel. Das holt Aufgabe 9 nach.
+
+| Nr. | Befund | Wo | Gehört zu |
+| --- | --- | --- | --- |
+| N1 | Schlägt eine Abfrage fehl, bleibt der ganze Leitstand leer (fünfmal «–», dreimal «Keine Daten.») und zeigt die rohe Meldung «Could not find the table 'public.leitstand_rezepte' in the schema cache». Ursache lokal: Migration 32 ist noch nicht eingespielt. | Leitstand | Aufgabe 5; ob die übrigen Abschnitte trotzdem laden sollen, entscheidet Dominik |
+| N2 | Links ohne Klasse stehen im Blau des Browsers, im Dunkel-Thema schlecht lesbar. | Aufwand (Rezept-Link «Eingelegte Birne»), vermutlich weitere | Aufgabe 8: Link-Stil in `accent` |
+| N3 | Abstand zwischen Seitenkopf und Inhalt ist uneinheitlich: gross bei Produktionsliste, Einkauf, Lieferanten, Benutzer, Stammdaten, Systemzuteilung; eng bei Anlässen und Offerten. Im Aufwand klebt die Unterzeile am Titel. | mehrere | Aufgabe 8 |
+| N4 | Namen in der ersten Spalte sind Sekundär-Buttons (Kasten um «Spengler Cup», «O-2026-0001»). Wirkt schwer; die Zeile selbst ist nicht klickbar. | Anlässe, Offerten | Aufgabe 8 (klickbare Zeilen) |
+| N5 | Der Knopf «+ Zuständig» bricht auf zwei Zeilen um. | Produktionsliste, Wellen | Aufgabe 8 |
+| N6 | Ladetext «Vorschläge werden gesucht …», im Breadcrumb «EINKAUF · …». | Artikel zuordnen | Aufgabe 4 |
+| N7 | Leere Zustände als nackter Satz: «Keine Daten.», «Noch kein Personal erfasst.», «Noch keine Lieferanten.», «Noch nichts erfasst.» | Leitstand, Ressourcen, Lieferanten, Stammdaten, Einkauf | Aufgabe 6 |
+| N8 | Platzhalter als Leitzahl: `[Personal]`, `[DB]`, `[Ergebnis]`, `[Break-even]`, `[Preis]` in 30 px Mono füllen die KPI-Reihe. Fachlich richtig (nie schätzen), wirkt aber unfertig. | Ressourcen, Rentabilität, Einkauf | offen, Entscheid Dominik: so lassen oder ruhiger darstellen |
+| N9 | In 390 px steht «Skalieren» nicht auf der Linie des Felds «andere Anzahl Chargen». | Rezepte | Aufgabe 8 |
+| N10 | Dunkel: Karte (`surface`) ist dunkler als der Grund `surface-sunken`. | Anmeldung | Aufgabe 8 (Schatten-Tokens hell und dunkel) |
+
+Ohne Befund: In 390 px läuft auf den sechs geprüften Seiten nichts über die Breite, Bedienelemente der Produktionsliste sind mindestens 44 px hoch. Die Marke steht auf jeder Seite in der Kopfzeile.
