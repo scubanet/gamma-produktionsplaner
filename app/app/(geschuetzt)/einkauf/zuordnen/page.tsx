@@ -12,12 +12,13 @@ type Daten = { saison: string; liste: KomponenteOffen[] };
 
 async function laden(): Promise<Daten | null> {
   // Pilot: eine Saison. Gibt es mehrere, die jüngste (wie in der Einkaufsliste).
-  const s = await supabase.from("einkauf_summe").select("saison_id, saison").order("saison", { ascending: false }).limit(1).maybeSingle();
+  // Direkt aus der Tabelle: die View einkauf_summe rechnet dafür den ganzen Einkauf.
+  const s = await supabase.from("saison").select("id, name").order("name", { ascending: false }).limit(1).maybeSingle();
   if (s.error) throw s.error;
-  if (!s.data?.saison_id) return null;
-  const v = await supabase.rpc("komponente_artikel_vorschlag", { p_saison: s.data.saison_id });
+  if (!s.data?.id) return null;
+  const v = await supabase.rpc("komponente_artikel_vorschlag", { p_saison: s.data.id });
   if (v.error) throw v.error;
-  return { saison: s.data.saison ?? "[Saison]", liste: gruppieren((v.data ?? []) as VorschlagZeile[]) };
+  return { saison: s.data.name ?? "[Saison]", liste: gruppieren((v.data ?? []) as VorschlagZeile[]) };
 }
 
 export default function ArtikelZuordnenSeite() {

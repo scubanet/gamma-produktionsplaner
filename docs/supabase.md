@@ -77,6 +77,7 @@ Stand: 15.11.2026
 | 36 anlass_warenkosten | Views `anlass_warenkosten_komponente` und `anlass_warenkosten` (Warenkosten des Anlasses aus den Menülinien über die Rezepte); `anlass_kostenart` nimmt sie für die Kostenart Waren, sobald sie vollständig sind. Eingespielt am 20.11.2026 |
 | 37 produktionsliste_anlass | View `produktionsliste_anlass`: Produktionsliste pro Anlass (Menge des Anlasses, Wellen und Start aus der Saison). Eingespielt am 20.11.2026 |
 | 38 durchsicht_korrekturen | Korrekturen aus der Durchsicht: Einkaufs-Views mit technischem Schlüssel `bezug_id` neu angelegt, Herleitung bei Unterrezepten, leeres Unterrezept zählt als offene Zutat (`einkauf_zutat`, `rezept_warenkosten`), `anlass_warenkosten` ohne Total bei Services ohne Menülinie oder Gerichten ohne Komponenten. Eingespielt am 20.11.2026 |
+| 39 einkauf_liste | Funktion `einkauf_liste(p_saison)`: Summe, Artikel, Positionen und Zutaten-Zähler in einer Antwort (Unterbau einmal gerechnet). Funktion `einkauf_summe_von` als einzige Stelle der Summen-Regeln; View `einkauf_summe` benützt sie (gleiche Spalten und Werte). Noch nicht eingespielt |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
 
 Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde nicht mit `supabase db push` eingespielt und trägt darum einen Zeitstempel (`20261110185525`); die Datei heisst seit dem 14.11.2026 gleich. Neue Migrationen immer mit `supabase db push` einspielen, sonst passen Datei und Datenbank nicht zusammen.
@@ -168,6 +169,7 @@ Noch leer (in der App zu erfassen): Lohnsätze, Strompreis, Fixkosten, Lieferant
 - `wellen_aktuell`: Datum aus dem Plan, Menge immer aktuell aus dem Vorschlag
 - `einkauf_position`: Bedarf pro Welle bzw. Anlass und Komponente, mit Hauptartikel, Menge, Kosten, Liefertermin und Bestellschluss
 - `einkauf_artikel`: Einkaufsliste nach Lieferant und Artikel; `einkauf_summe`: Zahlen pro Saison
+- `einkauf_liste(p_saison)`: liefert der Seite Einkauf alles in einer Abfrage (jsonb mit `summe`, `artikel`, `positionen`, `zutaten`); `einkauf_summe_von(positionen[], artikel[])` rechnet die Summe. Beide hängen an den Zeilentypen von `einkauf_position` und `einkauf_artikel`: wer diese Views neu anlegt, entfernt zuerst `einkauf_liste`, `einkauf_summe` und `einkauf_summe_von`.
 - `komponente_artikel_vorschlag(saison, anzahl, schwelle)`: Komponenten der Saison ohne Hauptartikel mit den ähnlichsten aktiven Artikeln nach dem Namen (`pg_trgm`, Standard 3 Vorschläge ab Ähnlichkeit 0.5). Schlägt nur vor; zugeordnet wird von Hand. Probelauf 14.11.2026: 249 Komponenten ohne Hauptartikel
 
 ### Planung aus dem Rezept (Migration 24)

@@ -211,4 +211,13 @@ Aus der UX-Durchsicht (33 Vorschläge) sind die sechs kleinen mit hoher Wirkung 
 
 Geprüft: Typen, Lint, 200 Tests, Build; im Browser nur lesend (Dialoge geöffnet und abgebrochen). Nicht geprüft, weil es in die Pilot-Datenbank schreibt: Verknüpfen, Lösen, Löschen und Abhaken selbst.
 
-Ladezeit Einkauf (nachgemessen, einzeln geladen, lokale Entwicklungsversion): `/einkauf/` 2,8 s, `/einkauf/zuordnen/` 3,3 s. Die zuerst notierten «rund 20 s» waren ein Messfehler (viele Seiten gleichzeitig geladen). Die drei Views `einkauf_summe`, `einkauf_artikel` und `einkauf_position` rechnen je denselben Unterbau; gleichzeitig abgefragt bremsen sie sich (Versuch, die Summe parallel zu laden, brachte nichts und ist verworfen). Schneller ginge es nur mit einer Funktion, die den Unterbau einmal rechnet (neue Migration); bei unter 3 s nicht gebaut. Übrige Vorschläge der Durchsicht (Ränge 6–12, 14–33) sind nicht gebaut.
+Ladezeit Einkauf: siehe Nachtrag «Migration 39». Die zuerst notierten «rund 20 s» waren ein Messfehler (viele Seiten gleichzeitig geladen).
+
+## Nachtrag 20.11.2026: Migration 39, Einkaufsliste in einer Abfrage
+
+- Gemessen (Abfragen der Seite ohne Entwicklungs-Verdoppelung, Pilot-Datenbank): `/einkauf/` holte Summe, Artikel, Positionen und Zähler in vier Abfragen, zusammen 1,2 bis 1,6 s; die Summe allein 0,75 bis 1,1 s, weil jede View den Unterbau (`einkauf_bedarf`, `einkauf_zutat`) neu rechnet.
+- Migration 39: Funktion `einkauf_liste(p_saison)` rechnet Positionen und Artikel je einmal und gibt alles als ein jsonb zurück. `einkauf_summe_von` enthält die Regeln der Summe an einer Stelle; die View `einkauf_summe` benützt sie (gleiche Spalten).
+- Lesend gegen die Pilot-Datenbank geprüft (als `authenticated`, ohne DDL): gleiche Summe, 187 Artikelzeilen und 253 Positionen identisch zur bisherigen Abfrage, Rechenzeit rund 0,2 s. Die Funktion selbst ist damit noch nicht gelaufen, nur ihre Abfrage.
+- `/einkauf/zuordnen/` liest die Saison aus der Tabelle `saison` statt aus `einkauf_summe`.
+- **Reihenfolge beim Ausliefern zwingend:** `supabase db push --remote`, dann `cd app && npm run types`, dann `git push`. Anders als bei 34, 37 und 38 läuft `/einkauf/` nicht ohne Migration 39: die Seite ruft nur noch `einkauf_liste` (ohne sie Fehler PGRST202, «Einkauf nicht geladen»).
+- Nach dem Einspielen: Ladezeit neu messen, Typen aus der Datenbank erzeugen und mit den von Hand nachgeführten vergleichen.

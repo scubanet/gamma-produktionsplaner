@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
-import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import { formatChf } from "@/lib/offerte";
 import { standText } from "@/lib/zutat-vorschlag";
@@ -13,18 +12,14 @@ import { fehlerText } from "@/lib/fehler";
 
 type Daten = { summe: Summe; artikel: ArtikelZeile[]; positionen: Position[]; zutaten: { zutaten: number | null; verknuepft: number | null } | null };
 
+/** Summe, Artikel, Positionen und Zähler in einer Abfrage (Migration 39): die Datenbank rechnet den Unterbau nur einmal. */
 async function laden(): Promise<Daten | null> {
-  const s = await supabase.from("einkauf_summe").select("*").order("saison", { ascending: false }).limit(1).maybeSingle();
-  if (s.error) throw s.error;
-  if (!s.data?.saison_id) return null;
-  const saison = s.data.saison_id;
-  const [artikel, positionen, zutaten] = await Promise.all([
-    alleSeiten<ArtikelZeile>((von, bis) => supabase.from("einkauf_artikel").select("*").eq("saison_id", saison).order("sortierung").order("artikel_id").range(von, bis)),
-    alleSeiten<Position>((von, bis) => supabase.from("einkauf_position").select("*").eq("saison_id", saison).order("sortierung").order("komponente_id").order("einheit").range(von, bis)),
-    // Zähler der verknüpften Zutaten (Migration 33). Fehlt die View noch, bleibt der Zähler ein Platzhalter und die Liste lädt trotzdem.
-    supabase.from("einkauf_zutaten_stand").select("zutaten, verknuepft").eq("saison_id", saison).maybeSingle().then((r) => r.data ?? null),
-  ]);
-  return { summe: s.data, artikel, positionen, zutaten };
+  // Pilot: eine Saison. Gibt es mehrere, nimmt die Funktion die jüngste; ohne Saison ist die Antwort null.
+  const r = await supabase.rpc("einkauf_liste");
+  if (r.error) throw r.error;
+  const d = r.data as unknown as { summe: Summe | null; artikel: ArtikelZeile[]; positionen: Position[]; zutaten: Daten["zutaten"] } | null;
+  if (!d?.summe) return null;
+  return { summe: d.summe, artikel: d.artikel, positionen: d.positionen, zutaten: d.zutaten };
 }
 
 export default function Einkauf() {

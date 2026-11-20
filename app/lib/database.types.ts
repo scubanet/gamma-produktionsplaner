@@ -4842,6 +4842,27 @@ export type Database = {
         }
         Returns: undefined
       }
+      einkauf_liste: { Args: { p_saison?: string }; Returns: Json }
+      einkauf_summe_von: {
+        Args: {
+          p_artikel: Database["public"]["Views"]["einkauf_artikel"]["Row"][]
+          p_positionen: Database["public"]["Views"]["einkauf_position"]["Row"][]
+        }
+        Returns: {
+          aus_vorschlag: boolean
+          bestellschluesse_vorbei: number
+          kosten_chf: number
+          naechster_bestellschluss: string
+          positionen_artikel: number
+          positionen_artikel_ohne_kosten: number
+          positionen_nicht_im_plan: number
+          positionen_offen: number
+          positionen_rezept: number
+          positionen_rezept_nicht_freigegeben: number
+          positionen_rezept_unvollstaendig: number
+          positionen_zukauf: number
+        }[]
+      }
       geraet_zuteilung: {
         Args: never
         Returns: {

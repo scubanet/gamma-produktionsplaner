@@ -33,7 +33,7 @@ async function standLaden(saisonId: string): Promise<Pick<Daten, "verknuepft" | 
 
 async function laden(): Promise<Daten | null> {
   // Pilot: eine Saison. Gibt es mehrere, die jüngste (wie in der Einkaufsliste). Direkt aus der Tabelle:
-  // die View einkauf_summe rechnet den ganzen Einkauf und braucht dafür Sekunden.
+  // die View einkauf_summe rechnet dafür den ganzen Einkauf.
   const s = await supabase.from("saison").select("id, name").order("name", { ascending: false }).limit(1).maybeSingle();
   if (s.error) throw s.error;
   if (!s.data?.id) return null;
