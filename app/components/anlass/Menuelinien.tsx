@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Button, Card, DataTable, Dialog, ItemList, Notice, Select, TextField, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { useBestaetigen } from "@/components/Bestaetigen";
 import { RezeptLink } from "@/components/RezeptLink";
 import { formatZahl, zahlDeCh } from "@/lib/format";
 import { anteilAus, anteilText } from "@/lib/offerte";
@@ -33,6 +34,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
 }) {
   const sortiert = useMemo(() => [...linien].sort((a, b) => a.reihenfolge - b.reihenfolge), [linien]);
   const [gewaehlt, setGewaehlt] = useState<string>("");
+  const [fragen, rueckfrage] = useBestaetigen();
   const linie = sortiert.find((l) => l.id === gewaehlt) ?? sortiert[0] ?? null;
   const [b, setB] = useState<Bearbeitung | null>(null);
   const [offen, setOffen] = useState(false);
@@ -115,7 +117,17 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
             <Select id="linie" label="Menülinie" value={linie.id} onChange={setGewaehlt} options={sortiert.map((l) => ({ value: l.id, label: l.name }))} />
             <div className="pl-actions">
               <Button onClick={() => oeffnen({ art: "linie", id: linie.id, text: linie.name, fehler: null })}>Umbenennen</Button>
-              <Button onClick={() => linieLoeschen(linie)}>Menülinie löschen</Button>
+              <Button
+                onClick={() =>
+                  fragen(
+                    g?.services
+                      ? { titel: `Menülinie ${linie.name} hat noch Services`, text: `Dieser Linie sind ${g.services} Service(s) zugeordnet. Zuerst die Services unter «Services» auf eine andere Menülinie umstellen, dann lässt sich die Linie löschen.` }
+                      : { titel: `Menülinie ${linie.name} löschen?`, text: `Die Linie wird mit ihren ${linienGerichte.length} Gericht(en) und allen Mengen pro Gast gelöscht. Das lässt sich nicht rückgängig machen.`, bestaetigen: "Menülinie löschen", aktion: () => linieLoeschen(linie) },
+                  )
+                }
+              >
+                Menülinie löschen
+              </Button>
             </div>
           </div>
           <p className="pl-small">
@@ -135,7 +147,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
                     </div>
                     <div className="pl-actions">
                       <Button ariaLabel={`Anteil ${x.bezeichnung} ändern`} onClick={() => oeffnen({ art: "anteil", gericht: x, text: anteilText(x.anteil), fehler: null })}>Anteil</Button>
-                      <Button ariaLabel={`${x.bezeichnung} entfernen`} onClick={() => gerichtEntfernen(x)}>Entfernen</Button>
+                      <Button ariaLabel={`${x.bezeichnung} entfernen`} onClick={() => fragen({ titel: `${x.bezeichnung} entfernen?`, text: `Das Gericht wird aus der Menülinie ${linie.name} entfernt, mit seinen Komponenten und Mengen pro Gast. Im Katalog bleibt es bestehen.`, bestaetigen: "Entfernen", aktion: () => gerichtEntfernen(x) })}>Entfernen</Button>
                     </div>
                   </div>
                   <DataTable
@@ -237,6 +249,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
           </>
         ) : null}
       </Dialog>
+      {rueckfrage}
     </Card>
   );
 }

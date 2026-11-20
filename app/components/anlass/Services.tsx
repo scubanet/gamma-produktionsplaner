@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button, Card, DataTable, Dialog, Notice, Select, TextField, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { useBestaetigen } from "@/components/Bestaetigen";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { fehlerText, ganzzahl, geaenderteDaten, ungueltigesDatum, type Menuelinie, type Service } from "@/lib/anlass";
 
@@ -18,6 +19,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
   onFehler: (titel: string, text: string) => void;
 }) {
   const [form, setForm] = useState<Form | null>(null);
+  const [fragen, rueckfrage] = useBestaetigen();
   const [offen, setOffen] = useState(false);
   const [speichert, setSpeichert] = useState(false);
   // Alle Daten in einem Dialog: Service-ID → Datum (JJJJ-MM-TT oder leer).
@@ -106,7 +108,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
               render: (r) => (
                 <span className="pl-actions">
                   <Button ariaLabel={`Service ${r.name as string} bearbeiten`} onClick={() => oeffnen(r.service as Service)}>Bearbeiten</Button>
-                  <Button ariaLabel={`Service ${r.name as string} entfernen`} onClick={() => entfernen(r.service as Service)}>Entfernen</Button>
+                  <Button ariaLabel={`Service ${r.name as string} entfernen`} onClick={() => fragen({ titel: `Service ${r.name as string} entfernen?`, text: "Der Service wird gelöscht. Seine Gäste zählen danach nicht mehr für Mengen, Wellen und Einkauf.", bestaetigen: "Entfernen", aktion: () => entfernen(r.service as Service) })}>Entfernen</Button>
                 </span>
               ),
             },
@@ -200,6 +202,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
           </>
         ) : null}
       </Dialog>
+      {rueckfrage}
     </Card>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button, Card, Checkbox, DataTable, Dialog, Notice, Select, TextField, type DataTableColumn, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
+import { useBestaetigen } from "@/components/Bestaetigen";
 import { fehlerText, formularAus, werteAus, type Feld, type Formular, type Zeile } from "@/lib/stammdaten";
 
 type Tabelle = "lohnsatz" | "energiepreis" | "fixkosten" | "geraet" | "gebinde" | "service_artikel" | "geschirr_standard";
@@ -26,6 +27,7 @@ export function Stammtabelle({ tabelle, titel, meta, einzahl, felder, schluessel
   const [form, setForm] = useState<Formular | null>(null);
   const [original, setOriginal] = useState<Zeile | null>(null);
   const [offen, setOffen] = useState(false);
+  const [fragen, rueckfrage] = useBestaetigen();
   const [fehler, setFehler] = useState<string | null>(null);
   const [arbeitet, setArbeitet] = useState(false);
 
@@ -97,7 +99,11 @@ export function Stammtabelle({ tabelle, titel, meta, einzahl, felder, schluessel
         onCancel={(e) => arbeitet && e.preventDefault()}
         actions={
           <>
-            {original ? <Button onClick={loeschen} disabled={arbeitet}>Löschen</Button> : null}
+            {original ? (
+              <span className="pl-dialog__links">
+                <Button onClick={() => fragen({ titel: `${einzahl} löschen?`, text: "Der Eintrag wird gelöscht. Das lässt sich nicht rückgängig machen.", aktion: loeschen })} disabled={arbeitet}>Löschen</Button>
+              </span>
+            ) : null}
             <Button onClick={() => setOffen(false)} disabled={arbeitet}>Abbrechen</Button>
             <Button variant="primary" onClick={speichern} disabled={arbeitet}>{arbeitet ? "Wird gespeichert …" : "Speichern"}</Button>
           </>
@@ -133,6 +139,7 @@ export function Stammtabelle({ tabelle, titel, meta, einzahl, felder, schluessel
           </>
         ) : null}
       </Dialog>
+      {rueckfrage}
     </Card>
   );
 }
