@@ -46,3 +46,24 @@ export function nachKategorie(zeilen: PassZeile[]): { kategorie: string; zeilen:
   for (const z of zeilen) m.set(z.kategorie, [...(m.get(z.kategorie) ?? []), z]);
   return [...m.entries()].map(([kategorie, zeilen]) => ({ kategorie, zeilen }));
 }
+
+/** «Stand 14:32»: wann der Pass zuletzt aus der Datenbank geladen wurde. */
+export function standText(wann: Date | null): string {
+  if (!wann) return "Stand [Zeit]";
+  const zwei = (n: number) => String(n).padStart(2, "0");
+  return `Stand ${zwei(wann.getHours())}:${zwei(wann.getMinutes())}`;
+}
+
+/**
+ * Frisch geladene Häkchen übernehmen, ausser für Zeilen, die gerade gespeichert werden:
+ * dort gilt der Stand auf dem Gerät, bis die Antwort da ist.
+ */
+export function standUebernehmen<A>(geladen: Map<string, A>, jetzt: Map<string, A>, laufend: Iterable<string>): Map<string, A> {
+  const neu = new Map(geladen);
+  for (const k of laufend) {
+    const a = jetzt.get(k);
+    if (a === undefined) neu.delete(k);
+    else neu.set(k, a);
+  }
+  return neu;
+}

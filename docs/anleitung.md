@@ -116,6 +116,7 @@ Für das Handy oder Tablet am Posten: eine Welle zum Abhaken.
 - Die ganze Zeile ist antippbar. Ein Häkchen gilt für diese Komponente in dieser Welle und erscheint auch im Wellenplan und in der Produktionsliste.
 - Oben steht der Fortschritt (erledigt / alle). «Noch offen», «Erledigt» und «Alle» filtern die Liste.
 - Klappt das Speichern nicht (z.B. kein Netz), geht das Häkchen zurück und ein Hinweis erscheint. Dann nochmals abhaken.
+- Die Liste lädt jede Minute nach und immer, wenn die App wieder in den Vordergrund kommt. Oben steht «Stand» mit der Uhrzeit; «Aktualisieren» lädt sofort. So sieht man, was andere inzwischen abgehakt haben.
 - Zuständig und Termine werden im Wellenplan geändert.
 - **Auf den Home-Bildschirm:** In Safari «Teilen» → «Zum Home-Bildschirm». Die App startet dann direkt im Küchenpass.
 

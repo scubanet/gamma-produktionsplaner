@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Notice, SegmentedControl, Skeleton } from "@/lib/planer";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Button, Notice, SegmentedControl, Skeleton } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
 import { aufgabenAus, schluessel, type Aufgabe, type ChecklisteZeile } from "@/lib/checkliste";
 import { checklisteSpeichern } from "@/lib/checkliste-speichern";
-import { ersteOffeneWelle, istErledigt, nachKategorie, passFiltern, passStand, passWellen, type PassFilter, type PassZeile } from "@/lib/kueche";
+import { ersteOffeneWelle, istErledigt, nachKategorie, passFiltern, passStand, passWellen, standText, standUebernehmen, type PassFilter, type PassZeile } from "@/lib/kueche";
 import type { Vorschlag } from "@/lib/wellen";
 import { fehlerText } from "@/lib/fehler";
 
@@ -34,23 +34,58 @@ export default function Kuechenpass() {
   const [filter, setFilter] = useState<PassFilter>("offen");
   const [meldung, setMeldung] = useState("");
   const [speicherFehler, setSpeicherFehler] = useState<string | null>(null);
+  const [stand0, setStand0] = useState<Date | null>(null);
+  const [laedtNach, setLaedtNach] = useState(false);
+  // Zeilen, die gerade gespeichert werden (mit Laufnummer des jüngsten Speicherns): ihr Häkchen darf ein Nachladen nicht überschreiben.
+  const lauf = useRef(new Map<string, number>());
+  // Zeilen, die seit dem Start des laufenden Nachladens angefasst wurden: das Nachladen hat sie womöglich vor dem Speichern gelesen.
+  const beruehrt = useRef(new Set<string>());
+  const laedt = useRef(false);
+
+  /** Stand aus der Datenbank holen: Häkchen von anderen Geräten und geänderte Mengen. Scrollposition und Wahl bleiben. */
+  const nachladen = useCallback((melden: boolean) => {
+    if (laedt.current) return;
+    laedt.current = true;
+    setLaedtNach(true);
+    beruehrt.current = new Set(lauf.current.keys());
+    laden()
+      .then(
+        (d) => {
+          setDaten(d);
+          setAufgaben((jetzt) => standUebernehmen(aufgabenAus(d?.checkliste ?? []), jetzt, new Set([...lauf.current.keys(), ...beruehrt.current])));
+          setStand0(new Date());
+          setFehler(null);
+        },
+        // Scheitert das stille Nachladen (z.B. kurz kein Netz), bleibt der letzte Stand mit seiner Uhrzeit stehen.
+        (e: Error) => melden && setFehler(fehlerText(e)),
+      )
+      .finally(() => {
+        laedt.current = false;
+        setLaedtNach(false);
+      });
+  }, []);
 
   useEffect(() => {
-    laden().then(
-      (d) => {
-        setDaten(d);
-        setAufgaben(aufgabenAus(d?.checkliste ?? []));
-      },
-      (e: Error) => setFehler(fehlerText(e)),
-    );
-  }, []);
+    nachladen(true);
+    // Der Pass bleibt als App auf dem Home-Bildschirm über Stunden offen: nachladen, wenn er wieder sichtbar wird, und jede Minute.
+    const sichtbar = () => document.visibilityState === "visible" && nachladen(false);
+    document.addEventListener("visibilitychange", sichtbar);
+    window.addEventListener("focus", sichtbar);
+    const takt = window.setInterval(sichtbar, 60_000);
+    return () => {
+      document.removeEventListener("visibilitychange", sichtbar);
+      window.removeEventListener("focus", sichtbar);
+      window.clearInterval(takt);
+    };
+  }, [nachladen]);
 
   const wellen = useMemo(() => passWellen(daten?.vorschlag ?? []), [daten]);
   // Beim Öffnen die erste Welle mit offenen Zeilen; danach bleibt die gewählte Welle, auch wenn sie fertig wird.
   const [startWelle, setStartWelle] = useState<number | null>(null);
   if (startWelle === null && wellen.length) setStartWelle(ersteOffeneWelle(wellen, aufgaben));
   const nr = wahl ?? startWelle;
-  const welle = wellen.find((w) => w.nr === nr) ?? null;
+  // Gibt es die gewählte Welle nach einem Nachladen nicht mehr (umgeplant), zeigt der Pass die erste offene.
+  const welle = wellen.find((w) => w.nr === nr) ?? wellen.find((w) => w.nr === ersteOffeneWelle(wellen, aufgaben)) ?? null;
   const stand = welle ? passStand(welle, aufgaben) : { erledigt: 0, total: 0 };
   const gruppen = welle ? nachKategorie(passFiltern(welle.zeilen, aufgaben, filter)) : [];
 
@@ -59,11 +94,23 @@ export default function Kuechenpass() {
     if (!daten) return;
     setSpeicherFehler(null);
     const k = schluessel(z.komponenteId, z.nr);
-    const vorher = new Map(aufgaben);
+    const vorher = aufgaben.get(k);
+    const n = (lauf.current.get(k) ?? 0) + 1;
+    lauf.current.set(k, n);
+    beruehrt.current.add(k);
     setAufgaben((m) => new Map(m).set(k, { komponente_id: z.komponenteId, welle_nr: z.nr, zustaendig: m.get(k)?.zustaendig ?? null, erledigt_am: an ? new Date().toISOString() : null }));
     const r = await checklisteSpeichern(daten.saisonId, z.komponenteId, [z.nr], { erledigt_am: an ? new Date().toISOString() : null });
+    // Wurde dieselbe Zeile inzwischen nochmals angetippt, zählt nur die jüngste Antwort.
+    if (lauf.current.get(k) !== n) return;
+    lauf.current.delete(k);
     if ("fehler" in r) {
-      setAufgaben(vorher);
+      // Nur diese Zeile zurücksetzen: Häkchen anderer Zeilen, die inzwischen gespeichert sind, bleiben.
+      setAufgaben((m) => {
+        const neu = new Map(m);
+        if (vorher) neu.set(k, vorher);
+        else neu.delete(k);
+        return neu;
+      });
       setMeldung("");
       return setSpeicherFehler(`${z.komponente}: ${r.fehler}. Bitte nochmals abhaken.`);
     }
@@ -111,6 +158,10 @@ export default function Kuechenpass() {
             <span className="pl-progress" role="progressbar" aria-label={`Welle ${welle.nr} erledigt`} aria-valuemin={0} aria-valuemax={stand.total} aria-valuenow={stand.erledigt}>
               <span className="pl-progress__bar" style={{ width: `${stand.total ? (stand.erledigt / stand.total) * 100 : 0}%` }} />
             </span>
+          </div>
+          <div className="pl-actions">
+            <span className="pl-small">{standText(stand0)}; lädt jede Minute nach</span>
+            <Button onClick={() => nachladen(true)}>{laedtNach ? "Wird geladen …" : "Aktualisieren"}</Button>
           </div>
 
           <SegmentedControl
