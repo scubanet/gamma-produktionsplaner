@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, DataTable, Dialog, ItemList, KpiTile, Notice, Select, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
@@ -177,6 +177,9 @@ function Bearbeiten() {
   // Bestätigen liest die gespeicherten Kopfdaten: ungespeicherte Änderungen zuerst speichern.
   const kopfGeaendert = !!kopf && !!offerte && JSON.stringify(kopf) !== JSON.stringify(kopfAus(offerte));
   const s = rechnung?.summe ?? null;
+  // Solange die Summen laden, steht ein Skelett; «[Preis]» heisst: geladen, aber der Wert fehlt.
+  const laedtSumme = !rechnung && !hinweis;
+  const oderSkelett = (x: ReactNode) => (laedtSumme ? <Skeleton variant="zahl" /> : x);
   const setK = (teil: Partial<Kopf>) => setKopf((k) => (k ? { ...k, ...teil } : k));
   const anteilEingabe = anteil ? anteilAus(anteil.text) : null;
   const rundung = s?.rundung != null ? formatZahl(s.rundung, 2) : "[Rundung]";
@@ -206,13 +209,13 @@ function Bearbeiten() {
         <KpiTile
           tone="panel"
           label="Preis pro Gast exkl. MWST"
-          value={s?.preis_pro_gast_chf == null ? "[Preis]" : <span className="pl-assumed">{formatChf(s.preis_pro_gast_chf)}</span>}
+          value={oderSkelett(s?.preis_pro_gast_chf == null ? "[Preis]" : <span className="pl-assumed">{formatChf(s.preis_pro_gast_chf)}</span>)}
           detail={s?.vk_pro_gast_chf != null ? `${formatChf(s.vk_pro_gast_chf)} gerundet auf ${rundung} (Annahme)` : undefined}
         />
-        <KpiTile label="Total inkl. MWST" value={formatChf(s?.total_brutto_chf ?? null)} detail={s?.gaeste != null ? `${formatZahl(s.gaeste)} Gäste` : "[Gäste]"} />
+        <KpiTile label="Total inkl. MWST" value={oderSkelett(formatChf(s?.total_brutto_chf ?? null))} detail={laedtSumme ? undefined : s?.gaeste != null ? `${formatZahl(s.gaeste)} Gäste` : "[Gäste]"} />
         <KpiTile
           label="Deckungsbeitrag"
-          value={s?.deckungsbeitrag_pct == null ? "[Preis]" : `${formatZahl(s.deckungsbeitrag_pct, 1)} %`}
+          value={oderSkelett(s?.deckungsbeitrag_pct == null ? "[Preis]" : `${formatZahl(s.deckungsbeitrag_pct, 1)} %`)}
           detail={s?.deckungsbeitrag_chf == null ? "Total exkl. MWST − Warenkosten" : `${formatChf(s.deckungsbeitrag_chf)} = Total exkl. MWST − Warenkosten`}
         />
       </div>
@@ -362,16 +365,16 @@ function Bearbeiten() {
                 { key: "wert", label: "Betrag", numeric: true },
               ]}
               rows={[
-                { id: "p", label: "Preis pro Gast", wert: formatChf(s?.preis_pro_gast_chf ?? null) },
-                { id: "g", label: "Gäste", wert: s?.gaeste == null ? "[Gäste]" : formatZahl(s.gaeste) },
-                { id: "u", label: "Total exkl. MWST", wert: formatChf(s?.umsatz_netto_chf ?? null) },
-                { id: "m", label: `MWST ${s?.mwst_satz != null ? formatZahl(s.mwst_satz * 100, 1) : "[Satz]"} %`, wert: formatChf(s?.mwst_chf ?? null) },
-                { id: "t", label: "Total inkl. MWST", wert: formatChf(s?.total_brutto_chf ?? null) },
-                { id: "w", label: "Warenkosten", wert: formatChf(s?.warenkosten_chf ?? null) },
-                { id: "d", label: "Deckungsbeitrag", wert: formatChf(s?.deckungsbeitrag_chf ?? null) },
+                { id: "p", label: "Preis pro Gast", wert: oderSkelett(formatChf(s?.preis_pro_gast_chf ?? null)) },
+                { id: "g", label: "Gäste", wert: oderSkelett(s?.gaeste == null ? "[Gäste]" : formatZahl(s.gaeste)) },
+                { id: "u", label: "Total exkl. MWST", wert: oderSkelett(formatChf(s?.umsatz_netto_chf ?? null)) },
+                { id: "m", label: `MWST ${s?.mwst_satz != null ? formatZahl(s.mwst_satz * 100, 1) : "[Satz]"} %`, wert: oderSkelett(formatChf(s?.mwst_chf ?? null)) },
+                { id: "t", label: "Total inkl. MWST", wert: oderSkelett(formatChf(s?.total_brutto_chf ?? null)) },
+                { id: "w", label: "Warenkosten", wert: oderSkelett(formatChf(s?.warenkosten_chf ?? null)) },
+                { id: "d", label: "Deckungsbeitrag", wert: oderSkelett(formatChf(s?.deckungsbeitrag_chf ?? null)) },
               ]}
             />
-            <p className="pl-small">{s?.herleitung ?? <Skeleton variant="zahl" />}</p>
+            <p className="pl-small">{laedtSumme ? <Skeleton variant="zahl" /> : s?.herleitung}</p>
           </Card>
           {(s?.mengentypen_anteil_pruefen ?? 0) > 0 ? (
             <Notice title="Anteile prüfen">
