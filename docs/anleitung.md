@@ -123,6 +123,7 @@ Für das Handy oder Tablet am Posten: eine Welle zum Abhaken.
   - noch offen, ohne Wellenplan: «Produktion spätestens 24.12.2026 · haltbar bis …».
   - Wird ein Häkchen am selben Tag zurückgenommen, gilt es als Versehen. Wird es später zurückgenommen und wieder gesetzt, bleibt der erste Produktionstag: das MHD wird dadurch nie länger.
 - «Rezept» öffnet die Rezeptkarte; von dort führt «Zurück zum Küchenpass» zur selben Welle.
+- «Etiketten» (bei abgehakten Zeilen, im Filter «Erledigt» oder «Alle»): schlägt die Anzahl Beutel vor (pro Spiel aufgerundet) und zeigt das Etikett als Vorschau. «Etiketten anlegen» legt die Beutel mit Seriennummer im Lager an. Gedruckt wird, sobald der Drucker angeschlossen ist. Die Füllmenge pro Beutel wird am Rezept gepflegt (Karte «Planung»).
 - Die Liste lädt jede Minute nach und immer, wenn die App wieder in den Vordergrund kommt. Oben steht «Stand» mit der Uhrzeit; «Aktualisieren» lädt sofort. So sieht man, was andere inzwischen abgehakt haben.
 - Zuständig und Termine werden im Wellenplan geändert.
 - **Auf den Home-Bildschirm:** In Safari «Teilen» → «Zum Home-Bildschirm». Die App startet dann direkt im Küchenpass.

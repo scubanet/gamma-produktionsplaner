@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 export type IconName = 'search' | 'print' | 'plus' | 'edit' | 'close' | 'sort-up' | 'sort-down';
 export interface IconProps { name: IconName; }
 export interface SkeletonProps { variant?: 'text' | 'zahl' | 'zeile' | 'karte'; rows?: number; label?: string; }
+export interface EtikettProps { kopf: ReactNode; zaehler?: ReactNode; titel: ReactNode; marke?: string; unterzeile?: ReactNode; felder: { label: string; wert: ReactNode }[]; datumLabel: string; datum: ReactNode; code: ReactNode; label?: string; }
 export interface MeldezeileProps { tone?: 'status' | 'fehler'; actionLabel?: string; onAction?: () => void; onClose?: () => void; children?: ReactNode; }
 export interface EmptyStateProps { title: ReactNode; text?: ReactNode; actionLabel?: string; icon?: IconName; href?: string; onAction?: () => void; }
 export interface UserMenuProps { name?: string; email?: string; signOutLabel?: string; onSignOut: () => void; }
@@ -63,3 +64,4 @@ export declare const UserMenu: (p: UserMenuProps) => JSX.Element;
 export declare const Skeleton: (p: SkeletonProps) => JSX.Element;
 export declare const EmptyState: (p: EmptyStateProps) => JSX.Element;
 export declare const Meldezeile: (p: MeldezeileProps) => JSX.Element;
+export declare const Etikett: (p: EtikettProps) => JSX.Element;

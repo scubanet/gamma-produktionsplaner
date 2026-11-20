@@ -11,6 +11,7 @@ import { ersteOffeneWelle, istErledigt, nachKategorie, passFiltern, passHaltbar,
 import type { Vorschlag } from "@/lib/wellen";
 import type { ZuteilungKurz } from "@/lib/produktionsliste";
 import { fehlerText } from "@/lib/fehler";
+import { EtikettenDialog } from "@/components/kueche/EtikettenDialog";
 
 type Daten = { saisonId: string; saison: string; vorschlag: Vorschlag[]; checkliste: ChecklisteZeile[] };
 
@@ -58,6 +59,8 @@ export default function Kuechenpass() {
   const meldeJetzt = useRef<Melde | null>(null);
   const stammDa = useRef(false);
   const [stamm, setStamm] = useState<Stamm | null>(null);
+  // Zeile, für die der Dialog «Etiketten» offen ist.
+  const [etiketten, setEtiketten] = useState<PassZeile | null>(null);
   const [stand0, setStand0] = useState<Date | null>(null);
   const [laedtNach, setLaedtNach] = useState(false);
   // Zeilen, die gerade gespeichert werden (mit Laufnummer des jüngsten Speicherns): ihr Häkchen darf ein Nachladen nicht überschreiben.
@@ -273,6 +276,10 @@ export default function Kuechenpass() {
                         </span>
                         <span className="pl-pass__menge">{formatMenge(z.menge, z.einheit)}</span>
                       </label>
+                      {/* Etiketten gibt es erst für abgehakte Zeilen, und erst wenn der Stand der Datenbank das Häkchen kennt. */}
+                      {fertig && c?.erledigt_am ? (
+                        <button type="button" className="pl-pass__rezept" onClick={() => setEtiketten(z)} aria-label={`Etiketten für ${z.komponente}`}>Etiketten</button>
+                      ) : null}
                       {slug ? (
                         <a className="pl-pass__rezept" href={passRezeptHref(slug, z.nr)} aria-label={`Rezept ${z.komponente}`}>Rezept</a>
                       ) : null}
@@ -291,6 +298,23 @@ export default function Kuechenpass() {
             Menge aus dem Wellen-Vorschlag. «Haltbar bis» rechnet ab dem Produktionsdatum: abgehakt gilt der Tag des Abhakens, sonst das Datum im Wellenplan, sonst der späteste Produktionstag. Zuständig und Termine ändern im <a href="/produktion/wellen/">Wellenplan</a>.
           </p>
         </>
+      ) : null}
+
+      {etiketten && daten ? (
+        <EtikettenDialog
+          key={schluessel(etiketten.komponenteId, etiketten.nr)}
+          saisonId={daten.saisonId}
+          komponenteId={etiketten.komponenteId}
+          komponente={etiketten.komponente}
+          welle={etiketten.nr}
+          einheit={etiketten.einheit}
+          grundlage={(() => {
+            const c = checkliste.get(schluessel(etiketten.komponenteId, etiketten.nr));
+            return { produziert_am: c?.produziert_am ?? null, haltbar_bis: c?.haltbar_bis ?? null, haltbarkeit_tage: c?.haltbarkeit_tage ?? null };
+          })()}
+          onClose={() => setEtiketten(null)}
+          onErstellt={() => nachladen(false, true)}
+        />
       ) : null}
 
       <Meldezeile

@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.29 | 20.11.2026 | Neue Komponente Etikett: Vorschau eines Etiketts 100 × 50 mm, schwarz auf weiss in jedem Thema. Tokens `label-paper`, `label-ink`, `label-aspect`. `pl-pass__rezept` gilt auch für Knöpfe (zweite Aktion in der Küchenpass-Zeile). |
 | 0.28 | 20.11.2026 | DataTable: Spalte mit `detail` kürzt langen Text (Herleitung) auf zwei Zeilen; ein Klick auf den Text zeigt ihn ganz, im Druck steht immer alles; `subDetail` dasselbe für die Unterzeile. `pl-anker`: Sprungziel unter der stehenden Kopfzeile. |
 | 0.27 | 20.11.2026 | Neue Komponente Meldezeile: Rückmeldung am unteren Bildschirmrand mit einer Aktion («Rückgängig», «Nochmals versuchen»), `tone` `status` oder `fehler`. Küchenpass-Zeile (`pl-pass`) mit zwei Flächen: `pl-pass__haken` zum Abhaken, `pl-pass__rezept` als eigener Sprung zum Rezept, `pl-pass__lager` für Konservierung und «haltbar bis». |
 | 0.26 | 20.11.2026 | `pl-row--haupt-zuerst`: sobald die Zeile umbricht (Handy, Tablet), steht die Hauptspalte vor der Seitenspalte; `pl-row__zur-liste` zeigt dann einen Link zur Auswahlliste. KpiTile: lange Werte ohne Leerzeichen (z.B. `[Bestelltermin]`) brechen um statt abgeschnitten zu werden. |

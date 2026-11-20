@@ -6,7 +6,7 @@ import type * as PlanerTypen from "../../design-system/components/index";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const Planer = require("../../design-system/components/bundle.js") as typeof PlanerTypen;
 
-export const { Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel, Brand, Icon, UserMenu, Skeleton, EmptyState, Meldezeile } = Planer;
+export const { Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel, Brand, Icon, UserMenu, Skeleton, EmptyState, Meldezeile, Etikett } = Planer;
 /** Notice des Design Systems; zu einem Fehlertext aus lib/fehler.ts hängt sie die technische Meldung aufklappbar an. */
 export const Notice = (p: PlanerTypen.NoticeProps) =>
   createElement(Planer.Notice, { ...p, detail: p.detail ?? fehlerDetail(Array.isArray(p.children) ? p.children.join("") : p.children) });

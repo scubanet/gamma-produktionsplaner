@@ -35,7 +35,7 @@ async function laden(slug: string): Promise<{ rezept: Rezept | null; offen: Punk
 
   const r = await supabase
     .from("rezept")
-    .select("id, slug, typ, name, untertitel, kategorie, quelle, basis_portionen, portion_g, ergibt_g, status, ergibt_annahme, portionen_annahme, chargengroesse, besonderes, geaendert_am, gebinde_id, verpackung, fuellmenge_g, service_min_pro_100, service_rolle")
+    .select("id, slug, typ, name, untertitel, kategorie, quelle, basis_portionen, portion_g, ergibt_g, status, ergibt_annahme, portionen_annahme, chargengroesse, besonderes, geaendert_am, gebinde_id, verpackung, fuellmenge_g, beutel_g, service_min_pro_100, service_rolle")
     .eq("slug", slug)
     .maybeSingle();
   if (r.error) throw r.error;
@@ -245,6 +245,7 @@ function RezeptBearbeiten() {
             <TextField id="rezept-fuellmenge" label="Füllmenge pro Gebinde in Gramm" numeric value={f.fuellmenge_g} onChange={(e) => set({ fuellmenge_g: wert(e) })} hint="Fertiges Produkt in einem Gebinde, z.B. 12000" />
           </div>
           <div className="pl-grid-3">
+            <TextField id="rezept-beutel" label="Füllmenge pro Beutel in Gramm" numeric value={f.beutel_g} onChange={(e) => set({ beutel_g: wert(e) })} hint="Fertiges Produkt in einem Beutel, z.B. 2000. Grundlage für die Anzahl Etiketten" />
             <TextField id="rezept-service" label="Ausgabe im Service: Minuten pro 100 Portionen" numeric value={f.service_min_pro_100} onChange={(e) => set({ service_min_pro_100: wert(e) })} hint="Anrichten und Ausgabe vor Ort, ohne Regenerieren" />
             <TextField id="rezept-service-rolle" label="Rolle im Service" value={f.service_rolle} onChange={(e) => set({ service_rolle: wert(e) })} placeholder="z.B. Koch, Service" />
           </div>

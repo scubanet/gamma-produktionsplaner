@@ -41,6 +41,8 @@
   --notice-border: #E6CF93;
   --notice-ink: #4D3A08;
   --backdrop: rgba(36,36,36,0.45);
+  --label-paper: #FFFFFF;
+  --label-ink: #000000;
   --shadow-card: 0 1px 2px rgba(36,36,36,0.06), 0 8px 24px rgba(36,36,36,0.08);
   --shadow-overlay: 0 2px 6px rgba(36,36,36,0.08), 0 16px 40px rgba(36,36,36,0.16);
   --font-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -65,6 +67,7 @@
   --control-height: 44px;
   --topnav-height: 60px;
   --sidenav-width: 232px;
+  --label-aspect: 2 / 1;
   color-scheme: light dark;
 }
 @media screen and (prefers-color-scheme: dark) {
@@ -110,6 +113,8 @@
     --notice-border: #5A4A20;
     --notice-ink: #F6DA99;
     --backdrop: rgba(0,0,0,0.6);
+    --label-paper: #FFFFFF;
+    --label-ink: #000000;
     --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
     --shadow-overlay: 0 2px 6px rgba(0,0,0,0.5), 0 16px 40px rgba(0,0,0,0.5);
   }

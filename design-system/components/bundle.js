@@ -65,6 +65,22 @@
         p.onClose ? h('button', { type: 'button', className: 'pl-melde__knopf pl-melde__knopf--zu', 'aria-label': 'Meldung schliessen', onClick: p.onClose }, '\u00d7') : null) : null);
   }
 
+  // Vorschau eines Etiketts 100 × 50 mm, wie es der Drucker ausgibt: schwarz auf weiss, in jedem Thema.
+  // Die Schrift wächst mit der Breite der Vorschau. Den QR-Code zeichnet der Drucker; hier steht ein Platzhalter.
+  function Etikett(p) {
+    return h('figure', { className: 'pl-etikett', 'aria-label': p.label || 'Vorschau des Etiketts' },
+      h('div', { className: 'pl-etikett__blatt' },
+        h('div', { className: 'pl-etikett__kopf' }, h('span', null, p.kopf), p.zaehler ? h('span', null, p.zaehler) : null),
+        h('div', { className: 'pl-etikett__titel' }, h('span', { className: 'pl-etikett__name' }, p.titel), p.marke ? h('span', { className: 'pl-etikett__marke' }, p.marke) : null),
+        p.unterzeile ? h('div', { className: 'pl-etikett__unterzeile' }, p.unterzeile) : null,
+        h('div', { className: 'pl-etikett__unten' },
+          h('dl', { className: 'pl-etikett__felder' }, (p.felder || []).map(function (f) {
+            return h(React.Fragment, { key: f.label }, h('dt', null, f.label), h('dd', null, f.wert));
+          })),
+          h('div', { className: 'pl-etikett__datum' }, h('span', null, p.datumLabel), h('strong', null, p.datum)),
+          h('div', { className: 'pl-etikett__code' }, h('div', { className: 'pl-etikett__qr', 'aria-hidden': 'true' }, 'QR'), h('span', null, p.code)))));
+  }
+
   function KpiTile(p) {
     return h('div', { className: cx('pl-kpi', p.tone === 'panel' && 'pl-kpi--panel') },
       h('div', { className: 'pl-kpi__label' }, p.label),
@@ -404,6 +420,6 @@
       p.detail ? h('details', { className: 'pl-notice__detail' }, h('summary', null, 'Technische Angaben'), h('code', null, p.detail)) : null);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState, Meldezeile: Meldezeile };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState, Meldezeile: Meldezeile, Etikett: Etikett };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

@@ -1205,6 +1205,7 @@ export type Database = {
           lager_tk: boolean
           lager_trocken: boolean
           name: string
+          produkt_id: string | null
           produktion: string[]
           quelle_zeile: number
           regeneration: string[]
@@ -1223,6 +1224,7 @@ export type Database = {
           lager_tk?: boolean
           lager_trocken?: boolean
           name: string
+          produkt_id?: string | null
           produktion?: string[]
           quelle_zeile: number
           regeneration?: string[]
@@ -1241,6 +1243,7 @@ export type Database = {
           lager_tk?: boolean
           lager_trocken?: boolean
           name?: string
+          produkt_id?: string | null
           produktion?: string[]
           quelle_zeile?: number
           regeneration?: string[]
@@ -1952,6 +1955,7 @@ export type Database = {
       rezept: {
         Row: {
           basis_portionen: number | null
+          beutel_g: number | null
           besonderes: string | null
           chargengroesse: string | null
           ergibt_annahme: boolean
@@ -1976,6 +1980,7 @@ export type Database = {
         }
         Insert: {
           basis_portionen?: number | null
+          beutel_g?: number | null
           besonderes?: string | null
           chargengroesse?: string | null
           ergibt_annahme?: boolean
@@ -2000,6 +2005,7 @@ export type Database = {
         }
         Update: {
           basis_portionen?: number | null
+          beutel_g?: number | null
           besonderes?: string | null
           chargengroesse?: string | null
           ergibt_annahme?: boolean
@@ -3280,6 +3286,58 @@ export type Database = {
           saison_id: string | null
           verknuepft: number | null
           zutaten: number | null
+        }
+        Relationships: []
+      }
+      etikett_beutel: {
+        Row: {
+          allergene: string | null
+          beutel_in_charge: number | null
+          charge_id: string | null
+          datum_annahme: boolean | null
+          einheit: string | null
+          kategorie: string | null
+          lagereinheit_id: string | null
+          lagerung: string | null
+          laufnummer: number | null
+          menge: number | null
+          produkt: string | null
+          produkt_code: string | null
+          produkt_id: string | null
+          produkt_nr: number | null
+          produziert_am: string | null
+          qr_text: string | null
+          regeneration: string | null
+          seriennummer: string | null
+          tk: boolean | null
+          verbrauchen_bis: string | null
+          zustand: string | null
+        }
+        Relationships: []
+      }
+      etikett_vorschlag: {
+        Row: {
+          allergene: string | null
+          beutel: number | null
+          beutel_g: number | null
+          beutel_rest: number | null
+          beutel_vorhanden: number | null
+          einheit: string | null
+          herleitung: string | null
+          kategorie: string | null
+          komponente_id: string | null
+          lagerung: string | null
+          liter_annahme: boolean | null
+          menge_pro_beutel: number | null
+          menge_vorhanden: number | null
+          menge_welle: number | null
+          produkt: string | null
+          produkt_code: string | null
+          regeneration: string | null
+          saison_id: string | null
+          status: string | null
+          tk: boolean | null
+          welle_nr: number | null
         }
         Relationships: []
       }
@@ -4869,6 +4927,19 @@ export type Database = {
           positionen_rezept_unvollstaendig: number
           positionen_zukauf: number
         }[]
+      }
+      etiketten_erstellen: {
+        Args: {
+          p_anzahl: number
+          p_einheit: string
+          p_komponente: string
+          p_menge: number
+          p_produziert_am?: string
+          p_saison: string
+          p_verbrauchen_bis?: string
+          p_welle: number
+        }
+        Returns: Json
       }
       geraet_zuteilung: {
         Args: never

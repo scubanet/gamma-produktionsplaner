@@ -261,13 +261,32 @@
 .pl-pass__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .pl-pass__lager { display: flex; flex-wrap: wrap; gap: 0 var(--space-3); font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); }
 .pl-pass__lager > span { white-space: nowrap; }
-.pl-pass__rezept { flex: none; min-width: var(--control-height); min-height: var(--control-height); padding: 0 var(--space-3); display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-control); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font-size: 14px; text-decoration: none; }
+.pl-pass__rezept { flex: none; min-width: var(--control-height); min-height: var(--control-height); padding: 0 var(--space-3); display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-control); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font-family: inherit; font-size: 14px; text-decoration: none; cursor: pointer; }
 .pl-pass__rezept:hover { background: var(--surface-hover); }
 .pl-pass__rezept:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pl-pass__name { font-size: 18px; line-height: 24px; font-weight: 600; }
 .pl-pass__menge { flex: none; font-family: var(--font-mono); font-size: 18px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pl-pass--erledigt .pl-pass__name { text-decoration: line-through; color: var(--ink-muted); }
 .pl-pass--erledigt .pl-pass__menge { color: var(--ink-muted); }
+
+/* Etikett: Vorschau 100 × 50 mm, schwarz auf weiss in jedem Thema. Alle Masse hängen an der Breite (1em = 1 % der Breite). */
+.pl-etikett { margin: 0; container-type: inline-size; width: 100%; max-width: 560px; aspect-ratio: var(--label-aspect); background: var(--label-paper); color: var(--label-ink); border: 1px solid var(--border-control); border-radius: var(--radius-sm); overflow: hidden; }
+.pl-etikett__blatt { font-size: 1cqw; height: 100%; padding: 3.2em 3.8em; display: flex; flex-direction: column; font-family: var(--font-sans); line-height: 1.15; }
+.pl-etikett__kopf { display: flex; justify-content: space-between; gap: 2em; font-size: 2.5em; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
+.pl-etikett__titel { display: flex; align-items: center; gap: 0.3em; margin-top: 0.1em; font-size: 7.6em; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+.pl-etikett__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-etikett__marke { flex: none; padding: 0 0.22em; border: 0.09em solid var(--label-ink); font-size: 0.62em; }
+.pl-etikett__unterzeile { font-size: 2.5em; }
+.pl-etikett__unten { flex: 1; min-height: 0; display: flex; align-items: flex-end; gap: 2.4em; margin-top: 1.6em; padding-top: 1.6em; border-top: 0.4em solid var(--label-ink); }
+.pl-etikett__felder { flex: 1; min-width: 0; margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.25em 1.4em; font-size: 2.6em; }
+.pl-etikett__felder dt { margin: 0; }
+.pl-etikett__felder dd { margin: 0; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-etikett__datum { flex: none; padding: 1.4em 2em; background: var(--label-ink); color: var(--label-paper); display: flex; flex-direction: column; }
+.pl-etikett__datum span { font-size: 2.1em; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.pl-etikett__datum strong { font-size: 4.6em; font-weight: 800; line-height: 1.1; white-space: nowrap; }
+.pl-etikett__code { flex: none; display: flex; flex-direction: column; align-items: center; gap: 0.6em; }
+.pl-etikett__qr { width: 5.4em; height: 5.4em; display: flex; align-items: center; justify-content: center; border: 0.1em dashed var(--label-ink); font-size: 3em; font-weight: 700; }
+.pl-etikett__code span { font-family: var(--font-mono); font-size: 1.9em; font-weight: 600; letter-spacing: 0.08em; white-space: nowrap; }
 
 /* Meldezeile: Rückmeldung am unteren Bildschirmrand, mit einer Aktion (z.B. «Rückgängig»). */
 .pl-melde { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: flex; justify-content: center; padding: 0 var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); pointer-events: none; }

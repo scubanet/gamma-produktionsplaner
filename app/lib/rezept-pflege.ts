@@ -12,7 +12,7 @@ export type SchrittRoh = Pick<
 /** Felder der Planung auf dem Rezept (Gebinde, Service). */
 export type RezeptPlanung = Pick<
   Database["public"]["Tables"]["rezept"]["Row"],
-  "gebinde_id" | "verpackung" | "fuellmenge_g" | "service_min_pro_100" | "service_rolle"
+  "gebinde_id" | "verpackung" | "fuellmenge_g" | "beutel_g" | "service_min_pro_100" | "service_rolle"
 >;
 
 /** Ort eines Arbeitsschritts; leer = nicht festgelegt. */
@@ -46,6 +46,8 @@ export type RezeptFormular = {
   gebinde_id: string;
   verpackung: string;
   fuellmenge_g: string;
+  /** Füllmenge pro Beutel in Gramm: Grundlage für die Anzahl Etiketten. */
+  beutel_g: string;
   service_min_pro_100: string;
   service_rolle: string;
   portionen_annahme: boolean;
@@ -72,7 +74,7 @@ export function rezeptFormular(r: (Rezept & Partial<RezeptPlanung>) | null, grup
   if (!r) {
     return {
       name: "", untertitel: "", quelle: "", typ: "komponente", kategorie: "", basis_portionen: "", portion_g: "", ergibt_g: "",
-      chargengroesse: "", besonderes: "", gebinde_id: "", verpackung: "", fuellmenge_g: "", service_min_pro_100: "", service_rolle: "",
+      chargengroesse: "", besonderes: "", gebinde_id: "", verpackung: "", fuellmenge_g: "", beutel_g: "", service_min_pro_100: "", service_rolle: "",
       portionen_annahme: false, ergibt_annahme: false, basis_zutat: "",
       gruppen: [{ ...neueGruppe("neu-g0"), zutaten: [neueZutat("neu-z0")], schritte: [neuerSchritt("neu-s0")] }],
       erledigt: [],
@@ -92,6 +94,7 @@ export function rezeptFormular(r: (Rezept & Partial<RezeptPlanung>) | null, grup
     gebinde_id: r.gebinde_id ?? "",
     verpackung: r.verpackung ?? "",
     fuellmenge_g: alsText(r.fuellmenge_g ?? null),
+    beutel_g: alsText(r.beutel_g ?? null),
     service_min_pro_100: alsText(r.service_min_pro_100 ?? null),
     service_rolle: r.service_rolle ?? "",
     portionen_annahme: r.portionen_annahme,
@@ -167,6 +170,8 @@ export function rezeptDaten(r: Rezept | null, f: RezeptFormular): { daten: Json 
 
   const fuellmenge = grammAusEingabe(f.fuellmenge_g);
   if (fuellmenge === undefined) return { fehler: "Füllmenge pro Gebinde: Gramm als Zahl über 0 mit höchstens 2 Stellen, oder leer." };
+  const beutel = grammAusEingabe(f.beutel_g);
+  if (beutel === undefined) return { fehler: "Füllmenge pro Beutel: Gramm als Zahl über 0 mit höchstens 2 Stellen, oder leer." };
   const service = minutenAusEingabe(f.service_min_pro_100);
   if (service === undefined) return { fehler: "Aufwand Service: Minuten pro 100 Portionen als Zahl ab 0 mit höchstens 2 Stellen, oder leer." };
 
@@ -226,6 +231,7 @@ export function rezeptDaten(r: Rezept | null, f: RezeptFormular): { daten: Json 
       gebinde_id: f.gebinde_id || null,
       verpackung: f.verpackung.trim(),
       fuellmenge_g: fuellmenge,
+      beutel_g: beutel,
       service_min_pro_100: service,
       service_rolle: f.service_rolle.trim(),
       portionen_annahme: gericht ? f.portionen_annahme : (r?.portionen_annahme ?? false),
