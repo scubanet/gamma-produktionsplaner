@@ -200,7 +200,7 @@ Migrationen 32 bis 36 liefen ohne Fehler. Danach lesend geprüft und in der App 
 
 **Abnahme:** White Turf 1 lässt sich in Produktion und Einkauf wählen; keine rote Kontrolle ohne fachlichen Grund.
 
-**Entscheid Dominik (20.11.2026): Mengen pro Anlass.** Gebaut (Migration 37, noch einzuspielen):
+**Entscheid Dominik (20.11.2026): Mengen pro Anlass.** Gebaut (Migration 37, eingespielt am 20.11.2026; in der App geprüft: «Spengler Cup» 251 Zeilen wie «Alle Anlässe», «White Turf 1» leerer Zustand, Wahl bleibt gemerkt):
 
 - View `produktionsliste_anlass`: gleiche Spalten wie `produktionsliste`, dazu `anlass_id`. Menge aus dem Bedarf des Anlasses; Wellen und Start aus der Saison.
 - Produktionsliste: neues Feld «Anlass» vor «Spiel» («Alle Anlässe (Saison)» oder ein Anlass; Anlässe ohne Menülinie sind so beschriftet). Die Wahl bleibt im Browser gemerkt. Mit gewähltem Anlass zeigt die Liste dessen Mengen («Menge Anlass»), das Feld «Spiel» nur dessen Spiele, Kopfzeile und Excel-Export dessen Namen. Ein Anlass ohne Menülinie zeigt einen leeren Zustand mit Link zum Anlass. Der Excel-Abgleich erscheint bei «alle» und beim Spengler Cup.

@@ -993,6 +993,13 @@ export type Database = {
             referencedColumns: ["komponente_id"]
           },
           {
+            foreignKeyName: "gericht_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+          {
             foreignKeyName: "gericht_komponente_verweis_kategorie_fkey"
             columns: ["verweis_kategorie"]
             isOneToOne: false
@@ -1599,6 +1606,13 @@ export type Database = {
             referencedColumns: ["komponente_id"]
           },
           {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+          {
             foreignKeyName: "menuelinie_komponente_linie_gericht_id_fkey"
             columns: ["linie_gericht_id"]
             isOneToOne: false
@@ -1793,6 +1807,13 @@ export type Database = {
             columns: ["komponente_id"]
             isOneToOne: false
             referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "produktion_aufgabe_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
             referencedColumns: ["komponente_id"]
           },
           {
@@ -2419,6 +2440,13 @@ export type Database = {
             referencedColumns: ["komponente_id"]
           },
           {
+            foreignKeyName: "welle_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+          {
             foreignKeyName: "welle_komponente_welle_id_fkey"
             columns: ["welle_id"]
             isOneToOne: false
@@ -2861,6 +2889,13 @@ export type Database = {
             referencedRelation: "produktionsliste"
             referencedColumns: ["komponente_id"]
           },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
         ]
       }
       anlass_kostenart: {
@@ -3163,6 +3198,13 @@ export type Database = {
             columns: ["komponente_id"]
             isOneToOne: false
             referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
             referencedColumns: ["komponente_id"]
           },
         ]
@@ -4076,6 +4118,13 @@ export type Database = {
             referencedColumns: ["komponente_id"]
           },
           {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+          {
             foreignKeyName: "service_anlass_id_fkey"
             columns: ["anlass_id"]
             isOneToOne: false
@@ -4200,7 +4249,85 @@ export type Database = {
           wellen: number | null
           zeilen_ohne_menge: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_summe"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_zutaten_stand"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "wellen_uebersicht"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "komponente_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
       }
       rezept_kosten_arbeit_energie: {
         Row: {
@@ -4419,6 +4546,13 @@ export type Database = {
             referencedRelation: "produktionsliste"
             referencedColumns: ["komponente_id"]
           },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
         ]
       }
       service_komponente_bedarf: {
@@ -4490,6 +4624,13 @@ export type Database = {
             columns: ["komponente_id"]
             isOneToOne: false
             referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
             referencedColumns: ["komponente_id"]
           },
           {
@@ -4679,6 +4820,13 @@ export type Database = {
             referencedRelation: "produktionsliste"
             referencedColumns: ["komponente_id"]
           },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
         ]
       }
       wellenplan: {
@@ -4766,6 +4914,13 @@ export type Database = {
             columns: ["komponente_id"]
             isOneToOne: false
             referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "welle_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
             referencedColumns: ["komponente_id"]
           },
         ]
