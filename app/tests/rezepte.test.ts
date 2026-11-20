@@ -156,5 +156,8 @@ describe("Freigabe", () => {
     expect(nachStatus(alle, STATUS_ALLE)).toHaveLength(2);
     expect(nachStatus(alle, "freigegeben").map((r) => r.slug)).toEqual(["sugo"]);
     expect(nachStatus(alle, "geprueft")).toEqual([]);
+    // «Nicht freigegeben» = Entwurf und Geprüft zusammen (Link vom Leitstand).
+    expect(nachStatus(alle, "offen").every((r) => r.status !== "freigegeben")).toBe(true);
+    expect(nachStatus(alle, "offen")).toHaveLength(1);
   });
 });

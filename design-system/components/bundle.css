@@ -217,6 +217,16 @@
 
 /* Druck: «Drucken / PDF» ohne Navigation und Bedienelemente, helle Werte, Tabellenkopf auf jeder Seite */
 .pl-table th { vertical-align: bottom; }
+/* Spalte mit detail: langer Text (Herleitung) auf zwei Zeilen gekürzt; ein Klick auf den Text zeigt ihn ganz. */
+.pl-table td.pl-table__detail { min-width: 220px; }
+.pl-kurz { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.pl-kurz--offen { display: block; -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; }
+.pl-kurz-knopf { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.pl-kurz-knopf:hover { text-decoration: underline dotted; text-underline-offset: 3px; }
+.pl-kurz-knopf:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media print { .pl-kurz { display: block; -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; } .pl-table td.pl-table__detail { min-width: 0; } }
+/* Sprungziel innerhalb der Seite, unter der stehenden Kopfzeile. */
+.pl-anker { display: block; scroll-margin-top: calc(var(--topnav-height) + var(--space-4)); }
 .pl-table th.pl-num { font-family: var(--font-sans); font-size: 11px; }
 /* Liste mit Detailspalte: links die Liste, rechts das Detail der gewählten Zeile. Unter 1000 px öffnet die App stattdessen den Dialog. */
 .pl-split { display: flex; gap: var(--space-8); align-items: flex-start; }

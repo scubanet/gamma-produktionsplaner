@@ -266,7 +266,7 @@ export default function Wellen() {
                             </span>
                           ) : null,
                       },
-                      { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                      { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                     ]}
                     rows={w.zeilen.map((z) => ({
                       id: `${z.komponente_id}-${z.einheit}`,
@@ -300,7 +300,7 @@ export default function Wellen() {
                             </span>
                           ) : null,
                       },
-                      { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                      { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                     ]}
                     rows={w.zeilen.map((z) => ({
                       id: `${z.komponente_id}-${z.einheit_total}`,

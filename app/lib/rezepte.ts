@@ -143,5 +143,7 @@ export function statusSchritte(status: string | null | undefined, admin: boolean
 }
 
 export const STATUS_ALLE = "alle";
-export const STATUS_FILTER = [{ value: STATUS_ALLE, label: "Alle" }, ...Object.entries(STATUS_TEXT).map(([value, label]) => ({ value, label }))];
-export const nachStatus = <R extends Pick<Rezept, "status">>(rezepte: R[], status: string): R[] => (status === STATUS_ALLE ? rezepte : rezepte.filter((r) => r.status === status));
+/** «Nicht freigegeben»: Entwurf und Geprüft zusammen, das Gegenstück zur Zahl «freigegeben» im Leitstand. */
+export const STATUS_OFFEN = "offen";
+export const STATUS_FILTER = [{ value: STATUS_ALLE, label: "Alle" }, { value: STATUS_OFFEN, label: "Nicht freigegeben" }, ...Object.entries(STATUS_TEXT).map(([value, label]) => ({ value, label }))];
+export const nachStatus = <R extends Pick<Rezept, "status">>(rezepte: R[], status: string): R[] => (status === STATUS_ALLE ? rezepte : rezepte.filter((r) => (status === STATUS_OFFEN ? r.status !== FREIGEGEBEN : r.status === status)));

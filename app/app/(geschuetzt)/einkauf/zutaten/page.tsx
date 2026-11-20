@@ -37,7 +37,10 @@ async function standLaden(saisonId: string): Promise<Pick<Daten, "verknuepft" | 
 async function laden(): Promise<Daten | null> {
   // Pilot: eine Saison. Gibt es mehrere, die jüngste (wie in der Einkaufsliste). Direkt aus der Tabelle:
   // die View einkauf_summe rechnet dafür den ganzen Einkauf.
-  const s = await supabase.from("saison").select("id, name").order("name", { ascending: false }).limit(1).maybeSingle();
+  // Der Leitstand verlinkt mit ?saison=<id>, damit hier dieselbe Saison steht wie dort gezählt.
+  const gewuenscht = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("saison");
+  const abfrage = supabase.from("saison").select("id, name");
+  const s = await (gewuenscht && /^[0-9a-f-]{36}$/i.test(gewuenscht) ? abfrage.eq("id", gewuenscht) : abfrage.order("name", { ascending: false })).limit(1).maybeSingle();
   if (s.error) throw s.error;
   if (!s.data?.id) return null;
   const saisonId = s.data.id;

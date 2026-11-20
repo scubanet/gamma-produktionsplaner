@@ -297,7 +297,7 @@ export default function Produktionsliste() {
     { key: "haltbarkeitTage", label: <span className="pl-assumed" title={HALTBARKEIT_HINWEIS}>Haltbarkeit</span>, numeric: true, sortable: true, render: (r) => (r.haltbarkeitTage === null ? leerwert(r.status as string, "Haltbarkeit") : `${r.haltbarkeitTage} Tage`) },
     { key: "wellen", label: "Wellen", numeric: true, sortable: true, render: (r) => (r.wellen === null ? leerwert(r.status as string, "Wellen") : String(r.wellen)) },
     { key: "startAb", label: "Start ab", numeric: true, sortable: true, render: (r) => (r.startAb === null ? leerwert(r.status as string, "Start") : formatDatum(r.startAb as string)) },
-    { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+    { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
   ];
   const tabelle = zeilen.map((z) => ({
     ...z,

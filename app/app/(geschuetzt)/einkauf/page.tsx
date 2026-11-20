@@ -78,7 +78,7 @@ export default function Einkauf() {
     { key: "komponente", label: "Komponente", subKey: "kategorie" },
     { key: "bezug", label: "Für", subKey: "bedarfText" },
     { key: "mengeText", label: "Menge", numeric: true },
-    { key: "herleitung", label: "Herleitung", render: (r: Record<string, unknown>) => <span className="pl-small">{r.herleitung as string}</span> },
+    { key: "herleitung", label: "Herleitung", detail: true, render: (r: Record<string, unknown>) => <span className="pl-small">{r.herleitung as string}</span> },
     {
       key: "aktion",
       label: <span className="pl-sr">Aktionen</span>,
@@ -131,8 +131,8 @@ export default function Einkauf() {
               value={s.naechster_bestellschluss ? bestellschlussText(s.naechster_bestellschluss) : "[Bestelltermin]"}
               detail={`aus Liefertagen und Vorlauf der Lieferanten${(s.bestellschluesse_vorbei ?? 0) > 0 ? `; ${s.bestellschluesse_vorbei} Termin(e) schon vorbei` : ""}`}
             />
-            <KpiTile label="Zukauf ohne Artikel" value={formatZahl(s.positionen_zukauf ?? 0)} detail="CF-Stufe 4 oder 5, Artikel noch zuordnen" />
-            <KpiTile label="Noch nicht verknüpft" value={formatZahl(s.positionen_offen ?? 0)} detail="weder Rezept mit verknüpften Zutaten noch Hauptartikel" />
+            <KpiTile label="Zukauf ohne Artikel" value={formatZahl(s.positionen_zukauf ?? 0)} detail={<>CF-Stufe 4 oder 5, Artikel noch zuordnen. <a className="pl-link pl-print-hide" href="#zukauf">Zur Liste</a></>} />
+            <KpiTile label="Noch nicht verknüpft" value={formatZahl(s.positionen_offen ?? 0)} detail={<>weder Rezept mit verknüpften Zutaten noch Hauptartikel. <a className="pl-link pl-print-hide" href="#offen">Zur Liste</a></>} />
           </div>
           <p className="pl-small pl-print-hide">
             <a href="/einkauf/zutaten/">{standText(daten?.zutaten ?? null)}</a>
@@ -159,13 +159,13 @@ export default function Einkauf() {
             <Card key={g.titel} title={g.titel} meta={`${g.zeilen.length} Artikelzeile(n)`}>
               <DataTable
                 columns={[
-                  { key: "artikel", label: "Artikel", subKey: "unterzeile" },
+                  { key: "artikel", label: "Artikel", subKey: "unterzeile", subDetail: true },
                   { key: "bezug", label: "Für", subKey: "bedarfText" },
                   { key: "mengeText", label: "Menge", numeric: true, render: (r) => <span className={r.annahme ? "pl-assumed" : undefined}>{r.mengeText as string}</span> },
                   { key: "kosten", label: <span className="pl-assumed">Kosten</span>, numeric: true },
                   { key: "liefertermin", label: <span className="pl-assumed">Lieferung</span>, numeric: true },
                   { key: "bestellen", label: <span className="pl-assumed">Bestellen bis</span>, numeric: true },
-                  { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                  { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                 ]}
                 rows={g.zeilen.map((z) => ({
                   id: `${z.bezug_id ?? z.bezug}-${z.lieferant_id}-${z.artikel_id}`,
@@ -224,7 +224,7 @@ export default function Einkauf() {
                   { key: "rezept", label: "Rezept", render: (r) => <span className={r.rezeptStatus === "freigegeben" ? undefined : "pl-assumed"}>{r.rezept as string}</span>, subKey: "rezeptStatusText" },
                   { key: "bezug", label: "Für", subKey: "bedarfText" },
                   { key: "stand", label: "Zutaten" },
-                  { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                  { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                 ]}
                 rows={rezeptOffen.map((p) => ({
                   id: `${p.bezug_id ?? p.bezug}-${p.komponente_id}-${p.einheit}`,
@@ -245,10 +245,13 @@ export default function Einkauf() {
             </Card>
           ) : null}
 
+          <div id="zukauf" className="pl-anker">
           <Card title="Zukauf ohne Artikel" meta={`${zukauf.length} Position(en): Artikel [Artikel]`}>
             {zukauf.length ? <DataTable columns={ohneArtikelSpalten} rows={ohneArtikelZeilen(zukauf)} /> : <p className="pl-muted">Keine.</p>}
           </Card>
+          </div>
 
+          <div id="offen" className="pl-anker">
           <Card title="Noch nicht verknüpft" meta={`${offen.length} Position(en) ohne Rezept mit verknüpften Zutaten und ohne Hauptartikel; erscheinen nicht in der Bestellliste`}>
             {offen.length ? (
               <DataTable
@@ -263,6 +266,7 @@ export default function Einkauf() {
               <p className="pl-muted">Keine.</p>
             )}
           </Card>
+          </div>
         </>
       ) : daten === undefined ? (
         (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Einkaufsliste wird geladen" />)

@@ -127,7 +127,7 @@ export default function Aufwand() {
                   { key: "aktiv", label: "aktiv", numeric: true, render: ausRezept("aktiv") },
                   { key: "geraet", label: "Gerät belegt", numeric: true, render: ausRezept("geraet") },
                   { key: "status", label: "Status", render: statusZelle },
-                  { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                  { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                 ]}
                 rows={gewaehlt.zeilen.map((z) => ({
                   id: `${z.komponente_id}-${z.einheit}`,

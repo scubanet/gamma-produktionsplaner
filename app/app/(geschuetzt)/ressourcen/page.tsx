@@ -224,7 +224,7 @@ function Ressourcen() {
                     { key: "stunden", label: "Stunden", numeric: true },
                     { key: "kosten", label: "Kosten", numeric: true, render: (r) => <span className={r.annahme ? "pl-assumed" : undefined}>{r.kosten as string}</span> },
                     { key: "quelle", label: "Quelle", render: (r) => (r.zusatz ? <StatusPill status="info">{r.zusatz as string}</StatusPill> : <StatusPill status="neutral">Eigen</StatusPill>) },
-                    { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                    { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                     {
                       key: "aktion",
                       label: <span className="pl-sr">Aktionen</span>,
@@ -271,7 +271,7 @@ function Ressourcen() {
                     { key: "anzahl", label: "Menge", numeric: true },
                     { key: "quelle", label: "Quelle", render: (r) => (r.zusatz ? <StatusPill status="info">{r.zusatz as string}</StatusPill> : <StatusPill status="neutral">Eigen</StatusPill>) },
                     { key: "kosten", label: "Mietkosten", numeric: true },
-                    { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                    { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                     {
                       key: "aktion",
                       label: <span className="pl-sr">Aktionen</span>,

@@ -76,7 +76,7 @@ function Rezeptbibliothek() {
   const [rezepte, setRezepte] = useState<Rezept[] | null>(null);
   const [listenFehler, setListenFehler] = useState<string | null>(null);
   const [suche, setSuche] = useState("");
-  // Der Leitstand verlinkt mit ?status=entwurf.
+  // Der Leitstand verlinkt mit ?status=offen (nicht freigegeben).
   const [statusFilter, setStatusFilter] = useState(() => (STATUS_FILTER.some((s) => s.value === parameter.get("status")) ? (parameter.get("status") as string) : STATUS_ALLE));
   // Nur Admins dürfen freigeben; die Datenbank prüft das beim Setzen nochmals.
   const [admin, setAdmin] = useState(false);
@@ -327,7 +327,7 @@ function Rezeptbibliothek() {
                   },
                   { key: "aktiv", label: "aktiv", numeric: true },
                   { key: "unbeaufsichtigt", label: "unbeaufsichtigt", numeric: true },
-                  { key: "herleitung", label: "Herleitung", render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
+                  { key: "herleitung", label: "Herleitung", detail: true, render: (r) => <span className="pl-small">{r.herleitung as string}</span> },
                 ]}
                 rows={s.daten.komponenten.map((k) => {
                   const t = s.daten!.zeiten.get(k.komponente_id);

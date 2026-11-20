@@ -243,6 +243,30 @@
       h('input', { type: 'checkbox', defaultChecked: p.defaultChecked, checked: p.checked, onChange: p.onChange }), p.label);
   }
 
+  // Langer Text in einer Tabellenzelle (Herleitung): auf zwei Zeilen gekürzt, ein Klick auf den Text zeigt ihn ganz.
+  // Passt der Text in zwei Zeilen, bleibt er gewöhnlicher Text. Im Druck steht immer alles.
+  function Kuerzbar(p) {
+    var o = React.useState(false), offen = o[0], setOffen = o[1];
+    var l = React.useState(false), lang = l[0], setLang = l[1];
+    var ref = React.useRef(null);
+    // Gekürzt und gemessen wird ein span; der Knopf ist nur die Hülle (auf einem button selbst wirkt line-clamp nicht).
+    React.useEffect(function () {
+      var el = ref.current;
+      if (!el) return;
+      var messen = function () { if (!offen) setLang(el.scrollHeight > el.clientHeight + 1); };
+      messen();
+      if (!root.ResizeObserver) return;
+      // Ändert sich die Breite (Fenster, Hochformat), bricht der Text anders um.
+      var ro = new root.ResizeObserver(messen);
+      ro.observe(el);
+      return function () { ro.disconnect(); };
+    }, [p.children, offen, lang]);
+    var inhalt = h('span', { ref: ref, className: cx('pl-kurz', offen && 'pl-kurz--offen') }, p.children);
+    if (!lang && !offen) return inhalt;
+    return h('button', { type: 'button', className: 'pl-kurz-knopf', 'aria-expanded': offen,
+      title: offen ? 'Kürzen' : 'Ganz zeigen', onClick: function () { setOffen(!offen); } }, inhalt);
+  }
+
   function DataTable(p) {
     if (p.empty && !p.loading && !p.rows.length) return p.empty;
     return h('div', { className: 'pl-table-wrap' },
@@ -271,8 +295,9 @@
               root.location.assign(ziel);
             } : undefined }, p.columns.map(function (c) {
             var v = c.render ? c.render(r) : r[c.key];
-            return h('td', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide') || undefined }, v,
-              c.subKey && r[c.subKey] ? h('span', { className: 'pl-sub' }, r[c.subKey]) : null);
+            return h('td', { key: c.key, className: cx(c.numeric && 'pl-num', c.printHidden && 'pl-print-hide', (c.detail || c.subDetail) && 'pl-table__detail') || undefined },
+              c.detail ? h(Kuerzbar, null, v) : v,
+              c.subKey && r[c.subKey] ? h('span', { className: 'pl-sub' }, c.subDetail ? h(Kuerzbar, null, r[c.subKey]) : r[c.subKey]) : null);
           }));
         }))));
   }

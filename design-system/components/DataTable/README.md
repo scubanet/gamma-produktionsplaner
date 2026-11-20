@@ -12,3 +12,4 @@ Tabelle für Stücklisten, Personal, Geräte und Ressourcen-Pools.
 - Gewählte Zeile (seit 0.13): `isSelected(row)` markiert die Zeile, deren Detail im DetailPanel offen ist.
 - `rowHref` macht die ganze Zeile klickbar (Zeiger, Fläche `surface-sunken` beim Überfahren). Der Link in der ersten Spalte (`pl-link`) bleibt für Tastatur und Screenreader; Klicks auf Buttons und Felder der Zeile lösen die Navigation nicht aus.
 - Die Sortierrichtung zeigt das Icon `sort-up` oder `sort-down` neben dem Spaltenkopf.
+- `detail` an einer Spalte: für lange Texte wie die Herleitung. Die Zelle zeigt zwei Zeilen; ist der Text länger, zeigt ein Klick auf den Text ihn ganz (nochmals: wieder gekürzt). Kein eigener Knopf pro Zeile. Im Druck steht immer der ganze Text. Der Text wird nicht zerlegt oder umformuliert. `subDetail` kürzt auf dieselbe Art die Unterzeile (`subKey`), z.B. eine lange Liste von Komponenten unter dem Artikelnamen.
