@@ -695,6 +695,174 @@ export type Database = {
         }
         Relationships: []
       }
+      charge: {
+        Row: {
+          datum_annahme: boolean
+          erstellt_am: string
+          erstellt_von: string | null
+          haltbarkeit_tage: number | null
+          id: string
+          komponente_id: string
+          produkt_id: string
+          produziert_am: string
+          saison_id: string | null
+          verbrauchen_bis: string
+          welle_nr: number | null
+        }
+        Insert: {
+          datum_annahme?: boolean
+          erstellt_am?: string
+          erstellt_von?: string | null
+          haltbarkeit_tage?: number | null
+          id?: string
+          komponente_id: string
+          produkt_id: string
+          produziert_am: string
+          saison_id?: string | null
+          verbrauchen_bis: string
+          welle_nr?: number | null
+        }
+        Update: {
+          datum_annahme?: boolean
+          erstellt_am?: string
+          erstellt_von?: string | null
+          haltbarkeit_tage?: number | null
+          id?: string
+          komponente_id?: string
+          produkt_id?: string
+          produziert_am?: string
+          saison_id?: string | null
+          verbrauchen_bis?: string
+          welle_nr?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "charge_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "charge_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "produkt"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_summe"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "charge_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_zutaten_stand"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "charge_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "wellen_uebersicht"
+            referencedColumns: ["saison_id"]
+          },
+        ]
+      }
+      druckauftrag: {
+        Row: {
+          erstellt_am: string
+          erstellt_von: string | null
+          fehler: string | null
+          gedruckt_am: string | null
+          id: string
+          lagereinheit_id: string
+          status: string
+          zpl: string | null
+        }
+        Insert: {
+          erstellt_am?: string
+          erstellt_von?: string | null
+          fehler?: string | null
+          gedruckt_am?: string | null
+          id?: string
+          lagereinheit_id: string
+          status?: string
+          zpl?: string | null
+        }
+        Update: {
+          erstellt_am?: string
+          erstellt_von?: string | null
+          fehler?: string | null
+          gedruckt_am?: string | null
+          id?: string
+          lagereinheit_id?: string
+          status?: string
+          zpl?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "druckauftrag_lagereinheit_id_fkey"
+            columns: ["lagereinheit_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["lagereinheit_id"]
+          },
+          {
+            foreignKeyName: "druckauftrag_lagereinheit_id_fkey"
+            columns: ["lagereinheit_id"]
+            isOneToOne: false
+            referencedRelation: "lagereinheit"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       einstellung: {
         Row: {
           bemerkung: string | null
@@ -1272,6 +1440,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "produkt"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "komponente_rezept_id_fkey"
             columns: ["rezept_id"]
             isOneToOne: false
@@ -1291,6 +1473,96 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "rezept_warenkosten"
             referencedColumns: ["rezept_id"]
+          },
+        ]
+      }
+      lagerbewegung: {
+        Row: {
+          art: string
+          benutzer: string | null
+          grund: string | null
+          id: string
+          lagereinheit_id: string
+          zeitpunkt: string
+        }
+        Insert: {
+          art: string
+          benutzer?: string | null
+          grund?: string | null
+          id?: string
+          lagereinheit_id: string
+          zeitpunkt?: string
+        }
+        Update: {
+          art?: string
+          benutzer?: string | null
+          grund?: string | null
+          id?: string
+          lagereinheit_id?: string
+          zeitpunkt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lagerbewegung_lagereinheit_id_fkey"
+            columns: ["lagereinheit_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["lagereinheit_id"]
+          },
+          {
+            foreignKeyName: "lagerbewegung_lagereinheit_id_fkey"
+            columns: ["lagereinheit_id"]
+            isOneToOne: false
+            referencedRelation: "lagereinheit"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lagereinheit: {
+        Row: {
+          charge_id: string
+          einheit: string
+          erstellt_am: string
+          id: string
+          laufnummer: number
+          menge: number
+          seriennummer: string
+          zustand: string
+        }
+        Insert: {
+          charge_id: string
+          einheit: string
+          erstellt_am?: string
+          id?: string
+          laufnummer: number
+          menge: number
+          seriennummer: string
+          zustand?: string
+        }
+        Update: {
+          charge_id?: string
+          einheit?: string
+          erstellt_am?: string
+          id?: string
+          laufnummer?: number
+          menge?: number
+          seriennummer?: string
+          zustand?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lagereinheit_charge_id_fkey"
+            columns: ["charge_id"]
+            isOneToOne: false
+            referencedRelation: "charge"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lagereinheit_charge_id_fkey"
+            columns: ["charge_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["charge_id"]
           },
         ]
       }
@@ -1703,6 +1975,38 @@ export type Database = {
           },
         ]
       }
+      produkt: {
+        Row: {
+          erstellt_am: string
+          id: string
+          kategorie: string | null
+          name: string
+          nr: number
+        }
+        Insert: {
+          erstellt_am?: string
+          id?: string
+          kategorie?: string | null
+          name: string
+          nr?: number
+        }
+        Update: {
+          erstellt_am?: string
+          id?: string
+          kategorie?: string | null
+          name?: string
+          nr?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produkt_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       produktion_aufgabe: {
         Row: {
           erledigt_am: string | null
@@ -1955,8 +2259,8 @@ export type Database = {
       rezept: {
         Row: {
           basis_portionen: number | null
-          beutel_g: number | null
           besonderes: string | null
+          beutel_g: number | null
           chargengroesse: string | null
           ergibt_annahme: boolean
           ergibt_g: number | null
@@ -1980,8 +2284,8 @@ export type Database = {
         }
         Insert: {
           basis_portionen?: number | null
-          beutel_g?: number | null
           besonderes?: string | null
+          beutel_g?: number | null
           chargengroesse?: string | null
           ergibt_annahme?: boolean
           ergibt_g?: number | null
@@ -2005,8 +2309,8 @@ export type Database = {
         }
         Update: {
           basis_portionen?: number | null
-          beutel_g?: number | null
           besonderes?: string | null
+          beutel_g?: number | null
           chargengroesse?: string | null
           ergibt_annahme?: boolean
           ergibt_g?: number | null
@@ -3127,6 +3431,85 @@ export type Database = {
           },
         ]
       }
+      bedarf_service_welle: {
+        Row: {
+          datum: string | null
+          einheit_total: string | null
+          komponente_id: string | null
+          menge: number | null
+          reihenfolge: number | null
+          saison_id: string | null
+          service: string | null
+          service_id: string | null
+          welle_nr: number | null
+          zeilen_ohne_menge: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_summe"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_zutaten_stand"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "wellen_uebersicht"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+        ]
+      }
       einkauf_artikel: {
         Row: {
           annahme: boolean | null
@@ -3313,7 +3696,15 @@ export type Database = {
           verbrauchen_bis: string | null
           zustand: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "produkt_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       etikett_vorschlag: {
         Row: {
@@ -3339,7 +3730,78 @@ export type Database = {
           tk: boolean | null
           welle_nr: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_summe"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_zutaten_stand"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "wellen_uebersicht"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "produkt_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       gericht_warenkosten: {
         Row: {
