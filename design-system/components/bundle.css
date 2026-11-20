@@ -243,14 +243,31 @@
 @media print { .pl-split { display: block; } .pl-split__detail { display: none; } }
 
 /* Küchenpass: grosse Zeilen zum Abhaken am Posten (Handy und Tablet). */
-.pl-pass { display: flex; align-items: center; gap: var(--space-4); min-height: 72px; padding: var(--space-3) var(--space-2) var(--space-3) 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+/* Die Zeile hat zwei Flächen: links zum Abhaken (pl-pass__haken, ein label), rechts ein eigener Sprung zum Rezept (pl-pass__rezept). */
+.pl-pass { display: flex; align-items: center; gap: var(--space-2); border-bottom: 1px solid var(--border); }
+.pl-pass__haken { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--space-4); min-height: 72px; padding: var(--space-3) var(--space-2) var(--space-3) 0; cursor: pointer; }
 .pl-pass input[type=checkbox] { flex: none; width: 32px; height: 32px; margin: 0; accent-color: var(--accent); }
-.pl-pass:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+.pl-pass__haken:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
 .pl-pass__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pl-pass__lager { display: flex; flex-wrap: wrap; gap: 0 var(--space-3); font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); }
+.pl-pass__lager > span { white-space: nowrap; }
+.pl-pass__rezept { flex: none; min-width: var(--control-height); min-height: var(--control-height); padding: 0 var(--space-3); display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-control); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font-size: 14px; text-decoration: none; }
+.pl-pass__rezept:hover { background: var(--surface-hover); }
+.pl-pass__rezept:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pl-pass__name { font-size: 18px; line-height: 24px; font-weight: 600; }
 .pl-pass__menge { flex: none; font-family: var(--font-mono); font-size: 18px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pl-pass--erledigt .pl-pass__name { text-decoration: line-through; color: var(--ink-muted); }
 .pl-pass--erledigt .pl-pass__menge { color: var(--ink-muted); }
+
+/* Meldezeile: Rückmeldung am unteren Bildschirmrand, mit einer Aktion (z.B. «Rückgängig»). */
+.pl-melde { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: flex; justify-content: center; padding: 0 var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); pointer-events: none; }
+.pl-melde__box { pointer-events: auto; display: flex; align-items: center; gap: var(--space-2); width: min(560px, 100%); min-height: 56px; padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5); background: var(--panel); color: var(--panel-ink); border: 1px solid var(--panel-line); border-radius: var(--radius-lg); box-shadow: var(--shadow-overlay); font-size: 15px; }
+.pl-melde__box--fehler { background: var(--notice-bg); color: var(--notice-ink); border-color: var(--notice-border); }
+.pl-melde__text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.pl-melde__knopf { flex: none; min-width: var(--control-height); min-height: var(--control-height); padding: 0 var(--space-3); border: 0; border-radius: var(--radius-md); background: transparent; color: inherit; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.pl-melde__knopf--zu { text-decoration: none; font-size: 22px; line-height: 1; font-weight: 400; }
+.pl-melde__knopf:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+@media print { .pl-melde { display: none; } }
 
 /* Leitstand: Abschnittstitel, Aufgabenzeilen mit Zahl, Listenzeilen, Fortschritt und Anteile. */
 .pl-lead { font-size: 20px; line-height: 26px; font-weight: 500; }

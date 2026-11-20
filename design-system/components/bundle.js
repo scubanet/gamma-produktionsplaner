@@ -54,6 +54,17 @@
       p.actionLabel ? h(Button, { href: p.href, onClick: p.onAction, icon: p.icon }, p.actionLabel) : null);
   }
 
+  // Meldung am unteren Bildschirmrand, dort sichtbar, wo gerade gearbeitet wird. Der Bereich ist immer im Dokument,
+  // damit Screenreader eine neue Meldung vorlesen; ohne Inhalt ist er leer und unsichtbar.
+  function Meldezeile(p) {
+    var fehler = p.tone === 'fehler';
+    return h('div', { className: 'pl-melde', role: 'status', 'aria-live': fehler ? 'assertive' : 'polite', 'aria-atomic': 'true' },
+      p.children ? h('div', { className: cx('pl-melde__box', fehler && 'pl-melde__box--fehler') },
+        h('span', { className: 'pl-melde__text' }, p.children),
+        p.actionLabel ? h('button', { type: 'button', className: 'pl-melde__knopf', onClick: p.onAction }, p.actionLabel) : null,
+        p.onClose ? h('button', { type: 'button', className: 'pl-melde__knopf pl-melde__knopf--zu', 'aria-label': 'Meldung schliessen', onClick: p.onClose }, '\u00d7') : null) : null);
+  }
+
   function KpiTile(p) {
     return h('div', { className: cx('pl-kpi', p.tone === 'panel' && 'pl-kpi--panel') },
       h('div', { className: 'pl-kpi__label' }, p.label),
@@ -368,6 +379,6 @@
       p.detail ? h('details', { className: 'pl-notice__detail' }, h('summary', null, 'Technische Angaben'), h('code', null, p.detail)) : null);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState, Meldezeile: Meldezeile };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();
