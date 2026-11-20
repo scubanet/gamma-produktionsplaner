@@ -782,6 +782,20 @@ export type Database = {
             foreignKeyName: "charge_produkt_id_fkey"
             columns: ["produkt_id"]
             isOneToOne: false
+            referencedRelation: "lager_bestand"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "charge_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_einheit"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "charge_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
             referencedRelation: "produkt"
             referencedColumns: ["id"]
           },
@@ -852,6 +866,13 @@ export type Database = {
             columns: ["lagereinheit_id"]
             isOneToOne: false
             referencedRelation: "etikett_beutel"
+            referencedColumns: ["lagereinheit_id"]
+          },
+          {
+            foreignKeyName: "druckauftrag_lagereinheit_id_fkey"
+            columns: ["lagereinheit_id"]
+            isOneToOne: false
+            referencedRelation: "lager_einheit"
             referencedColumns: ["lagereinheit_id"]
           },
           {
@@ -1450,6 +1471,20 @@ export type Database = {
             foreignKeyName: "komponente_produkt_id_fkey"
             columns: ["produkt_id"]
             isOneToOne: false
+            referencedRelation: "lager_bestand"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_einheit"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
             referencedRelation: "produkt"
             referencedColumns: ["id"]
           },
@@ -1513,6 +1548,13 @@ export type Database = {
             foreignKeyName: "lagerbewegung_lagereinheit_id_fkey"
             columns: ["lagereinheit_id"]
             isOneToOne: false
+            referencedRelation: "lager_einheit"
+            referencedColumns: ["lagereinheit_id"]
+          },
+          {
+            foreignKeyName: "lagerbewegung_lagereinheit_id_fkey"
+            columns: ["lagereinheit_id"]
+            isOneToOne: false
             referencedRelation: "lagereinheit"
             referencedColumns: ["id"]
           },
@@ -1562,6 +1604,13 @@ export type Database = {
             columns: ["charge_id"]
             isOneToOne: false
             referencedRelation: "etikett_beutel"
+            referencedColumns: ["charge_id"]
+          },
+          {
+            foreignKeyName: "lagereinheit_charge_id_fkey"
+            columns: ["charge_id"]
+            isOneToOne: false
+            referencedRelation: "lager_einheit"
             referencedColumns: ["charge_id"]
           },
         ]
@@ -4015,7 +4064,141 @@ export type Database = {
           service: string | null
           service_id: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_summe"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_zutaten_stand"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anlass_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "wellen_uebersicht"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_bestand"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_einheit"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "produkt"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
       }
       lager_bestand: {
         Row: {
@@ -4033,7 +4216,15 @@ export type Database = {
           produkt_nr: number | null
           tage_bis_ablauf: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "produkt_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       lager_einheit: {
         Row: {
@@ -4064,7 +4255,78 @@ export type Database = {
           welle_nr: number | null
           zustand: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "charge_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "charge_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_summe"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "charge_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "einkauf_zutaten_stand"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "charge_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "saison"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_saison_id_fkey"
+            columns: ["saison_id"]
+            isOneToOne: false
+            referencedRelation: "wellen_uebersicht"
+            referencedColumns: ["saison_id"]
+          },
+          {
+            foreignKeyName: "produkt_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       leitstand_rezepte: {
         Row: {
@@ -5440,7 +5702,10 @@ export type Database = {
         }
         Returns: undefined
       }
-      einheit_ausbuchen: { Args: { p_grund: string; p_seriennummer: string }; Returns: Json }
+      einheit_ausbuchen: {
+        Args: { p_grund: string; p_seriennummer: string }
+        Returns: Json
+      }
       einkauf_liste: { Args: { p_saison?: string }; Returns: Json }
       einkauf_summe_von: {
         Args: {
@@ -5504,6 +5769,7 @@ export type Database = {
           status: string
         }[]
       }
+      lager_recht: { Args: { p_recht: string }; Returns: boolean }
       lieferant_bestelltermin: {
         Args: { p_lieferant: string; p_liefern_bis: string }
         Returns: {
@@ -5518,6 +5784,17 @@ export type Database = {
       offerte_bestaetigen: {
         Args: { p_anlass: string; p_saison: string }
         Returns: string
+      }
+      produkt_einlagern: {
+        Args: {
+          p_anzahl: number
+          p_einheit: string
+          p_komponente: string
+          p_menge: number
+          p_produziert_am: string
+          p_verbrauchen_bis?: string
+        }
+        Returns: Json
       }
       rezept_faktor: {
         Args: { p_rezept: string; p_wert: number }
@@ -5542,17 +5819,6 @@ export type Database = {
           name: string
           reihenfolge: number
         }[]
-      }
-      produkt_einlagern: {
-        Args: {
-          p_anzahl: number
-          p_einheit: string
-          p_komponente: string
-          p_menge: number
-          p_produziert_am: string
-          p_verbrauchen_bis?: string
-        }
-        Returns: Json
       }
       rezept_loeschen: { Args: { p_rezept: string }; Returns: undefined }
       rezept_slug: { Args: { p_name: string }; Returns: string }
