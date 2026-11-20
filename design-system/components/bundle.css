@@ -87,6 +87,7 @@
 .pl-field__label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-muted); margin-bottom: 6px; }
 .pl-field__input { width: 100%; min-height: var(--control-height); padding: 0 12px; border: 1px solid var(--border-control); border-radius: var(--radius-md); font: inherit; font-family: var(--font-sans); font-size: 14px; color: var(--ink); background: var(--surface); }
 .pl-field__input--mono { font-family: var(--font-mono); }
+.pl-field__input--code { font-size: 20px; text-align: center; letter-spacing: 0.3em; padding-left: calc(12px + 0.3em); }
 .pl-field__input--multiline { display: block; padding: 10px 12px; line-height: 20px; resize: vertical; }
 .pl-field__input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
 .pl-field__hint { font-size: 12px; color: var(--ink-muted); margin-top: 4px; }
@@ -244,6 +245,14 @@
 .pl-table__sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pl-table th:has(.pl-table__sort) { padding-bottom: 0; }
 @media print { .pl-table__sort { min-height: 0; padding-bottom: 0; } .pl-table th:has(.pl-table__sort) { padding-bottom: 10px; } }
+
+/* Anmeldeseite: Marke, Karte und Fusszeile mittig auf surface-sunken. Zusammen mit pl-app verwenden. */
+.pl-auth { flex-direction: column; flex-wrap: nowrap; align-items: center; justify-content: center; min-height: 100vh; min-height: 100dvh; padding: var(--space-8) var(--space-4); background: var(--surface-sunken); }
+.pl-auth__main { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; gap: var(--space-6); }
+.pl-auth__kopf { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
+.pl-auth__titel { margin: 0; font-size: 20px; line-height: 26px; font-weight: 500; }
+.pl-auth .pl-card { width: 100%; box-shadow: var(--shadow-card); }
+.pl-auth__aktionen { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
 /* Brand: Bildmarke, Wortmarke und Produktname. Klein in der TopNav, gross und gestapelt auf der Anmeldeseite. */
 .pl-brand { display: inline-flex; align-items: center; gap: 10px; min-height: var(--control-height); color: var(--ink); text-decoration: none; }

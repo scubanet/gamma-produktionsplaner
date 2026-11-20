@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, Notice, TextField } from "@/lib/planer";
+import { BILDMARKE, Brand, Button, Card, Notice, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { ANMELDEN, sichererPfad } from "@/lib/navigation";
 import { ABGELAUFEN, ankunft, fehlertext, nurZiffern } from "@/lib/anmeldung";
@@ -96,7 +96,7 @@ function Formular() {
             e.preventDefault();
             pruefen({ email, token: nurZiffern(code) });
           }}
-          style={{ display: "grid", gap: "var(--space-4)" }}
+          className="pl-stack"
         >
           <p>
             Wir haben eine E-Mail an <strong>{email}</strong> geschickt. Öffne den Link darin oder gib hier den Code aus der E-Mail ein.
@@ -106,13 +106,13 @@ function Formular() {
             label="Code aus der E-Mail"
             name="code"
             autoComplete="one-time-code"
-            numeric
+            code
             required
             value={code}
             onChange={(e) => setCode(wert(e))}
           />
           {fehler ? <Notice title="Anmeldung nicht möglich">{fehler}</Notice> : null}
-          <div style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}>
+          <div className="pl-auth__aktionen">
             <Button variant="primary" type="submit" disabled={laeuft || nurZiffern(code).length < 6}>
               {laeuft ? "Wird angemeldet …" : "Mit Code anmelden"}
             </Button>
@@ -126,7 +126,7 @@ function Formular() {
 
   return (
     <Card title="Anmelden" meta="Link per E-Mail, ohne Passwort">
-      <form onSubmit={senden} style={{ display: "grid", gap: "var(--space-4)" }}>
+      <form onSubmit={senden} className="pl-stack">
         {fehler ? <Notice title="Anmeldung nicht möglich">{fehler}</Notice> : null}
         <TextField
           id="email"
@@ -151,18 +151,17 @@ function Formular() {
 
 export default function Anmelden() {
   return (
-    <main className="pl-main">
-      <header className="pl-head">
-        <div>
-          <div className="pl-crumb">GAMMA Catering</div>
-          <h1 className="pl-h1">Produktionsplaner</h1>
+    <div className="pl-app pl-auth">
+      <main className="pl-auth__main">
+        <div className="pl-auth__kopf">
+          <Brand size="lg" src={BILDMARKE} product={null} />
+          <h1 className="pl-auth__titel">Produktionsplaner</h1>
         </div>
-      </header>
-      <div className="pl-grid-2">
         <Suspense>
           <Formular />
         </Suspense>
-      </div>
-    </main>
+        <p className="pl-small">GAMMA Catering · Hünenberg</p>
+      </main>
+    </div>
   );
 }

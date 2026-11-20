@@ -49,6 +49,7 @@ Inter Tight für alles Lesbare, IBM Plex Mono für Zahlen (tabellarische Ziffern
 
 - Hauptnavigation oben (TopNav) mit sechs Bereichen, darunter die Seiten des Bereichs als Tabs; Inhalt mit `space-8` oben und `space-10` seitlich. Die SideNav (links, `sidenav-width` 232 px) bleibt für die Mockups.
 - Kopfzeile: Breadcrumb (`caption`), Seitentitel, rechts die Aktionen (Sekundär vor Primär).
+- Die Anmeldeseite steht ohne Navigation in `pl-auth`: Marke, eine Karte mit `shadow-card`, Fusszeile, alles mittig.
 - Inhalt in Karten (`radius-lg`, Rahmen `border`, keine Schatten), Abstände `space-6`, KPI-Reihen `space-4`.
 - Abschnitte ohne Karte beginnen mit `pl-section-title` (Grossbuchstaben, Linie in `ink`); darunter Zeilen `pl-todo` oder `pl-list-row`. So ist der Leitstand gebaut.
 - Zum Abhaken am Posten (Küchenpass) dienen Zeilen `pl-pass`: ganze Zeile klickbar, Häkchen 32 px.

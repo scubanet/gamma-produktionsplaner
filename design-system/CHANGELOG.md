@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.16 | 20.11.2026 | Layout `pl-auth` für die Anmeldeseite (Marke, Karte höchstens 420 px und Fusszeile mittig auf `surface-sunken`). Token `shadow-card` für diese Karte. TextField mit `code` (sechsstelliger Code: Mono 20 px, zentriert, mit Abstand). |
 | 0.15 | 20.11.2026 | Neue Komponente Brand (Bildmarke, Wortmarke, Produktname; Grössen `sm` und `lg`). Bildmarke als eine Datei `assets/bildmarke.svg` (Platzhalter bis zum Logo von GAMMA), daraus Favicon und App-Icons. TopNav nutzt Brand statt Schriftzug (`brandSrc`), `pl-top__brand` entfällt. |
 | 0.14 | 15.11.2026 | Für den Küchenpass (`/kueche/`): Klasse `pl-pass` (72 px hohe Zeile mit 32-px-Häkchen, Name 18/600, Menge in Mono; erledigt durchgestrichen). |
 | 0.13 | 15.11.2026 | Neue Komponente DetailPanel und Layout `pl-split` (Liste mit Detailspalte statt Dialog), DataTable mit `isSelected`. `pl-h1--name`: Namen als Seitentitel in Normalschrift. `pl-details` für aufklappbare Abschnitte (Abgleich mit der Excel). |
