@@ -4,7 +4,7 @@ Eingabefeld mit Label darüber, einzeilig oder mit `multiline` mehrzeilig.
 
 - Label in `label` / `ink-muted`, Feld `control-height`, Rahmen `border-control`, Fokus `accent`.
 - `numeric` setzt Mono-Schrift und Ziffern-Tastatur – für Gäste, Mengen, Portionen.
-- `code` für den sechsstelligen Code aus der Anmelde-E-Mail: Mono 20 px, zentriert, Ziffern mit Abstand, Ziffern-Tastatur, höchstens 6 Zeichen.
+- `code` für den sechsstelligen Code aus der Anmelde-E-Mail: Mono 20 px, zentriert, Ziffern mit Abstand, Ziffern-Tastatur. Die Länge begrenzt das Feld nicht; sie hängt an der Einstellung in Supabase.
 - Format: Datum `TT.MM.JJJJ`, Zeit `HH:MM`, Dezimalpunkt wie in der Schweiz üblich (2.40 kg).
 - `type` (`text`, `email`, `search`, `tel`), `name`, `autoComplete` und `required` gehen direkt ans Eingabefeld, z.B. `type="email"` mit `autoComplete="email"` im Login.
 - `hint` ist mit dem Feld verbunden (`aria-describedby`). `invalid` markiert eine ungültige Eingabe (`aria-invalid`, Rahmen und Hinweis in `status-critical-ink`); der Hinweis wird dann vorgelesen.
