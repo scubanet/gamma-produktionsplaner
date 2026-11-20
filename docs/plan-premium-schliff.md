@@ -148,9 +148,11 @@ Stand 20.11.2026: Icons stehen an «Drucken» und «Hinzufügen», am Schliessen
 
 ### Aufgabe 9: Abnahme mit Bildern
 
+Stand 20.11.2026: Die Bilder fehlen noch. Der Browser-Bereich von Claude liefert nur verkleinerte Bilder (800 px breit), keine echten 1440 px; für die Abnahme braucht es echte Bildschirmfotos oder Dominik sieht die Seiten direkt durch.
+
 - [ ] Von jedem Screen ein Bild in 1440 px und 390 px, hell und dunkel, in `docs/abnahme-premium/` ablegen.
 - [ ] Prüffragen pro Bild: Ist die Marke sichtbar? Läuft nichts über? Gibt es einen Zustand für Laden, Leer und Fehler? Sind Abstände aus den Tokens?
-- [ ] Kontrast der neuen Elemente prüfen (Text 4.5:1, Bedienelemente 3:1).
+- [x] Kontrast der neuen Elemente prüfen (Text 4.5:1, Bedienelemente 3:1). Gerechnet am 20.11.2026 aus den Tokens, hell und dunkel: Links in `accent` 15.3 und 7.8, Kürzel im Benutzer-Menü 14.8 und 10.5, Text im leeren Zustand 6.7 und 6.8, «Technische Angaben» 9.9 und 10.9, Fusszeile der Anmeldung 6.2 und 6.2. Das Skelett ist Schmuck (1.2), der Ladetext steht für Screenreader.
 - [ ] Dominik sieht die Bilder durch, bevor ausgeliefert wird.
 
 ## Nicht Teil dieses Plans
