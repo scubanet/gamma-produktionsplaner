@@ -71,7 +71,7 @@ Die Marke steht als Komponente Brand in der Kopfzeile und auf der Anmeldeseite. 
 
 ## Komponenten
 
-Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel, Brand, Icon, UserMenu, Skeleton. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
+Button, Card, KpiTile, StatusPill, LocationTag, SegmentedControl, TextField, Checkbox, DataTable, Timeline, SideNav, Notice, Select, Dialog, Fieldset, ItemList, Chip, RecipeGroups, TopNav, Tabs, DetailPanel, Brand, Icon, UserMenu, Skeleton, EmptyState. Alle unter dem Namensraum `Planer`, gestylt über `bundle.css` und die Tokens.
 
 ## Wie das System weiterwächst
 

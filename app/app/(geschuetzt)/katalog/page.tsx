@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card, DataTable, ItemList, Notice, Select, StatusPill, TextField, Skeleton } from "@/lib/planer";
+import { Card, DataTable, ItemList, Notice, Select, StatusPill, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import { haltbarkeitText, leerAnzeige, type Zuteilung } from "@/lib/systemzuteilung";
@@ -113,7 +113,7 @@ function Katalogansicht() {
                 }))}
               />
             ) : (
-              <p className="pl-muted">Keine Gerichte für diese Suche.</p>
+              <EmptyState title="Keine Gerichte für diese Suche" actionLabel="Filter zurücksetzen" onAction={() => { setSuche(""); setKategorie(""); }} />
             )
           ) : (
             (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Katalog wird geladen" />)

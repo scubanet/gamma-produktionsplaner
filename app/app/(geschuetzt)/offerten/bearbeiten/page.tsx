@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, DataTable, Dialog, ItemList, KpiTile, Notice, Select, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, ItemList, KpiTile, Notice, Select, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import {
@@ -323,7 +323,7 @@ function Bearbeiten() {
                   </div>
                 ))
               ) : (
-                <p className="pl-muted">Noch keine Gerichte. Unten aus dem Katalog hinzufügen.</p>
+                <EmptyState title="Noch keine Gerichte" text="Unten aus dem Katalog hinzufügen." />
               )
             ) : (
               (hinweis ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Gerichte werden geladen" />)
@@ -347,7 +347,7 @@ function Bearbeiten() {
                   groups={[{ items: auswahl.slice(0, 50).map((g) => ({ id: g.id, label: g.name, sub: `${g.gang ?? "[Gang]"} · ${g.kategorie} · hinzufügen` })) }]}
                 />
               ) : (
-                <p className="pl-muted">Keine passenden Gerichte.</p>
+                <EmptyState title="Keine passenden Gerichte" />
               )
             ) : null}
             {auswahl.length > 50 ? <p className="pl-small">{auswahl.length - 50} weitere: Suche oder Gang eingrenzen.</p> : null}

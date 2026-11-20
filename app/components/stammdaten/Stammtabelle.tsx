@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Card, Checkbox, DataTable, Dialog, Notice, Select, TextField, type DataTableColumn, Skeleton } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, Dialog, Notice, Select, TextField, type DataTableColumn, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { fehlerText, formularAus, werteAus, type Feld, type Formular, type Zeile } from "@/lib/stammdaten";
 
@@ -83,7 +83,7 @@ export function Stammtabelle({ tabelle, titel, meta, einzahl, felder, schluessel
             rows={zeilen.map((z, i) => ({ id: schluessel.map((s) => String(z[s])).join("|") || i, zeile: z, ...anzeige(z) }))}
           />
         ) : (
-          <p className="pl-muted">Noch nichts erfasst. Bis dahin stehen die Kosten als [Preis].</p>
+          <EmptyState title="Noch nichts erfasst" text="Bis dahin stehen die Kosten als [Preis]." />
         )
       ) : (
         (ladefehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Wird geladen" />)

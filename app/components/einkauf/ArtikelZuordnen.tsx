@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Dialog, ItemList, Notice, TextField } from "@/lib/planer";
+import { Button, Dialog, ItemList, Notice, TextField, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatChf } from "@/lib/offerte";
 import { fehlerText } from "@/lib/fehler";
@@ -85,7 +85,7 @@ export function ArtikelZuordnen({ ziel, offen, onClose, onGespeichert }: {
             groups={[{ items: liste.map((a) => ({ id: a.id, label: a.name, sub: `${a.artikelnummer ?? "[Artikelnummer]"} · ${a.preis_pro_einheit === null ? "[Preis]" : formatChf(a.preis_pro_einheit)} / ${a.einheit ?? "[Einheit]"}` })) }]}
           />
         ) : (
-          <p className="pl-muted">Kein Artikel gefunden.</p>
+          <EmptyState title="Kein Artikel gefunden" />
         )
       ) : null}
       {liste?.length === 30 ? <p className="pl-small">Es werden die ersten 30 Treffer gezeigt. Suche eingrenzen.</p> : null}

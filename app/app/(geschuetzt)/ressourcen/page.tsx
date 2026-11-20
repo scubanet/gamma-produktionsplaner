@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, DataTable, Dialog, KpiTile, Notice, Select, StatusPill, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, KpiTile, Notice, Select, StatusPill, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { zeitraum } from "@/lib/anlass";
@@ -255,7 +255,7 @@ function Ressourcen() {
                   }))}
                 />
               ) : (
-                <p className="pl-muted">Noch kein Personal erfasst.</p>
+                <EmptyState title="Noch kein Personal erfasst" />
               )
             ) : (
               (hinweis ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Wird geladen" />)
@@ -290,7 +290,7 @@ function Ressourcen() {
                   rows={d.geraete.map((g) => ({ id: g.id, g, geraet: g.geraet, bemerkung: g.bemerkung, anzahl: formatZahl(g.anzahl ?? 0), zusatz: g.zusatzbedarf, kosten: (g.miete_anzahl ?? 0) > 0 ? chf(g.mietkosten_chf) : "–", herleitung: g.herleitung }))}
                 />
               ) : (
-                <p className="pl-muted">Noch keine Geräte erfasst.</p>
+                <EmptyState title="Noch keine Geräte erfasst" />
               )
             ) : null}
             <p className="pl-small">Annahme: Überschneiden sich Anlässe, bekommt der frühere Anlass den eigenen Bestand zuerst. Zusatzbedarf ist kein Fehler, sondern eine Miete.</p>

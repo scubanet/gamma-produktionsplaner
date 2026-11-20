@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Button, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn, Skeleton } from "@/lib/planer";
+import { Button, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { useSchmal } from "@/lib/schmal";
 import { formatZahl } from "@/lib/format";
@@ -182,7 +182,7 @@ export default function Systemzuteilung() {
           <span className="pl-card__meta">{daten ? `${formatZahl(zeilen.length)} von ${formatZahl(alle.length)}` : ""}</span>
         </div>
         {daten ? (
-          zeilen.length ? <DataTable columns={spalten} rows={tabelle} isSelected={(r) => !!bearbeiten && r.id === bearbeiten.id} /> : <p className="pl-muted">Keine Komponenten für diese Filter.</p>
+          zeilen.length ? <DataTable columns={spalten} rows={tabelle} isSelected={(r) => !!bearbeiten && r.id === bearbeiten.id} /> : <EmptyState title="Keine Komponenten für diese Filter" />
         ) : fehler ? (
           <p className="pl-muted">Keine Daten, siehe Hinweis oben.</p>
         ) : (

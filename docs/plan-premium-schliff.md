@@ -117,10 +117,12 @@ Stand 20.11.2026: Deutsche Meldungen aus den Funktionen der Datenbank (`raise ex
 
 **Dateien:** neue Komponente `design-system/components/EmptyState/`, Listen und Tabellen in allen Screens.
 
-- [ ] Komponente `EmptyState`: Titel, ein Satz, optional eine Aktion (Button). Ruhig, linksbündig in der Tabelle, kein Bild.
-- [ ] Zwei Fälle unterscheiden: «noch nichts erfasst» (mit Aktion «Erstes … erfassen») und «Suche oder Filter ohne Treffer» (mit Aktion «Filter zurücksetzen»).
-- [ ] `DataTable` bekommt `empty`. Alle Listen durchgehen: Offerten, Anlässe, Rezepte, Katalog, Produktionsliste, Wellen, Einkauf, Lieferanten, Benutzer, Stammdaten.
-- [ ] Commit `Leere Zustände einheitlich mit nächstem Schritt`
+- [x] Komponente `EmptyState`: Titel, ein Satz, optional eine Aktion (Button). Ruhig, linksbündig in der Tabelle, kein Bild.
+- [x] Zwei Fälle unterscheiden: «noch nichts erfasst» (mit Aktion «Erstes … erfassen») und «Suche oder Filter ohne Treffer» (mit Aktion «Filter zurücksetzen»).
+- [x] `DataTable` bekommt `empty`. Alle Listen durchgehen: Offerten, Anlässe, Rezepte, Katalog, Produktionsliste, Wellen, Einkauf, Lieferanten, Benutzer, Stammdaten.
+- [x] Commit `Leere Zustände einheitlich mit nächstem Schritt`
+
+Stand 20.11.2026: 36 Stellen nutzen `EmptyState`. Mit Aktion: Offerten, Anlässe, Rezepte, Katalog, Produktionsliste, Wellen, Einkaufsliste, Lieferanten. Ohne Aktion, weil der Knopf im Kartenkopf gleich daneben steht: Stammdaten, Ressourcen, Karten des Anlasses. Benutzer: die Liste ist nie leer (der Admin selbst steht darin). `DataTable` kann `empty`; die Seiten entscheiden weiterhin selbst zwischen Tabelle und leerem Zustand. Unverändert: «Keine Daten.» bei einem Ladefehler (der Hinweis steht darüber).
 
 ### Aufgabe 7: Dialog bei ungespeicherten Änderungen
 

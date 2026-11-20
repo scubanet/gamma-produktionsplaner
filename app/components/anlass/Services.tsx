@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Card, DataTable, Dialog, Notice, Select, TextField } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, Notice, Select, TextField, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { fehlerText, ganzzahl, geaenderteDaten, ungueltigesDatum, type Menuelinie, type Service } from "@/lib/anlass";
@@ -121,7 +121,7 @@ export function Services({ anlassId, services, linien, onGeaendert, onMeldung, o
           }))}
         />
       ) : (
-        <p className="pl-muted">Noch keine Services. Ohne Service zählt eine Menülinie keine Gäste.</p>
+        <EmptyState title="Noch keine Services" text="Ohne Service zählt eine Menülinie keine Gäste." />
       )}
 
       <Dialog

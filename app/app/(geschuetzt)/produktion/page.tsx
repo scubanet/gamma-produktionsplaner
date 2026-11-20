@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn, Skeleton } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, type DataTableColumn, Skeleton, EmptyState } from "@/lib/planer";
 import { suchen } from "@/lib/suche";
 import { useSchmal } from "@/lib/schmal";
 import { supabase } from "@/lib/supabase";
@@ -399,7 +399,7 @@ export default function Produktionsliste() {
                   }}
                 />
               ) : (
-                <p className="pl-muted">{suche.trim() ? `Nichts gefunden für «${suche.trim()}».` : "Keine Komponenten für diese Filter."}</p>
+                <EmptyState title={suche.trim() ? `Nichts gefunden für «${suche.trim()}»` : "Keine Komponenten für diese Filter"} actionLabel="Filter zurücksetzen" onAction={() => { setSuche(""); setKategorie(""); setStatus(""); setErledigt(""); setZustaendig(""); }} />
               )
             ) : fehler ? (
               <p className="pl-muted">Keine Daten, siehe Hinweis oben.</p>

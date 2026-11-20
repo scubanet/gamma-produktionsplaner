@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Card, DataTable, Dialog, Notice, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, Notice, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { dezimal, fehlerText, nachRubrik, type Karte, type KartenPosition } from "@/lib/anlass";
 import { formatChf } from "@/lib/offerte";
@@ -185,7 +185,7 @@ function KarteBearbeiten() {
             </Card>
           ))
         ) : (
-          <p className="pl-muted pl-print-hide">Noch keine Positionen. «+ Position» legt die erste an.</p>
+          <div className="pl-print-hide"><EmptyState title="Noch keine Positionen" text="«Position» legt die erste an." /></div>
         )
       ) : (
         (hinweis ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Karte wird geladen" />)

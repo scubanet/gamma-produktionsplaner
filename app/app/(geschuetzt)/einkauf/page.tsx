@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
@@ -180,7 +180,7 @@ export default function Einkauf() {
               />
             </Card>
           ))}
-          {daten && !artikel.length ? <p className="pl-muted">Noch keine Komponente mit Hauptartikel{bezug ? ` in ${bezug}` : ""}. Unten zuordnen.</p> : null}
+          {daten && !artikel.length ? <EmptyState title={`Noch keine Komponente mit Hauptartikel${bezug ? ` in ${bezug}` : ""}`} actionLabel="Artikel zuordnen" href="/einkauf/zuordnen/" /> : null}
 
           <p className="pl-small">
             <span className="pl-assumed">gestrichelt</span> = Annahme, bitte prüfen: Artikelmenge = Menge der Komponente plus Verlust des Artikels, solange Rezepte nicht mit Artikeln verknüpft sind.

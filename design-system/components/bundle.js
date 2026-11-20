@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"},{"name":"Brand"},{"name":"Icon"},{"name":"UserMenu"},{"name":"Skeleton"}]} */
+/* @ds-bundle: {"format":4,"namespace":"Planer","components":[{"name":"Button"},{"name":"Card"},{"name":"KpiTile"},{"name":"StatusPill"},{"name":"LocationTag"},{"name":"SegmentedControl"},{"name":"TextField"},{"name":"Checkbox"},{"name":"DataTable"},{"name":"Timeline"},{"name":"SideNav"},{"name":"Notice"},{"name":"Select"},{"name":"Dialog"},{"name":"Fieldset"},{"name":"ItemList"},{"name":"Chip"},{"name":"RecipeGroups"},{"name":"TopNav"},{"name":"Tabs"},{"name":"DetailPanel"},{"name":"Brand"},{"name":"Icon"},{"name":"UserMenu"},{"name":"Skeleton"},{"name":"EmptyState"}]} */
 (function () {
   var root = typeof window !== 'undefined' ? window : globalThis;
   var React = root.React;
@@ -44,6 +44,14 @@
     var n = p.rows || (v === 'text' ? 3 : v === 'zeile' ? 8 : 1), teile = [];
     for (var i = 0; i < n; i++) teile.push(h('span', { key: i, className: 'pl-skel pl-skel--' + v, 'aria-hidden': 'true' }));
     return h('div', { className: 'pl-skel-gruppe' }, p.label ? h('span', { className: 'pl-sr', role: 'status' }, p.label) : null, teile);
+  }
+
+  // Leerer Zustand einer Liste: was fehlt, ein Satz dazu, und der nächste Schritt als Button.
+  function EmptyState(p) {
+    return h('div', { className: 'pl-empty', role: 'status' },
+      h('div', { className: 'pl-empty__titel' }, p.title),
+      p.text ? h('p', { className: 'pl-empty__text' }, p.text) : null,
+      p.actionLabel ? h(Button, { href: p.href, onClick: p.onAction, icon: p.icon }, p.actionLabel) : null);
   }
 
   function KpiTile(p) {
@@ -225,6 +233,7 @@
   }
 
   function DataTable(p) {
+    if (p.empty && !p.loading && !p.rows.length) return p.empty;
     return h('div', { className: 'pl-table-wrap' },
       h('table', { className: 'pl-table' },
         h('thead', null, h('tr', null, p.columns.map(function (c) {
@@ -347,6 +356,6 @@
       p.detail ? h('details', { className: 'pl-notice__detail' }, h('summary', null, 'Technische Angaben'), h('code', null, p.detail)) : null);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

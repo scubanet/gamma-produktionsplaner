@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, Select, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, Chip, DataTable, ItemList, Notice, RecipeGroups, SegmentedControl, Select, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { suchen } from "@/lib/suche";
 import { PlanungKarte } from "@/components/rezepte/PlanungKarte";
@@ -210,7 +210,7 @@ function Rezeptbibliothek() {
                     .filter((g) => g.items.length)}
                 />
               ) : (
-                <p className="pl-muted" role="status">{suche.trim() ? `Nichts gefunden für «${suche.trim()}».` : "Kein Rezept mit diesem Status."}</p>
+                <EmptyState title={suche.trim() ? `Nichts gefunden für «${suche.trim()}»` : "Kein Rezept mit diesem Status"} actionLabel="Filter zurücksetzen" onAction={() => { setSuche(""); setStatusFilter(STATUS_ALLE); }} />
               )}
             </>
           ) : (

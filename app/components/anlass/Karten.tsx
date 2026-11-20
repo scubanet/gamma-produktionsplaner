@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card, DataTable, Dialog, Notice, Select, TextField } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, Notice, Select, TextField, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { fehlerText } from "@/lib/anlass";
 
@@ -66,7 +66,7 @@ export function Karten({ anlassId, karten, vorlagen, onMeldung }: {
           rows={karten.map((k) => ({ id: k.id, name: k.name, positionen: k.positionen }))}
         />
       ) : (
-        <p className="pl-muted">Noch keine Karte für diesen Anlass.</p>
+        <EmptyState title="Noch keine Karte für diesen Anlass" />
       )}
 
       <Dialog

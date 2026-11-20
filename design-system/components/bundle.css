@@ -339,6 +339,12 @@
 .pl-panel > .pl-panel__head, .pl-panel > .pl-panel__body { animation: pl-einblenden-a var(--motion-base) var(--ease-standard); }
 .pl-panel--b > .pl-panel__head, .pl-panel--b > .pl-panel__body { animation: pl-einblenden-b var(--motion-base) var(--ease-standard); }
 .pl-progress__bar, .pl-anteil__teil { transform-origin: left; animation: pl-wachsen var(--motion-base) var(--ease-standard); }
+/* EmptyState: leere Liste, linksbündig, ruhig, mit dem nächsten Schritt. */
+.pl-empty { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); padding: var(--space-3) 0; }
+.pl-empty__titel { font-size: 15px; line-height: 22px; font-weight: 600; }
+.pl-empty__text { margin: 0; color: var(--ink-muted); }
+.pl-empty .pl-btn { margin-top: var(--space-3); }
+@media print { .pl-empty .pl-btn { display: none; } }
 /* Skeleton: Ladezustand in der Form des späteren Inhalts. */
 @keyframes pl-puls { 50% { opacity: 0.45; } }
 .pl-skel { display: block; border-radius: var(--radius-sm); background: var(--surface-hover); animation: pl-puls var(--motion-pulse) ease-in-out infinite; }

@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Card, Checkbox, Dialog, Notice, Select, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, Checkbox, Dialog, Notice, Select, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { istGeaendert } from "@/lib/ungespeichert";
 import { Ungespeichert } from "@/components/Ungespeichert";
@@ -286,7 +286,7 @@ function RezeptBearbeiten() {
                   );
                 })
               ) : (
-                <p className="pl-muted">Noch keine Zutaten in dieser Gruppe.</p>
+                <EmptyState title="Noch keine Zutaten in dieser Gruppe" />
               )}
               <div>
                 <Button icon="plus" variant="dashed" onClick={() => setGruppe(g.key, (x) => ({ ...x, zutaten: [...x.zutaten, neueZutat(neuKey("z"))] }))}>Zutat</Button>

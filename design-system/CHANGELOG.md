@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.21 | 20.11.2026 | Neue Komponente EmptyState (Titel, ein Satz, eine Aktion) für «noch nichts erfasst» und «Filter ohne Treffer». DataTable mit `empty`. |
 | 0.20 | 20.11.2026 | Neue Komponente Skeleton (Varianten `text`, `zahl`, `zeile`, `karte`; Token `motion-pulse`), DataTable mit `loading`. Die App zeigt Skelette statt «…» und «wird geladen …». |
 | 0.19 | 20.11.2026 | Notice mit `detail`: technische Meldung aufklappbar unter «Technische Angaben». |
 | 0.18 | 20.11.2026 | Tokens `shadow-overlay` und `shadow-card` in Hell und Dunkel, `topnav-height`. Dialog mit Schatten. Neue Komponenten Icon (sieben Linien-Icons, Button mit `icon`) und UserMenu (Kürzel im Kreis, Name, E-Mail, Abmelden). TopNav bleibt ab 761 px oben stehen. DataTable mit `rowHref` (klickbare Zeile) und Icon für die Sortierrichtung. Links in `accent` (`pl-link`), Button-Text bricht nicht um, leere Meldezeile unter dem Seitenkopf ohne Abstand. |

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card, DataTable, Notice, Select, StatusPill, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, Notice, Select, StatusPill, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { STATUS, statusLabel, statusPill, zeitraum } from "@/lib/anlass";
@@ -102,7 +102,11 @@ export default function Anlaesse() {
               }))}
             />
           ) : (
-            <p className="pl-muted">Keine Anlässe mit diesem Status.</p>
+            zeilen.length ? (
+              <EmptyState title="Keine Anlässe mit diesem Status" actionLabel="Filter zurücksetzen" onAction={() => setStatus("")} />
+            ) : (
+              <EmptyState title="Noch keine Anlässe" actionLabel="Ersten Anlass erfassen" icon="plus" onAction={neu} />
+            )
           )
         ) : (
           (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Anlässe werden geladen" />)

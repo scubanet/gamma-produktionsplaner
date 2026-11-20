@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Card, Checkbox, DataTable, Dialog, KpiTile, Notice, SegmentedControl, StatusPill, TextField, type DataTableColumn, Skeleton } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, Dialog, KpiTile, Notice, SegmentedControl, StatusPill, TextField, type DataTableColumn, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
@@ -324,7 +324,7 @@ export default function Wellen() {
                 </Card>
               ))}
 
-          {daten && !(zeigt === "plan" ? planWellen : vorschlagWellen).length ? <p className="pl-muted">Keine Wellen: Noch keine Komponente mit Haltbarkeit in einer Menülinie dieser Saison.</p> : null}
+          {daten && !(zeigt === "plan" ? planWellen : vorschlagWellen).length ? <EmptyState title="Keine Wellen" text="Noch keine Komponente mit Haltbarkeit in einer Menülinie dieser Saison." actionLabel="Zur Systemzuteilung" href="/systemzuteilung/" /> : null}
 
           <p className="pl-small">
             <span className="pl-assumed">Haltbarkeit</span>: Annahme aus der Excel, noch mit Philipp und dem Küchenchef zu bestätigen. <span className="pl-assumed">Menge</span>: Annahme zur Zuordnung wie im

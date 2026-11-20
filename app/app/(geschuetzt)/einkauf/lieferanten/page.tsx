@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Card, Checkbox, DataTable, Dialog, Fieldset, Notice, Select, StatusPill, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, Checkbox, DataTable, Dialog, Fieldset, Notice, Select, StatusPill, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import { WOCHENTAGE, fehlerText, formAus, lieferantDaten, liefertageText, type Lieferant, type LieferantForm } from "@/lib/einkauf";
@@ -180,7 +180,7 @@ export default function Lieferanten() {
               }))}
             />
           ) : (
-            <p className="pl-muted">Noch keine Lieferanten. «Lieferant erfassen» legt den ersten an.</p>
+            <EmptyState title="Noch keine Lieferanten" text="Liefertage und Bestellschluss bestimmen «bestellen bis» in der Einkaufsliste." actionLabel="Ersten Lieferanten erfassen" icon="plus" onAction={() => oeffnen(null)} />
           )
         ) : (
           (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Lieferanten werden geladen" />)

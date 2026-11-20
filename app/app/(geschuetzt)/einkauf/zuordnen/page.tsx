@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button, Card, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, KpiTile, Notice, SegmentedControl, Select, StatusPill, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatZahl } from "@/lib/format";
 import { filtern, gruppieren, vorschlagDetail, type ArtikelVorschlag, type KomponenteOffen, type VorschlagZeile } from "@/lib/artikel-vorschlag";
@@ -162,7 +162,7 @@ export default function ArtikelZuordnenSeite() {
                 rows={liste.map((k) => ({ id: k.komponenteId, k, komponente: k.komponente, kategorie: k.kategorie, status: k.status }))}
               />
             ) : (
-              <p className="pl-muted">{alle.length ? "Keine Komponenten für diese Filter." : "Alle Komponenten dieser Saison haben einen Hauptartikel."}</p>
+              <EmptyState title={alle.length ? "Keine Komponenten für diese Filter" : "Alle Komponenten dieser Saison haben einen Hauptartikel"} />
             )}
             <p className="pl-small">
               <span className="pl-assumed">Vorschläge</span>: die drei ähnlichsten Artikel nach dem Namen (ab 50 % Ähnlichkeit, Prozentzahl hinter dem Preis). Ein ähnlicher Name ist noch nicht der richtige

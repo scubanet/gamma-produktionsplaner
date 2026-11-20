@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, DataTable, Dialog, ItemList, Notice, StatusPill, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, ItemList, Notice, StatusPill, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatGramm } from "@/lib/format";
 import { haltbarkeitText, lagerungText, type Zuteilung } from "@/lib/systemzuteilung";
@@ -228,7 +228,7 @@ export function PlanungKarte({ rezept, bearbeitenHref }: { rezept: Rezept; bearb
               groups={[{ items: liste.map((k) => ({ id: k.id, label: k.name, sub: `${k.kategorie ?? ""}${k.rezept_id && k.rezept_id !== rezept.id ? " · heute mit einem anderen Rezept verknüpft, wird ersetzt" : k.rezept_id ? " · schon verknüpft" : ""}` })) }]}
             />
           ) : (
-            <p className="pl-muted">Keine Komponente gefunden.</p>
+            <EmptyState title="Keine Komponente gefunden" />
           )
         ) : null}
         {aktion.fehler ? <Notice role="alert" title="Nicht gespeichert">{aktion.fehler}</Notice> : null}

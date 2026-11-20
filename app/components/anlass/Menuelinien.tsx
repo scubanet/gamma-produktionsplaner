@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Button, Card, DataTable, Dialog, ItemList, Notice, Select, TextField } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, ItemList, Notice, Select, TextField, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { RezeptLink } from "@/components/RezeptLink";
 import { formatZahl, zahlDeCh } from "@/lib/format";
@@ -180,7 +180,7 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
               ))}
             </div>
           ))}
-          {!linienGerichte.length ? <p className="pl-muted">Noch keine Gerichte in dieser Linie.</p> : null}
+          {!linienGerichte.length ? <EmptyState title="Noch keine Gerichte in dieser Linie" /> : null}
 
           <div className="pl-eyebrow">Gericht hinzufügen</div>
           <div className="pl-grid-2">
@@ -194,12 +194,12 @@ export function Menuelinien({ anlassId, linien, gaeste, gerichte, komponenten, k
               groups={[{ items: auswahl.slice(0, 30).map((x) => ({ id: x.id, label: x.name, sub: `${x.gang ?? "[Gang]"} · ${x.kategorie} · ${fuegtHinzu === x.id ? "wird hinzugefügt …" : "hinzufügen"}` })) }]}
             />
           ) : (
-            <p className="pl-muted">Keine passenden Gerichte.</p>
+            <EmptyState title="Keine passenden Gerichte" />
           )}
           {auswahl.length > 30 ? <p className="pl-small">{auswahl.length - 30} weitere: Suche oder Gang eingrenzen.</p> : null}
         </>
       ) : (
-        <p className="pl-muted">Noch keine Menülinie. «+ Menülinie» legt eine an, z.B. «Spiel 1 und 6».</p>
+        <EmptyState title="Noch keine Menülinie" text="«Menülinie» legt eine an, z.B. «Spiel 1 und 6»." />
       )}
 
       <Dialog

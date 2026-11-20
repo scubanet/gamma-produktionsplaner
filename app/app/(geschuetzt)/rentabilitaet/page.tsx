@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { statusLabel } from "@/lib/anlass";
@@ -128,7 +128,7 @@ export default function Rentabilitaet() {
                 })}
               />
             ) : (
-              <p className="pl-muted">Keine Anlässe in diesem Monat.</p>
+              <EmptyState title="Keine Anlässe in diesem Monat" />
             )}
             <p className="pl-small">
               <span className="pl-assumed">gestrichelt</span> = Annahme, bitte prüfen: Warenkosten aus der Offerte geschätzt oder Freelancer zum Satz des eigenen Personals gerechnet.
@@ -194,7 +194,7 @@ export default function Rentabilitaet() {
                     rows={daten.lohnsaetze.map((l) => ({ id: `${l.rolle}-${l.gueltig_ab}`, rolle: l.rolle, ab: `gültig ab ${formatDatum(l.gueltig_ab)}`, satz: chf(l.chf_pro_h) }))}
                   />
                 ) : (
-                  <p className="pl-muted">Noch keine Lohnsätze erfasst: Personalkosten stehen als [Preis].</p>
+                  <EmptyState title="Noch keine Lohnsätze erfasst" text="Personalkosten stehen als [Preis]." />
                 )}
               </Card>
             </aside>

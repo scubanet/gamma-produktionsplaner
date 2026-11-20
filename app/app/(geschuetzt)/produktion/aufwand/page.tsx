@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, KpiTile, Notice, Select, StatusPill, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { alleSeiten } from "@/lib/seiten";
 import { formatDatum, formatMenge, formatZahl } from "@/lib/format";
@@ -148,7 +148,7 @@ export default function Aufwand() {
                 }))}
               />
             ) : (
-              <p className="pl-muted">Keine Komponenten.</p>
+              <EmptyState title="Keine Komponenten" />
             )}
           </Card>
 
@@ -160,7 +160,7 @@ export default function Aufwand() {
                   rows={rollen.map((r) => ({ id: r.rolle, rolle: r.rolle, aktiv: minuten(r.aktiv_min), komponenten: formatZahl(r.komponenten ?? 0), offen: formatZahl(r.komponenten_nicht_freigegeben ?? 0), entwurf: (r.komponenten_nicht_freigegeben ?? 0) > 0 }))}
                 />
               ) : (
-                <p className="pl-muted">Noch keine gerechneten Schritte.</p>
+                <EmptyState title="Noch keine gerechneten Schritte" />
               )}
             </Card>
             <Card title="Belegung der Geräte" meta={`${gewaehlt?.bezug ?? "–"} · Durchgänge × Zeit pro Durchgang`}>
@@ -170,7 +170,7 @@ export default function Aufwand() {
                   rows={geraete.map((g) => ({ id: g.geraet_id, geraet: g.geraet, zeit: minuten(g.geraet_min), durchgaenge: formatZahl(g.durchgaenge ?? 0), offen: formatZahl(g.komponenten_nicht_freigegeben ?? 0), entwurf: (g.komponenten_nicht_freigegeben ?? 0) > 0 }))}
                 />
               ) : (
-                <p className="pl-muted">Noch keine gerechneten Schritte mit Gerät.</p>
+                <EmptyState title="Noch keine gerechneten Schritte mit Gerät" />
               )}
             </Card>
           </div>
@@ -209,7 +209,7 @@ export default function Aufwand() {
                 }))}
               />
             ) : (
-              <p className="pl-muted">Keine Komponenten für diesen Service.</p>
+              <EmptyState title="Keine Komponenten für diesen Service" />
             )}
           </Card>
 

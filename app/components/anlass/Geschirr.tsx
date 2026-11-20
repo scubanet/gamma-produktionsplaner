@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, DataTable, Dialog, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, Dialog, KpiTile, Notice, SegmentedControl, Select, StatusPill, TextField, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatChf } from "@/lib/offerte";
 import {
@@ -174,7 +174,7 @@ export function Geschirr({ anlassId, angebotsform, gaenge, onMeldung, onFehler }
             </p>
           </>
         ) : daten && daten.artikel.length ? (
-          <p className="pl-muted">Noch keine Positionen. «Standard übernehmen» schlägt sie für die Gänge des Menüs vor.</p>
+          <EmptyState title="Noch keine Positionen" text="«Standard übernehmen» schlägt sie für die Gänge des Menüs vor." />
         ) : !daten && !ladeFehler ? (
           <Skeleton variant="zeile" label="Geschirr wird geladen" />
         ) : null}

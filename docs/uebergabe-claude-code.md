@@ -150,3 +150,13 @@ Kritische Durchsicht von Repo und Datenbank: `docs/plan-datenkette.md`. Zwölf A
 - Aufwand: Werte und Summen aus nicht freigegebenen Rezepten sind gestrichelt wie Annahmen. Produktionsliste: der Rezept-Link trägt «Rezept Entwurf» oder «Rezept Geprüft». Leitstand: «x / y Rezepte der Saison freigegeben» (View `leitstand_rezepte`). Der Küchenpass zeigt keine Werte aus Rezepten und ist unverändert.
 - **Reihenfolge beim Ausliefern:** zuerst `supabase db push --remote` (Migration 32), dann `cd app && npm run types` (die Typen sind von Hand nachgeführt und sollen gleich herauskommen), erst dann `git push`. Ohne die Migration lädt der Leitstand nicht (View `leitstand_rezepte` fehlt) und die Knöpfe zum Status melden einen Fehler.
 - Nicht geprüft: Die Migration lief in keiner Datenbank (lokal kein Postgres-Server, Docker nicht gestartet). Vor dem Einspielen `supabase db push --remote --dry-run`. Nach dem Einspielen prüfen: als Nicht-Admin lehnt «Freigeben» ab; Kontrollwerte im Aufwand unverändert.
+
+## Nachtrag 20.11.2026: Premium-Schliff
+
+Plan `docs/plan-premium-schliff.md`, Aufgaben 0 bis 8 gebaut und committet, noch nicht ausgeliefert. Design System 0.21, 180 Tests. Keine Migration, keine Änderung an der Datenbank.
+
+- Marke als Komponente `Brand`, Bildmarke in `design-system/assets/bildmarke.svg` (Platzhalter). Tausch gegen das Logo von GAMMA: Datei ersetzen, `cd app && npm run icons`.
+- Anmeldeseite neu gesetzt; Kopfzeile bleibt oben stehen, Benutzer-Menü statt E-Mail und Knopf.
+- Bewegung, Skelett beim Laden, leere Zustände mit nächstem Schritt, eigener Dialog bei ungespeicherten Änderungen.
+- Fehlermeldungen: `app/lib/fehler.ts`. Deutsche Meldungen aus `raise exception` bleiben; neue Funktionen der Datenbank sollen ihre Meldungen weiter auf Deutsch schreiben.
+- Offen: Aufgabe 9 (Abnahme mit Bildern, Dominik sieht sie durch), Mailvorlage im Dashboard neu eintragen, Design-System-Artifact nachführen, Befunde N1, N8, N9, N10 im Plan.

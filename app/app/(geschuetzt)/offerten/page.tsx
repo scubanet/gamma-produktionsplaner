@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Card, DataTable, Notice, Skeleton } from "@/lib/planer";
+import { Button, Card, DataTable, Notice, Skeleton, EmptyState } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
 import { formatDatum, formatZahl } from "@/lib/format";
 import { formatChf, type Offerte, type Summe } from "@/lib/offerte";
@@ -87,7 +87,7 @@ export default function Offerten() {
               }))}
             />
           ) : (
-            <p className="pl-muted">Noch keine Offerten. «Offerte erstellen» legt eine neue an.</p>
+            <EmptyState title="Noch keine Offerten" actionLabel="Erste Offerte erstellen" icon="plus" onAction={neu} />
           )
         ) : (
           (fehler ? <p className="pl-muted" role="status">Keine Daten.</p> : <Skeleton variant="zeile" label="Offerten werden geladen" />)
