@@ -197,3 +197,18 @@ Produktionsliste pro Anlass: Migration 37 (`produktionsliste_anlass`) und Feld �
 
 Unabhängige Durchsicht der Arbeit des Tages, Ergebnis und offene Punkte in `docs/plan-datenkette.md`, Abschnitt «Durchsicht vom 20.11.2026». Korrekturen committet: Migration 38 (`durchsicht_korrekturen`, noch einzuspielen) und App. Reihenfolge: `supabase db push --remote`, `cd app && npm run types`, `git push`. Die Abfragen von Migration 38 liefen lesend gegen die Datenbank und liefern dieselben Zahlen wie vorher (253 Positionen, 1205 Zutatenzeilen, 187 Artikelzeilen, Gemüsestreifen CHF 25.21). Die App läuft auch gegen die Datenbank ohne Migration 38.
 
+
+## Nachtrag 20.11.2026: Sechs UX-Massnahmen
+
+Aus der UX-Durchsicht (33 Vorschläge) sind die sechs kleinen mit hoher Wirkung gebaut, ohne Migration:
+
+- **Handy:** Keine Seite läuft bei 390 und 320 px mehr über (gemessen mit geladenen Daten, alle Seiten). Ursache waren versteckte Texte (`pl-sr`) in breiten Tabellen und lange Titel. Design System 0.25.
+- **Küchenpass lädt nach:** jede Minute und wenn die App wieder sichtbar wird; «Stand HH:MM» und «Aktualisieren». Ein Häkchen, das gerade gespeichert wird oder seit dem Start des Nachladens gespeichert wurde, überschreibt das Nachladen nicht (`standUebernehmen` in `lib/kueche.ts`).
+- **Löschen nie ohne Rückfrage:** `components/Bestaetigen.tsx` (`useBestaetigen`) vor Menülinie löschen, Gericht und Service entfernen, Stammdaten löschen, Zutat lösen. Fokus steht auf «Abbrechen».
+- **Zutaten zuordnen schneller:** Saison direkt aus `saison`, nach dem Verknüpfen verschwindet die Zeile sofort und nur Zähler und verknüpfte Liste laden neu; Fokus auf die nächste Zeile; «Artikel suchen» öffnet mit der Bezeichnung im Suchfeld.
+- **«Bearbeiten» bleibt sichtbar:** in Produktionsliste und Systemzuteilung steht der Knopf direkt neben dem Namen (statt Spalten auszublenden: so fehlt im Druck nichts und nichts springt).
+- **Fehler als Alarm:** Fehlermeldungen tragen `role="alert"`.
+
+Geprüft: Typen, Lint, 200 Tests, Build; im Browser nur lesend (Dialoge geöffnet und abgebrochen). Nicht geprüft, weil es in die Pilot-Datenbank schreibt: Verknüpfen, Lösen, Löschen und Abhaken selbst.
+
+Offen: Die Seiten `/einkauf/` und `/einkauf/zuordnen/` holen die Saison weiterhin über die schwere View `einkauf_summe` (Einkaufsliste lädt rund 20 s). Übrige Vorschläge der Durchsicht (Ränge 6–12, 14–33) sind nicht gebaut.
