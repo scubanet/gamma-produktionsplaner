@@ -4,7 +4,8 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Card, Checkbox, Dialog, Notice, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
-import { istGeaendert, useUngespeichert } from "@/lib/ungespeichert";
+import { istGeaendert } from "@/lib/ungespeichert";
+import { Ungespeichert } from "@/components/Ungespeichert";
 import { RezeptStatus } from "@/components/rezepte/RezeptStatus";
 import type { Gruppe, Punkt, Rezept, ZutatRoh } from "@/lib/rezepte";
 import {
@@ -85,7 +86,6 @@ function RezeptBearbeiten() {
   }, [slug]);
 
   const geaendert = f !== null && ausgang !== null && istGeaendert(f, ausgang);
-  useUngespeichert(geaendert && !speichert && !loeschen.laeuft);
 
   const stand = geladen?.slug === slug ? geladen : null;
   const zurueck = `/rezepte/${slug ? `?r=${encodeURIComponent(slug)}` : ""}`;
@@ -157,6 +157,7 @@ function RezeptBearbeiten() {
 
   return (
     <>
+      <Ungespeichert geaendert={geaendert && !speichert && !loeschen.laeuft} />
       <header className="pl-head">
         <div>
           <div className="pl-crumb">Rezepte · {titel}</div>

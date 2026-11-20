@@ -124,10 +124,10 @@ Stand 20.11.2026: Deutsche Meldungen aus den Funktionen der Datenbank (`raise ex
 
 **Dateien:** `app/lib/ungespeichert.ts`, `app/tests/ungespeichert.test.ts`, `rezepte/bearbeiten/page.tsx`, `components/anlass/AnlassKopf.tsx`.
 
-- [ ] Klicks auf Links innerhalb der App abfangen, solange Änderungen offen sind, und den eigenen `Dialog` zeigen: «Änderungen verwerfen?» mit «Weiter bearbeiten» (primär) und «Verwerfen».
-- [ ] `beforeunload` bleibt für Tab schliessen und Neuladen; dort lässt der Browser keinen eigenen Dialog zu.
-- [ ] Test für die reine Entscheidungsfunktion (gleicher Ursprung, kein neuer Tab, kein Download, kein Anker auf derselben Seite).
-- [ ] Commit `Eigener Dialog bei ungespeicherten Änderungen`
+- [x] Klicks auf Links innerhalb der App abfangen, solange Änderungen offen sind, und den eigenen `Dialog` zeigen: «Änderungen verwerfen?» mit «Weiter bearbeiten» (primär) und «Verwerfen».
+- [x] `beforeunload` bleibt für Tab schliessen und Neuladen; dort lässt der Browser keinen eigenen Dialog zu.
+- [x] Test für die reine Entscheidungsfunktion (gleicher Ursprung, kein neuer Tab, kein Download, kein Anker auf derselben Seite).
+- [x] Commit `Eigener Dialog bei ungespeicherten Änderungen`
 
 ### Aufgabe 8: Kopfzeile und Tiefe
 

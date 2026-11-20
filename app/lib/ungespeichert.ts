@@ -1,21 +1,21 @@
-"use client";
-import { useEffect } from "react";
-
 /** Vergleich über die Serialisierung: reicht für Formulare aus Text, Zahlen und Listen. */
 export const istGeaendert = (jetzt: unknown, ausgang: unknown): boolean => JSON.stringify(jetzt) !== JSON.stringify(ausgang);
 
+export type Klick = { href: string; ziel: string; download: boolean; taste: number; mitZusatztaste: boolean };
+
 /**
- * Der Browser fragt nach, bevor die Seite verlassen oder neu geladen wird.
- * Navigation und Buttons des Design Systems sind echte Links, darum greift das auch innerhalb der App.
- * router.replace nach dem Speichern oder Löschen löst keine Frage aus.
+ * Soll die App bei diesem Klick auf einen Link zuerst nachfragen? Ja, wenn er die Seite im gleichen Tab
+ * innerhalb der App verlässt. Fremde Adressen, Tab schliessen und Neuladen übernimmt der Browser (beforeunload).
  */
-export function useUngespeichert(geaendert: boolean): void {
-  useEffect(() => {
-    if (!geaendert) return;
-    const warnen = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-    };
-    window.addEventListener("beforeunload", warnen);
-    return () => window.removeEventListener("beforeunload", warnen);
-  }, [geaendert]);
+export function faengtAb(k: Klick, ort: string): boolean {
+  if (k.taste !== 0 || k.mitZusatztaste || k.download || (k.ziel && k.ziel !== "_self")) return false;
+  let ziel: URL;
+  try {
+    ziel = new URL(k.href);
+  } catch {
+    return false;
+  }
+  const hier = new URL(ort);
+  if (ziel.origin !== hier.origin) return false;
+  return ziel.pathname !== hier.pathname || ziel.search !== hier.search;
 }

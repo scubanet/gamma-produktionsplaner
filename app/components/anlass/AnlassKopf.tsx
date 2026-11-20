@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Button, Card, Select, TextField } from "@/lib/planer";
 import { supabase } from "@/lib/supabase";
-import { istGeaendert, useUngespeichert } from "@/lib/ungespeichert";
+import { istGeaendert } from "@/lib/ungespeichert";
+import { Ungespeichert } from "@/components/Ungespeichert";
 import { formatZahl } from "@/lib/format";
 import { ANLASS_SPALTEN, STATUS, fehlerText, kopfAus, kopfUpdate, type Anlass, type Kopf } from "@/lib/anlass";
 
@@ -25,7 +26,6 @@ export function AnlassKopf({ anlass, stamm, onGespeichert, onFehler }: {
   const [speichert, setSpeichert] = useState(false);
   const set = (teil: Partial<Kopf>) => setK((x) => ({ ...x, ...teil }));
   const geaendert = istGeaendert(k, kopfAus(anlass));
-  useUngespeichert(geaendert && !speichert);
 
   async function speichern() {
     const r = kopfUpdate(k);
@@ -40,6 +40,7 @@ export function AnlassKopf({ anlass, stamm, onGespeichert, onFehler }: {
 
   return (
     <Card title="Anlass" meta="Saison und Datum bestimmen die Produktionswellen">
+      <Ungespeichert geaendert={geaendert && !speichert} />
       <form
         onSubmit={(e) => {
           e.preventDefault();
