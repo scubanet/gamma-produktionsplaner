@@ -366,3 +366,10 @@ Antworten Dominik vom 21.11.2026: Economat ist ungekühlt und kann mit gekühlt 
 - **Migration 47 eingespielt am 21.11.2026.** Struktur lesend geprüft: `kiste.gebinde_id` da, `kiste_erstellen(uuid, uuid)` ersetzt die alte Fassung (für Angemeldete ausführbar, für `anon` nicht), `kiste_gewicht` mit `gebinde_id`, `logistik_gewicht` unverändert 25 Zeilen, 211 Produkte, 2'455.75 kg. Typen aus der Datenbank erzeugt. **Noch nie ausgeführt:** `kiste_erstellen` in der neuen Fassung und `kiste_gewicht` mit einer Kiste.
 - **IFCO-Datenblatt** (Black Lift Lock, von Dominik am 21.11.2026): zehn Typen mit Mass, Tara (840 g bis 2'000 g) und Höchstbeladung (5 bis 20 kg), Temperaturbereich −10 °C bis +60 °C. Noch nicht in den Stammdaten: offen, welche Typen GAMMA verwendet. Die Tabelle `gebinde` hat keine Spalte für die Höchstbeladung.
 
+## Nachtrag 21.11.2026: IFCO-Kisten als Gebinde (Migration 48)
+
+- Auftrag Dominik: alle zehn Typen aus dem Datenblatt eintragen. **Migration 48** (`20261121000048_ifco_gebinde.sql`, noch einzuspielen): zehn Gebinde «IFCO 600 × 400 × 152 mm (BLL6413)» usw. mit Aussenmass, Tara und Höchstbeladung; neue Spalte `gebinde.max_beladung_kg`. Innenmass, Stapelhöhe und Toleranz stehen in der Bemerkung.
+- **Nicht eingetragen:** das Volumen (steht nicht im Datenblatt; offen, ob für die Logistik das Aussen- oder das Innenvolumen zählt).
+- **Folgen:** Mit elf aktiven Gebinden muss beim Anlegen einer Kiste das Gebinde gewählt werden. Der alte Eintrag «IFCO-Box» ohne Tara bleibt, weil die Rezepte daran hängen; der Planwert «mit Tara» im Soll bleibt darum ein Platzhalter, bis am Rezept ein Typ mit Tara gewählt ist. Die Seite Stammdaten zeigt die Höchstbeladung nicht an.
+- **Offen:** Soll der Scan bei der Höchstbeladung gelb warnen? Welche Typen sind bei GAMMA wirklich im Einsatz (die übrigen in den Stammdaten auf «nicht aktiv» setzen)? Tiefkühlware bei −18 °C liegt ausserhalb des Temperaturbereichs laut Datenblatt (−10 °C bis +60 °C).
+
