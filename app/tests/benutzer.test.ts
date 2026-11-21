@@ -18,9 +18,9 @@ describe("Benutzerverwaltung", () => {
     expect(status(b({ letzte_anmeldung: "2026-11-14T07:00:00Z" }))).toEqual({ text: "aktiv", pill: "ok" });
     expect(status(b({ letzte_anmeldung: "2026-11-14T07:00:00Z", gesperrt: true }))).toEqual({ text: "gesperrt", pill: "warn" });
   });
-  it("Admins zuerst, dann Benutzer, dann Küche; innerhalb nach Name oder E-Mail", () => {
-    const l = sortieren([b({ id: "4", name: "Aaron", stufe: "kueche" }), b({ id: "1", email: "zoe@gamma.ch" }), b({ id: "2", name: "Dominik", admin: true, stufe: "admin" }), b({ id: "3", name: "Anna" })]);
-    expect(l.map((x) => x.id)).toEqual(["2", "3", "1", "4"]);
+  it("Admins zuerst, dann Benutzer, dann Küche, dann Scannen; innerhalb nach Name oder E-Mail", () => {
+    const l = sortieren([b({ id: "5", name: "Aaron", stufe: "scannen" }), b({ id: "4", name: "Aaron", stufe: "kueche" }), b({ id: "1", email: "zoe@gamma.ch" }), b({ id: "2", name: "Dominik", admin: true, stufe: "admin" }), b({ id: "3", name: "Anna" })]);
+    expect(l.map((x) => x.id)).toEqual(["2", "3", "1", "4", "5"]);
   });
   it("Datum und Navigation", () => {
     expect(datumText("2026-11-14T07:00:00Z")).toBe("14.11.2026");

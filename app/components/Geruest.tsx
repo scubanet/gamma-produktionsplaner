@@ -67,7 +67,10 @@ export function Geruest({ children }: { children: ReactNode }) {
           <>
             <header className="pl-head"><div><h1 className="pl-h1">Nicht freigegeben</h1></div></header>
             <Notice title={`Diese Seite gehört nicht zur Stufe «${stufeLabel(stufe)}»`}>
-              Deine Stufe ändert ein Administrator in der Benutzerverwaltung. <Link href="/">Zum Leitstand</Link>
+              {/* «Scannen» sieht den Leitstand nicht; ihre Seiten «Scannen» und «Packliste» folgen (Plan Scan-App, S4 und S5). */}
+              {stufe === "scannen"
+                ? "Die Seiten «Scannen» und «Packliste» für diese Stufe sind noch nicht gebaut. Deine Stufe ändert ein Administrator in der Benutzerverwaltung."
+                : <>Deine Stufe ändert ein Administrator in der Benutzerverwaltung. <Link href="/">Zum Leitstand</Link></>}
             </Notice>
           </>
         )}

@@ -18,8 +18,23 @@ describe("Stufen", () => {
     }
   });
   it("Unbekannte Antwort der Datenbank gilt als tiefste Stufe", () => {
-    expect([stufeAus("admin"), stufeAus("benutzer"), stufeAus("kueche"), stufeAus(null), stufeAus("chef")]).toEqual(["admin", "benutzer", "kueche", "kueche", "kueche"]);
+    expect([stufeAus("admin"), stufeAus("benutzer"), stufeAus("kueche"), stufeAus("scannen"), stufeAus(null), stufeAus("chef")]).toEqual(["admin", "benutzer", "kueche", "scannen", "scannen", "scannen"]);
     expect(stufeLabel("kueche")).toBe("Küche");
+    expect(stufeLabel("scannen")).toBe("Scannen");
+  });
+  it("Scannen plant nicht, sieht keine Preise und nur Scannen, Packliste und Nachschlagen", () => {
+    expect([darf("scannen", "planen"), darf("scannen", "preise")]).toEqual([false, false]);
+    for (const p of ["/", "/produktion/", "/kueche/", "/lager/", "/einkauf/", "/rezepte/", "/katalog/", "/systemzuteilung/", "/anlaesse/", "/offerten/", "/benutzer/", "/stammdaten/", "/eine-neue-seite/", "/einkauf/zutaten/"]) {
+      expect(sichtbar("scannen", p), p).toBe(false);
+    }
+    for (const p of ["/scannen/", "/packliste/", "/e/", "/e"]) {
+      expect(sichtbar("scannen", p), p).toBe(true);
+    }
+  });
+  it("Navigation für Scannen: keine der bisherigen Seiten", () => {
+    expect(hauptnav("/", "scannen")).toEqual([]);
+    expect(unternav("/produktion/", "scannen")).toEqual([]);
+    expect(seitenTabs("/einkauf/", "scannen")).toEqual([]);
   });
   it("Navigation für Küche: vier Bereiche, Verkauf führt zu den Anlässen", () => {
     expect(hauptnav("/kueche/", "kueche").map((x) => [x.label, x.href, x.current])).toEqual([

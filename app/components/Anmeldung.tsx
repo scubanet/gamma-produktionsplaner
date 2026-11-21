@@ -13,7 +13,7 @@ const SitzungKontext = createContext<Session | null>(null);
 export const useSitzung = () => useContext(SitzungKontext);
 
 // Die Stufe steuert nur, was die App zeigt; was jemand darf, entscheidet die Datenbank.
-const StufeKontext = createContext<Stufe>("kueche");
+const StufeKontext = createContext<Stufe>("scannen");
 export const useStufe = () => useContext(StufeKontext);
 
 // Zuletzt bekannte Stufe im Browser. Nur für die Anzeige; die Sperre liegt in der Datenbank.

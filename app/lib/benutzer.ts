@@ -28,7 +28,7 @@ export function status(b: Pick<Benutzer, "gesperrt" | "letzte_anmeldung">): Stat
 
 export const datumText = (iso: string | null) => (iso ? formatDatum(iso.slice(0, 10)) : "–");
 
-const RANG: Record<Stufe, number> = { admin: 0, benutzer: 1, kueche: 2 };
+const RANG: Record<Stufe, number> = { admin: 0, benutzer: 1, kueche: 2, scannen: 3 };
 
 /** Admins zuerst, dann Benutzer, dann Küche; innerhalb nach Name bzw. E-Mail. */
 export function sortieren(liste: Benutzer[]): Benutzer[] {

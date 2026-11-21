@@ -577,6 +577,21 @@ export type Database = {
         }
         Relationships: []
       }
+      app_scannen: {
+        Row: {
+          erstellt_am: string
+          user_id: string
+        }
+        Insert: {
+          erstellt_am?: string
+          user_id: string
+        }
+        Update: {
+          erstellt_am?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       artikel: {
         Row: {
           aktiv: boolean
@@ -5765,6 +5780,8 @@ export type Database = {
       }
       ist_admin: { Args: never; Returns: boolean }
       ist_kueche: { Args: never; Returns: boolean }
+      ist_planer: { Args: never; Returns: boolean }
+      ist_scannen: { Args: never; Returns: boolean }
       karte_kopieren: {
         Args: { p_anlass: string; p_karte: string; p_name?: string }
         Returns: string

@@ -318,3 +318,15 @@ Entscheid Dominik: dritte Stufe neben Admin und Benutzer. «Küche» liest Leits
 **Plan mit Aufgaben:** `docs/plan-scan-app.md` (S0 bis S7). Nächste Migration ist 44. Reihenfolge: S0 Spezifikation Fassung 3, S1 Stufe «Scannen», S2 Packen-Kern, S3 Gewicht, S4 Packliste, S5 Seite «Scannen», S6 iPhone-App in eigenem Repo. Die mit **Frage** markierten Punkte vor dem Bauen mit Dominik klären.
 
 **S0 erledigt (21.11.2026):** `docs/spezifikation-etiketten-packliste.md` ist Fassung 3 (Kamera-Scan in der Web-App, sortenrein, Stufe «Scannen», Gewicht für die Logistik; offene Punkte 16 bis 22 neu). Nur Doku, kein Code. Das Konzept bleibt als Herleitung stehen; massgebend ist jetzt die Spezifikation.
+
+## Nachtrag 21.11.2026: Stufe «Scannen» (Migration 44, Scan-App S1)
+
+Entscheide Dominik vom 21.11.2026: «Scannen» darf die Planungstabellen lesen, aus denen die Packliste rechnet; eine Kiste gehört immer genau einem Spiel; ein Produkt ausserhalb des Bedarfs wird nach Bestätigung eingepackt und als «zusätzlich» geführt. Einzelheiten in `docs/supabase.md`, Abschnitt «Stufen».
+
+- **Migration 44** (`20261121000044_stufe_scannen.sql`, noch einzuspielen): `app_scannen`, `ist_scannen()`, `ist_planer()`, `stufe()` gibt `scannen`. Schreiben verlangt neu «Admin oder Benutzer» (147 Regeln), Abhaken bleibt für «Küche». «Scannen» liest 13 Tabellen, nichts sonst. `lager_recht` kennt `etikett_erstellen`, `packen`, `spiel_abschliessen`. Die Migration prüft sich selbst und bricht ab, wenn die Liste der lesbaren Tabellen nicht stimmt.
+- **Befund, behoben:** `etiketten_erstellen` prüfte bisher nur «angemeldet», kein Recht. Die Funktion ist unverändert neu angelegt, mit der Prüfung `lager_recht('etikett_erstellen')` am Anfang.
+- **Edge Function `benutzer`:** Stufe `scannen` in Liste und Aktion `stufe`. Muss von Hand ausgeliefert werden. **Reihenfolge: Migration, Funktion, App.**
+- **App:** `lib/stufe.ts` (Stufe `scannen`, sieht nur `/scannen`, `/packliste`, `/e`; unbekannte Antwort gilt neu als «Scannen»), Benutzerverwaltung bietet «Scannen» an. Die drei Seiten gibt es noch nicht (S4, S5): Ein Konto «Scannen» sieht bis dahin auf jeder Seite den Hinweis «Die Seiten Scannen und Packliste sind noch nicht gebaut», ohne Navigation. 233 Tests.
+- **Geprüft:** lesend gegen die Pilot-Datenbank: 147 Schreib-Regeln und 9 Geld-Regeln, die ersetzt werden, 45 Lese-Regeln mit `true` (13 bleiben, 32 schliessen «Scannen» aus), keine Regel unter anderem Namen; Abhängigkeiten der fünf Views; in den lesbaren Tabellen steht ausser `anlass.umsatz_netto_chf` keine Geld-Spalte. Typen, Lint, Tests, Build. Typen in `database.types.ts` von Hand nachgetragen (`app_scannen`, `ist_planer`, `ist_scannen`).
+- **Nicht ausgeführt:** die Migration (in keiner Datenbank gelaufen), die Edge Function, das Verhalten mit einem Konto «Scannen» oder «Küche», die Seite Benutzer im Browser. Nach dem Einspielen: `cd app && npm run types` und mit den von Hand nachgetragenen Typen vergleichen.
+- **Offen für S3:** Das Soll «rund n Kisten» braucht `rezept.fuellmenge_g`; Rezepte liest «Scannen» nicht. Beim Bau von S3 klären, ob «Scannen» die Karte «Gewicht für die Logistik» überhaupt sieht.

@@ -106,7 +106,7 @@ export default function BenutzerSeite() {
         <>
           <div className="pl-grid-3">
             <KpiTile label="Benutzer" value={String(alle.length)} detail={`${alle.filter((b) => b.gesperrt).length} gesperrt`} />
-            <KpiTile label="Administratoren" value={String(alle.filter((b) => b.stufe === "admin").length)} detail={`verwalten Benutzer und dürfen Rezepte löschen · ${alle.filter((b) => b.stufe === "kueche").length} Stufe Küche`} />
+            <KpiTile label="Administratoren" value={String(alle.filter((b) => b.stufe === "admin").length)} detail={`verwalten Benutzer und dürfen Rezepte löschen · ${alle.filter((b) => b.stufe === "kueche").length} Stufe Küche · ${alle.filter((b) => b.stufe === "scannen").length} Stufe Scannen`} />
             <KpiTile label="Noch nie angemeldet" value={String(alle.filter((b) => !b.letzte_anmeldung).length)} detail="Zugang angelegt, Anmeldelink noch nicht benutzt" />
           </div>
 
