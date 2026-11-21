@@ -1421,6 +1421,7 @@ export type Database = {
           code: string
           erstellt_am: string
           erstellt_von: string | null
+          gebinde_id: string | null
           id: string
           laufnummer: number
           produkt_id: string | null
@@ -1431,6 +1432,7 @@ export type Database = {
           code: string
           erstellt_am?: string
           erstellt_von?: string | null
+          gebinde_id?: string | null
           id?: string
           laufnummer: number
           produkt_id?: string | null
@@ -1441,6 +1443,7 @@ export type Database = {
           code?: string
           erstellt_am?: string
           erstellt_von?: string | null
+          gebinde_id?: string | null
           id?: string
           laufnummer?: number
           produkt_id?: string | null
@@ -1448,6 +1451,13 @@ export type Database = {
           zustand?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "kiste_gebinde_id_fkey"
+            columns: ["gebinde_id"]
+            isOneToOne: false
+            referencedRelation: "gebinde"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "kiste_produkt_id_fkey"
             columns: ["produkt_id"]
@@ -4423,6 +4433,7 @@ export type Database = {
           brutto_kg: number | null
           code: string | null
           gebinde: string | null
+          gebinde_id: string | null
           herleitung: string | null
           kiste_id: string | null
           laufnummer: number | null
@@ -4434,6 +4445,13 @@ export type Database = {
           zustand: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "kiste_gebinde_id_fkey"
+            columns: ["gebinde_id"]
+            isOneToOne: false
+            referencedRelation: "gebinde"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "kiste_service_id_fkey"
             columns: ["service_id"]
@@ -6584,7 +6602,10 @@ export type Database = {
         Returns: string
       }
       kiste_aufloesen: { Args: { p_kiste: string }; Returns: Json }
-      kiste_erstellen: { Args: { p_service: string }; Returns: Json }
+      kiste_erstellen: {
+        Args: { p_gebinde?: string; p_service: string }
+        Returns: Json
+      }
       kiste_stand: { Args: { p_kiste: string }; Returns: Json }
       komponente_artikel_vorschlag: {
         Args: { p_anzahl?: number; p_saison: string; p_schwelle?: number }
