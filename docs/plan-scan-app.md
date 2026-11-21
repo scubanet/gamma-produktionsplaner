@@ -1,6 +1,6 @@
 # Scan-App für iPhone und Web – Plan für Claude Code
 
-Stand: 21.11.2026. Übergabe aus dem Konzept `docs/konzept-scan-app.md`. S0 ist erledigt (Spezifikation Fassung 3). S1 ist gebaut, Migration 44 am 21.11.2026 eingespielt. Entschieden am 21.11.2026: Frage S1 (Planungstabellen lesbar), Punkt 5 (Kiste immer ein Spiel), Punkt 6 (nicht im Bedarf: nach Bestätigung, «zusätzlich»). S2 ist geschrieben (Migration 45), aber noch nie ausgeführt und noch einzuspielen. Nächste Migration ist 46.
+Stand: 21.11.2026. Übergabe aus dem Konzept `docs/konzept-scan-app.md`. S0 ist erledigt (Spezifikation Fassung 3). S1 ist gebaut, Migration 44 am 21.11.2026 eingespielt. Entschieden am 21.11.2026: Frage S1 (Planungstabellen lesbar), Punkt 5 (Kiste immer ein Spiel), Punkt 6 (nicht im Bedarf: nach Bestätigung, «zusätzlich»). S2 ist geschrieben (Migration 45), in einer abgebrochenen Transaktion durchgespielt und noch einzuspielen. Nächste Migration ist 46.
 
 **Ziel:** Beutel werden beim Packen in sortenreine IFCO-Kisten gescannt, Kisten beim Verladen und bei der Ankunft. Gescannt wird mit einer iPhone-App in Swift und, auf allen anderen Handys, mit der Kamera in der Web-App. Beide Oberflächen rufen dieselben Funktionen der Datenbank auf.
 

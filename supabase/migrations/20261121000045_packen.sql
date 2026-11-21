@@ -358,7 +358,7 @@ begin
   order by c.verbrauchen_bis, e.seriennummer limit 1;
   if found then
     v_hinweise := v_hinweise || jsonb_build_object('code', 'aelterer_beutel',
-      'text', 'Älterer Beutel im Lager: ' || v_aelter.seriennummer || ', bis ' || to_char(v_aelter.verbrauchen_bis, 'DD.MM.') || '.');
+      'text', 'Älterer Beutel im Lager: ' || v_aelter.seriennummer || ', bis ' || to_char(v_aelter.verbrauchen_bis, 'DD.MM.YYYY') || '.');
   end if;
 
   -- Einpacken. Ohne Netz aus einer anderen Kiste: dort auspacken, hier einpacken.
