@@ -379,3 +379,17 @@ Antworten Dominik vom 21.11.2026: Economat ist ungekühlt und kann mit gekühlt 
 - Entscheid Dominik (21.11.2026): Der Scan warnt gelb bei der Höchstbeladung. **Migration 49** (`20261121000049_hinweis_hoechstbeladung.sql`, noch einzuspielen): `beutel_einpacken` wie in Migration 45, dazu nach dem Einpacken der Hinweis «Kiste über der Höchstbeladung: 12.4 kg, erlaubt 12 kg (…)». Verglichen wird das Netto der Kiste (ohne Tara, Beutel in Stück zählen nicht) mit `gebinde.max_beladung_kg`. Der Beutel wird trotzdem eingepackt.
 - **Nicht ausgeführt:** die Migration und der Hinweis. Die Datei ändere ich nach dem Nennen des Push-Befehls nicht mehr.
 - **Eingespielt am 21.11.2026.** Lesend geprüft: `beutel_einpacken` enthält den Hinweis, läuft weiter mit erhöhten Rechten, für Angemeldete ausführbar, für `anon` nicht. Die Typen ändern sich nicht. **Noch nie ausgeführt:** der Hinweis selbst.
+
+## Nachtrag 21.11.2026: Seiten «Packliste» und `/e` (Scan-App S4)
+
+Keine Migration. Antworten Dominik: Weitergabe an die Logistik nicht entschieden, darum wie im Plan Druckansicht und «Text kopieren» mit Plan und gepackt.
+
+- **`/packliste/`** (Bereich Produktion, `?service=<id>`): Spiel wählen; Kennzahlen; Karte «Scannen oder eintippen» (Einpacken oder Auspacken, Kiste wählen oder ihr Etikett scannen, Code-Feld für Handscanner und Eintippen, Ergebnis mit Farbe, Hinweisen und «Trotzdem einpacken»); Beutel der gewählten Kiste mit «Auspacken» und «Bleibt drin» (zu klären); «Soll und Ist»; «Kisten» mit Wählen, Ansehen, Auflösen (Rückfrage); «Gewicht für die Logistik» mit «Text kopieren» und «Gewicht drucken» (druckt nur Kopf und diese Karte); «Ohne Etikett». «Kiste anlegen» mit Wahl des Gebindes. «Spiel abschliessen» nur für Admins, mit Entscheid pro Kiste ohne Ankunfts-Scan.
+- **`/e/`**: liest `?p=…&s=…` oder `?k=…` und zeigt Beutel (Zustand, Menge, Daten, Lagerung, Regeneration, Kiste, Spiel) oder Kiste (Zustand, Inhalt, Gewicht, Beutel). Feld «Code eingeben» zum Nachschlagen ohne QR-Code. Nur für Angemeldete; steht nicht in der Navigation.
+- **`lib/scan-code.ts`** (im Plan bei S5, hier schon gebraucht): liest QR-Adresse, lesbare Zeile, Seriennummer und Kistencode; fremde Adressen sind «unbekannt». **`lib/packliste.ts`**: Texte und Zählungen. 244 Tests.
+- **Navigation:** «Packliste» nach «Lager». Stufe «Scannen» sieht «Produktion → Packliste»; auf anderen Seiten steht der Hinweis mit Link zur Packliste.
+- Die App rechnet nichts: jedes Scan-Ergebnis, Soll, Ist und Gewicht kommt aus der Datenbank. Lokal geprüft wird nur die Form des Codes und ob eine Kiste zum gewählten Spiel gehört und offen ist.
+- **Geprüft:** Typen, Lint, 244 Tests, Build. **Nicht geprüft: im Browser.** Der Browser von Claude ist nicht angemeldet (den Code aus der E-Mail gebe ich nicht ein). Keine der beiden Seiten ist je geladen worden; ungeprüft sind damit auch die Abfragen mit eingebetteten Tabellen (`lagereinheit` → `kiste`, `charge`), Layout am Handy und in Dunkel, Druckansicht.
+- **Nicht gebaut:** Seite «Druckaufträge» und Vorschau des Kisten-Etiketts (gehören zum Druck, Etappe 3); Anhalt «rund n Beutel»; die Anleitung `docs/anleitung.md` ist nicht nachgeführt.
+- **Design System:** keine Änderung. Das Paar «Beschriftung über Wert» auf `/e` (Hilfskomponente `Feld`, 18-mal) wäre ein Kandidat für einen Baustein.
+
