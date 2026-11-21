@@ -1,6 +1,6 @@
 # Scan-App für iPhone und Web – Plan für Claude Code
 
-Stand: 21.11.2026. Übergabe aus dem Konzept `docs/konzept-scan-app.md`. Noch nichts gebaut.
+Stand: 21.11.2026. Übergabe aus dem Konzept `docs/konzept-scan-app.md`. S0 ist erledigt (Spezifikation Fassung 3), sonst noch nichts gebaut.
 
 **Ziel:** Beutel werden beim Packen in sortenreine IFCO-Kisten gescannt, Kisten beim Verladen und bei der Ankunft. Gescannt wird mit einer iPhone-App in Swift und, auf allen anderen Handys, mit der Kamera in der Web-App. Beide Oberflächen rufen dieselben Funktionen der Datenbank auf.
 
