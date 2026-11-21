@@ -151,7 +151,7 @@ Hinweise zum Kisten-Etikett:
 - Soll und Ist sind Mengen in der Einheit des Bedarfs (kg, l, Stück). Ist = Summe der Mengen der gescannten Beutel; das Soll ist erreicht, sobald Ist ≥ Soll. Die Anzahl Beutel ist nur ein Anhalt (Soll ÷ Füllmenge, aufgerundet) und fehlt, wenn die Füllmenge fehlt oder die Einheit Stück ist. Steht eine Komponente in zwei Einheiten im Bedarf, gibt es zwei Zeilen.
 - Im Soll stehen nur Komponenten, die ein Etikett bekommen: Status «ok» mit Haltbarkeit, nicht «nur vor Ort». Zukauf-, offene und Vor-Ort-Komponenten stehen in einem Abschnitt «ohne Etikett», ohne Soll und Ist.
 - Eine Kiste ist «offen» vom Anlegen bis zum ersten Scan «verladen». Eingepackt wird nur in eine offene Kiste; ausgepackt bei «offen» und bei «angekommen».
-- «Kiste anlegen» erzeugt Kiste und Code und druckt das Etikett. Kisten werden nur mit Netz angelegt.
+- «Kiste anlegen» erzeugt Kiste und Code und druckt das Etikett; dabei wird das Gebinde (Höhe der IFCO) gewählt. Kisten werden nur mit Netz angelegt.
 - Jede Kiste ist sortenrein: Der erste eingepackte Beutel legt das Produkt der Kiste fest. Wird die Kiste leer, ist sie wieder frei für ein anderes Produkt.
 - Scan eines Beutels in die offene Kiste. Ergebnis:
 
@@ -180,7 +180,7 @@ Beim Beladen ist das Gewicht der Engpass, nicht das Volumen. Die Nutzlast der Fa
 - Gezählt werden nur die Speisen in den IFCO-Kisten.
 - Gewicht der Kiste = Summe der Beutel + Tara. Liter zählen als 1 l = 1 kg, als Annahme gekennzeichnet (wie in der Planung).
 - Getrennt nach Transportart: gekühlt (0–2 °C), tiefgekühlt und ungekühlt (Economat; kann mit dem gekühlten Transport mitfahren).
-- Tara: aus dem Gebinde des Rezepts (es gibt IFCO-Kisten in verschiedenen Höhen mit verschiedener Tara). Fehlt sie, steht das Gewicht ohne Tara da und das Gesamtgewicht als Platzhalter.
+- Tara: Es gibt IFCO-Kisten in verschiedenen Höhen mit verschiedener Tara. Die Höhe wird pro Kiste beim Anlegen gewählt (Entscheid 21.11.2026); jede Höhe ist ein Gebinde in den Stammdaten. Für den Planwert vor dem Packen gilt das Gebinde am Rezept. Fehlt die Tara, steht das Gewicht ohne Tara da und das Gesamtgewicht als Platzhalter.
 - Keine Obergrenze nach Gewicht. Massgebend für die Kiste ist das Volumen: sie muss stapelbar bleiben.
 - Die Packliste zeigt pro Spiel und Transportart die Anzahl Kisten und das Gewicht: als Soll aus dem Bedarf (Planwert vor dem Packen, mit «rund n Kisten» aus `rezept.fuellmenge_g`) und als Ist aus den gescannten Beuteln.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Fehlt bei einem Produkt die Lagerart oder das Gewicht (Beutel in Stück, siehe offene Punkte, 18), wird es getrennt ausgewiesen («n Produkte ohne Lagerart»), nicht geschätzt.
@@ -195,7 +195,7 @@ Neue Tabellen, alle mit Row Level Security, Index auf jedem Fremdschlüssel:
 - `rezept.beutel_g`: Füllmenge pro Beutel (neue Spalte).
 - `charge`: Produkt, Komponente (aus der produziert wurde; liefert Lagerung und Regeneration fürs Etikett), produziert am, Haltbarkeit in Tagen, verbrauchen bis, Annahme-Kennzeichen, Herkunft als Saison und Wellennummer (eine Zahl wie in `produktion_aufgabe`, kein Fremdschlüssel auf die Welle, weil der Wellenplan beim Übernehmen neu angelegt wird; beide dürfen leer sein), erstellt von. Eindeutig über Komponente, Saison, Wellennummer und Produktionsdatum. Bestand, Packliste und der Vergleich mit dem Bedarf laufen über das Produkt.
 - `lagereinheit`: Charge, Seriennummer (eindeutig), Laufnummer in der Charge, Menge, Einheit (kg, l oder Stück), Zustand, Kiste. Die Kiste bleibt nach «verbraucht» stehen, damit sichtbar ist, in welchem Spiel der Beutel verbraucht wurde.
-- `kiste`: Service, Code (eindeutig), Laufnummer im Spiel, Tara, Zustand (offen, verladen, angekommen, abgeschlossen), Produkt (`produkt_id`: gesetzt durch den ersten eingepackten Beutel, wieder leer, wenn die Kiste leer ist).
+- `kiste`: Service, Code (eindeutig), Laufnummer im Spiel, Gebinde (liefert die Tara), Zustand (offen, verladen, angekommen, abgeschlossen), Produkt (`produkt_id`: gesetzt durch den ersten eingepackten Beutel, wieder leer, wenn die Kiste leer ist).
 - `lagerbewegung`: Lagereinheit, Art (Eingang, eingepackt, ausgepackt, verbraucht, entsorgt, Korrektur), Kiste, Grund, Zeitpunkt, Benutzer.
 - `druckauftrag`: Lagereinheit oder Kiste (zwei Spalten, genau eine gesetzt), ZPL-Text, Status (offen, in Arbeit, gedruckt, Fehler), Fehlertext, Zeitstempel, erstellt von. Seit Migration 41 gibt es nur die Spalte für die Lagereinheit; die Spalte für die Kiste kommt mit dem Packen.
 - `druckdienst_status`: letztes Lebenszeichen des Druckdienstes.
