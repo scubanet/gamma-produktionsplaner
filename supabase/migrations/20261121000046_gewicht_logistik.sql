@@ -1,14 +1,12 @@
 -- Gewicht für die Logistik (21.11.2026), Aufgabe S3 aus docs/plan-scan-app.md. Spezifikation Fassung 3, Abschnitt «Gewicht für die Logistik».
 -- Entscheide Dominik: Beim Beladen ist das Gewicht der Engpass; gezählt werden nur die Speisen in den IFCO-Kisten;
 -- die Nutzlast prüft die App nicht (20. und 21.11.2026). Economat-Ware ist ungekühlt und eine eigene Transportart;
--- keine Obergrenze pro Kiste nach Gewicht; das Gewicht der Beutel-Verpackung wird nicht gerechnet; IFCO-Kisten gibt es in
--- verschiedenen Höhen mit verschiedener Tara, die Höhe wird pro Kiste beim Packen gewählt (21.11.2026).
+-- keine Obergrenze pro Kiste nach Gewicht; das Gewicht der Beutel-Verpackung wird nicht gerechnet (21.11.2026).
 --
 --  1. transportart: gekühlt, tiefgekühlt, ungekühlt aus der Lagerart der Systemzuteilung
 --  2. komponente_packmass: Gebinde, Tara und Füllmenge einer Komponente, ohne das Rezept lesen zu müssen
---  3. kiste.gebinde_id: das Gebinde wird beim Anlegen der Kiste gewählt; kiste_erstellen nimmt es entgegen
---  4. kiste_gewicht: Gewicht pro Kiste
---  5. logistik_gewicht: Kisten und Gewicht pro Spiel und Transportart, Soll und Ist
+--  3. kiste_gewicht: Gewicht pro Kiste
+--  4. logistik_gewicht: Kisten und Gewicht pro Spiel und Transportart, Soll und Ist
 --
 -- Eine unvollständige Zahl wird nie als Total ausgegeben: Was sich nicht wiegen lässt (Beutel in Stück, fehlende Menge,
 -- fehlende Tara, fehlende Lagerart), steht als eigene Anzahl daneben, und das betroffene Total ist leer.
@@ -43,87 +41,24 @@ comment on function public.komponente_packmass() is 'Pro Komponente mit Rezept: 
 revoke execute on function public.komponente_packmass() from public, anon;
 grant execute on function public.komponente_packmass() to authenticated;
 
--- 3. Gebinde pro Kiste ---------------------------------------------------------------------------------------------
--- Entscheid Dominik (21.11.2026): Die Höhe der IFCO-Kiste wird pro Kiste gewählt, nicht am Produkt. Jede Höhe ist ein
--- Gebinde in den Stammdaten mit eigener Tara.
-alter table public.kiste add column gebinde_id uuid references public.gebinde(id) on delete restrict;
-comment on column public.kiste.gebinde_id is 'Gebinde dieser Kiste (IFCO in einer bestimmten Höhe), beim Anlegen gewählt. Liefert die Tara.';
-create index on public.kiste (gebinde_id);
-
--- Wie Migration 45, dazu das Gebinde. Ohne Angabe gilt das einzige aktive Gebinde; gibt es mehrere, muss gewählt werden.
-drop function public.kiste_erstellen(uuid);
-create function public.kiste_erstellen(p_service uuid, p_gebinde uuid default null)
-returns jsonb
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  alphabet constant text := 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  v_benutzer uuid := auth.uid();
-  v_gebinde uuid := p_gebinde;
-  v_gebinde_name text;
-  v_code text;
-  v_nr integer;
-  v_kiste uuid;
-  versuch integer := 0;
-begin
-  if not lager_recht('packen') then
-    raise exception 'Keine Berechtigung zum Packen.' using errcode = '42501';
-  end if;
-  if v_gebinde is null then
-    if (select count(*) from gebinde g where g.aktiv) <> 1 then
-      raise exception 'Bitte das Gebinde der Kiste wählen.' using errcode = '22023';
-    end if;
-    select g.id into v_gebinde from gebinde g where g.aktiv;
-  end if;
-  select g.name into v_gebinde_name from gebinde g where g.id = v_gebinde and g.aktiv;
-  if not found then
-    raise exception 'Gebinde nicht gefunden oder nicht aktiv.' using errcode = 'P0002';
-  end if;
-  -- Gleichzeitige Aufrufe für dasselbe Spiel nacheinander, damit die Laufnummern eindeutig bleiben.
-  perform 1 from service s where s.id = p_service for update;
-  if not found then
-    raise exception 'Spiel nicht gefunden.' using errcode = 'P0002';
-  end if;
-  loop
-    versuch := versuch + 1;
-    select 'K-' || string_agg(substr(alphabet, 1 + floor(random() * length(alphabet))::int, 1), '') into v_code from generate_series(1, 6);
-    exit when not exists (select 1 from kiste k where k.code = v_code);
-    if versuch > 20 then
-      raise exception 'Kein freier Kistencode gefunden, bitte nochmals versuchen.' using errcode = '40001';
-    end if;
-  end loop;
-  select coalesce(max(k.laufnummer), 0) + 1 into v_nr from kiste k where k.service_id = p_service;
-  insert into kiste (service_id, code, laufnummer, gebinde_id, erstellt_von) values (p_service, v_code, v_nr, v_gebinde, v_benutzer) returning id into v_kiste;
-  insert into druckauftrag (kiste_id, erstellt_von) values (v_kiste, v_benutzer);
-  return jsonb_build_object('kiste_id', v_kiste, 'code', v_code, 'laufnummer', v_nr, 'gebinde', v_gebinde_name);
-end
-$$;
-comment on function public.kiste_erstellen(uuid, uuid) is 'Legt eine Kiste für ein Spiel an (Code, Laufnummer im Spiel, Gebinde) und den Druckauftrag für ihr Etikett. Ohne Gebinde gilt das einzige aktive.';
-revoke execute on function public.kiste_erstellen(uuid, uuid) from public, anon;
-grant execute on function public.kiste_erstellen(uuid, uuid) to authenticated;
-
--- 4. Gewicht pro Kiste --------------------------------------------------------------------------------------------
+-- 3. Gewicht pro Kiste --------------------------------------------------------------------------------------------
 -- Netto = Summe der Beutel in kg; Liter zählen als 1 l = 1 kg (Annahme, wie in der Planung). Beutel in Stück haben kein
--- Gewicht und werden gezählt. Tara aus dem Gebinde der Kiste.
+-- Gewicht und werden gezählt. Tara aus dem Gebinde des Rezepts (IFCO-Kisten gibt es in verschiedenen Höhen).
 -- Brutto = Netto + Tara, nur wenn die Tara bekannt ist und kein Beutel in Stück in der Kiste liegt.
 create view public.kiste_gewicht with (security_invoker = true) as
 select ki.id as kiste_id, ki.service_id, ki.code, ki.laufnummer, ki.zustand,
-       i.transportart, i.beutel, i.netto_kg, i.beutel_stueck, i.liter_annahme,
-       ki.gebinde_id, g.name as gebinde, round(g.tara_g / 1000, 3) as tara_kg,
-       case when i.beutel > 0 and i.beutel_stueck = 0 and g.tara_g is not null then round(i.netto_kg + g.tara_g / 1000, 3) end as brutto_kg,
+       i.transportart, i.beutel, i.netto_kg, i.beutel_stueck, i.liter_annahme, i.gebinde, i.tara_kg,
+       case when i.beutel > 0 and i.beutel_stueck = 0 and i.tara_kg is not null then round(i.netto_kg + i.tara_kg, 3) end as brutto_kg,
        case when i.beutel = 0 then 'Kiste ist leer'
             else concat_ws('; ',
               i.beutel - i.beutel_stueck || ' Beutel = ' || trim_scale(i.netto_kg)::text || ' kg',
               case when i.beutel_stueck > 0 then i.beutel_stueck || ' Beutel in Stück ohne Gewicht' end,
               case when i.liter_annahme then 'Annahme: 1 l = 1 kg' end,
-              case when g.tara_g is not null then 'Tara ' || trim_scale(round(g.tara_g / 1000, 3))::text || ' kg (' || g.name || ')'
-                   else 'Tara [Gewicht]: ' || coalesce('am Gebinde ' || g.name || ' nicht erfasst', 'Kiste ohne Gebinde') end,
+              case when i.tara_kg is not null then 'Tara ' || trim_scale(i.tara_kg)::text || ' kg (' || i.gebinde || ')'
+                   else 'Tara [Gewicht]: ' || coalesce('am Gebinde ' || i.gebinde || ' nicht erfasst', 'am Rezept ist kein Gebinde gewählt') end,
               case when i.transportart is null then 'Lagerart fehlt oder gemischt' end
             ) end as herleitung
 from kiste ki
-left join gebinde g on g.id = ki.gebinde_id
 cross join lateral (
   select count(*)::int as beutel,
          coalesce(sum(e.menge) filter (where e.einheit in ('kg', 'l')), 0) as netto_kg,
@@ -132,19 +67,22 @@ cross join lateral (
          -- Eine Transportart, wenn alle Beutel dieselbe haben; sonst leer.
          case when count(distinct transportart(k.lager_tk, k.lager_0_2, k.lager_trocken)) = 1
                    and count(*) filter (where transportart(k.lager_tk, k.lager_0_2, k.lager_trocken) is null) = 0
-              then min(transportart(k.lager_tk, k.lager_0_2, k.lager_trocken)) end as transportart
+              then min(transportart(k.lager_tk, k.lager_0_2, k.lager_trocken)) end as transportart,
+         case when count(distinct pm.gebinde) = 1 then min(pm.gebinde) end as gebinde,
+         case when count(distinct pm.tara_g) = 1 and count(*) filter (where pm.tara_g is null) = 0
+              then round(min(pm.tara_g) / 1000, 3) end as tara_kg
   from lagereinheit e
   join charge c on c.id = e.charge_id
   join komponente k on k.id = c.komponente_id
+  left join komponente_packmass() pm on pm.komponente_id = k.id
   where e.kiste_id = ki.id and e.zustand in ('in_kiste', 'verbraucht')
 ) i;
 
-comment on view public.kiste_gewicht is 'Gewicht pro Kiste: Netto (Beutel in kg, 1 l = 1 kg), Tara aus dem Gebinde der Kiste, Brutto nur wenn vollständig. Beutel in Stück gezählt, ohne Gewicht.';
+comment on view public.kiste_gewicht is 'Gewicht pro Kiste: Netto (Beutel in kg, 1 l = 1 kg), Tara aus dem Gebinde des Rezepts, Brutto nur wenn vollständig. Beutel in Stück gezählt, ohne Gewicht.';
 
--- 5. Gewicht pro Spiel und Transportart ---------------------------------------------------------------------------
+-- 4. Gewicht pro Spiel und Transportart ---------------------------------------------------------------------------
 -- Soll: Planwert vor dem Packen aus dem Bedarf des Spiels (gleiche Regel wie packliste_soll: nur Komponenten mit Etikett).
 --   Kisten: pro Produkt Bedarf ÷ Füllmenge pro Gebinde, aufgerundet (sortenrein), summiert.
---   Tara im Soll: vom Gebinde, das am Rezept gewählt ist (Planwert). Im Ist zählt das Gebinde der einzelnen Kiste.
 -- Ist: aus den gepackten Kisten (kiste_gewicht), ohne aufgelöste und leere Kisten.
 -- Transportart leer: Lagerart fehlt in der Systemzuteilung (beim Ist auch: Kiste mit gemischter Lagerart).
 create view public.logistik_gewicht with (security_invoker = true) as
@@ -208,7 +146,7 @@ select z.service_id, sv.anlass_id, sv.name as service, sv.reihenfolge, sv.datum,
          case when z.produkte_stueck > 0 then z.produkte_stueck || ' Produkte in Stück ohne Gewicht' end,
          case when z.produkte_ohne_menge > 0 then z.produkte_ohne_menge || ' Produkte ohne Menge im Bedarf' end,
          case when z.produkte_ohne_fuellmenge > 0 then z.produkte_ohne_fuellmenge || ' Produkte ohne Füllmenge pro Gebinde am Rezept' end,
-         case when z.produkte_ohne_tara > 0 then z.produkte_ohne_tara || ' Produkte ohne Tara für den Planwert (Gebinde am Rezept oder Tara am Gebinde fehlt)' end,
+         case when z.produkte_ohne_tara > 0 then z.produkte_ohne_tara || ' Produkte ohne Tara (Gebinde am Rezept oder Tara am Gebinde fehlt)' end,
          'Ist: ' || z.ist_kisten || ' Kisten, ' || z.ist_beutel || ' Beutel, ' || trim_scale(z.ist_netto_kg)::text || ' kg ohne Tara, mit Tara '
            || coalesce(trim_scale(z.ist_brutto_kg)::text, '[Gewicht]') || ' kg',
          case when z.ist_beutel_stueck > 0 then z.ist_beutel_stueck || ' Beutel in Stück ohne Gewicht' end,

@@ -909,6 +909,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "druckauftrag_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "kiste_gewicht"
+            referencedColumns: ["kiste_id"]
+          },
+          {
             foreignKeyName: "druckauftrag_lagereinheit_id_fkey"
             columns: ["lagereinheit_id"]
             isOneToOne: false
@@ -1720,6 +1727,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "lagerbewegung_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "kiste_gewicht"
+            referencedColumns: ["kiste_id"]
+          },
+          {
             foreignKeyName: "lagerbewegung_lagereinheit_id_fkey"
             columns: ["lagereinheit_id"]
             isOneToOne: false
@@ -1814,6 +1828,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "kiste"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lagereinheit_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "kiste_gewicht"
+            referencedColumns: ["kiste_id"]
           },
         ]
       }
@@ -2746,6 +2767,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "kiste"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scan_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "kiste_gewicht"
+            referencedColumns: ["kiste_id"]
           },
           {
             foreignKeyName: "scan_service_id_fkey"
@@ -4388,6 +4416,82 @@ export type Database = {
           },
         ]
       }
+      kiste_gewicht: {
+        Row: {
+          beutel: number | null
+          beutel_stueck: number | null
+          brutto_kg: number | null
+          code: string | null
+          gebinde: string | null
+          herleitung: string | null
+          kiste_id: string | null
+          laufnummer: number | null
+          liter_annahme: boolean | null
+          netto_kg: number | null
+          service_id: string | null
+          tara_kg: number | null
+          transportart: string | null
+          zustand: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "bedarf_service_welle"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "lager_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "packliste_ohne_etikett"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "packliste_soll"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "planung_service_komponente"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_gericht_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_komponente_bedarf"
+            referencedColumns: ["service_id"]
+          },
+        ]
+      }
       komponente_pruefhinweis: {
         Row: {
           code: string | null
@@ -4845,6 +4949,77 @@ export type Database = {
           welle_nr: number | null
         }
         Relationships: []
+      }
+      logistik_gewicht: {
+        Row: {
+          anlass_id: string | null
+          datum: string | null
+          herleitung: string | null
+          ist_beutel: number | null
+          ist_beutel_stueck: number | null
+          ist_brutto_kg: number | null
+          ist_kisten: number | null
+          ist_kisten_ohne_tara: number | null
+          ist_netto_kg: number | null
+          liter_annahme: boolean | null
+          produkte: number | null
+          produkte_ohne_fuellmenge: number | null
+          produkte_ohne_menge: number | null
+          produkte_ohne_tara: number | null
+          produkte_stueck: number | null
+          reihenfolge: number | null
+          service: string | null
+          service_id: string | null
+          soll_brutto_kg: number | null
+          soll_kisten: number | null
+          soll_netto_kg: number | null
+          sortierung: number | null
+          transportart: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
       }
       menuelinie_gaeste: {
         Row: {
@@ -6427,6 +6602,16 @@ export type Database = {
           status: string
         }[]
       }
+      komponente_packmass: {
+        Args: never
+        Returns: {
+          beutel_g: number
+          fuellmenge_g: number
+          gebinde: string
+          komponente_id: string
+          tara_g: number
+        }[]
+      }
       lager_recht: { Args: { p_recht: string }; Returns: boolean }
       lieferant_bestelltermin: {
         Args: { p_lieferant: string; p_liefern_bis: string }
@@ -6520,6 +6705,10 @@ export type Database = {
         Returns: Json
       }
       stufe: { Args: never; Returns: string }
+      transportart: {
+        Args: { p_0_2: boolean; p_tk: boolean; p_trocken: boolean }
+        Returns: string
+      }
       wellen_anzahl: {
         Args: { p_haltbarkeit: number; p_saison: string }
         Returns: number
