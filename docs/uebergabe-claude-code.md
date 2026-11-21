@@ -378,4 +378,4 @@ Antworten Dominik vom 21.11.2026: Economat ist ungekühlt und kann mit gekühlt 
 
 - Entscheid Dominik (21.11.2026): Der Scan warnt gelb bei der Höchstbeladung. **Migration 49** (`20261121000049_hinweis_hoechstbeladung.sql`, noch einzuspielen): `beutel_einpacken` wie in Migration 45, dazu nach dem Einpacken der Hinweis «Kiste über der Höchstbeladung: 12.4 kg, erlaubt 12 kg (…)». Verglichen wird das Netto der Kiste (ohne Tara, Beutel in Stück zählen nicht) mit `gebinde.max_beladung_kg`. Der Beutel wird trotzdem eingepackt.
 - **Nicht ausgeführt:** die Migration und der Hinweis. Die Datei ändere ich nach dem Nennen des Push-Befehls nicht mehr.
-
+- **Eingespielt am 21.11.2026.** Lesend geprüft: `beutel_einpacken` enthält den Hinweis, läuft weiter mit erhöhten Rechten, für Angemeldete ausführbar, für `anon` nicht. Die Typen ändern sich nicht. **Noch nie ausgeführt:** der Hinweis selbst.
