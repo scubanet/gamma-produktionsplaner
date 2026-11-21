@@ -34,7 +34,7 @@ Stand: 15.11.2026
 
 ## Stufen (Migrationen 43 und 44)
 
-Entscheide Dominik, 20. und 21.11.2026. Migration 44 (Stufe «Scannen») ist am 21.11.2026 geschrieben und noch einzuspielen; bis dahin gilt der Stand von Migration 43.
+Entscheide Dominik, 20. und 21.11.2026. Migration 44 (Stufe «Scannen») ist am 21.11.2026 eingespielt.
 
 | Stufe | Wer | Darf |
 | --- | --- | --- |
@@ -107,7 +107,7 @@ Entscheide Dominik, 20. und 21.11.2026. Migration 44 (Stufe «Scannen») ist am 
 | 41 etiketten_lager | Etiketten und Lager, Etappe 1: `produkt` und `komponente.produkt_id`, `rezept.beutel_g` (samt `rezept_speichern`), `charge`, `lagereinheit`, `lagerbewegung`, `druckauftrag` (nur lesbar, geschrieben über Funktionen), Views `bedarf_service_welle`, `etikett_vorschlag`, `etikett_beutel`, Funktion `etiketten_erstellen` (erste `security definer`-Funktion im Projekt). Eingespielt am 20.11.2026 |
 | 42 lager | Lager, Etappe 2: Views `lager_einheit`, `lager_bestand`, `lager_bedarf`; Funktionen `produkt_einlagern` (ohne Welle), `einheit_ausbuchen`, `lager_recht` (einzige Stelle für die Rechte des Lagers); `etikett_vorschlag.beutel_rest` leer statt 0 ohne Vorschlag. Eingespielt am 20.11.2026 |
 | 43 stufe_kueche | Stufe «Küche»: Tabelle `app_kueche`, Funktionen `ist_kueche()`, `stufe()`; alle 49 Pilot-Regeln ersetzt durch `lesen`, `anlegen`, `aendern`, `loeschen` (Schreiben nicht für «Küche»); neun Geld-Tabellen für «Küche» nicht lesbar; `produktion_aufgabe` für «Küche» schreibbar ohne `zustaendig` (Trigger `produktion_aufgabe_kueche`); Rezepte anlegen und ändern nicht für «Küche». Eingespielt am 21.11.2026 |
-| 44 stufe_scannen | Stufe «Scannen»: Tabelle `app_scannen`, Funktionen `ist_scannen()`, `ist_planer()`, `stufe()` mit `scannen`; 147 Schreib-Regeln verlangen `ist_planer()`; «Scannen» liest 13 Tabellen, 32 weitere sind für sie gesperrt, die neun Geld-Tabellen lesen nur Admin und Benutzer; `lager_recht` mit `etikett_erstellen`, `packen`, `spiel_abschliessen`; `etiketten_erstellen` prüft das Recht. **Noch einzuspielen** |
+| 44 stufe_scannen | Stufe «Scannen»: Tabelle `app_scannen`, Funktionen `ist_scannen()`, `ist_planer()`, `stufe()` mit `scannen`; 147 Schreib-Regeln verlangen `ist_planer()`; «Scannen» liest 13 Tabellen, 32 weitere sind für sie gesperrt, die neun Geld-Tabellen lesen nur Admin und Benutzer; `lager_recht` mit `etikett_erstellen`, `packen`, `spiel_abschliessen`; `etiketten_erstellen` prüft das Recht. Eingespielt am 21.11.2026 |
 | 23 rezept_planung | Tabelle `gebinde` (IFCO-Box), `rezept` mit Gebinde, Verpackung, Füllmenge und Service-Aufwand, `schritt` mit Rüstzeit und Menge pro Durchgang, `rezept_speichern` nimmt die neuen Felder |
 
 Die Versionen in der Datenbank entsprechen den Dateinamen. Migration 20 wurde nicht mit `supabase db push` eingespielt und trägt darum einen Zeitstempel (`20261110185525`); die Datei heisst seit dem 14.11.2026 gleich. Neue Migrationen immer mit `supabase db push` einspielen, sonst passen Datei und Datenbank nicht zusammen.
