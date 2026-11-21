@@ -314,3 +314,5 @@ Entscheid Dominik: dritte Stufe neben Admin und Benutzer. «Küche» liest Leits
 ## Nachtrag 21.11.2026: Konzept Scan-App
 
 `docs/konzept-scan-app.md`: Entwurf zur Durchsicht durch Dominik, nichts gebaut. Ergänzt Fassung 2 der Etiketten-Spezifikation um die Entscheide vom 20.11.2026: Kamera-Scan in der Web-App für alle Handys ohne iPhone-App, IFCO sortenrein, eigene Stufe «Scannen», Gewicht pro Spiel und Transportart als Angabe für die Logistik (nur Speisen, gekühlt und TK getrennt; keine Prüfung der Nutzlast). Gepackt wird pro Spiel, nicht pro Gericht (Entscheid 21.11.2026). Vor dem Bau von Etappe 4 die offenen Punkte klären und in eine Fassung 3 der Spezifikation übernehmen.
+
+**Plan mit Aufgaben:** `docs/plan-scan-app.md` (S0 bis S7). Nächste Migration ist 44. Reihenfolge: S0 Spezifikation Fassung 3, S1 Stufe «Scannen», S2 Packen-Kern, S3 Gewicht, S4 Packliste, S5 Seite «Scannen», S6 iPhone-App in eigenem Repo. Die mit **Frage** markierten Punkte vor dem Bauen mit Dominik klären.
