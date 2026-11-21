@@ -45,6 +45,8 @@ Bestätigt am 21.11.2026 und unverändert: Gepackt wird pro Spiel. Die Kiste geh
 | 21.11.2026 | Die Nutzlast prüft die App nicht. Das Gewicht muss aber an die Logistik weitergegeben werden können. |
 | 21.11.2026 | Eine Kiste gehört immer genau einem Spiel, auch bei Menülinien für mehrere Spiele und bei kleinen Mengen. |
 | 21.11.2026 | Ein Beutel, dessen Produkt nicht im Bedarf des Spiels steht, wird nach Bestätigung eingepackt und in der Packliste als «zusätzlich» geführt. |
+| 21.11.2026 | Economat-Ware ist ungekühlt und wird als eigene Transportart ausgewiesen; sie kann mit dem gekühlten Transport mitfahren. |
+| 21.11.2026 | Keine Obergrenze pro Kiste nach Gewicht; massgebend ist das Volumen, die Kiste muss stapelbar bleiben. Das Gewicht der Beutel-Verpackung wird nicht gerechnet. |
 | 21.11.2026 | Die Stufe «Scannen» darf die Planungstabellen lesen, aus denen die Packliste rechnet (Menülinien, Gerichte, Komponenten, Systemzuteilung); keine Rezepte, keine Geld-Tabellen. |
 
 ## Umfang
@@ -73,7 +75,7 @@ Nicht im Umfang:
 - **Charge:** ein Produkt aus einer Zeile der Checkliste (Saison, Welle) an einem Produktionstag. Trägt Produktionsdatum, Haltbarkeit und Verbrauchsdatum. Eine Charge gehört zu keinem Anlass; Saison und Welle sind nur die Herkunft und stehen nicht auf dem Etikett. Ein weiterer Druck für dieselbe Zeile am selben Tag hängt Beutel an diese Charge an, die Laufnummern laufen weiter.
 - **Lagereinheit (Beutel):** ein etikettierter Beutel einer Charge mit eigener Seriennummer. Hat einen Zustand: im Lager, in Kiste, verbraucht, entsorgt.
 - **Kiste:** eine IFCO-Kiste für ein Spiel (Service) eines Anlasses. Enthält gescannte Beutel eines einzigen Produkts (sortenrein). Hat einen eigenen Code.
-- **Transportart:** gekühlt (0–2 °C) oder tiefgekühlt, abgeleitet aus der Lagerart der Systemzuteilung.
+- **Transportart:** gekühlt (0–2 °C), tiefgekühlt oder ungekühlt (Economat), abgeleitet aus der Lagerart der Systemzuteilung.
 - **Seriennummer:** 8 Zeichen, zufällig, ohne verwechselbare Zeichen (0/O, 1/I/L), über alle Produkte eindeutig. Steht im QR-Code und lesbar auf dem Etikett.
 
 ## QR-Code
@@ -166,7 +168,6 @@ Hinweise zum Kisten-Etikett:
 | Soll dieses Produkts ist schon erreicht | gelb | ja, nach Bestätigung |
 | älterer Beutel desselben Produkts im Lager | gelb | ja |
 | unbekannter Code | rot | nein |
-| Kiste über der Gewichtsgrenze (nur falls eine Obergrenze gewünscht ist, siehe offene Punkte, 19) | gelb | ja |
 
 - «Auspacken»: Beutel scannen oder in der Kiste antippen; er geht zurück «im Lager».
 - Verladen und Ankunft: Kiste scannen. Ergebnisse wie in Fassung 1 (ok, anderes Spiel, schon gescannt, unbekannt). Neu: gelb, wenn die Kiste leer ist oder das Soll des Spiels noch nicht gepackt ist. Beim Verladen steht neben «14 von 18 Kisten» das geladene Gewicht.
@@ -178,7 +179,9 @@ Beim Beladen ist das Gewicht der Engpass, nicht das Volumen. Die Nutzlast der Fa
 
 - Gezählt werden nur die Speisen in den IFCO-Kisten.
 - Gewicht der Kiste = Summe der Beutel + Tara. Liter zählen als 1 l = 1 kg, als Annahme gekennzeichnet (wie in der Planung).
-- Getrennt nach Transportart: gekühlt (0–2 °C) und tiefgekühlt. Economat: siehe offene Punkte, 17.
+- Getrennt nach Transportart: gekühlt (0–2 °C), tiefgekühlt und ungekühlt (Economat; kann mit dem gekühlten Transport mitfahren).
+- Tara: aus dem Gebinde des Rezepts (es gibt IFCO-Kisten in verschiedenen Höhen mit verschiedener Tara). Fehlt sie, steht das Gewicht ohne Tara da und das Gesamtgewicht als Platzhalter.
+- Keine Obergrenze nach Gewicht. Massgebend für die Kiste ist das Volumen: sie muss stapelbar bleiben.
 - Die Packliste zeigt pro Spiel und Transportart die Anzahl Kisten und das Gewicht: als Soll aus dem Bedarf (Planwert vor dem Packen, mit «rund n Kisten» aus `rezept.fuellmenge_g`) und als Ist aus den gescannten Beuteln.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Fehlt bei einem Produkt die Lagerart oder das Gewicht (Beutel in Stück, siehe offene Punkte, 18), wird es getrennt ausgewiesen («n Produkte ohne Lagerart»), nicht geschätzt.
 - Gerechnet wird in der Datenbank, mit Herleitung.
@@ -361,9 +364,9 @@ Vor Etappe 4:
 11. **Wer darf entsorgen und ein Spiel abschliessen:** ab «Benutzer» oder auch «Küche»? Gebaut ist: «nicht produziert» ausbuchen dürfen alle ausser «Scannen», Ware entsorgen nur Admins. «Scannen» schliesst kein Spiel ab (Entscheid 20.11.2026). Offen bleibt, ob «Benutzer» und «Küche» ein Spiel abschliessen dürfen.
 12. **Seite `/e` ohne Anmeldung:** Darf sie Produkt und Verbrauchsdatum zeigen, für Personal vor Ort ohne Zugang?
 16. **Weitergabe an die Logistik:** In welcher Form braucht die Logistik das Gewicht (PDF, E-Mail, Text zum Kopieren), und reicht der Planwert vor dem Packen, oder braucht sie das Ist danach? Bis zur Antwort: Druckansicht und «Text kopieren», beide Werte.
-17. **Economat:** Unter welcher Transportart wird Ware aus dem Economat ausgewiesen?
-18. **Beutel in Stück:** Sie haben kein Gewicht. Soll das Gewicht pro Beutel beim Etikettieren erfasst werden? Bis zur Antwort: getrennt ausweisen, nicht schätzen.
-19. **Obergrenze pro Kiste:** Braucht es sie, und wenn ja, welcher Wert in kg? Sie würde nur warnen (gelb), nichts sperren. Bis zur Antwort nicht gebaut.
+17. ~~Economat~~ Entschieden am 21.11.2026: eigene Zeile «ungekühlt»; die Ware kann mit dem gekühlten Transport mitfahren.
+18. **Beutel in Stück:** Sie haben kein Gewicht und werden getrennt ausgewiesen, nicht geschätzt. Das Gewicht der Verpackung (Beutel) wird nicht gerechnet (Dominik, 21.11.2026: «Wir arbeiten nicht im Grammbereich»). Offen: Soll für Stück-Beutel ein Gewicht erfasst werden?
+19. ~~Obergrenze pro Kiste~~ Entschieden am 21.11.2026: keine Grenze nach Gewicht. Massgebend ist das Volumen: Die Kiste muss stapelbar bleiben. Offen: Soll der Scan gelb warnen, wenn in der Kiste mehr liegt als die Füllmenge pro IFCO aus dem Rezept?
 20. **iOS 17 als Minimum** (wegen SwiftData): Haben alle iPhones, die scannen sollen, iOS 17 oder neuer?
 21. ~~Lesbare Tabellen für «Scannen»~~ Entschieden am 21.11.2026: Planungstabellen lesbar, siehe «Rechte».
 

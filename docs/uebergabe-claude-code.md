@@ -349,3 +349,16 @@ Entscheide Dominik vom 21.11.2026: «Scannen» darf die Planungstabellen lesen, 
 - **Eigene Festlegungen, von Dominik zu bestätigen:** Kistencode `K-XXXXXX`; Zustand «aufgelöst» für Kisten; Ankunft ohne Verlade-Scan zählt und gibt einen gelben Hinweis; «zurück ins Lager» beim Abschluss nur für nie verladene Kisten; Beutel «zu klären» sperren den Abschluss; ein abgelaufener Beutel ist auch dann rot, wenn das Service-Datum fehlt.
 - **Offen:** Tara der IFCO-Box fehlt in den Stammdaten (`gebinde.tara_g` leer); `kiste` hat noch keine Tara-Spalte (S3). Anhalt «rund n Beutel» in der Packliste fehlt.
 - **Eingespielt am 21.11.2026.** Struktur lesend geprüft: `kiste` und `scan` da, vier Views, sechs Funktionen, `packliste_soll` mit 211 Zeilen, 15 Tabellen für «Scannen» lesbar (13 und die zwei neuen). Typen aus der Datenbank erzeugt und committet.
+
+## Nachtrag 21.11.2026: Gewicht für die Logistik (Migration 46, Scan-App S3)
+
+Antworten Dominik vom 21.11.2026: Economat ist ungekühlt und kann mit gekühlt mitfahren (eigene Transportart); keine Obergrenze pro Kiste nach Gewicht, massgebend ist das Volumen (stapelbar); das Gewicht der Beutel-Verpackung wird nicht gerechnet; die Tara der IFCO-Kisten kommt am Montag, 23.11.2026, und ist je nach Höhe der Kiste verschieden.
+
+- **Migration 46** (`20261121000046_gewicht_logistik.sql`, noch einzuspielen): `transportart`, `komponente_packmass`, Views `kiste_gewicht` und `logistik_gewicht`. Regeln in `docs/supabase.md`, Abschnitt «Packen und Scannen». Keine Änderung an der App.
+- **Tara:** aus dem Gebinde des Rezepts (`rezept.gebinde_id` → `gebinde.tara_g`). Für verschiedene Höhen braucht es ein Gebinde pro Höhe in den Stammdaten und die Wahl am Rezept. **Annahme, von Dominik zu bestätigen:** Die Höhe der Kiste hängt am Produkt (Rezept), nicht an der einzelnen Kiste.
+- **`komponente_packmass`** gibt Gebinde, Tara, Füllmenge pro Gebinde und pro Beutel heraus, sonst nichts vom Rezept. Damit sieht auch «Scannen» das Gewicht (der Punkt «Offen für S3» im Nachtrag zu Migration 44 ist so gelöst).
+- **Lesend geprüft** (die Abfragen der beiden Views, Funktionen eingesetzt, gegen die Pilot-Datenbank): 25 Zeilen für 11 Spiele, 211 Produkte wie in `packliste_soll`, zusammen 2'455.75 kg ohne Tara. Spiel 1: gekühlt 2 Produkte, 18.7 kg, rund 15 Kisten; ohne Lagerart 20 Produkte, 290.455 kg, Kisten als Platzhalter (3 ohne Füllmenge).
+- **Befunde in den Daten:** Bei 193 von 211 Produkten fehlt die Lagerart (stehen unter «ohne Lagerart»). Die Tara fehlt überall (Gesamtgewicht überall Platzhalter). 28 Produkte ohne Füllmenge pro Gebinde. «18.7 kg in rund 15 Kisten» bei Spiel 1 deutet auf eine sehr kleine Füllmenge pro Gebinde an zwei Rezepten: bitte prüfen.
+- **Nicht ausgeführt:** die Migration selbst und die Ist-Seite mit Daten (im Pilot gibt es keine Kiste).
+- **Offen:** Gewicht für Beutel in Stück erfassen? Gelbe Warnung beim Scan, wenn in der Kiste mehr liegt als die Füllmenge pro Gebinde (stapelbar)?
+
