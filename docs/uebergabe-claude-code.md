@@ -373,3 +373,9 @@ Antworten Dominik vom 21.11.2026: Economat ist ungekühlt und kann mit gekühlt 
 - **Folgen:** Mit elf aktiven Gebinden muss beim Anlegen einer Kiste das Gebinde gewählt werden. Der alte Eintrag «IFCO-Box» ohne Tara bleibt, weil die Rezepte daran hängen; der Planwert «mit Tara» im Soll bleibt darum ein Platzhalter, bis am Rezept ein Typ mit Tara gewählt ist. Die Seite Stammdaten zeigt die Höchstbeladung nicht an.
 - **Offen:** Soll der Scan bei der Höchstbeladung gelb warnen? Welche Typen sind bei GAMMA wirklich im Einsatz (die übrigen in den Stammdaten auf «nicht aktiv» setzen)? Tiefkühlware bei −18 °C liegt ausserhalb des Temperaturbereichs laut Datenblatt (−10 °C bis +60 °C).
 - **Eingespielt am 21.11.2026.** Lesend geprüft: 11 Gebinde, alle aktiv; die zehn IFCO-Typen mit Höhe, Tara und Höchstbeladung wie im Datenblatt. Typen aus der Datenbank erzeugt.
+
+## Nachtrag 21.11.2026: Hinweis bei Höchstbeladung (Migration 49)
+
+- Entscheid Dominik (21.11.2026): Der Scan warnt gelb bei der Höchstbeladung. **Migration 49** (`20261121000049_hinweis_hoechstbeladung.sql`, noch einzuspielen): `beutel_einpacken` wie in Migration 45, dazu nach dem Einpacken der Hinweis «Kiste über der Höchstbeladung: 12.4 kg, erlaubt 12 kg (…)». Verglichen wird das Netto der Kiste (ohne Tara, Beutel in Stück zählen nicht) mit `gebinde.max_beladung_kg`. Der Beutel wird trotzdem eingepackt.
+- **Nicht ausgeführt:** die Migration und der Hinweis. Die Datei ändere ich nach dem Nennen des Push-Befehls nicht mehr.
+

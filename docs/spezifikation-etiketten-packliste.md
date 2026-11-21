@@ -168,6 +168,7 @@ Hinweise zum Kisten-Etikett:
 | Soll dieses Produkts ist schon erreicht | gelb | ja, nach Bestätigung |
 | älterer Beutel desselben Produkts im Lager | gelb | ja |
 | unbekannter Code | rot | nein |
+| Kiste über der Höchstbeladung des Gebindes laut Hersteller | gelb | ja |
 
 - «Auspacken»: Beutel scannen oder in der Kiste antippen; er geht zurück «im Lager».
 - Verladen und Ankunft: Kiste scannen. Ergebnisse wie in Fassung 1 (ok, anderes Spiel, schon gescannt, unbekannt). Neu: gelb, wenn die Kiste leer ist oder das Soll des Spiels noch nicht gepackt ist. Beim Verladen steht neben «14 von 18 Kisten» das geladene Gewicht.
@@ -181,7 +182,7 @@ Beim Beladen ist das Gewicht der Engpass, nicht das Volumen. Die Nutzlast der Fa
 - Gewicht der Kiste = Summe der Beutel + Tara. Liter zählen als 1 l = 1 kg, als Annahme gekennzeichnet (wie in der Planung).
 - Getrennt nach Transportart: gekühlt (0–2 °C), tiefgekühlt und ungekühlt (Economat; kann mit dem gekühlten Transport mitfahren).
 - Tara: Es gibt IFCO-Kisten in verschiedenen Höhen mit verschiedener Tara. Die Höhe wird pro Kiste beim Anlegen gewählt (Entscheid 21.11.2026); jede Höhe ist ein Gebinde in den Stammdaten. Für den Planwert vor dem Packen gilt das Gebinde am Rezept. Fehlt die Tara, steht das Gewicht ohne Tara da und das Gesamtgewicht als Platzhalter.
-- Keine Obergrenze nach Gewicht. Massgebend für die Kiste ist das Volumen: sie muss stapelbar bleiben.
+- Keine Sperre nach Gewicht. Der Scan warnt gelb, wenn die Kiste über der Höchstbeladung ihres Gebindes laut Hersteller liegt (Entscheid 21.11.2026). Massgebend bleibt das Volumen: die Kiste muss stapelbar bleiben.
 - Die Packliste zeigt pro Spiel und Transportart die Anzahl Kisten und das Gewicht: als Soll aus dem Bedarf (Planwert vor dem Packen, mit «rund n Kisten» aus `rezept.fuellmenge_g`) und als Ist aus den gescannten Beuteln.
 - Eine unvollständige Zahl wird nie als Total ausgegeben. Fehlt bei einem Produkt die Lagerart oder das Gewicht (Beutel in Stück, siehe offene Punkte, 18), wird es getrennt ausgewiesen («n Produkte ohne Lagerart»), nicht geschätzt.
 - Gerechnet wird in der Datenbank, mit Herleitung.
@@ -366,7 +367,7 @@ Vor Etappe 4:
 16. **Weitergabe an die Logistik:** In welcher Form braucht die Logistik das Gewicht (PDF, E-Mail, Text zum Kopieren), und reicht der Planwert vor dem Packen, oder braucht sie das Ist danach? Bis zur Antwort: Druckansicht und «Text kopieren», beide Werte.
 17. ~~Economat~~ Entschieden am 21.11.2026: eigene Zeile «ungekühlt»; die Ware kann mit dem gekühlten Transport mitfahren.
 18. **Beutel in Stück:** Sie haben kein Gewicht und werden getrennt ausgewiesen, nicht geschätzt. Das Gewicht der Verpackung (Beutel) wird nicht gerechnet (Dominik, 21.11.2026: «Wir arbeiten nicht im Grammbereich»). Offen: Soll für Stück-Beutel ein Gewicht erfasst werden?
-19. ~~Obergrenze pro Kiste~~ Entschieden am 21.11.2026: keine Grenze nach Gewicht. Massgebend ist das Volumen: Die Kiste muss stapelbar bleiben. Offen: Soll der Scan gelb warnen, wenn in der Kiste mehr liegt als die Füllmenge pro IFCO aus dem Rezept?
+19. ~~Obergrenze pro Kiste~~ Entschieden am 21.11.2026: keine Sperre; der Scan warnt gelb über der Höchstbeladung laut Hersteller. Massgebend bleibt das Volumen (stapelbar).
 20. **iOS 17 als Minimum** (wegen SwiftData): Haben alle iPhones, die scannen sollen, iOS 17 oder neuer?
 21. ~~Lesbare Tabellen für «Scannen»~~ Entschieden am 21.11.2026: Planungstabellen lesbar, siehe «Rechte».
 
