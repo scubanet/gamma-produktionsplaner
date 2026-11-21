@@ -43,6 +43,9 @@ Bestätigt am 21.11.2026 und unverändert: Gepackt wird pro Spiel. Die Kiste geh
 | 20.11.2026 | Geschirr, Geräte und Getränke fahren nicht im Kühl- oder Tiefkühltransport und zählen beim Gewicht nicht mit. |
 | 21.11.2026 | Gepackt wird pro Spiel, nicht pro Gericht. Die Kiste gehört zu Anlass und Spiel. |
 | 21.11.2026 | Die Nutzlast prüft die App nicht. Das Gewicht muss aber an die Logistik weitergegeben werden können. |
+| 21.11.2026 | Eine Kiste gehört immer genau einem Spiel, auch bei Menülinien für mehrere Spiele und bei kleinen Mengen. |
+| 21.11.2026 | Ein Beutel, dessen Produkt nicht im Bedarf des Spiels steht, wird nach Bestätigung eingepackt und in der Packliste als «zusätzlich» geführt. |
+| 21.11.2026 | Die Stufe «Scannen» darf die Planungstabellen lesen, aus denen die Packliste rechnet (Menülinien, Gerichte, Komponenten, Systemzuteilung); keine Rezepte, keine Geld-Tabellen. |
 
 ## Umfang
 
@@ -154,7 +157,7 @@ Hinweise zum Kisten-Etikett:
 | --- | --- | --- |
 | ok | grün | ja |
 | anderes Produkt als in der Kiste | rot | nein |
-| Produkt steht nicht im Bedarf dieses Spiels (siehe offene Punkte, 6) | rot | nein |
+| Produkt steht nicht im Bedarf dieses Spiels | gelb | ja, nach Bestätigung; steht in der Packliste als «zusätzlich» |
 | Verbrauchsdatum vor dem Service-Datum (hat der Service kein Datum: gelb «Service ohne Datum») | rot | nein |
 | Beutel ist schon in dieser Kiste | gelb | nein, schon gezählt |
 | Beutel ist in einer anderen Kiste | rot | nein |
@@ -228,7 +231,7 @@ Jede Funktion prüft das Recht über `lager_recht` (einzige Stelle für die Rech
 | Kiste anlegen, ein- und auspacken, Verladen und Ankunft scannen, nachschlagen | ja | ja | ja | ja |
 | Spiel abschliessen | ja | offen | offen | nein |
 
-- **Stufe «Scannen»:** liest nur, was Packen, Verladen, Ankunft und Nachschlagen brauchen (Spiele, Packliste, Produkt, Charge, Lagereinheit, Kiste), und schreibt nichts direkt. Keine Rezepte, Produktion, Einkauf, Katalog, Systemzuteilung, Preise, Benutzer. In der Web-App sieht sie nur «Scannen» und «Packliste». Die genaue Liste der lesbaren Tabellen und Views bestätigt Dominik vor dem Bau.
+- **Stufe «Scannen»:** liest, was Packen, Verladen, Ankunft und Nachschlagen brauchen, und schreibt nichts direkt: Anlass und Service, Produkt, Charge, Lagereinheit, Kiste und die Planungstabellen, aus denen die Packliste das Soll rechnet (Menülinien, Gerichte, Komponenten, Systemzuteilung; Entscheid 21.11.2026). Keine Rezepte, kein Einkauf, keine Geld-Tabellen, keine Benutzer. In der Web-App sieht sie nur «Scannen» und «Packliste». Wie bei «Küche» sind Preis-Spalten in lesbaren Tabellen (z.B. `anlass.umsatz_netto_chf`) über die Schnittstelle lesbar, bis der Preisschutz Schritt 2 gebaut ist.
 - Eigene Migration, weil die Lese-Regeln vieler Tabellen betroffen sind: «Küche» liest fast alles, «Scannen» fast nichts.
 - Wer ausser Admins ein Spiel abschliessen und Ware entsorgen darf: siehe offene Punkte, 11.
 
@@ -286,7 +289,7 @@ Gilt für beide Oberflächen.
 
 - Packliste und Lagerbestand des Spiels werden beim Öffnen geladen, Scans lokal geprüft, gespeichert und später mit dem echten Zeitpunkt und der Scan-Nummer gesendet.
 - Kisten werden nur mit Netz angelegt; ohne Netz wird in schon angelegte Kisten gepackt.
-- Ein ohne Netz gescannter Beutel liegt wirklich in der Kiste. Er wird beim Abgleich darum immer in die Kiste gebucht; das Ergebnis der Datenbank kommt als Hinweis zurück. Abweichungen (Soll überschritten, abgelaufen, schon in einer anderen Kiste, nicht im Bedarf, anderes Produkt als in der Kiste) stehen in Packliste und App als «zu klären», bis jemand auspackt oder bestätigt.
+- Ein ohne Netz gescannter Beutel liegt wirklich in der Kiste. Er wird beim Abgleich darum immer in die Kiste gebucht; das Ergebnis der Datenbank kommt als Hinweis zurück. Abweichungen (Soll überschritten, abgelaufen, schon in einer anderen Kiste, nicht im Bedarf ohne Bestätigung, anderes Produkt als in der Kiste) stehen in Packliste und App als «zu klären», bis jemand auspackt oder bestätigt.
 - Eine Seriennummer, die das Gerät nicht kennt, deren Code aber wie ein Beutel aussieht, ist gelb «wird beim Abgleich geprüft».
 - Ein Zähler «n Scans noch nicht gesendet» ist immer sichtbar. Der Abschluss einer Stufe geht erst, wenn alles gesendet ist.
 
@@ -349,8 +352,8 @@ Vor Etappe 3:
 
 Vor Etappe 4:
 
-5. **Kiste für mehrere Spiele:** Die Spezifikation geht davon aus, dass eine Kiste genau einem Spiel gehört und das Etikett Spiel und Service-Datum trägt. Stimmt das auch bei Menülinien für mehrere Spiele und bei kleinen Mengen?
-6. **Produkt nicht im Bedarf des Spiels:** sperren (rot), oder nach Bestätigung erlauben und als «zusätzlich» führen (Ersatz, Reserve)?
+5. ~~Kiste für mehrere Spiele~~ Entschieden am 21.11.2026: Eine Kiste gehört immer genau einem Spiel.
+6. ~~Produkt nicht im Bedarf des Spiels~~ Entschieden am 21.11.2026: nach Bestätigung erlauben, als «zusätzlich» führen.
 7. **Rückläufer:** Darf Ware, die am Anlassort war, zurück ins Lager? Wenn ja, mit welchem Verbrauchsdatum, und gilt das auch für aufgetaute TK-Ware? Vorschlag: Nur Kisten, die nie verladen wurden, gehen ohne Weiteres zurück; sonst fragt die App «zurück ins Lager» (neues, kürzeres Datum von Hand) oder «entsorgt».
 8. **Teilmengen:** Wird ein Beutel immer ganz gebraucht, oder gibt es angebrochene Beutel, die mit Restmenge zurück ins Lager gehen?
 9. **Kisten-Etikett in zwei Schritten** (erst ohne, dann mit Inhalt) oder nur einmal ohne Inhalt? Der Inhalt steht in jedem Fall in der App.
@@ -362,7 +365,7 @@ Vor Etappe 4:
 18. **Beutel in Stück:** Sie haben kein Gewicht. Soll das Gewicht pro Beutel beim Etikettieren erfasst werden? Bis zur Antwort: getrennt ausweisen, nicht schätzen.
 19. **Obergrenze pro Kiste:** Braucht es sie, und wenn ja, welcher Wert in kg? Sie würde nur warnen (gelb), nichts sperren. Bis zur Antwort nicht gebaut.
 20. **iOS 17 als Minimum** (wegen SwiftData): Haben alle iPhones, die scannen sollen, iOS 17 oder neuer?
-21. **Lesbare Tabellen für «Scannen»:** Liste zur Bestätigung vor dem Bau der Stufe (Vorschlag: Anlass und Service ohne Umsatz, Produkt, Charge, Lagereinheit, Kiste, Packliste; keine Rezepte, keine Geld-Tabellen).
+21. ~~Lesbare Tabellen für «Scannen»~~ Entschieden am 21.11.2026: Planungstabellen lesbar, siehe «Rechte».
 
 Später:
 
