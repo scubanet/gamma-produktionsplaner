@@ -1009,6 +1009,7 @@ export type Database = {
           hoehe_mm: number | null
           id: string
           laenge_mm: number | null
+          max_beladung_kg: number | null
           name: string
           tara_g: number | null
           volumen_l: number | null
@@ -1020,6 +1021,7 @@ export type Database = {
           hoehe_mm?: number | null
           id?: string
           laenge_mm?: number | null
+          max_beladung_kg?: number | null
           name: string
           tara_g?: number | null
           volumen_l?: number | null
@@ -1031,6 +1033,7 @@ export type Database = {
           hoehe_mm?: number | null
           id?: string
           laenge_mm?: number | null
+          max_beladung_kg?: number | null
           name?: string
           tara_g?: number | null
           volumen_l?: number | null

@@ -372,4 +372,4 @@ Antworten Dominik vom 21.11.2026: Economat ist ungekühlt und kann mit gekühlt 
 - **Nicht eingetragen:** das Volumen (steht nicht im Datenblatt; offen, ob für die Logistik das Aussen- oder das Innenvolumen zählt).
 - **Folgen:** Mit elf aktiven Gebinden muss beim Anlegen einer Kiste das Gebinde gewählt werden. Der alte Eintrag «IFCO-Box» ohne Tara bleibt, weil die Rezepte daran hängen; der Planwert «mit Tara» im Soll bleibt darum ein Platzhalter, bis am Rezept ein Typ mit Tara gewählt ist. Die Seite Stammdaten zeigt die Höchstbeladung nicht an.
 - **Offen:** Soll der Scan bei der Höchstbeladung gelb warnen? Welche Typen sind bei GAMMA wirklich im Einsatz (die übrigen in den Stammdaten auf «nicht aktiv» setzen)? Tiefkühlware bei −18 °C liegt ausserhalb des Temperaturbereichs laut Datenblatt (−10 °C bis +60 °C).
-
+- **Eingespielt am 21.11.2026.** Lesend geprüft: 11 Gebinde, alle aktiv; die zehn IFCO-Typen mit Höhe, Tara und Höchstbeladung wie im Datenblatt. Typen aus der Datenbank erzeugt.
