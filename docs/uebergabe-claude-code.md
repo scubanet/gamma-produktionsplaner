@@ -310,3 +310,7 @@ Entscheid Dominik: dritte Stufe neben Admin und Benutzer. «Küche» liest Leits
 - **Eingespielt am 21.11.2026.** Struktur geprüft: keine Pilot-Regel mehr, 49 Tabellen mit `lesen`, `anlegen`, `aendern`, `loeschen`, neun eingeschränkte `lesen`-Regeln, beide Trigger auf `produktion_aufgabe`, `stufe()` nur für Angemeldete, keine Tabelle ohne RLS. Die erzeugten Typen stimmen mit den von Hand nachgetragenen überein. **Nicht geprüft:** das Verhalten mit einem Küche-Konto (Probe in verworfener Transaktion nicht ausgeführt).
 - **Offen:** nach dem Einspielen mit einem Küche-Konto durchspielen; stille 0-Zeilen-Änderungen als Fehler melden; «Zuständig eintragen» war für «Küche» nicht gewünscht.
 
+
+## Nachtrag 21.11.2026: Konzept Scan-App
+
+`docs/konzept-scan-app.md`: Entwurf zur Durchsicht durch Dominik, nichts gebaut. Ergänzt Fassung 2 der Etiketten-Spezifikation um die Entscheide vom 20.11.2026: Kamera-Scan in der Web-App für alle Handys ohne iPhone-App, IFCO sortenrein, Kiste gehört zu Anlass, Spiel und Gericht, eigene Stufe «Scannen», Gewicht pro Kiste und Transportart gegen die Nutzlast (nur Speisen, gekühlt und TK getrennt). Vor dem Bau von Etappe 4 die offenen Punkte klären und in eine Fassung 3 der Spezifikation übernehmen.
