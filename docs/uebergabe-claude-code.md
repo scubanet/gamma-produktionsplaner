@@ -348,4 +348,4 @@ Entscheide Dominik vom 21.11.2026: «Scannen» darf die Planungstabellen lesen, 
 - **Nicht durchgespielt:** zwei Geräte gleichzeitig im selben Spiel (in einer einzigen Transaktion nicht möglich), «entsorgt» beim Abschluss, ohne Netz aus einer anderen Kiste umgebucht, Ankunft ohne Verlade-Scan. Nach der Probe geändert und nicht nochmals gelaufen: das Datum im Hinweis «älterer Beutel» (jetzt mit Jahr).
 - **Eigene Festlegungen, von Dominik zu bestätigen:** Kistencode `K-XXXXXX`; Zustand «aufgelöst» für Kisten; Ankunft ohne Verlade-Scan zählt und gibt einen gelben Hinweis; «zurück ins Lager» beim Abschluss nur für nie verladene Kisten; Beutel «zu klären» sperren den Abschluss; ein abgelaufener Beutel ist auch dann rot, wenn das Service-Datum fehlt.
 - **Offen:** Tara der IFCO-Box fehlt in den Stammdaten (`gebinde.tara_g` leer); `kiste` hat noch keine Tara-Spalte (S3). Anhalt «rund n Beutel» in der Packliste fehlt.
-
+- **Eingespielt am 21.11.2026.** Struktur lesend geprüft: `kiste` und `scan` da, vier Views, sechs Funktionen, `packliste_soll` mit 211 Zeilen, 15 Tabellen für «Scannen» lesbar (13 und die zwei neuen). Typen aus der Datenbank erzeugt und committet.

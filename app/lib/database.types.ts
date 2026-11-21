@@ -866,7 +866,8 @@ export type Database = {
           fehler: string | null
           gedruckt_am: string | null
           id: string
-          lagereinheit_id: string
+          kiste_id: string | null
+          lagereinheit_id: string | null
           status: string
           zpl: string | null
         }
@@ -876,7 +877,8 @@ export type Database = {
           fehler?: string | null
           gedruckt_am?: string | null
           id?: string
-          lagereinheit_id: string
+          kiste_id?: string | null
+          lagereinheit_id?: string | null
           status?: string
           zpl?: string | null
         }
@@ -886,11 +888,26 @@ export type Database = {
           fehler?: string | null
           gedruckt_am?: string | null
           id?: string
-          lagereinheit_id?: string
+          kiste_id?: string | null
+          lagereinheit_id?: string | null
           status?: string
           zpl?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "druckauftrag_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_kiste"
+            referencedColumns: ["kiste_id"]
+          },
+          {
+            foreignKeyName: "druckauftrag_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "kiste"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "druckauftrag_lagereinheit_id_fkey"
             columns: ["lagereinheit_id"]
@@ -1392,6 +1409,124 @@ export type Database = {
         }
         Relationships: []
       }
+      kiste: {
+        Row: {
+          code: string
+          erstellt_am: string
+          erstellt_von: string | null
+          id: string
+          laufnummer: number
+          produkt_id: string | null
+          service_id: string
+          zustand: string
+        }
+        Insert: {
+          code: string
+          erstellt_am?: string
+          erstellt_von?: string | null
+          id?: string
+          laufnummer: number
+          produkt_id?: string | null
+          service_id: string
+          zustand?: string
+        }
+        Update: {
+          code?: string
+          erstellt_am?: string
+          erstellt_von?: string | null
+          id?: string
+          laufnummer?: number
+          produkt_id?: string | null
+          service_id?: string
+          zustand?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kiste_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "kiste_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_bestand"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "kiste_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_einheit"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "kiste_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "produkt"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "bedarf_service_welle"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "lager_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "packliste_ohne_etikett"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "packliste_soll"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "planung_service_komponente"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_gericht_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_komponente_bedarf"
+            referencedColumns: ["service_id"]
+          },
+        ]
+      }
       kollektion: {
         Row: {
           id: string
@@ -1547,6 +1682,7 @@ export type Database = {
           benutzer: string | null
           grund: string | null
           id: string
+          kiste_id: string | null
           lagereinheit_id: string
           zeitpunkt: string
         }
@@ -1555,6 +1691,7 @@ export type Database = {
           benutzer?: string | null
           grund?: string | null
           id?: string
+          kiste_id?: string | null
           lagereinheit_id: string
           zeitpunkt?: string
         }
@@ -1563,10 +1700,25 @@ export type Database = {
           benutzer?: string | null
           grund?: string | null
           id?: string
+          kiste_id?: string | null
           lagereinheit_id?: string
           zeitpunkt?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "lagerbewegung_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_kiste"
+            referencedColumns: ["kiste_id"]
+          },
+          {
+            foreignKeyName: "lagerbewegung_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "kiste"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "lagerbewegung_lagereinheit_id_fkey"
             columns: ["lagereinheit_id"]
@@ -1596,6 +1748,8 @@ export type Database = {
           einheit: string
           erstellt_am: string
           id: string
+          kiste_id: string | null
+          klaeren: string | null
           laufnummer: number
           menge: number
           seriennummer: string
@@ -1606,6 +1760,8 @@ export type Database = {
           einheit: string
           erstellt_am?: string
           id?: string
+          kiste_id?: string | null
+          klaeren?: string | null
           laufnummer: number
           menge: number
           seriennummer: string
@@ -1616,6 +1772,8 @@ export type Database = {
           einheit?: string
           erstellt_am?: string
           id?: string
+          kiste_id?: string | null
+          klaeren?: string | null
           laufnummer?: number
           menge?: number
           seriennummer?: string
@@ -1642,6 +1800,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "lager_einheit"
             referencedColumns: ["charge_id"]
+          },
+          {
+            foreignKeyName: "lagereinheit_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_kiste"
+            referencedColumns: ["kiste_id"]
+          },
+          {
+            foreignKeyName: "lagereinheit_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "kiste"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -2514,6 +2686,122 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "kollektion"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      scan: {
+        Row: {
+          antwort: Json
+          benutzer: string | null
+          code: string
+          erfasst_am: string
+          ergebnis: string
+          id: string
+          kiste_id: string | null
+          quelle: string
+          scan_nummer: string
+          service_id: string
+          stufe: string
+          zeitpunkt: string
+        }
+        Insert: {
+          antwort: Json
+          benutzer?: string | null
+          code: string
+          erfasst_am?: string
+          ergebnis: string
+          id?: string
+          kiste_id?: string | null
+          quelle: string
+          scan_nummer: string
+          service_id: string
+          stufe: string
+          zeitpunkt: string
+        }
+        Update: {
+          antwort?: Json
+          benutzer?: string | null
+          code?: string
+          erfasst_am?: string
+          ergebnis?: string
+          id?: string
+          kiste_id?: string | null
+          quelle?: string
+          scan_nummer?: string
+          service_id?: string
+          stufe?: string
+          zeitpunkt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scan_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_kiste"
+            referencedColumns: ["kiste_id"]
+          },
+          {
+            foreignKeyName: "scan_kiste_id_fkey"
+            columns: ["kiste_id"]
+            isOneToOne: false
+            referencedRelation: "kiste"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scan_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "bedarf_service_welle"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "scan_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "lager_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "scan_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "packliste_ohne_etikett"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "scan_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "packliste_soll"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "scan_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "planung_service_komponente"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "scan_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scan_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_gericht_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "scan_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_komponente_bedarf"
+            referencedColumns: ["service_id"]
           },
         ]
       }
@@ -3785,6 +4073,160 @@ export type Database = {
           },
         ]
       }
+      etikett_kiste: {
+        Row: {
+          anlass: string | null
+          anlass_id: string | null
+          beutel: number | null
+          code: string | null
+          datum: string | null
+          erstellt_am: string | null
+          fruehestes_datum: string | null
+          kiste_id: string | null
+          kisten_im_spiel: number | null
+          lagerung: string | null
+          laufnummer: number | null
+          menge_text: string | null
+          menuelinie: string | null
+          produkt: string | null
+          produkt_code: string | null
+          produkt_id: string | null
+          qr_text: string | null
+          reihenfolge: number | null
+          service: string | null
+          service_id: string | null
+          zu_klaeren: number | null
+          zustand: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kiste_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "kiste_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_bestand"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "kiste_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_einheit"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "kiste_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "produkt"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "bedarf_service_welle"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "lager_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "packliste_ohne_etikett"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "packliste_soll"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "planung_service_komponente"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_gericht_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "kiste_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_komponente_bedarf"
+            referencedColumns: ["service_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
+      }
       etikett_vorschlag: {
         Row: {
           allergene: string | null
@@ -4593,6 +5035,172 @@ export type Database = {
           wk_pro_gast_chf: number | null
         }
         Relationships: []
+      }
+      packliste: {
+        Row: {
+          anlass_id: string | null
+          beutel: number | null
+          datum: string | null
+          einheit: string | null
+          herleitung: string | null
+          ist: number | null
+          kategorie: string | null
+          kisten: number | null
+          produkt: string | null
+          produkt_code: string | null
+          produkt_id: string | null
+          reihenfolge: number | null
+          service: string | null
+          service_id: string | null
+          soll: number | null
+          status: string | null
+          zu_klaeren: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produkt_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_deckungsbeitrag"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kalkulation"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_kostenart"
+            referencedColumns: ["anlass_id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "anlass_uebersicht"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_anlass_id_fkey"
+            columns: ["anlass_id"]
+            isOneToOne: false
+            referencedRelation: "offerte_summe"
+            referencedColumns: ["anlass_id"]
+          },
+        ]
+      }
+      packliste_ohne_etikett: {
+        Row: {
+          einheit: string | null
+          grund: string | null
+          kategorie: string | null
+          komponente: string | null
+          komponente_id: string | null
+          menge: number | null
+          service_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "komponente_kategorie_fkey"
+            columns: ["kategorie"]
+            isOneToOne: false
+            referencedRelation: "kategorie"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_pruefhinweis"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "komponente_zuteilung"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste"
+            referencedColumns: ["komponente_id"]
+          },
+          {
+            foreignKeyName: "menuelinie_komponente_komponente_id_fkey"
+            columns: ["komponente_id"]
+            isOneToOne: false
+            referencedRelation: "produktionsliste_anlass"
+            referencedColumns: ["komponente_id"]
+          },
+        ]
+      }
+      packliste_soll: {
+        Row: {
+          einheit: string | null
+          komponenten: number | null
+          produkt_id: string | null
+          service_id: string | null
+          soll: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "etikett_beutel"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_bestand"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "lager_einheit"
+            referencedColumns: ["produkt_id"]
+          },
+          {
+            foreignKeyName: "komponente_produkt_id_fkey"
+            columns: ["produkt_id"]
+            isOneToOne: false
+            referencedRelation: "produkt"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       planung_bedarf: {
         Row: {
@@ -5732,6 +6340,20 @@ export type Database = {
         }
         Returns: undefined
       }
+      beutel_auspacken: {
+        Args: { p_seriennummer: string; p_zeitpunkt?: string }
+        Returns: Json
+      }
+      beutel_einpacken: {
+        Args: {
+          p_bestaetigt?: boolean
+          p_kiste: string
+          p_ohne_netz?: boolean
+          p_seriennummer: string
+          p_zeitpunkt?: string
+        }
+        Returns: Json
+      }
       einheit_ausbuchen: {
         Args: { p_grund: string; p_seriennummer: string }
         Returns: Json
@@ -5786,6 +6408,9 @@ export type Database = {
         Args: { p_anlass: string; p_karte: string; p_name?: string }
         Returns: string
       }
+      kiste_aufloesen: { Args: { p_kiste: string }; Returns: Json }
+      kiste_erstellen: { Args: { p_service: string }; Returns: Json }
+      kiste_stand: { Args: { p_kiste: string }; Returns: Json }
       komponente_artikel_vorschlag: {
         Args: { p_anzahl?: number; p_saison: string; p_schwelle?: number }
         Returns: {
@@ -5879,6 +6504,21 @@ export type Database = {
         }[]
       }
       saison_rezepte: { Args: { p_saison: string }; Returns: string[] }
+      scan_erfassen: {
+        Args: {
+          p_code: string
+          p_quelle: string
+          p_scan_nummer: string
+          p_service: string
+          p_stufe: string
+          p_zeitpunkt?: string
+        }
+        Returns: Json
+      }
+      service_abschliessen: {
+        Args: { p_entscheide?: Json; p_service: string }
+        Returns: Json
+      }
       stufe: { Args: never; Returns: string }
       wellen_anzahl: {
         Args: { p_haltbarkeit: number; p_saison: string }
