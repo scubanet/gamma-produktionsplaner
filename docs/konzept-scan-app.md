@@ -25,11 +25,10 @@ Kiste, Packliste und alle Scan-Funktionen sind noch nicht gebaut. Die neuen Punk
 | --- | --- | --- |
 | Andere Handys (20.11.) | Android nutzt die Web-App mit Handscanner oder Eintippen | Die Web-App scannt mit der Kamera |
 | Sortenrein (20.11.) | Eine Kiste kann mehrere Produkte enthalten | Jede IFCO enthält genau ein Produkt |
-| Gericht (20.11.) | Kiste gehört zu Anlass und Spiel | Kiste gehört zu Anlass, Spiel und Gericht |
 | Stufe «Scannen» (20.11.) | Scannen dürfen alle Stufen, auch «Küche» | Zusätzlich eine eigene Stufe, die nur scannt |
-| Gewicht (20.11.) | Gesamtgewicht steht auf dem Kisten-Etikett | Gewicht wird bis zum Fahrzeug geführt und gegen die Nutzlast geprüft |
+| Gewicht (20. und 21.11.) | Gesamtgewicht steht auf dem Kisten-Etikett | Gewicht pro Spiel und Transportart als Angabe für die Logistik |
 
-Unverändert aus Fassung 2: Der Beutel trägt keinen Anlass und gehört bis zum Packen dem Lager. Der QR-Code des Beutels ist `https://gamma.atoll-os.com/e/?p=<Produktnummer>&s=<Seriennummer>`, der der Kiste `…/e/?k=<Kistencode>`.
+Unverändert aus Fassung 2: Gepackt wird pro Spiel, die Kiste gehört zu Anlass und Spiel, nicht zu einem Gericht (bestätigt am 21.11.). Der Beutel trägt keinen Anlass und gehört bis zum Packen dem Lager. Der QR-Code des Beutels ist `https://gamma.atoll-os.com/e/?p=<Produktnummer>&s=<Seriennummer>`, der der Kiste `…/e/?k=<Kistencode>`.
 
 ## Lösungswege
 
@@ -46,7 +45,6 @@ Beide Oberflächen rufen dieselben Funktionen aus Fassung 2 auf und enthalten se
 Ergänzungen für Etappe 4:
 
 - `kiste.produkt_id`: das Produkt der Kiste (sortenrein). Gesetzt durch den ersten eingepackten Beutel. Wird die Kiste leer, ist sie wieder frei.
-- `kiste.gericht_id`: das Gericht der Kiste, siehe «Packen».
 - `scan.scan_nummer` (UUID, vom Gerät vergeben) und `scan.quelle` (iPhone-App oder Web). Ein nach einem Funkloch doppelt gesendeter Kisten-Scan wird so nur einmal gespeichert und meldet nicht fälschlich «schon gescannt». Beim Einpacken reicht die Regel aus Fassung 2 (gleicher Beutel, gleiche Kiste ändert nichts).
 - View für das Gewicht pro Kiste, pro Spiel und Transportart, mit Herleitung.
 - Beide Oberflächen lesen aus dem QR-Code Produktnummer und Seriennummer oder den Kistencode. Ein Code mit fremder Adresse ist rot «unbekannt» und wird nicht geöffnet.
@@ -88,29 +86,25 @@ Scan-Ergebnisse wie in Fassung 2, dazu die Zeile für sortenrein:
 | älterer Beutel desselben Produkts im Lager | gelb | ja |
 | Kiste über der Gewichtsgrenze | gelb | ja |
 
-**Gericht:** Kommt das Produkt im Spiel in genau einem Gericht vor, setzt die Datenbank das Gericht der Kiste selbst. Kommt es in mehreren Gerichten vor (Basiskomponente), siehe offene Punkte.
-
 **Kisten-Etikett:** Weil die Kiste sortenrein ist, steht nach dem Packen ein Produkt mit Anzahl Beutel, Gewicht und frühestem Datum darauf, nicht mehr eine Liste.
 
 **Auspacken:** Beutel scannen oder in der Kiste antippen; er geht zurück «im Lager».
 
 ## Gewicht
 
-Beim Beladen ist das Gewicht der Engpass, nicht das Volumen. Das Volumen wird nicht geprüft.
+Beim Beladen ist das Gewicht der Engpass, nicht das Volumen. Die Nutzlast der Fahrzeuge prüft die App nicht; das ist Sache der Logistik. Die App liefert ihr aber das Gewicht.
 
 - Gezählt werden nur die Speisen in den IFCO-Kisten. Geschirr, Geräte und Getränke fahren nicht im Kühl- oder Tiefkühltransport und bleiben ausserhalb der Rechnung.
 - Gewicht der Kiste = Summe der Beutel + Tara. Liter zählen als 1 l = 1 kg (Annahme, wie in der Planung).
 - Getrennt nach Transportart, abgeleitet aus der Lagerart der Systemzuteilung: gekühlt (0–2 °C) und tiefgekühlt.
-- Obergrenze pro Kiste als Einstellung; darüber meldet der Scan gelb.
-- Verladen: Neben «14 von 18 Kisten» steht das geladene Gewicht. Ist für das Spiel ein Fahrzeug mit Nutzlast erfasst, läuft es dagegen («412 von 950 kg»); darüber gelb.
-- Vorschau: Das Soll-Gewicht pro Spiel und Transportart steht schon vor dem Packen in der Packliste.
-- Das Gewicht warnt nur und sperrt nichts. Gerechnet wird in der Datenbank.
-
-In der Datenbank gibt es heute keine Nutzlast pro Fahrzeug; siehe offene Punkte.
+- **Angabe für die Logistik:** Die Packliste zeigt pro Spiel und Transportart die Anzahl Kisten und das Gewicht. Vor dem Packen als Soll aus dem Bedarf (Planwert für die Fahrzeugwahl), nach dem Packen als Ist aus den gescannten Beuteln. Die Angabe lässt sich als PDF oder Text weitergeben.
+- Beim Verladen steht neben «14 von 18 Kisten» das geladene Gewicht, zur Kontrolle gegen die weitergegebene Zahl.
+- Obergrenze pro Kiste als Einstellung; darüber meldet der Scan gelb. Sie warnt nur und sperrt nichts.
+- Gerechnet wird in der Datenbank, mit Herleitung.
 
 ## Verladen und Ankunft
 
-Wie in Fassung 2: Spiel und Stufe wählen, jede Kiste scannen. Ergebnisse: ok, anderes Spiel, schon gescannt, unbekannt. Neu dazu: gelb, wenn die Kiste leer ist oder das Soll des Spiels noch nicht gepackt ist, und gelb über der Nutzlast.
+Wie in Fassung 2: Spiel und Stufe wählen, jede Kiste scannen. Ergebnisse: ok, anderes Spiel, schon gescannt, unbekannt. Neu dazu: gelb, wenn die Kiste leer ist oder das Soll des Spiels noch nicht gepackt ist.
 
 ## iPhone-App (Swift)
 
@@ -160,19 +154,18 @@ Vierte Stufe neben Admin, Benutzer und Küche, gebaut wie «Küche» (Tabelle `a
 
 1. **Druck** (Etappe 3 der Spezifikation, unverändert).
 2. **Stufe «Scannen»:** eigene Migration, Benutzerverwaltung, Seitenschutz.
-3. **Packen-Kern:** Migration mit Kiste (Produkt, Gericht), Packliste, Funktionen, Gewicht; Tests für alle Ergebnisse.
-4. **Web-App:** Seite «Packliste» und Seite «Scannen» mit Kamera, Seite `/e`. Prüfbar auf jedem Handy, auch auf dem iPhone.
+3. **Packen-Kern:** Migration mit Kiste (Produkt), Packliste, Funktionen, Gewicht; Tests für alle Ergebnisse.
+4. **Web-App:** Seite «Packliste» mit der Gewichtsangabe für die Logistik, Seite «Scannen» mit Kamera, Seite `/e`. Prüfbar auf jedem Handy, auch auf dem iPhone.
 5. **iPhone-App:** gleiche Bildschirme in SwiftUI, erster Build in TestFlight.
 6. **Probelauf:** eine echte Packliste mit gedruckten Etiketten packen und verladen, mit einem iPhone und einem Android-Gerät, einmal im Flugmodus.
 
 ## Offene Punkte (Entscheid Dominik)
 
-1. **Gericht bei Basiskomponenten:** Ein Produkt wie der Portweinjus kann im selben Spiel in mehreren Gerichten vorkommen. Wählt der Packer dann das Gericht pro Kiste, oder gilt die Kiste für alle Gerichte des Spiels?
-2. **Nutzlast:** Die Datenbank kennt heute keine Nutzlast. Vorschlag: pro Spiel und Transportart ein Fahrzeug mit Nutzlast in kg erfassen, auch für gemietete.
-3. **Gekühlt und tiefgekühlt:** getrennte Fahrzeuge oder ein Fahrzeug mit zwei Zonen? Und wie fährt Ware aus dem Economat?
-4. **Beutel in Stück:** Sie haben heute kein Gewicht. Soll das Gewicht pro Beutel beim Etikettieren erfasst werden?
-5. **Obergrenze pro Kiste:** welcher Wert in kg?
-6. **iOS 17 als Minimum:** Haben alle iPhones, die scannen sollen, iOS 17 oder neuer?
-7. **Adresse im QR-Code beim Umzug:** `gamma.atoll-os.com` steht auf jedem Etikett. Beim Umzug auf den GAMMA-Server muss die Adresse weiterleiten, solange alte Etiketten im Tiefkühler liegen.
+1. **Weitergabe an die Logistik:** In welcher Form braucht die Logistik das Gewicht (PDF, E-Mail, nur am Bildschirm), und reicht der Planwert vor dem Packen, oder braucht sie das Ist nach dem Packen?
+2. **Economat:** Unter welcher Transportart wird Ware aus dem Economat ausgewiesen?
+3. **Beutel in Stück:** Sie haben heute kein Gewicht. Soll das Gewicht pro Beutel beim Etikettieren erfasst werden?
+4. **Obergrenze pro Kiste:** Braucht es sie, und wenn ja, welcher Wert in kg?
+5. **iOS 17 als Minimum:** Haben alle iPhones, die scannen sollen, iOS 17 oder neuer?
+6. **Adresse im QR-Code beim Umzug:** `gamma.atoll-os.com` steht auf jedem Etikett. Beim Umzug auf den GAMMA-Server muss die Adresse weiterleiten, solange alte Etiketten im Tiefkühler liegen.
 
 Die offenen Punkte 5 bis 12 der Spezifikation gelten weiter. Punkt 10 (Handscanner am Packtisch) wird mit dem Kamera-Scan in der Web-App weniger dringend.
