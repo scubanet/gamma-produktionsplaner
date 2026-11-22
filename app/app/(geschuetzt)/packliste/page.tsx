@@ -292,6 +292,7 @@ function Seite() {
               actions={<Button variant="primary" icon="plus" onClick={() => setAnlegen(true)} disabled={!d}>Kiste anlegen</Button>}
             >
               <form
+                className="pl-stack"
                 onSubmit={(e) => {
                   e.preventDefault();
                   if (!arbeitet && eingabe.trim()) scannen();
