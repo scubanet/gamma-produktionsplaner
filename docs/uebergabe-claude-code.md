@@ -420,4 +420,5 @@ Auftrag Dominik: Testseite, um Einpacken und Verladen ohne gedruckte Etiketten a
 - **Test:** `tests/qr.test.ts` zeichnet die Matrix als Bild und liest sie mit jsQR, dem Leser der Seite «Scannen», wieder zum selben Text. 256 Tests.
 - **Geprüft:** Typen, Lint, Build; im Browser lädt die Seite für Spiel 1 ohne Fehler und zeigt die leeren Zustände (im Pilot gibt es weder Kisten noch Beutel). **Nicht gesehen:** ein QR-Code am Bildschirm und ein Scan davon.
 - Möglich, nicht gebaut: QR-Code auf der Seite `/e` und in der Vorschau des Beutel-Etiketts (dort steht weiter der Platzhalter).
+- **Probe von Dominik am iPhone (Safari), 22.11.2026, live:** Kiste `K-S4UYMM` vom Bildschirm gescannt und gewählt («Kiste 1 · 0 Beutel»); Beutel «Apfel» gescannt: rote Fläche «Nicht gebucht · Verbrauchsdatum 13.12.2026 liegt vor dem Service-Datum 26.12.2026». Damit bestätigt: Lesen mit jsQR auf dem iPhone, QR-Codes der Testseite, Wahl der Kiste, Aufruf von `beutel_einpacken` mit echter Antwort der Datenbank, Knopf «Taschenlampe» erscheint. **Weiterhin offen:** ein Scan, der wirklich einbucht (grün), «schon gezählt», Verladen und Ankunft, der Weg ohne Netz, Android.
 
