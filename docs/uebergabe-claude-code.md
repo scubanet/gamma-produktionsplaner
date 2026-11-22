@@ -410,3 +410,14 @@ Keine Migration. Entscheid Dominik (22.11.2026): Bibliothek **jsQR 1.4.0** (Apac
 - **Nicht ausgeführt:** alles mit Kamera (im Browser von Claude gesperrt): Lesen eines QR-Codes mit `BarcodeDetector` und mit jsQR, Taschenlampe, Ton, Vibration, Wake Lock. Kein echtes Handy, weder Android noch iPhone. Kein Scan, der bucht (Einpacken, Verladen, Ankunft, Kiste anlegen). Der ganze Weg ohne Netz samt Nachsenden (nur die Prüflogik ist getestet). Stufe «Scannen» im Browser.
 - **Bekannte Grenzen:** Der geladene Stand liegt nur im Speicher der Seite: nach einem Neuladen ohne Netz bleibt die Warteschlange, die vorläufige Prüfung geht aber erst wieder mit Netz. Ohne Netz gibt es keine Rückfrage («nicht im Bedarf» wird gelb gebucht und beim Abgleich als «zu klären» geführt). Gesendet wird nur, solange die Seite offen ist. Kein eigenes Symbol für den Home-Bildschirm.
 - **Am Handy geprüft von Dominik, 22.11.2026** (live auf `gamma.atoll-os.com`; Gerät und Browser nicht genannt): Kamerabild kommt, ein fremder QR-Code wird gelesen und gibt die rote Fläche «Unbekannter Code», der Ton ist da. Die Freigabe `camera=(self)` wirkt. Weiterhin offen: welcher Leser lief (eingebaut oder jsQR), das jeweils andere Gerät, Taschenlampe, Vibration, jeder Scan, der bucht, und der Weg ohne Netz.
+
+## Nachtrag 22.11.2026: Seite «Codes zum Scannen»
+
+Auftrag Dominik: Testseite, um Einpacken und Verladen ohne gedruckte Etiketten am Bildschirm zu scannen. Keine Migration.
+
+- **`/packliste/codes/?service=<id>`** (Knopf «Codes zum Scannen» auf der Packliste): QR-Codes der Kisten des Spiels und der Beutel im Lager, deren Produkt im Bedarf des Spiels steht (höchstens 60, die zuerst ablaufenden zuerst), je mit lesbarem Code. Der Text kommt aus der Datenbank (`qr_text` in `etikett_kiste` und `etikett_beutel`), wie er aufs Etikett gedruckt wird. Hinweis auf der Seite: ein Scan bucht wirklich.
+- **Bibliothek uqr 0.1.3** (MIT, keine Abhängigkeiten; Entscheid Dominik, 22.11.2026) rechnet die Matrix (`lib/qr.ts`), der neue Baustein **`QrBild`** zeichnet sie (Design System 0.31).
+- **Test:** `tests/qr.test.ts` zeichnet die Matrix als Bild und liest sie mit jsQR, dem Leser der Seite «Scannen», wieder zum selben Text. 256 Tests.
+- **Geprüft:** Typen, Lint, Build; im Browser lädt die Seite für Spiel 1 ohne Fehler und zeigt die leeren Zustände (im Pilot gibt es weder Kisten noch Beutel). **Nicht gesehen:** ein QR-Code am Bildschirm und ein Scan davon.
+- Möglich, nicht gebaut: QR-Code auf der Seite `/e` und in der Vorschau des Beutel-Etiketts (dort steht weiter der Platzhalter).
+

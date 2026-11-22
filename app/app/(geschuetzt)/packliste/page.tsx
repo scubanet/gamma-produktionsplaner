@@ -249,6 +249,7 @@ function Seite() {
         </div>
         <div className="pl-actions pl-print-hide">
           <Button icon="print" onClick={() => window.print()}>Drucken</Button>
+          {spielId ? <Button href={`/packliste/codes/?service=${spielId}`}>Codes zum Scannen</Button> : null}
           {packen && d ? <Button onClick={() => setAbschluss(true)}>Spiel abschliessen</Button> : null}
         </div>
       </header>

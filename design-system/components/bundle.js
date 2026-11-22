@@ -65,6 +65,17 @@
         p.onClose ? h('button', { type: 'button', className: 'pl-melde__knopf pl-melde__knopf--zu', 'aria-label': 'Meldung schliessen', onClick: p.onClose }, '\u00d7') : null) : null);
   }
 
+  // QR-Code als Bild aus einer Matrix (true = dunkles Feld, Rand inbegriffen). Schwarz auf weiss in jedem Thema,
+  // damit ihn jede Kamera liest. Die Matrix rechnet die App; hier wird nur gezeichnet.
+  function QrBild(p) {
+    var m = p.matrix || [];
+    var n = m.length;
+    var d = '';
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) if (m[y][x]) d += 'M' + x + ' ' + y + 'h1v1h-1z';
+    return h('svg', { className: cx('pl-qr', p.size === 'lg' && 'pl-qr--lg'), viewBox: '0 0 ' + n + ' ' + n, role: 'img', 'aria-label': p.label || 'QR-Code', shapeRendering: 'crispEdges' },
+      h('path', { d: d }));
+  }
+
   // Scannen am Handy: füllt den Bildschirm und färbt ihn nach dem Ergebnis des letzten Scans (ok, Achtung, nicht gebucht).
   // Oben die Kopfzeile, dann der Inhalt (Kamerabild), darunter gross die Meldung und zuunterst die Knöpfe.
   // Die Meldung wird sofort vorgelesen; die Farbe ist nie der einzige Träger: das Wort steht immer dabei.
@@ -437,6 +448,6 @@
       p.detail ? h('details', { className: 'pl-notice__detail' }, h('summary', null, 'Technische Angaben'), h('code', null, p.detail)) : null);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState, Meldezeile: Meldezeile, Etikett: Etikett, ScanFlaeche: ScanFlaeche };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState, Meldezeile: Meldezeile, Etikett: Etikett, ScanFlaeche: ScanFlaeche, QrBild: QrBild };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

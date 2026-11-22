@@ -1,0 +1,5 @@
+<!-- @dsCard group="Etikett" height=220 -->
+<div class="pl-root" style="padding:20px" id="r"></div>
+<script>const {QrBild}=window.Planer;const h=React.createElement;
+const m=[];for(let y=0;y<21;y++){m.push([]);for(let x=0;x<21;x++)m[y].push((x*7+y*3+x*y)%3===0);}
+ReactDOM.createRoot(document.getElementById('r')).render(h(QrBild,{matrix:m,label:'Beispiel (kein gültiger Code)'}));</script>

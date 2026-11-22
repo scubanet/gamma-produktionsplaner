@@ -298,6 +298,10 @@
 .pl-melde__knopf:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
 @media print { .pl-melde { display: none; } }
 
+/* QR-Code am Bildschirm und im Druck: immer schwarz auf weiss. */
+.pl-qr { display: block; width: 160px; max-width: 100%; height: auto; background: var(--label-paper); fill: var(--label-ink); border-radius: var(--radius-sm); }
+.pl-qr--lg { width: 280px; }
+
 /* Scannen am Handy: die ganze Fläche trägt die Farbe des letzten Ergebnisses. Knöpfe mindestens 56 px (Handschuhe). */
 .pl-scan { min-height: 100dvh; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-4) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); background: var(--surface); color: var(--ink); transition: background-color 120ms ease; }
 .pl-scan--ok { background: var(--scan-ok); color: var(--scan-ink); }
