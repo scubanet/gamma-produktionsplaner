@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["XK8V89P2QV.com.weckherlin.gammascan"],
+        "components": [
+          { "/": "/e", "comment": "QR-Code auf Beutel und Kiste: öffnet die iPhone-App GAMMA Scan (Nachschlagen)" },
+          { "/": "/e/*", "comment": "dasselbe mit Schrägstrich am Schluss, wie auf den Etiketten" }
+        ]
+      }
+    ]
+  }
+}

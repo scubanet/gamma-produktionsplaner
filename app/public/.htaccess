@@ -34,3 +34,12 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 <FilesMatch "^\.">
   Require all denied
 </FilesMatch>
+
+# iPhone-App «GAMMA Scan»: Apple holt /.well-known/apple-app-site-association, damit der QR-Link /e/… die App öffnet.
+# Die Datei hat keine Endung und muss als JSON, über HTTPS und ohne Weiterleitung kommen. Die Sperre oben trifft nur
+# Dateien, deren Name mit einem Punkt beginnt, nicht den Ordner .well-known; die Freigabe steht hier trotzdem ausdrücklich.
+# Die appID darin (TEAM-ID.BUNDLE-ID) muss zur App passen: siehe project.yml im Repo gamma-scan.
+<Files "apple-app-site-association">
+  ForceType application/json
+  Require all granted
+</Files>
