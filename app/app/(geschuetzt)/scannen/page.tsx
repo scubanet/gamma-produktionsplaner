@@ -12,7 +12,7 @@ import { kistenZustand, standText, type ScanAntwort, type Zeile } from "@/lib/pa
 import { nachschlagenPfad, scanCodeLesen } from "@/lib/scan-code";
 import { kameraFehler, kameraStarten, signal, type Kamera } from "@/lib/scan-kamera";
 import {
-  beutelVorpruefen, istWiederholung, kisteVorpruefen, kistenOffen, offeneLesen, offenLoeschen, offenSpeichern, wartetText,
+  beutelVorpruefen, istWiederholung, kisteVorpruefen, kistenOffen, nachgesendet, offeneLesen, offenLoeschen, offenSpeichern, wartetText,
   type OffenerScan, type ScanInhalt, type ScanStufe, type Vorrat,
 } from "@/lib/scan-offline";
 
@@ -122,6 +122,12 @@ export default function Scannen() {
         if (fehlerArt(r.error) === "verbindung") break;
         // Die Datenbank lehnt den Aufruf ab (z.B. fehlende Berechtigung): stehen lassen und zeigen, nicht endlos wiederholen.
         await offenSpeichern({ ...s, fehler: fehlerText(r.error) });
+        continue;
+      }
+      // Die Datenbank hat geantwortet, aber nicht gebucht (z.B. Kiste inzwischen aufgelöst): mit ihrer Meldung stehen lassen.
+      const abgelehnt = nachgesendet(s, r.data as unknown as ScanAntwort & { zaehlt?: boolean });
+      if (abgelehnt) {
+        await offenSpeichern({ ...s, fehler: abgelehnt });
         continue;
       }
       await offenLoeschen(s.id);
@@ -333,7 +339,7 @@ export default function Scannen() {
         </header>
         {wartet ? <Notice role="alert" title={wartet}>Die Stufe lässt sich erst abschliessen, wenn alles gesendet ist. <span className="pl-actions"><Button onClick={() => void senden()}>Jetzt senden</Button></span></Notice> : null}
         {offen.some((s) => s.fehler) ? (
-          <Card title="Scans mit Fehler" meta="Die Datenbank hat sie abgelehnt. Verwerfen löscht den Scan auf diesem Gerät.">
+          <Card title="Scans mit Fehler" meta="Die Datenbank hat sie nicht gebucht. Beutel aus der Kiste nehmen oder mit Netz nochmals scannen, dann den Scan hier verwerfen.">
             <DataTable
               columns={[
                 { key: "was", label: "Scan", render: (r) => <span className="pl-mono">{(r.seriennummer as string | undefined) ?? (r.code as string)}</span> },

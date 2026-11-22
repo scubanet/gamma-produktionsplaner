@@ -112,7 +112,7 @@ Der Druck (Etappe 3 der Spezifikation: ZPL, Druckdienst, Zebra ZD621T) ist nicht
 - QR-Link öffnet die App: Associated Domains für `gamma.atoll-os.com`, dazu in diesem Repo `app/public/.well-known/apple-app-site-association` (Auslieferung über Apache prüfen: Inhaltstyp, kein Redirect).
 - Farben und Logo aus `design-system/tokens.json`.
 - Verteilung über TestFlight; den Upload macht Dominik.
-- **Frage S6:** iOS 17 als Minimum (wegen SwiftData), oder müssen ältere iPhones scannen?
+- ~~Frage S6~~ Entschieden am 22.11.2026 (Dominik): iOS 17 ist Standard, also das Minimum.
 - Abnahme: Unit-Tests für Code-Lesen, Warteschlange und Abgleich; auf einem echten iPhone gescannt (der Scanner läuft nicht im Simulator).
 
 ### S7: Probelauf (Dominik)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { beutelVorpruefen, istWiederholung, kisteVorpruefen, kistenOffen, wartetText, type OffenerScan, type Vorrat } from "../lib/scan-offline";
+import { beutelVorpruefen, istWiederholung, kisteVorpruefen, kistenOffen, nachgesendet, wartetText, type OffenerScan, type Vorrat } from "../lib/scan-offline";
 import { kameraFehler } from "../lib/scan-kamera";
 
 const vorrat: Vorrat = {
@@ -63,6 +63,22 @@ describe("Scannen ohne Netz: Kisten verladen und ankommen", () => {
     expect(kistenOffen(vorrat, [], "verladen").map((k) => k.laufnummer)).toEqual([1, 2]);
     expect(kistenOffen(vorrat, [kis("K-AAAAAA", "verladen")], "verladen").map((k) => k.laufnummer)).toEqual([2]);
     expect(kistenOffen(vorrat, [], "angekommen").map((k) => k.laufnummer)).toEqual([1, 2, 3]);
+  });
+});
+
+describe("Scannen ohne Netz: Antwort auf den nachgesendeten Scan", () => {
+  const a = (p: object) => ({ ergebnis: "ok", farbe: "gruen" as const, meldung: "m", ...p });
+  it("erledigt ist, was gebucht ist oder schon gebucht war", () => {
+    expect(nachgesendet(ein("A", "K"), a({ eingepackt: true }))).toBeNull();
+    expect(nachgesendet(ein("A", "K"), a({ eingepackt: true, klaeren: true, ergebnis: "anderes_produkt", farbe: "rot" }))).toBeNull();
+    expect(nachgesendet(ein("A", "K"), a({ eingepackt: false, ergebnis: "schon_in_kiste", farbe: "gelb" }))).toBeNull();
+    expect(nachgesendet(kis("K", "verladen"), a({ zaehlt: true }))).toBeNull();
+    expect(nachgesendet(kis("K", "verladen"), a({ zaehlt: false, ergebnis: "schon_gescannt", farbe: "rot" }))).toBeNull();
+  });
+  it("was die Datenbank nicht bucht, bleibt mit ihrer Meldung stehen", () => {
+    expect(nachgesendet(ein("A", "K"), a({ eingepackt: false, ergebnis: "kiste_nicht_offen", farbe: "rot", meldung: "Kiste ist aufgelöst." }))).toBe("Kiste ist aufgelöst.");
+    expect(nachgesendet(ein("A", "K"), a({ eingepackt: false, ergebnis: "entsorgt", farbe: "rot", meldung: "Beutel ist entsorgt." }))).toBe("Beutel ist entsorgt.");
+    expect(nachgesendet(kis("K", "verladen"), a({ zaehlt: false, ergebnis: "anderes_spiel", farbe: "rot", meldung: "Kiste gehört zu einem anderen Spiel (Spiel 2)." }))).toBe("Kiste gehört zu einem anderen Spiel (Spiel 2).");
   });
 });
 

@@ -60,6 +60,16 @@ export function kistenOffen(vorrat: Vorrat, offen: OffenerScan[], stufe: "verlad
   return vorrat.kisten.filter((k) => k.zustand !== "aufgeloest" && !NACH[stufe].includes(k.zustand) && !gescannt.has(k.code));
 }
 
+/**
+ * Antwort der Datenbank auf einen nachgesendeten Scan: null, wenn er erledigt ist (gebucht, oder schon gebucht), sonst die
+ * Meldung, mit der er auf dem Gerät stehen bleibt. Ein Scan, den die Datenbank nicht bucht, darf nicht still verschwinden:
+ * der Beutel liegt vielleicht in der Kiste, steht aber nicht in der Packliste.
+ */
+export function nachgesendet(scan: ScanInhalt, a: ScanAntwort & { zaehlt?: boolean }): string | null {
+  if (scan.art === "einpacken") return a.eingepackt || a.ergebnis === "schon_in_kiste" ? null : a.meldung;
+  return a.zaehlt || a.ergebnis === "schon_gescannt" ? null : a.meldung;
+}
+
 /** «3 Scans noch nicht gesendet», mit dem Hinweis auf Scans, die die Datenbank abgelehnt hat. */
 export function wartetText(offen: OffenerScan[]): string {
   if (!offen.length) return "";

@@ -285,7 +285,7 @@ Ein Bluetooth-Handscanner im Tastaturmodus funktioniert in beiden Oberflächen �
 - SwiftUI, nur iPhone, Hochformat. Scanner von Apple (VisionKit), nur QR-Codes. Supabase-Paket für Swift, Zwischenspeicher mit SwiftData. Eigenes Repo. Verteilung über TestFlight (ein Build läuft nach 90 Tagen ab; dann scannt das iPhone über die Web-Seite).
 - Der QR-Link öffnet die App: Sie meldet sich für `gamma.atoll-os.com/e/` an (Associated Domains).
 - Farben und Logo aus dem Design System.
-- Kleinste iOS-Version: siehe offene Punkte, 20.
+- Kleinste iOS-Version: iOS 17 (Entscheid 22.11.2026).
 
 ### Ohne Netz
 
@@ -368,7 +368,7 @@ Vor Etappe 4:
 17. ~~Economat~~ Entschieden am 21.11.2026: eigene Zeile «ungekühlt»; die Ware kann mit dem gekühlten Transport mitfahren.
 18. **Beutel in Stück:** Sie haben kein Gewicht und werden getrennt ausgewiesen, nicht geschätzt. Das Gewicht der Verpackung (Beutel) wird nicht gerechnet (Dominik, 21.11.2026: «Wir arbeiten nicht im Grammbereich»). Offen: Soll für Stück-Beutel ein Gewicht erfasst werden?
 19. ~~Obergrenze pro Kiste~~ Entschieden am 21.11.2026: keine Sperre; der Scan warnt gelb über der Höchstbeladung laut Hersteller. Massgebend bleibt das Volumen (stapelbar).
-20. **iOS 17 als Minimum** (wegen SwiftData): Haben alle iPhones, die scannen sollen, iOS 17 oder neuer?
+20. ~~iOS 17 als Minimum~~ Entschieden am 22.11.2026: iOS 17 ist Standard.
 21. ~~Lesbare Tabellen für «Scannen»~~ Entschieden am 21.11.2026: Planungstabellen lesbar, siehe «Rechte».
 
 Später:
