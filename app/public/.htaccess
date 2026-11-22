@@ -15,7 +15,7 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "DENY"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
-  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Permissions-Policy "camera=(self), microphone=(), geolocation=(), payment=(), usb=()"
   # Content Security Policy: Die App lädt nur eigene Dateien und die Schriften von Google und spricht nur mit
   # der Supabase-Datenbank. Eingeschleuster Code kann so keine Daten an fremde Server schicken.
   # Beim Umzug auf den GAMMA-Server die Supabase-Adresse in connect-src anpassen (https und wss).

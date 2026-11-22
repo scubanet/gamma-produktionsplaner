@@ -2,6 +2,7 @@
 
 | Version | Datum | Änderung |
 | --- | --- | --- |
+| 0.30 | 22.11.2026 | Neue Komponente ScanFlaeche: Scannen am Handy, die ganze Fläche trägt die Farbe des letzten Ergebnisses (`tone` `ok`, `warn`, `fehler`), mit Kopfzeile, Kamerabild, grosser Meldung und Knöpfen ab 56 px. Tokens `scan-ok`, `scan-warn`, `scan-fehler`, `scan-ink`, `scan-warn-ink` (Signalfarben, in Hell und Dunkel gleich). |
 | 0.29 | 20.11.2026 | Neue Komponente Etikett: Vorschau eines Etiketts 100 × 50 mm, schwarz auf weiss in jedem Thema. Tokens `label-paper`, `label-ink`, `label-aspect`. `pl-pass__rezept` gilt auch für Knöpfe (zweite Aktion in der Küchenpass-Zeile). |
 | 0.28 | 20.11.2026 | DataTable: Spalte mit `detail` kürzt langen Text (Herleitung) auf zwei Zeilen; ein Klick auf den Text zeigt ihn ganz, im Druck steht immer alles; `subDetail` dasselbe für die Unterzeile. `pl-anker`: Sprungziel unter der stehenden Kopfzeile. |
 | 0.27 | 20.11.2026 | Neue Komponente Meldezeile: Rückmeldung am unteren Bildschirmrand mit einer Aktion («Rückgängig», «Nochmals versuchen»), `tone` `status` oder `fehler`. Küchenpass-Zeile (`pl-pass`) mit zwei Flächen: `pl-pass__haken` zum Abhaken, `pl-pass__rezept` als eigener Sprung zum Rezept, `pl-pass__lager` für Konservierung und «haltbar bis». |

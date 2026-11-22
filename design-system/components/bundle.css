@@ -298,6 +298,31 @@
 .pl-melde__knopf:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
 @media print { .pl-melde { display: none; } }
 
+/* Scannen am Handy: die ganze Fläche trägt die Farbe des letzten Ergebnisses. Knöpfe mindestens 56 px (Handschuhe). */
+.pl-scan { min-height: 100dvh; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-4) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); background: var(--surface); color: var(--ink); transition: background-color 120ms ease; }
+.pl-scan--ok { background: var(--scan-ok); color: var(--scan-ink); }
+.pl-scan--warn { background: var(--scan-warn); color: var(--scan-warn-ink); }
+.pl-scan--fehler { background: var(--scan-fehler); color: var(--scan-ink); }
+.pl-scan__kopf { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); font-size: 15px; font-weight: 600; }
+.pl-scan__inhalt { position: relative; flex: none; border-radius: var(--radius-lg); overflow: hidden; background: var(--panel); color: var(--panel-ink); aspect-ratio: 4 / 3; max-height: 42dvh; width: 100%; }
+.pl-scan__inhalt > video, .pl-scan__inhalt > canvas { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Eingabe von Hand oder Wahl des Gebindes: liegt über dem Kamerabild, in den Farben der Seite. */
+.pl-scan__eingabe { position: absolute; inset: 0; overflow: auto; padding: var(--space-4); background: var(--surface); color: var(--ink); }
+.pl-scan__meldung { flex: 1; min-height: 96px; display: flex; flex-direction: column; gap: var(--space-2); overflow-wrap: anywhere; }
+.pl-scan__wort { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.pl-scan__titel { font-size: 26px; line-height: 32px; font-weight: 600; }
+.pl-scan__text { font-size: 17px; line-height: 24px; }
+.pl-scan__hinweise { margin: 0; padding-left: 1.2em; font-size: 15px; line-height: 22px; }
+.pl-scan__aktionen { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.pl-scan__aktionen > * { flex: 1 1 140px; min-height: 56px; }
+/* Auf den Signalfarben tragen Knöpfe und Felder die Farben der Fläche, damit der Kontrast in jedem Zustand stimmt. */
+.pl-scan--ok .pl-scan__aktionen .pl-btn, .pl-scan--warn .pl-scan__aktionen .pl-btn, .pl-scan--fehler .pl-scan__aktionen .pl-btn { background: transparent; color: inherit; border-color: currentColor; }
+.pl-scan--ok .pl-scan__aktionen .pl-btn--primary, .pl-scan--fehler .pl-scan__aktionen .pl-btn--primary { background: var(--scan-ink); color: var(--scan-warn-ink); border-color: var(--scan-ink); }
+.pl-scan--warn .pl-scan__aktionen .pl-btn--primary { background: var(--scan-warn-ink); color: var(--scan-ink); border-color: var(--scan-warn-ink); }
+.pl-scan :focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .pl-scan { transition: none; } }
+@media print { .pl-scan { min-height: 0; background: none; color: inherit; } .pl-scan__inhalt, .pl-scan__aktionen { display: none; } }
+
 /* Leitstand: Abschnittstitel, Aufgabenzeilen mit Zahl, Listenzeilen, Fortschritt und Anteile. */
 .pl-lead { font-size: 20px; line-height: 26px; font-weight: 500; }
 .pl-section-title { margin: 0; padding-bottom: 10px; border-bottom: 1px solid var(--ink); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }

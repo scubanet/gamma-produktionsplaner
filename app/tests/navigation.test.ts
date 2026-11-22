@@ -52,7 +52,7 @@ describe("Navigation in Bereichen", () => {
   it("jede Seite gehört zu genau einem Bereich", () => {
     const alle = GRUPPEN.flatMap((g) => g.bereiche.map((b) => b.href));
     expect([...alle].sort()).toEqual(
-      ["/", "/anlaesse/", "/benutzer/", "/einkauf/", "/katalog/", "/kueche/", "/lager/", "/offerten/", "/packliste/", "/produktion/", "/rentabilitaet/", "/ressourcen/", "/rezepte/", "/stammdaten/", "/systemzuteilung/"].sort(),
+      ["/", "/anlaesse/", "/benutzer/", "/einkauf/", "/katalog/", "/kueche/", "/lager/", "/offerten/", "/packliste/", "/produktion/", "/rentabilitaet/", "/ressourcen/", "/rezepte/", "/scannen/", "/stammdaten/", "/systemzuteilung/"].sort(),
     );
   });
 
@@ -66,7 +66,7 @@ describe("Navigation in Bereichen", () => {
   });
 
   it("zeigt die Seiten des Bereichs, ausser er hat nur eine", () => {
-    expect(unternav("/einkauf/lieferanten/").map((x) => [x.label, x.current])).toEqual([["Produktionsplan", false], ["Ressourcen", false], ["Einkauf", true], ["Küchenpass", false], ["Lager", false], ["Packliste", false]]);
+    expect(unternav("/einkauf/lieferanten/").map((x) => [x.label, x.current])).toEqual([["Produktionsplan", false], ["Ressourcen", false], ["Einkauf", true], ["Küchenpass", false], ["Lager", false], ["Packliste", false], ["Scannen", false]]);
     expect(unternav("/")).toEqual([]);
     expect(unternav("/rentabilitaet/")).toEqual([]);
   });

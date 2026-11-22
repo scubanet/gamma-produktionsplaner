@@ -65,6 +65,23 @@
         p.onClose ? h('button', { type: 'button', className: 'pl-melde__knopf pl-melde__knopf--zu', 'aria-label': 'Meldung schliessen', onClick: p.onClose }, '\u00d7') : null) : null);
   }
 
+  // Scannen am Handy: füllt den Bildschirm und färbt ihn nach dem Ergebnis des letzten Scans (ok, Achtung, nicht gebucht).
+  // Oben die Kopfzeile, dann der Inhalt (Kamerabild), darunter gross die Meldung und zuunterst die Knöpfe.
+  // Die Meldung wird sofort vorgelesen; die Farbe ist nie der einzige Träger: das Wort steht immer dabei.
+  function ScanFlaeche(p) {
+    var tone = p.tone || 'neutral';
+    var wort = tone === 'ok' ? 'ok' : tone === 'warn' ? 'Achtung' : tone === 'fehler' ? 'Nicht gebucht' : null;
+    return h('section', { className: cx('pl-scan', 'pl-scan--' + tone), 'aria-label': p.label || 'Scannen' },
+      p.kopf ? h('div', { className: 'pl-scan__kopf' }, p.kopf) : null,
+      p.children ? h('div', { className: 'pl-scan__inhalt' }, p.children) : null,
+      h('div', { className: 'pl-scan__meldung', role: 'status', 'aria-live': 'assertive', 'aria-atomic': 'true' },
+        wort && p.titel ? h('div', { className: 'pl-scan__wort' }, wort) : null,
+        p.titel ? h('div', { className: 'pl-scan__titel' }, p.titel) : null,
+        p.text ? h('div', { className: 'pl-scan__text' }, p.text) : null,
+        p.hinweise && p.hinweise.length ? h('ul', { className: 'pl-scan__hinweise' }, p.hinweise.map(function (x, i) { return h('li', { key: i }, x); })) : null),
+      p.actions ? h('div', { className: 'pl-scan__aktionen' }, p.actions) : null);
+  }
+
   // Vorschau eines Etiketts 100 × 50 mm, wie es der Drucker ausgibt: schwarz auf weiss, in jedem Thema.
   // Die Schrift wächst mit der Breite der Vorschau. Den QR-Code zeichnet der Drucker; hier steht ein Platzhalter.
   function Etikett(p) {
@@ -420,6 +437,6 @@
       p.detail ? h('details', { className: 'pl-notice__detail' }, h('summary', null, 'Technische Angaben'), h('code', null, p.detail)) : null);
   }
 
-  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState, Meldezeile: Meldezeile, Etikett: Etikett };
+  root.Planer = { Button: Button, Card: Card, KpiTile: KpiTile, StatusPill: StatusPill, LocationTag: LocationTag, SegmentedControl: SegmentedControl, TextField: TextField, Checkbox: Checkbox, DataTable: DataTable, Timeline: Timeline, SideNav: SideNav, Notice: Notice, Select: Select, Dialog: Dialog, Fieldset: Fieldset, ItemList: ItemList, Chip: Chip, RecipeGroups: RecipeGroups, TopNav: TopNav, Tabs: Tabs, DetailPanel: DetailPanel, Brand: Brand, Icon: Icon, UserMenu: UserMenu, Skeleton: Skeleton, EmptyState: EmptyState, Meldezeile: Meldezeile, Etikett: Etikett, ScanFlaeche: ScanFlaeche };
   if (typeof module === 'object' && module.exports) module.exports = root.Planer;
 })();

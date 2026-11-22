@@ -43,6 +43,11 @@
   --backdrop: rgba(36,36,36,0.45);
   --label-paper: #FFFFFF;
   --label-ink: #000000;
+  --scan-ok: #1F6B36;
+  --scan-warn: #F2B705;
+  --scan-fehler: #A3211A;
+  --scan-ink: #FFFFFF;
+  --scan-warn-ink: #1F1700;
   --shadow-card: 0 1px 2px rgba(36,36,36,0.06), 0 8px 24px rgba(36,36,36,0.08);
   --shadow-overlay: 0 2px 6px rgba(36,36,36,0.08), 0 16px 40px rgba(36,36,36,0.16);
   --font-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -115,6 +120,11 @@
     --backdrop: rgba(0,0,0,0.6);
     --label-paper: #FFFFFF;
     --label-ink: #000000;
+    --scan-ok: #1F6B36;
+    --scan-warn: #F2B705;
+    --scan-fehler: #A3211A;
+    --scan-ink: #FFFFFF;
+    --scan-warn-ink: #1F1700;
     --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
     --shadow-overlay: 0 2px 6px rgba(0,0,0,0.5), 0 16px 40px rgba(0,0,0,0.5);
   }

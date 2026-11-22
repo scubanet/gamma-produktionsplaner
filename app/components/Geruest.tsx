@@ -2,7 +2,7 @@
 
 import { useEffect, type ReactNode } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { BILDMARKE, BILDMARKE_MONO, Notice, Tabs, TopNav, UserMenu } from "@/lib/planer";
 import { hauptnav, seitenTabs, unternav } from "@/lib/navigation";
 import { supabase } from "@/lib/supabase";
@@ -44,6 +44,14 @@ export function Geruest({ children }: { children: ReactNode }) {
   const sitzung = useSitzung();
   const stufe = useStufe();
   useSeitentitel();
+  const router = useRouter();
+  // «Scannen» sieht den Leitstand nicht: ihre Startseite ist die Seite «Scannen».
+  const zumScannen = stufe === "scannen" && pfad === "/";
+  useEffect(() => {
+    if (zumScannen) router.replace("/scannen/");
+  }, [zumScannen, router]);
+  // Scannen am Handy: eigene Fläche ohne die übrige Navigation (Design System, ScanFlaeche).
+  if (sichtbar(stufe, pfad) && (pfad === "/scannen" || pfad.startsWith("/scannen/"))) return <div className="pl-root">{children}</div>;
   return (
     <div className="pl-app pl-app--top">
       {/* Auf jeder Seite: Bereiche, wer angemeldet ist, und abmelden. Nach dem Abmelden leitet <Anmeldung> zur Anmeldeseite. */}
@@ -67,9 +75,8 @@ export function Geruest({ children }: { children: ReactNode }) {
           <>
             <header className="pl-head"><div><h1 className="pl-h1">Nicht freigegeben</h1></div></header>
             <Notice title={`Diese Seite gehört nicht zur Stufe «${stufeLabel(stufe)}»`}>
-              {/* «Scannen» sieht den Leitstand nicht: ihre Startseite ist die Packliste (die Seite «Scannen» folgt mit S5). */}
               Deine Stufe ändert ein Administrator in der Benutzerverwaltung.{" "}
-              {stufe === "scannen" ? <Link href="/packliste/">Zur Packliste</Link> : <Link href="/">Zum Leitstand</Link>}
+              {stufe === "scannen" ? <Link href="/scannen/">Zum Scannen</Link> : <Link href="/">Zum Leitstand</Link>}
             </Notice>
           </>
         )}

@@ -52,7 +52,7 @@ Entscheide Dominik, 20. und 21.11.2026. Migration 44 (Stufe «Scannen») ist am 
 - Die App merkt sich die Stufe im Browser (`localStorage`, `planer.stufe`) und gleicht sie bei jedem Laden mit `stufe()` ab. Wird jemand herabgestuft, während die App offen ist, gilt die neue Anzeige ab dem nächsten Laden; bis dahin lehnt die Datenbank das Schreiben ab, einzelne Dialoge melden dann aber trotzdem «gespeichert» (Ändern trifft 0 Zeilen ohne Fehler). Offen: an diesen Stellen 0 Zeilen als Fehler behandeln.
 - `produktion_aufgabe`: «Küche» kann Saison, Komponente und Welle einer Zeile nicht ändern (Trigger, Fehler 42501) und `zustaendig` nicht setzen. Anlegen kann sie Zeilen für jede bestehende Saison und Komponente (ohne «Zuständig»); eine Prüfung gegen die Checkliste gibt es nicht.
 - Offerten (`anlass.status = 'offerte'`) blendet für «Küche» nur die App aus (Leitstand, Anlass-Seite); lesbar sind sie über die Schnittstelle wie die Preis-Spalten.
-- Die App zeigt «Scannen» nur die Seiten `/scannen`, `/packliste` und `/e` (`NUR_SCANNEN` in `app/lib/stufe.ts`); alles andere ist gesperrt, auch neue Seiten. `/packliste` und `/e` sind gebaut (S4), `/scannen` folgt mit S5.
+- Die App zeigt «Scannen» nur die Seiten `/scannen`, `/packliste` und `/e` (`NUR_SCANNEN` in `app/lib/stufe.ts`); alles andere ist gesperrt, auch neue Seiten. Alle drei sind gebaut (S4, S5); ein Konto «Scannen» landet nach der Anmeldung auf `/scannen`.
 - Eine weitere Stufe: Tabelle wie `app_scannen`, Zweig in `stufe()` und in `ist_planer()`, Eintrag in `STUFEN` und `RECHTE` (`app/lib/stufe.ts`) und in `STUFEN` und `TABELLEN` der Edge Function.
 
 ## Anmeldung per E-Mail

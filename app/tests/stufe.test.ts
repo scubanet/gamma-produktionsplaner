@@ -31,16 +31,16 @@ describe("Stufen", () => {
       expect(sichtbar("scannen", p), p).toBe(true);
     }
   });
-  it("Navigation für Scannen: nur die Packliste", () => {
+  it("Navigation für Scannen: nur Packliste und Scannen", () => {
     expect(hauptnav("/packliste/", "scannen").map((x) => [x.label, x.href, x.current])).toEqual([["Produktion", "/packliste/", true]]);
-    expect(unternav("/packliste/", "scannen")).toEqual([]);
+    expect(unternav("/packliste/", "scannen").map((x) => x.label)).toEqual(["Packliste", "Scannen"]);
     expect(seitenTabs("/einkauf/", "scannen")).toEqual([]);
   });
   it("Navigation für Küche: vier Bereiche, Verkauf führt zu den Anlässen", () => {
     expect(hauptnav("/kueche/", "kueche").map((x) => [x.label, x.href, x.current])).toEqual([
       ["Leitstand", "/", false], ["Verkauf", "/anlaesse/", false], ["Produktion", "/produktion/", true], ["Küche", "/rezepte/", false],
     ]);
-    expect(unternav("/kueche/", "kueche").map((x) => x.label)).toEqual(["Produktionsplan", "Einkauf", "Küchenpass", "Lager", "Packliste"]);
+    expect(unternav("/kueche/", "kueche").map((x) => x.label)).toEqual(["Produktionsplan", "Einkauf", "Küchenpass", "Lager", "Packliste", "Scannen"]);
     // Verkauf hat für Küche nur noch eine Seite: keine Tabs.
     expect(unternav("/anlaesse/", "kueche")).toEqual([]);
     // Einkauf hat für Küche nur die Liste: keine Ansichten.
