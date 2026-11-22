@@ -415,7 +415,7 @@ Keine Migration. Entscheid Dominik (22.11.2026): Bibliothek **jsQR 1.4.0** (Apac
 
 Auftrag Dominik: Testseite, um Einpacken und Verladen ohne gedruckte Etiketten am Bildschirm zu scannen. Keine Migration.
 
-- **`/packliste/codes/?service=<id>`** (Knopf «Codes zum Scannen» auf der Packliste): QR-Codes der Kisten des Spiels und der Beutel im Lager, deren Produkt im Bedarf des Spiels steht (höchstens 60, die zuerst ablaufenden zuerst), je mit lesbarem Code. Der Text kommt aus der Datenbank (`qr_text` in `etikett_kiste` und `etikett_beutel`), wie er aufs Etikett gedruckt wird. Hinweis auf der Seite: ein Scan bucht wirklich.
+- **`/packliste/codes/?service=<id>`** (Knopf «Codes zum Scannen» auf der Packliste): QR-Codes der Kisten des Spiels und aller Beutel im Lager (höchstens 60; zuerst die Produkte aus dem Bedarf des Spiels, die übrigen mit dem Vermerk «nicht im Bedarf dieses Spiels»), je mit lesbarem Code. Der Text kommt aus der Datenbank (`qr_text` in `etikett_kiste` und `etikett_beutel`), wie er aufs Etikett gedruckt wird. Hinweis auf der Seite: ein Scan bucht wirklich.
 - **Bibliothek uqr 0.1.3** (MIT, keine Abhängigkeiten; Entscheid Dominik, 22.11.2026) rechnet die Matrix (`lib/qr.ts`), der neue Baustein **`QrBild`** zeichnet sie (Design System 0.31).
 - **Test:** `tests/qr.test.ts` zeichnet die Matrix als Bild und liest sie mit jsQR, dem Leser der Seite «Scannen», wieder zum selben Text. 256 Tests.
 - **Geprüft:** Typen, Lint, Build; im Browser lädt die Seite für Spiel 1 ohne Fehler und zeigt die leeren Zustände (im Pilot gibt es weder Kisten noch Beutel). **Nicht gesehen:** ein QR-Code am Bildschirm und ein Scan davon.

@@ -13,28 +13,27 @@ import { qrMatrix } from "@/lib/qr";
 // der Etikettendruck (Etappe 3) fehlt, und als Notweg, wenn ein Etikett unlesbar ist. Der Text des Codes kommt
 // aus der Datenbank (qr_text), genau wie er aufs Etikett gedruckt wird.
 type Kiste = { kiste_id: string; code: string; laufnummer: number; kisten_im_spiel: number; zustand: string; produkt: string | null; beutel: number; qr_text: string };
-type Beutel = { lagereinheit_id: string; seriennummer: string; produkt: string; produkt_code: string; menge: number; einheit: string; verbrauchen_bis: string; qr_text: string };
+type Beutel = { lagereinheit_id: string; seriennummer: string; produkt_id: string; imBedarf: boolean; produkt: string; produkt_code: string; menge: number; einheit: string; verbrauchen_bis: string; qr_text: string };
 type Daten = { titel: string; kisten: Kiste[]; beutel: Beutel[] };
 
 const HOECHSTENS = 60;
 
 async function laden(service: string): Promise<Daten> {
-  const [spiel, kisten, soll] = await Promise.all([
+  const [spiel, kisten, soll, beutel] = await Promise.all([
     supabase.from("service").select("name, datum, anlass(name)").eq("id", service).maybeSingle(),
     supabase.from("etikett_kiste").select("kiste_id, code, laufnummer, kisten_im_spiel, zustand, produkt, beutel, qr_text").eq("service_id", service).neq("zustand", "aufgeloest").order("laufnummer"),
     supabase.from("packliste").select("produkt_id").eq("service_id", service),
+    // Alle Beutel im Lager, auch für Produkte ausserhalb des Bedarfs: so lässt sich auch «nicht im Bedarf» proben.
+    supabase.from("etikett_beutel").select("lagereinheit_id, seriennummer, produkt_id, produkt, produkt_code, menge, einheit, verbrauchen_bis, qr_text").eq("zustand", "im_lager").order("verbrauchen_bis").order("produkt").order("seriennummer").limit(HOECHSTENS),
   ]);
-  if (spiel.error || kisten.error || soll.error) throw spiel.error ?? kisten.error ?? soll.error;
-  const produkte = [...new Set((soll.data ?? []).map((z) => z.produkt_id).filter((x): x is string => !!x))];
-  const beutel = produkte.length
-    ? await supabase.from("etikett_beutel").select("lagereinheit_id, seriennummer, produkt, produkt_code, menge, einheit, verbrauchen_bis, qr_text").eq("zustand", "im_lager").in("produkt_id", produkte).order("produkt").order("verbrauchen_bis").order("seriennummer").limit(HOECHSTENS)
-    : { data: [], error: null };
-  if (beutel.error) throw beutel.error;
+  if (spiel.error || kisten.error || soll.error || beutel.error) throw spiel.error ?? kisten.error ?? soll.error ?? beutel.error;
+  const imBedarf = new Set((soll.data ?? []).map((z) => z.produkt_id));
   const s = spiel.data as unknown as { name: string; datum: string | null; anlass: { name: string } | null } | null;
   return {
     titel: s ? `${s.anlass?.name ?? "[Anlass]"} · ${s.name}${s.datum ? ` · ${formatDatum(s.datum)}` : ""}` : "[Spiel]",
     kisten: (kisten.data ?? []) as unknown as Kiste[],
-    beutel: (beutel.data ?? []) as unknown as Beutel[],
+    // Produkte aus dem Bedarf des Spiels zuerst.
+    beutel: ((beutel.data ?? []) as unknown as Beutel[]).map((b) => ({ ...b, imBedarf: imBedarf.has(b.produkt_id) })).sort((a, b) => Number(b.imBedarf) - Number(a.imBedarf)),
   };
 }
 
@@ -79,7 +78,7 @@ function Seite() {
         fehler ? null : <Skeleton variant="karte" label="Codes werden geladen" />
       ) : (
         <>
-          <Card title="Kisten" meta={`${daten.kisten.length} Kisten dieses Spiels`}>
+          <Card title="Kisten" meta={`${daten.kisten.length} ${daten.kisten.length === 1 ? "Kiste" : "Kisten"} dieses Spiels`}>
             {daten.kisten.length ? (
               <div className="pl-grid-3">
                 {daten.kisten.map((k) => (
@@ -97,14 +96,14 @@ function Seite() {
               <p className="pl-muted">Noch keine Kiste. Auf der Packliste oder beim Scannen eine anlegen.</p>
             )}
           </Card>
-          <Card title="Beutel im Lager" meta={`Produkte aus dem Bedarf dieses Spiels, die zuerst ablaufenden zuerst${daten.beutel.length >= HOECHSTENS ? `; die ersten ${HOECHSTENS}` : ""}`}>
+          <Card title="Beutel im Lager" meta={`Zuerst die Produkte aus dem Bedarf dieses Spiels, darin die zuerst ablaufenden${daten.beutel.length >= HOECHSTENS ? `; die ersten ${HOECHSTENS}` : ""}`}>
             {daten.beutel.length ? (
               <div className="pl-grid-3">
                 {daten.beutel.map((b) => (
                   <div key={b.lagereinheit_id} className="pl-stack">
                     <QrBild matrix={qrMatrix(b.qr_text)} label={`QR-Code Beutel ${b.seriennummer}`} size="lg" />
                     <div>
-                      <strong>{b.produkt}</strong>
+                      <strong>{b.produkt}</strong>{b.imBedarf ? null : <> <StatusPill status="neutral">nicht im Bedarf dieses Spiels</StatusPill></>}
                       <div className="pl-mono">{b.produkt_code} · {b.seriennummer}</div>
                       <div className="pl-small">{formatMenge(b.menge, b.einheit)} · verbrauchen bis {formatDatum(b.verbrauchen_bis)}</div>
                     </div>
@@ -112,7 +111,7 @@ function Seite() {
                 ))}
               </div>
             ) : (
-              <p className="pl-muted">Im Lager liegt kein Beutel für dieses Spiel. Unter «Lager» ein Produkt einlagern oder im Küchenpass Etiketten anlegen.</p>
+              <p className="pl-muted">Im Lager liegt kein Beutel. Unter «Lager» ein Produkt einlagern oder im Küchenpass Etiketten anlegen.</p>
             )}
           </Card>
         </>
