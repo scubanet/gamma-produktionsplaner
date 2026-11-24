@@ -43,7 +43,7 @@ describe("Temperatur: Kühlstellen", () => {
     expect([stelleStandard("kuehlung").min, stelleStandard("kuehlung").max, stelleStandard("tk").min, stelleStandard("tk").max, stelleStandard("economat").max]).toEqual(["0", "2", "", "-18", "18"]);
   });
   it("prüft die Eingabe", () => {
-    expect(stelleEingabe({ ...stelleStandard("tk"), name: " TK 1 " })).toEqual({ name: "TK 1", art: "tk", grenze_min: null, grenze_max: -18, messungen_pro_tag: 2, reihenfolge: 0, aktiv: true, bemerkung: null });
+    expect(stelleEingabe({ ...stelleStandard("tk"), name: " TK 1 " })).toEqual({ name: "TK 1", art: "tk", grenze_min: null, grenze_max: -18, messungen_pro_tag: 1, reihenfolge: 0, aktiv: true, bemerkung: null });
     expect("fehler" in stelleEingabe({ ...stelleStandard(), name: "K", min: "3", max: "2" })).toBe(true);
     expect("fehler" in stelleEingabe({ ...stelleStandard(), name: "" })).toBe(true);
     expect("fehler" in stelleEingabe({ ...stelleStandard(), name: "K", messungen: "0" })).toBe(true);

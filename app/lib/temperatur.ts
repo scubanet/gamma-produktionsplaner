@@ -17,8 +17,8 @@ export const ARTEN: { art: Art; label: string; min: number | null; max: number }
   { art: "tk", label: "Tiefkühlung", min: null, max: -18 },
   { art: "economat", label: "Economat", min: null, max: 18 },
 ];
-/** Annahme bis zum Entscheid: morgens und abends. */
-export const MESSUNGEN_STANDARD = 2;
+/** Entscheid Dominik (24.11.2026): eine Messung pro Tag, am Morgen. */
+export const MESSUNGEN_STANDARD = 1;
 
 export const artLabel = (art: string | null): string => ARTEN.find((a) => a.art === art)?.label ?? "[Art]";
 

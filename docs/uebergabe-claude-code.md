@@ -434,6 +434,7 @@ Entscheid Dominik (24.11.2026): Die Temperaturkontrollliste deckt vorerst die t�
 - Grenzwerte als Standard aus den fachlichen Vorgaben: Kühlung 0 bis +2 °C, TK höchstens −18 °C, Economat höchstens +18 °C; pro Kühlstelle änderbar. Eine Messung hält die Grenze fest, die beim Messen galt.
 - Abweichung: Massnahme ist Pflicht (App und Datenbank). Visum (Kürzel) pro Messung, auf dem Gerät für die nächste Messung vorgeschlagen.
 - Rechte: erfassen alle Stufen ausser «Scannen» (auch «Küche»); Kühlstellen pflegen Admin und Benutzer; stornieren nur Admin, mit Grund.
-- **Offen (Annahme):** 2 Messungen pro Tag als Standard (morgens und abends). Noch keine Kühlstellen erfasst: Namen und Anzahl der Räume in Hünenberg kennt Dominik.
+- Entscheid Dominik (24.11.2026, Migration 51): gemessen wird nur am Morgen, Standard 1 Messung pro Tag (pro Kühlstelle änderbar).
+- **Offen:** noch keine Kühlstellen erfasst; Namen und Anzahl der Räume in Hünenberg kennt Dominik.
 - Nächste mögliche Schritte: fehlende Messungen im Leitstand anzeigen; Wareneingang, Kerntemperatur pro Charge, Transport.
 

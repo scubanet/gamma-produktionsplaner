@@ -156,7 +156,7 @@ export default function Temperaturkontrolle() {
         <div>
           <div className="pl-crumb">Produktion Hünenberg · Hygiene</div>
           <h1 className="pl-h1">Temperaturkontrolle</h1>
-          <div className="pl-sub">Tägliche Messung der Kühl- und Tiefkühlräume und des Economats. Abweichungen brauchen eine Massnahme.</div>
+          <div className="pl-sub">Tägliche Messung am Morgen: Kühl- und Tiefkühlräume und Economat. Abweichungen brauchen eine Massnahme.</div>
         </div>
         <div className="pl-actions pl-print-hide">
           <Button icon="print" onClick={() => window.print()}>Liste drucken</Button>
@@ -187,7 +187,7 @@ export default function Temperaturkontrolle() {
                     actions={<StatusPill status={p.status}>{p.text}</StatusPill>}
                   >
                     <p className="pl-small">
-                      {k.letzte_am ? `Zuletzt heute ${zeitSchweiz(k.letzte_am)}: ${gradText(k.letzte_temperatur)}` : "Heute noch nicht gemessen."}
+                      {k.letzte_am ? `Zuletzt heute ${zeitSchweiz(k.letzte_am)}: ${gradText(k.letzte_temperatur)}` : "Heute noch nicht gemessen: Morgenmessung offen."}
                     </p>
                     <Button variant="primary" icon="plus" ariaLabel={`Temperatur ${k.name} erfassen`} onClick={() => setMessen(k)}>
                       Temperatur erfassen
@@ -259,7 +259,7 @@ export default function Temperaturkontrolle() {
             <Skeleton variant="zeile" />
           )}
           <p className="pl-small">
-            Standard: Kühlung 0 bis +2 °C, Tiefkühlung höchstens −18 °C, Economat höchstens +18 °C. <span className="pl-assumed">2 Messungen pro Tag</span> sind eine Annahme (morgens und abends) und pro Kühlstelle änderbar.
+            Standard: Kühlung 0 bis +2 °C, Tiefkühlung höchstens −18 °C, Economat höchstens +18 °C. Gemessen wird einmal am Morgen; pro Kühlstelle änderbar.
           </p>
         </Card>
       ) : null}
