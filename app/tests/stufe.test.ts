@@ -13,7 +13,7 @@ describe("Stufen", () => {
       expect(sichtbar("kueche", p), p).toBe(false);
       expect(sichtbar("benutzer", p), p).toBe(true);
     }
-    for (const p of ["/", "/produktion/", "/produktion/wellen/", "/produktion/aufwand/", "/kueche/", "/lager/", "/einkauf/", "/rezepte/", "/katalog/", "/systemzuteilung/", "/anlaesse/", "/anlaesse/bearbeiten/"]) {
+    for (const p of ["/", "/produktion/", "/produktion/wellen/", "/produktion/aufwand/", "/kueche/", "/lager/", "/temperatur/", "/einkauf/", "/rezepte/", "/katalog/", "/systemzuteilung/", "/anlaesse/", "/anlaesse/bearbeiten/"]) {
       expect(sichtbar("kueche", p), p).toBe(true);
     }
   });
@@ -24,7 +24,7 @@ describe("Stufen", () => {
   });
   it("Scannen plant nicht, sieht keine Preise und nur Scannen, Packliste und Nachschlagen", () => {
     expect([darf("scannen", "planen"), darf("scannen", "preise")]).toEqual([false, false]);
-    for (const p of ["/", "/produktion/", "/kueche/", "/lager/", "/einkauf/", "/rezepte/", "/katalog/", "/systemzuteilung/", "/anlaesse/", "/offerten/", "/benutzer/", "/stammdaten/", "/eine-neue-seite/", "/einkauf/zutaten/"]) {
+    for (const p of ["/", "/produktion/", "/kueche/", "/lager/", "/temperatur/", "/einkauf/", "/rezepte/", "/katalog/", "/systemzuteilung/", "/anlaesse/", "/offerten/", "/benutzer/", "/stammdaten/", "/eine-neue-seite/", "/einkauf/zutaten/"]) {
       expect(sichtbar("scannen", p), p).toBe(false);
     }
     for (const p of ["/scannen/", "/packliste/", "/e/", "/e"]) {
@@ -40,7 +40,7 @@ describe("Stufen", () => {
     expect(hauptnav("/kueche/", "kueche").map((x) => [x.label, x.href, x.current])).toEqual([
       ["Leitstand", "/", false], ["Verkauf", "/anlaesse/", false], ["Produktion", "/produktion/", true], ["Küche", "/rezepte/", false],
     ]);
-    expect(unternav("/kueche/", "kueche").map((x) => x.label)).toEqual(["Produktionsplan", "Einkauf", "Küchenpass", "Lager", "Packliste", "Scannen"]);
+    expect(unternav("/kueche/", "kueche").map((x) => x.label)).toEqual(["Produktionsplan", "Einkauf", "Küchenpass", "Lager", "Temperaturen", "Packliste", "Scannen"]);
     // Verkauf hat für Küche nur noch eine Seite: keine Tabs.
     expect(unternav("/anlaesse/", "kueche")).toEqual([]);
     // Einkauf hat für Küche nur die Liste: keine Ansichten.

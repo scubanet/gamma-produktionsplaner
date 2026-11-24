@@ -1696,6 +1696,45 @@ export type Database = {
           },
         ]
       }
+      kuehlstelle: {
+        Row: {
+          aktiv: boolean
+          art: string
+          bemerkung: string | null
+          erstellt_am: string
+          grenze_max: number
+          grenze_min: number | null
+          id: string
+          messungen_pro_tag: number
+          name: string
+          reihenfolge: number
+        }
+        Insert: {
+          aktiv?: boolean
+          art: string
+          bemerkung?: string | null
+          erstellt_am?: string
+          grenze_max: number
+          grenze_min?: number | null
+          id?: string
+          messungen_pro_tag?: number
+          name: string
+          reihenfolge?: number
+        }
+        Update: {
+          aktiv?: boolean
+          art?: string
+          bemerkung?: string | null
+          erstellt_am?: string
+          grenze_max?: number
+          grenze_min?: number | null
+          id?: string
+          messungen_pro_tag?: number
+          name?: string
+          reihenfolge?: number
+        }
+        Relationships: []
+      }
       lagerbewegung: {
         Row: {
           art: string
@@ -3045,6 +3084,72 @@ export type Database = {
           stueck_pro_korb?: number | null
         }
         Relationships: []
+      }
+      temperaturmessung: {
+        Row: {
+          abweichung: boolean
+          bemerkung: string | null
+          erfasst_von: string | null
+          gemessen_am: string
+          grenze_max: number
+          grenze_min: number | null
+          id: string
+          kuehlstelle_id: string
+          massnahme: string | null
+          storniert_am: string | null
+          storniert_von: string | null
+          storno_grund: string | null
+          temperatur: number
+          visum: string
+        }
+        Insert: {
+          abweichung: boolean
+          bemerkung?: string | null
+          erfasst_von?: string | null
+          gemessen_am?: string
+          grenze_max: number
+          grenze_min?: number | null
+          id?: string
+          kuehlstelle_id: string
+          massnahme?: string | null
+          storniert_am?: string | null
+          storniert_von?: string | null
+          storno_grund?: string | null
+          temperatur: number
+          visum: string
+        }
+        Update: {
+          abweichung?: boolean
+          bemerkung?: string | null
+          erfasst_von?: string | null
+          gemessen_am?: string
+          grenze_max?: number
+          grenze_min?: number | null
+          id?: string
+          kuehlstelle_id?: string
+          massnahme?: string | null
+          storniert_am?: string | null
+          storniert_von?: string | null
+          storno_grund?: string | null
+          temperatur?: number
+          visum?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "temperaturmessung_kuehlstelle_id_fkey"
+            columns: ["kuehlstelle_id"]
+            isOneToOne: false
+            referencedRelation: "kuehlstelle"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "temperaturmessung_kuehlstelle_id_fkey"
+            columns: ["kuehlstelle_id"]
+            isOneToOne: false
+            referencedRelation: "temperatur_heute"
+            referencedColumns: ["kuehlstelle_id"]
+          },
+        ]
       }
       welle_komponente: {
         Row: {
@@ -6199,6 +6304,61 @@ export type Database = {
           },
         ]
       }
+      temperatur_heute: {
+        Row: {
+          abweichung: boolean | null
+          art: string | null
+          fehlend: number | null
+          grenze_max: number | null
+          grenze_min: number | null
+          kuehlstelle_id: string | null
+          letzte_am: string | null
+          letzte_temperatur: number | null
+          messungen: number | null
+          messungen_pro_tag: number | null
+          name: string | null
+          reihenfolge: number | null
+          status: string | null
+        }
+        Relationships: []
+      }
+      temperatur_liste: {
+        Row: {
+          abweichung: boolean | null
+          art: string | null
+          bemerkung: string | null
+          gemessen_am: string | null
+          grenze_max: number | null
+          grenze_min: number | null
+          id: string | null
+          kuehlstelle: string | null
+          kuehlstelle_id: string | null
+          massnahme: string | null
+          reihenfolge: number | null
+          status: string | null
+          storniert_am: string | null
+          storno_grund: string | null
+          tag: string | null
+          temperatur: number | null
+          visum: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "temperaturmessung_kuehlstelle_id_fkey"
+            columns: ["kuehlstelle_id"]
+            isOneToOne: false
+            referencedRelation: "kuehlstelle"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "temperaturmessung_kuehlstelle_id_fkey"
+            columns: ["kuehlstelle_id"]
+            isOneToOne: false
+            referencedRelation: "temperatur_heute"
+            referencedColumns: ["kuehlstelle_id"]
+          },
+        ]
+      }
       wellen_aktuell: {
         Row: {
           bezug: string | null
@@ -6729,6 +6889,21 @@ export type Database = {
         Returns: Json
       }
       stufe: { Args: never; Returns: string }
+      temperatur_erfassen: {
+        Args: {
+          p_bemerkung?: string
+          p_kuehlstelle: string
+          p_massnahme?: string
+          p_temperatur: number
+          p_visum: string
+        }
+        Returns: Json
+      }
+      temperatur_recht: { Args: { p_recht: string }; Returns: boolean }
+      temperatur_stornieren: {
+        Args: { p_grund: string; p_messung: string }
+        Returns: undefined
+      }
       transportart: {
         Args: { p_0_2: boolean; p_tk: boolean; p_trocken: boolean }
         Returns: string
